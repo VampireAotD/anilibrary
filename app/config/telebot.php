@@ -1,5 +1,7 @@
 <?php
 
+use App\Console\Commands\Telegram\StartCommand;
+
 return [
     /*-------------------------------------------------------------------------
     | Default Bot Name
@@ -45,7 +47,19 @@ return [
             ],
 
             'handlers' => [
+                // Commands
+                StartCommand::class,
             ],
         ],
     ],
+
+    /*-------------------------------------------------------------------------
+    | Allowed Telegram Ids
+    |--------------------------------------------------------------------------
+    |
+    | List of allowed Telegram ids who can you bot
+    |
+    */
+
+    'allowedTelegramIds' => env('ALLOWED_TELEGRAM_IDS', ''),
 ];
