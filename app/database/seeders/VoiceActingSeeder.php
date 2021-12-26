@@ -18,24 +18,24 @@ class VoiceActingSeeder extends Seeder
         VoiceActing::insert([
             [
                 'id' => Str::uuid(),
-                'name' => 'AniDub',
+                'name' => 'AniDUB',
             ],
             [
                 'id' => Str::uuid(),
-                'name' => 'Anilibria',
+                'name' => 'AniLibria',
             ],
             [
                 'id' => Str::uuid(),
-                'name' => 'Studio Band',
+                'name' => 'Студийная Банда',
             ],
             [
                 'id' => Str::uuid(),
-                'name' => 'DreamCast',
+                'name' => 'AnimeVost',
             ],
             [
                 'id' => Str::uuid(),
-                'name' => 'Professional',
-            ]
+                'name' => 'Dream Cast',
+            ],
         ]);
     }
 }

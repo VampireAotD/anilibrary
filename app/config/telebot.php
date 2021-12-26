@@ -1,6 +1,10 @@
 <?php
 
 use App\Console\Commands\Telegram\StartCommand;
+use App\Handlers\AddNewAnimeHandler;
+use App\Handlers\CallbackQueryHandler;
+use App\Handlers\CommandHandler;
+use App\Handlers\RandomAnimeHandler;
 
 return [
     /*-------------------------------------------------------------------------
@@ -49,6 +53,12 @@ return [
             'handlers' => [
                 // Commands
                 StartCommand::class,
+
+                // Handlers,
+                CommandHandler::class,
+                CallbackQueryHandler::class,
+                AddNewAnimeHandler::class,
+                RandomAnimeHandler::class
             ],
         ],
     ],

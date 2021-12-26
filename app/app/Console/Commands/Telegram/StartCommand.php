@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands\Telegram;
 
-use App\Models\TelegramUser;
-use App\Models\User;
+use App\Enums\KeyboardEnum;
 use App\Repositories\Contracts\TelegramUser\Repository;
-use Illuminate\Support\Str;
+use App\Services\TelegramUserService;
 use WeStacks\TeleBot\Handlers\CommandHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
@@ -28,19 +27,30 @@ class StartCommand extends CommandHandler
      *
      * @var string
      */
-    protected static $description = 'Send "/start" or "/s" to get "Hello, World!"';
+    protected static $description = 'Send "/start" or "/s" to get description of what this bot can do';
 
     /**
      * @var Repository
      */
     private Repository $telegramUserRepository;
 
+    /**
+     * @var TelegramUserService
+     */
+    private TelegramUserService $telegramUserService;
+
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
 
         $this->telegramUserRepository = app(Repository::class);
+        $this->telegramUserService = app(TelegramUserService::class);
     }
+
+    private const DENIAL_MESSAGE = "\xF0\x9F\x98\xBF К сожалению, у Вас нету полномочий пользоваться данным ботом";
+
+    private const WELCOME_MESSAGE = "\xF0\x9F\x91\x8B Вас приветствует AniLibrary Bot!
+    Пожалуйста, выберете интересующее Вас действие:";
 
     /**
      * Execute the console command.
@@ -57,27 +67,25 @@ class StartCommand extends CommandHandler
             $data = $messageFrom->toArray();
             $data['telegram_id'] = $data['id'];
 
-            $telegramUser = TelegramUser::create($data);
-
-            User::create([
-                'telegram_user_id' => $telegramUser->id,
-                'password' => Str::random(),
-            ]);
+            $this->telegramUserService->register($data);
         }
 
         try {
             if (!in_array($messageFrom->id, $allowedIds)) {
                 $this->sendMessage([
-                    'text' => 'Sorry, but you are not allowed to use this bot',
+                    'text' => self::DENIAL_MESSAGE,
                 ]);
             } else {
                 $this->sendMessage([
-                    'text' => 'Q',
+                    'text' => self::WELCOME_MESSAGE,
                     'reply_markup' => [
                         'keyboard' => [
                             [
                                 [
-                                    'text' => 'Add new title'
+                                    'text' => KeyboardEnum::ADD_NEW_TITLE->value,
+                                ],
+                                [
+                                    'text' => KeyboardEnum::RANDOM_ANIME->value,
                                 ],
                             ]
                         ],
@@ -86,7 +94,12 @@ class StartCommand extends CommandHandler
                 ]);
             }
         } catch (\Exception $exception) {
-            dump($exception->getMessage());
+            logger()->channel('single')->warning(
+                $exception->getMessage(),
+                [
+                    'exceptionTrace' => $exception->getTraceAsString(),
+                ]
+            );
         }
     }
 }
