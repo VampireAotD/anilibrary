@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Anime;
 use App\Repositories\Contracts\Anime\Repository;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class AnimeRepository
@@ -18,15 +17,6 @@ class AnimeRepository extends BaseRepository implements Repository
     protected function resolveModel(): string
     {
         return Anime::class;
-    }
-
-    /**
-     * @param string $uuid
-     * @return Model|null
-     */
-    public function findById(string $uuid): ?Model
-    {
-        return $this->query()->find($uuid);
     }
 
     /**
@@ -58,9 +48,9 @@ class AnimeRepository extends BaseRepository implements Repository
     }
 
     /**
-     * @return Anime
+     * @return Anime|null
      */
-    public function findRandomAnime(): Anime
+    public function findRandomAnime(): ?Anime
     {
         return $this->query()->inRandomOrder()->limit(1)->first();
     }

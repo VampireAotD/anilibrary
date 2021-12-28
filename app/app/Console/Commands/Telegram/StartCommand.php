@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Telegram;
 
 use App\Enums\KeyboardEnum;
+use App\Handlers\Traits\CanCheckIfUserHasAccessForBot;
 use App\Repositories\Contracts\TelegramUser\Repository;
 use App\Services\TelegramUserService;
 use WeStacks\TeleBot\Handlers\CommandHandler;
@@ -15,6 +16,8 @@ use WeStacks\TeleBot\TeleBot;
  */
 class StartCommand extends CommandHandler
 {
+    use CanCheckIfUserHasAccessForBot;
+
     /**
      * The name and signature of the console command.
      *
@@ -39,6 +42,10 @@ class StartCommand extends CommandHandler
      */
     private TelegramUserService $telegramUserService;
 
+    private const DENIAL_MESSAGE = "\xF0\x9F\x98\xBF К сожалению, у Вас нету полномочий пользоваться данным ботом";
+
+    private const WELCOME_MESSAGE = "Вас приветствует AniLibrary Bot!\xF0\x9F\x91\x8B\nПожалуйста, выберете интересующее Вас действие:";
+
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
@@ -47,11 +54,6 @@ class StartCommand extends CommandHandler
         $this->telegramUserService = app(TelegramUserService::class);
     }
 
-    private const DENIAL_MESSAGE = "\xF0\x9F\x98\xBF К сожалению, у Вас нету полномочий пользоваться данным ботом";
-
-    private const WELCOME_MESSAGE = "\xF0\x9F\x91\x8B Вас приветствует AniLibrary Bot!
-    Пожалуйста, выберете интересующее Вас действие:";
-
     /**
      * Execute the console command.
      *
@@ -59,8 +61,6 @@ class StartCommand extends CommandHandler
      */
     public function handle(): void
     {
-        $allowedIds = explode(',', config('telebot.allowedTelegramIds'));
-
         $messageFrom = $this->update->message->from;
 
         if (!$this->telegramUserRepository->findByTelegramId($messageFrom->id)) {
@@ -71,28 +71,29 @@ class StartCommand extends CommandHandler
         }
 
         try {
-            if (!in_array($messageFrom->id, $allowedIds)) {
+            if (!$this->userHasAccess($messageFrom->id)) {
                 $this->sendMessage([
                     'text' => self::DENIAL_MESSAGE,
                 ]);
-            } else {
-                $this->sendMessage([
-                    'text' => self::WELCOME_MESSAGE,
-                    'reply_markup' => [
-                        'keyboard' => [
-                            [
-                                [
-                                    'text' => KeyboardEnum::ADD_NEW_TITLE->value,
-                                ],
-                                [
-                                    'text' => KeyboardEnum::RANDOM_ANIME->value,
-                                ],
-                            ]
-                        ],
-                        'resize_keyboard' => true,
-                    ]
-                ]);
+                return;
             }
+
+            $this->sendMessage([
+                'text' => self::WELCOME_MESSAGE,
+                'reply_markup' => [
+                    'keyboard' => [
+                        [
+                            [
+                                'text' => KeyboardEnum::ADD_NEW_TITLE->value,
+                            ],
+                            [
+                                'text' => KeyboardEnum::RANDOM_ANIME->value,
+                            ],
+                        ]
+                    ],
+                    'resize_keyboard' => true,
+                ]
+            ]);
         } catch (\Exception $exception) {
             logger()->channel('single')->warning(
                 $exception->getMessage(),

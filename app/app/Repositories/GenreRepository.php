@@ -2,19 +2,19 @@
 
 namespace App\Repositories;
 
-use App\Models\VoiceActing;
+use App\Models\Genre;
 
 /**
- * Class VoiceActingRepository
+ * Class GenreRepository
  * @package App\Repositories
  */
-class VoiceActingRepository extends BaseRepository
+class GenreRepository extends BaseRepository
 {
     /**
      * @return string
      */
     protected function resolveModel(): string
     {
-        return VoiceActing::class;
+        return Genre::class;
     }
 }

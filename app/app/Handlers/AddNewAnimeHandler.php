@@ -8,6 +8,7 @@ use App\Factories\ParserFactory;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Ramsey\Uuid\Lazy\LazyUuidFromString;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
@@ -46,11 +47,11 @@ class AddNewAnimeHandler extends UpdateHandler
     public function handle(): void
     {
         try {
-            $message = $this->update->message->text;
+            $message = $this->update->message;
 
-            if ($message !== KeyboardEnum::ADD_NEW_TITLE->value){
+            if ($message->text !== KeyboardEnum::ADD_NEW_TITLE->value) {
                 $data = [
-                    'url' => $message
+                    'url' => $message->text
                 ];
 
                 if ($validated = $this->makeUrlValidator($data)) {
@@ -58,20 +59,23 @@ class AddNewAnimeHandler extends UpdateHandler
                         'text' => AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value,
                     ]);
 
-                    $anime = $this->parserFactory->getParser($validated['url'])->parse($validated['url']);
+                    $anime = $this->parserFactory->getParser($validated['url'])
+                        ->parse($validated['url'], $message->from->id);
 
                     if ($anime) {
+                        $animeId = $anime instanceof LazyUuidFromString ? $anime->id->toString() : $anime->id;
+
                         $this->sendMessage([
                             'text' => AnimeHandlerEnum::PARSE_HAS_ENDED->value,
                             'reply_markup' => [
                                 'inline_keyboard' => [
                                     [
                                         [
-                                            'text' => 'Watch',
+                                            'text' => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
                                             'callback_data' => sprintf(
                                                 '%s,%s',
                                                 CallbackQueryEnum::CHECK_ADDED_ANIME->value,
-                                                $anime->id->toString()
+                                                $animeId,
                                             ),
                                         ]
                                     ]
@@ -83,9 +87,13 @@ class AddNewAnimeHandler extends UpdateHandler
                     }
                 }
             }
-        } catch (ValidationException | UndefinedAnimeParserException | InvalidUrlException | GuzzleException $exception) {
+        } catch (ValidationException $exception) {
             $this->sendMessage([
-                'text' => $exception->getMessage()
+                'text' => $exception->validator->errors()->first(),
+            ]);
+        } catch (UndefinedAnimeParserException | InvalidUrlException | GuzzleException $exception) {
+            $this->sendMessage([
+                'text' => $exception->getMessage(),
             ]);
         }
     }
@@ -99,6 +107,8 @@ class AddNewAnimeHandler extends UpdateHandler
     {
         return Validator::make($data, [
             'url' => 'required|url',
+        ], [
+            'url' => AnimeHandlerEnum::INVALID_URL->value
         ])->validate();
     }
 }

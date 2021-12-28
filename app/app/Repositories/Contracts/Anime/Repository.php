@@ -3,13 +3,12 @@
 namespace App\Repositories\Contracts\Anime;
 
 use App\Models\Anime;
-use App\Repositories\Contracts\FindById;
 
 /**
  * Interface Repository
  * @package App\Repositories\Contracts\Anime
  */
-interface Repository extends FindById
+interface Repository
 {
     /**
      * @param string $title
@@ -26,7 +25,7 @@ interface Repository extends FindById
     public function findByUrl(string $url, bool $useLike = false): ?Anime;
 
     /**
-     * @return Anime
+     * @return Anime|null
      */
-    public function findRandomAnime(): Anime;
+    public function findRandomAnime(): ?Anime;
 }

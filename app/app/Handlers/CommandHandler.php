@@ -2,7 +2,7 @@
 
 namespace App\Handlers;
 
-use App\Console\Commands\Telegram\RandomAnimeCommand;
+use App\Handlers\Traits\CanCheckIfUserHasAccessForBot;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
@@ -15,6 +15,8 @@ use App\Enums\AnimeHandlerEnum;
  */
 class CommandHandler extends UpdateHandler
 {
+    use CanCheckIfUserHasAccessForBot;
+
     public static array $executedCommands = [];
 
     private array $commands;
@@ -23,7 +25,7 @@ class CommandHandler extends UpdateHandler
     {
         parent::__construct($bot, $update);
 
-        $this->commands = $this->resolveCommands();
+        $this->commands = KeyboardEnum::values();
     }
 
     /**
@@ -41,25 +43,21 @@ class CommandHandler extends UpdateHandler
      */
     public function handle(): void
     {
-        $message = $this->update->message->text;
+        $message = $this->update->message;
 
-        if(in_array($message, $this->commands, true)){
-            self::$executedCommands[] = $message;
+        if ($this->userHasAccess($message->from->id)) {
+            if (isset($message->text)) {
+                if (in_array($message->text, $this->commands, true)) {
+                    self::$executedCommands[] = $message->text;
+                }
+
+                match ($message->text) {
+                    KeyboardEnum::ADD_NEW_TITLE->value => $this->sendMessage([
+                        'text' => AnimeHandlerEnum::PROVIDE_URL->value,
+                    ]),
+                    default => ''
+                };
+            }
         }
-
-        match ($message) {
-            KeyboardEnum::ADD_NEW_TITLE->value => $this->sendMessage([
-                'text' => AnimeHandlerEnum::PROVIDE_URL->value,
-            ]),
-            default => ''
-        };
-    }
-
-    /**
-     * @return array
-     */
-    private function resolveCommands(): array
-    {
-        return array_map(fn(KeyboardEnum $keyboardEnum) => $keyboardEnum->value, KeyboardEnum::cases());
     }
 }

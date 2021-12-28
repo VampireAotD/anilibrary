@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Anime;
 use App\Models\Image;
+use App\Repositories\Contracts\Tag\Repository as TagRepository;
 
 /**
  * Class AnimeService
@@ -11,16 +12,19 @@ use App\Models\Image;
  */
 class AnimeService
 {
+    public function __construct(private TagRepository $tagRepository)
+    {
+    }
+
     /**
      * @param array $data
-     * @param array $voiceActing
      * @return Anime
      */
-    public function create(array $data, array $voiceActing = []): Anime
+    public function create(array $data): Anime
     {
-        $anime = Anime::create($data);
+        $anime = Anime::updateOrCreate(['title' => $data['title'], 'url' => $data['url']], $data);
 
-        $image = Image::create([
+        Image::create([
             'model_type' => $anime::class,
             'model_id' => $anime->id,
             'path' => cloudinary()->uploadFile($data['image'], [
@@ -28,8 +32,19 @@ class AnimeService
             ])->getSecurePath(),
         ]);
 
-        if ($voiceActing) {
-            $anime->voiceActing()->sync($voiceActing);
+        if (isset($data['voiceActing']) && $data['voiceActing']) {
+            $anime->voiceActing()->sync($data['voiceActing']);
+        }
+
+        if (isset($data['genres']) && $data['genres']) {
+            $anime->genres()->sync($data['genres']);
+        }
+
+        if (isset($data['telegramId']) && $data['telegramId']) {
+            $anime->tags()->sync(
+                $this->tagRepository->findByTelegramId($data['telegramId']),
+                false
+            );
         }
 
         return $anime;

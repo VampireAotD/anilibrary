@@ -3,13 +3,12 @@
 namespace App\Repositories\Contracts\TelegramUser;
 
 use App\Models\TelegramUser;
-use App\Repositories\Contracts\FindById;
 
 /**
  * Interface Repository
  * @package App\Repositories\Contracts\TelegramUser
  */
-interface Repository extends FindById
+interface Repository
 {
     /**
      * @param int $telegramId

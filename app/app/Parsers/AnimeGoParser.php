@@ -4,13 +4,14 @@ namespace App\Parsers;
 
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
-use App\Repositories\Contracts\VoiceActing\Repository;
+use App\Repositories\GenreRepository;
+use App\Repositories\VoiceActingRepository;
 use App\Services\AnimeService;
+use App\Services\GenreService;
 use App\Services\VoiceActingService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use voku\helper\HtmlDomParser;
-use voku\helper\SimpleHtmlDomInterface;
 use App\Enums\AnimeHandlerEnum;
 
 /**
@@ -21,9 +22,11 @@ class AnimeGoParser extends Parser
 {
     public function __construct(
         Client $client,
-        private Repository $voiceActingRepository,
+        private VoiceActingRepository $voiceActingRepository,
         private VoiceActingService $voiceActingService,
-        private AnimeService $animeService
+        private AnimeService $animeService,
+        private GenreRepository $genreRepository,
+        private GenreService $genreService
     )
     {
         $this->client = $client;
@@ -31,36 +34,42 @@ class AnimeGoParser extends Parser
 
     /**
      * @param string $url
+     * @param int|null $telegramId
      * @return Anime
-     * @throws InvalidUrlException
      * @throws GuzzleException
+     * @throws InvalidUrlException
      */
-    public function parse(string $url): Anime
+    public function parse(string $url, ?int $telegramId = null): Anime
     {
         $dom = $this->getInitialData($url);
 
-        $title = $this->getTitle($dom);
-        $voiceActing = $this->syncVoiceActing($dom);
-        $image = $this->getImage($dom);
+        $parsedData = $this->parseInitialData($dom, $url);
 
-        if (!$title || !$voiceActing || !$image) {
+        if (in_array(false, array_values($parsedData), true)) {
             throw new InvalidUrlException(AnimeHandlerEnum::INVALID_URL->value);
         }
 
-        return $this->animeService->create([
-            'title' => $title->innerhtml,
-            'url' => $url,
-            'image' => $image->getAttribute('src'),
-        ], $voiceActing);
+        $imageUrl = substr($parsedData['image'], 0, stripos($parsedData['image'], ' '));
+        $rating = str_replace(',', '.', $parsedData['rating']);
+
+        $parsedData['image'] = $imageUrl;
+        $parsedData['rating'] = $rating;
+        $parsedData['telegramId'] = $telegramId;
+
+        return $this->animeService->create($parsedData);
     }
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|SimpleHtmlDomInterface
+     * @return false|string
      */
-    protected function getTitle(HtmlDomParser $domParser): false|SimpleHtmlDomInterface
+    protected function getTitle(HtmlDomParser $domParser): false|string
     {
-        return $domParser->findOneOrFalse('.anime-title div h1');
+        if (!$title = $domParser->findOneOrFalse('.anime-title div h1')) {
+            return false;
+        }
+
+        return $title->text;
     }
 
     /**
@@ -103,10 +112,109 @@ class AnimeGoParser extends Parser
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|SimpleHtmlDomInterface
+     * @return false|string
      */
-    protected function getImage(HtmlDomParser $domParser): false|SimpleHtmlDomInterface
+    protected function getImage(HtmlDomParser $domParser): false|string
     {
-        return $domParser->findOneOrFalse('.anime-poster img');
+        if(!$image = $domParser->findOneOrFalse('.anime-poster img')){
+            return false;
+        }
+
+        return $image->getAttribute('srcset');
+    }
+
+    /**
+     * @param HtmlDomParser $domParser
+     * @return false|string
+     */
+    protected function getStatus(HtmlDomParser $domParser): false|string
+    {
+        $statusWrapper = $domParser
+            ->findOneOrFalse('.anime-info .row dt:contains(Статус)');
+
+        if (!$statusWrapper) {
+            return false;
+        }
+
+        $voiceActingText = $statusWrapper->nextSibling();
+
+        if (!$voiceActingText) {
+            return false;
+        }
+
+        return $voiceActingText->findOne('a')->text;
+    }
+
+    /**
+     * @param HtmlDomParser $domParser
+     * @return false|string
+     */
+    protected function getRating(HtmlDomParser $domParser): false|string
+    {
+        if(!$rating = $domParser->findOneOrFalse('.rating-value')){
+            return false;
+        }
+
+        return $rating->text;
+    }
+
+    /**
+     * @param HtmlDomParser $domParser
+     * @return false|string
+     */
+    protected function getEpisodes(HtmlDomParser $domParser): false|string
+    {
+        $episodesWrapper = $domParser
+            ->findOneOrFalse('.anime-info .row dt:contains(Эпизоды)');
+
+        if (!$episodesWrapper) {
+            return false;
+        }
+
+        $episodesText = $episodesWrapper->nextSibling();
+
+        if (!$episodesText) {
+            return false;
+        }
+
+        return $episodesText->text;
+    }
+
+    /**
+     * @param HtmlDomParser $domParser
+     * @return false|array
+     */
+    protected function syncGenres(HtmlDomParser $domParser): false|array
+    {
+        $genresWrapper = $domParser
+            ->findOneOrFalse('.anime-info .row dt:contains(Жанр)');
+
+        if (!$genresWrapper) {
+            return false;
+        }
+
+        $genresList = $genresWrapper->nextSibling();
+
+        if (!$genresList) {
+            return false;
+        }
+
+        $genres = explode(',', $genresList->text());
+
+        $genres = array_map('trim', $genres);
+
+        $genresInDb = $this->genreRepository->findSimilarByNames($genres, ['name'])
+            ->pluck('name')
+            ->toArray();
+
+        $notInDb = array_diff($genres, $genresInDb);
+
+        if ($notInDb) {
+            $this->genreService->batchInsert($notInDb);
+        }
+
+        return $this->genreRepository->findSimilarByNames($genres, ['id'])
+            ->pluck('id')
+            ->toArray();
     }
 }

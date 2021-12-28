@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\TelegramUser;
 use App\Repositories\Contracts\TelegramUser\Repository;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class TelegramUserRepository
@@ -18,15 +17,6 @@ class TelegramUserRepository extends BaseRepository implements Repository
     protected function resolveModel(): string
     {
         return TelegramUser::class;
-    }
-
-    /**
-     * @param string $uuid
-     * @return Model|null
-     */
-    public function findById(string $uuid): ?Model
-    {
-        return $this->query()->where('uuid', $uuid)->first();
     }
 
     /**

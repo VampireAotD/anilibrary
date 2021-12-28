@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\VoiceActing;
+use App\Models\Genre;
 use App\Services\Traits\CanPrepareDataForBatchInsert;
 
 /**
- * Class VoiceActingService
+ * Class GenreService
  * @package App\Services
  */
-class VoiceActingService
+class GenreService
 {
     use CanPrepareDataForBatchInsert;
 
@@ -19,6 +19,6 @@ class VoiceActingService
      */
     public function batchInsert(array $data): bool
     {
-        return VoiceActing::insert($this->prepareData($data));
+        return Genre::insert($this->prepareData($data));
     }
 }

@@ -14,5 +14,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(VoiceActingSeeder::class);
+        $this->call(TagSeeder::class);
     }
 }

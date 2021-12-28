@@ -19,6 +19,8 @@ class RandomAnimeHandler extends UpdateHandler
 
     private AnimeRepository $animeRepository;
 
+    private const EMPTY_ANIME_DATABASE = "К сожалению сейчас бот не содержит информацию ни об одном аниме \xF0\x9F\x98\xAD";
+
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
@@ -44,7 +46,17 @@ class RandomAnimeHandler extends UpdateHandler
         try {
             $randomAnime = $this->animeRepository->findRandomAnime();
 
+            if (!$randomAnime) {
+                $this->sendMessage([
+                   'text' => self::EMPTY_ANIME_DATABASE,
+                ]);
+                CommandHandler::$executedCommands = [];
+                return;
+            }
+
             $this->sendPhoto($this->convertToCaption($randomAnime));
+
+            CommandHandler::$executedCommands = [];
         } catch (\Exception $exception) {
             logger()->channel('single')->warning(
                 $exception->getMessage(),
