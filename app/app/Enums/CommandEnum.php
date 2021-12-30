@@ -5,10 +5,10 @@ namespace App\Enums;
 use App\Enums\Traits\CanProvideCasesValues;
 
 /**
- * Enum KeyboardEnum
+ * Enum CommandEnum
  * @package App\Enums
  */
-enum KeyboardEnum: string
+enum CommandEnum: string
 {
     use CanProvideCasesValues;
 

@@ -27,19 +27,26 @@ class TagRepository extends BaseRepository implements Repository
     public function findByTelegramId(int $telegramId): array
     {
         return match ($telegramId) {
-            config('telebot.adminId') =>
-            $this->query()->where('name', TagSeederEnum::ADMIN_TAG->value)->get()
-                ->pluck('id')
-                ->toArray(),
-            config('telebot.firstAllowedUserId') =>
-            $this->query()->where('name', TagSeederEnum::FIRST_MODERATOR_TAG->value)->get()
-                ->pluck('id')
-                ->toArray(),
-            config('telebot.secondAllowedUserId') =>
-            $this->query()->where('name', TagSeederEnum::SECOND_MODERATOR_TAG->value)->get()
-                ->pluck('id')
-                ->toArray(),
+            config('telebot.adminId') => [
+                $this->findByName(TagSeederEnum::ADMIN_TAG->value)?->id,
+            ],
+            config('telebot.firstAllowedUserId') => [
+                $this->findByName(TagSeederEnum::FIRST_MODERATOR_TAG->value, ['id'])?->id,
+            ],
+            config('telebot.secondAllowedUserId') => [
+                $this->findByName(TagSeederEnum::SECOND_MODERATOR_TAG->value, ['id'])?->id,
+            ],
             default => []
         };
+    }
+
+    /**
+     * @param string $name
+     * @param array $columns
+     * @return Tag|null
+     */
+    public function findByName(string $name, array $columns = ['*']): ?Tag
+    {
+        return $this->query()->select($columns)->where('name', $name)->first();
     }
 }

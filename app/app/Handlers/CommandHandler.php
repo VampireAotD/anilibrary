@@ -2,11 +2,12 @@
 
 namespace App\Handlers;
 
+use App\Handlers\History\UserHistory;
 use App\Handlers\Traits\CanCheckIfUserHasAccessForBot;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
-use App\Enums\KeyboardEnum;
+use App\Enums\CommandEnum;
 use App\Enums\AnimeHandlerEnum;
 
 /**
@@ -17,15 +18,13 @@ class CommandHandler extends UpdateHandler
 {
     use CanCheckIfUserHasAccessForBot;
 
-    public static array $executedCommands = [];
-
     private array $commands;
 
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
 
-        $this->commands = KeyboardEnum::values();
+        $this->commands = CommandEnum::values();
     }
 
     /**
@@ -35,7 +34,7 @@ class CommandHandler extends UpdateHandler
      */
     public static function trigger(Update $update, TeleBot $bot): bool
     {
-        return isset($update->message);
+        return isset($update->message->text);
     }
 
     /**
@@ -44,20 +43,18 @@ class CommandHandler extends UpdateHandler
     public function handle(): void
     {
         $message = $this->update->message;
-
         if ($this->userHasAccess($message->from->id)) {
-            if (isset($message->text)) {
-                if (in_array($message->text, $this->commands, true)) {
-                    self::$executedCommands[] = $message->text;
-                }
-
-                match ($message->text) {
-                    KeyboardEnum::ADD_NEW_TITLE->value => $this->sendMessage([
-                        'text' => AnimeHandlerEnum::PROVIDE_URL->value,
-                    ]),
-                    default => ''
-                };
+            if (in_array($message->text, $this->commands, true)) {
+                UserHistory::addLastActiveTime($message->from->id);
+                UserHistory::addExecutedCommand($message->from->id, $message->text);
             }
+
+            match ($message->text) {
+                CommandEnum::ADD_NEW_TITLE->value => $this->sendMessage([
+                    'text' => AnimeHandlerEnum::PROVIDE_URL->value,
+                ]),
+                default => ''
+            };
         }
     }
 }

@@ -3,6 +3,7 @@
 use App\Console\Commands\Telegram\StartCommand;
 use App\Handlers\AddNewAnimeHandler;
 use App\Handlers\CallbackQueryHandler;
+use App\Handlers\ChatMemberHandler;
 use App\Handlers\CommandHandler;
 use App\Handlers\RandomAnimeHandler;
 
@@ -57,8 +58,9 @@ return [
                 // Handlers,
                 CommandHandler::class,
                 CallbackQueryHandler::class,
+                ChatMemberHandler::class,
                 AddNewAnimeHandler::class,
-                RandomAnimeHandler::class
+                RandomAnimeHandler::class,
             ],
         ],
     ],

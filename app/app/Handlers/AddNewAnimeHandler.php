@@ -5,6 +5,7 @@ namespace App\Handlers;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Exceptions\Parsers\UndefinedAnimeParserException;
 use App\Factories\ParserFactory;
+use App\Handlers\History\UserHistory;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -12,7 +13,7 @@ use Ramsey\Uuid\Lazy\LazyUuidFromString;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
-use App\Enums\KeyboardEnum;
+use App\Enums\CommandEnum;
 use App\Enums\AnimeHandlerEnum;
 use App\Enums\CallbackQueryEnum;
 
@@ -38,7 +39,8 @@ class AddNewAnimeHandler extends UpdateHandler
      */
     public static function trigger(Update $update, TeleBot $bot): bool
     {
-        return end(CommandHandler::$executedCommands) === KeyboardEnum::ADD_NEW_TITLE->value;
+        return isset($update->message) && UserHistory::userLastExecutedCommand($update->message->from->id)
+            === CommandEnum::ADD_NEW_TITLE->value;
     }
 
     /**
@@ -48,8 +50,9 @@ class AddNewAnimeHandler extends UpdateHandler
     {
         try {
             $message = $this->update->message;
+            UserHistory::addLastActiveTime($message->from->id);
 
-            if ($message->text !== KeyboardEnum::ADD_NEW_TITLE->value) {
+            if ($message->text !== CommandEnum::ADD_NEW_TITLE->value) {
                 $data = [
                     'url' => $message->text
                 ];
@@ -83,7 +86,7 @@ class AddNewAnimeHandler extends UpdateHandler
                             ]
                         ]);
 
-                        CommandHandler::$executedCommands = [];
+                        UserHistory::clearUserHistory($message->from->id);
                     }
                 }
             }

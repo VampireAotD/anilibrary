@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Telegram;
 
-use App\Enums\KeyboardEnum;
+use App\Enums\CommandEnum;
 use App\Handlers\Traits\CanCheckIfUserHasAccessForBot;
 use App\Repositories\Contracts\TelegramUser\Repository;
 use App\Services\TelegramUserService;
@@ -84,10 +84,10 @@ class StartCommand extends CommandHandler
                     'keyboard' => [
                         [
                             [
-                                'text' => KeyboardEnum::ADD_NEW_TITLE->value,
+                                'text' => CommandEnum::ADD_NEW_TITLE->value,
                             ],
                             [
-                                'text' => KeyboardEnum::RANDOM_ANIME->value,
+                                'text' => CommandEnum::RANDOM_ANIME->value,
                             ],
                         ]
                     ],

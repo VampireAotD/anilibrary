@@ -2,6 +2,7 @@
 
 namespace App\Handlers;
 
+use App\Handlers\History\UserHistory;
 use App\Handlers\Traits\CanConvertAnimeToCaption;
 use App\Repositories\Contracts\Anime\Repository as AnimeRepository;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
@@ -42,6 +43,7 @@ class CallbackQueryHandler extends UpdateHandler
     public function handle(): void
     {
         $callbackData = $this->update->callback_query->data;
+        UserHistory::addLastActiveTime($this->update->callback_query->from->id);
 
         $callbackParameters = explode(',', $callbackData);
 

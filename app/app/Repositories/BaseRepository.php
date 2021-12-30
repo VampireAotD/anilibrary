@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Contracts\FindById;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-abstract class BaseRepository
+abstract class BaseRepository implements FindById
 {
     private Model $model;
 
@@ -34,15 +35,5 @@ abstract class BaseRepository
     public function findById(string $uuid): ?Model
     {
         return $this->query()->find($uuid);
-    }
-
-    /**
-     * @param array $similarNames
-     * @param array|string[] $columns
-     * @return Collection
-     */
-    public function findSimilarByNames(array $similarNames, array $columns = ['*']): Collection
-    {
-        return $this->query()->select($columns)->whereIn('name', $similarNames)->get();
     }
 }

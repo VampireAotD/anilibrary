@@ -12,7 +12,10 @@ use App\Repositories\Contracts\Tag\Repository as TagRepository;
  */
 class AnimeService
 {
-    public function __construct(private TagRepository $tagRepository)
+    public function __construct(
+        private TagRepository $tagRepository,
+        private ImageService  $imageService
+    )
     {
     }
 
@@ -24,13 +27,7 @@ class AnimeService
     {
         $anime = Anime::updateOrCreate(['title' => $data['title'], 'url' => $data['url']], $data);
 
-        Image::create([
-            'model_type' => $anime::class,
-            'model_id' => $anime->id,
-            'path' => cloudinary()->uploadFile($data['image'], [
-                'folder' => 'anime/' . $anime->id
-            ])->getSecurePath(),
-        ]);
+        $this->imageService->upsert($data['image'], $anime);
 
         if (isset($data['voiceActing']) && $data['voiceActing']) {
             $anime->voiceActing()->sync($data['voiceActing']);

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\VoiceActing;
+use App\Repositories\Traits\CanSearchBySimilarNames;
 
 /**
  * Class VoiceActingRepository
@@ -10,6 +11,8 @@ use App\Models\VoiceActing;
  */
 class VoiceActingRepository extends BaseRepository
 {
+    use CanSearchBySimilarNames;
+
     /**
      * @return string
      */

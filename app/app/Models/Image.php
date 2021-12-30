@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Image wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $alias
+ * @method static \Illuminate\Database\Eloquent\Builder|Image whereAlias($value)
  */
 class Image extends Model
 {
@@ -36,6 +38,7 @@ class Image extends Model
         'model_type',
         'model_id',
         'path',
+        'alias',
     ];
 
     /**
