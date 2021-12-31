@@ -2,20 +2,21 @@
 
 namespace App\Handlers\History;
 
+use Illuminate\Support\Facades\Redis;
+
 /**
  * Class UserHistory
  * @package App\Handlers\History
  */
 class UserHistory
 {
-    public static array $history = [
-        'lastActiveTime' => [],
-        'executedCommands' => [],
-    ];
+    private const MAX_EXECUTED_COMMANDS_STORAGE_TTL = 3000;
 
     public static function addLastActiveTime(int $userId): void
     {
-        self::$history['lastActiveTime'][$userId] = now()->format('Y-m-d H:i:s');
+        [$lastActiveTime] = self::generateUserStorageName($userId);
+
+        Redis::set($lastActiveTime, now()->format('Y-m-d H:i:s'));
     }
 
     /**
@@ -25,7 +26,13 @@ class UserHistory
      */
     public static function addExecutedCommand(int $userId, string $command): void
     {
-        self::$history['executedCommands'][$userId][] = $command;
+        [, $executedCommands] = self::generateUserStorageName($userId);
+
+        $commands = json_decode(Redis::get($executedCommands) ?? '');
+
+        $commands[] = $command;
+
+        Redis::set($executedCommands, json_encode($commands), 'EX', self::MAX_EXECUTED_COMMANDS_STORAGE_TTL);
     }
 
     /**
@@ -34,25 +41,33 @@ class UserHistory
      */
     public static function userLastExecutedCommand(int $userId): false|string
     {
-        $userExecutedCommands = self::$history['executedCommands'][$userId] ?? [];
+        [, $executedCommands] = self::generateUserStorageName($userId);
 
-        return end($userExecutedCommands);
+        $commands = json_decode(Redis::get($executedCommands)) ?? [];
+
+        return end($commands);
     }
 
     /**
      * @param int $userId
      * @return void
      */
-    public static function clearUserHistory(int $userId): void
+    public static function clearUserExecutedCommandsHistory(int $userId): void
     {
-        unset(self::$history['executedCommands'][$userId]);
+        [, $executedCommands] = self::generateUserStorageName($userId);
+
+        Redis::del($executedCommands);
     }
 
     /**
+     * @param int $userId
      * @return array
      */
-    public static function getHistory(): array
+    private static function generateUserStorageName(int $userId): array
     {
-        return self::$history;
+        return [
+            sprintf('history:lastActiveTime:%s', $userId),
+            sprintf('history:executedCommands:%s', $userId),
+        ];
     }
 }

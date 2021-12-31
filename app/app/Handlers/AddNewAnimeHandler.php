@@ -2,20 +2,12 @@
 
 namespace App\Handlers;
 
-use App\Exceptions\Parsers\InvalidUrlException;
-use App\Exceptions\Parsers\UndefinedAnimeParserException;
-use App\Factories\ParserFactory;
 use App\Handlers\History\UserHistory;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Ramsey\Uuid\Lazy\LazyUuidFromString;
+use App\Jobs\AddNewAnimeJob;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 use App\Enums\CommandEnum;
-use App\Enums\AnimeHandlerEnum;
-use App\Enums\CallbackQueryEnum;
 
 /**
  * Class AddNewAnimeHandler
@@ -23,15 +15,6 @@ use App\Enums\CallbackQueryEnum;
  */
 class AddNewAnimeHandler extends UpdateHandler
 {
-    private ParserFactory $parserFactory;
-
-    public function __construct(TeleBot $bot, Update $update)
-    {
-        parent::__construct($bot, $update);
-
-        $this->parserFactory = app(ParserFactory::class);
-    }
-
     /**
      * @param Update $update
      * @param TeleBot $bot
@@ -39,7 +22,7 @@ class AddNewAnimeHandler extends UpdateHandler
      */
     public static function trigger(Update $update, TeleBot $bot): bool
     {
-        return isset($update->message) && UserHistory::userLastExecutedCommand($update->message->from->id)
+        return isset($update->message->text) && UserHistory::userLastExecutedCommand($update->message->from->id)
             === CommandEnum::ADD_NEW_TITLE->value;
     }
 
@@ -48,70 +31,8 @@ class AddNewAnimeHandler extends UpdateHandler
      */
     public function handle(): void
     {
-        try {
-            $message = $this->update->message;
-            UserHistory::addLastActiveTime($message->from->id);
+        $message = $this->update->message;
 
-            if ($message->text !== CommandEnum::ADD_NEW_TITLE->value) {
-                $data = [
-                    'url' => $message->text
-                ];
-
-                if ($validated = $this->makeUrlValidator($data)) {
-                    $this->sendMessage([
-                        'text' => AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value,
-                    ]);
-
-                    $anime = $this->parserFactory->getParser($validated['url'])
-                        ->parse($validated['url'], $message->from->id);
-
-                    if ($anime) {
-                        $animeId = $anime instanceof LazyUuidFromString ? $anime->id->toString() : $anime->id;
-
-                        $this->sendMessage([
-                            'text' => AnimeHandlerEnum::PARSE_HAS_ENDED->value,
-                            'reply_markup' => [
-                                'inline_keyboard' => [
-                                    [
-                                        [
-                                            'text' => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
-                                            'callback_data' => sprintf(
-                                                '%s,%s',
-                                                CallbackQueryEnum::CHECK_ADDED_ANIME->value,
-                                                $animeId,
-                                            ),
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]);
-
-                        UserHistory::clearUserHistory($message->from->id);
-                    }
-                }
-            }
-        } catch (ValidationException $exception) {
-            $this->sendMessage([
-                'text' => $exception->validator->errors()->first(),
-            ]);
-        } catch (UndefinedAnimeParserException | InvalidUrlException | GuzzleException $exception) {
-            $this->sendMessage([
-                'text' => $exception->getMessage(),
-            ]);
-        }
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    private function makeUrlValidator(array $data): array
-    {
-        return Validator::make($data, [
-            'url' => 'required|url',
-        ], [
-            'url' => AnimeHandlerEnum::INVALID_URL->value
-        ])->validate();
+        AddNewAnimeJob::dispatch($message)->onConnection('redis');
     }
 }

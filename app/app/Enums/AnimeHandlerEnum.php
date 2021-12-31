@@ -9,7 +9,7 @@ namespace App\Enums;
 enum AnimeHandlerEnum: string
 {
     case PROVIDE_URL = 'Укажите ссылку на тайтл';
-    case STARTED_PARSE_MESSAGE = 'Начался парсинг тайтла';
+    case STARTED_PARSE_MESSAGE = 'Начался парсинг тайтла, это может занять несколько минут';
     case PARSE_HAS_ENDED = 'Парсинг тайла закончился';
     case INVALID_URL = 'Ссылка оказалась невалидной, попробуйте ещё раз';
     case UNDEFINED_PARSER = 'Бот не поддерживает парсинг данного сайта';

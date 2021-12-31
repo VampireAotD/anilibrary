@@ -60,7 +60,6 @@ return [
                 CallbackQueryHandler::class,
                 ChatMemberHandler::class,
                 AddNewAnimeHandler::class,
-                RandomAnimeHandler::class,
             ],
         ],
     ],

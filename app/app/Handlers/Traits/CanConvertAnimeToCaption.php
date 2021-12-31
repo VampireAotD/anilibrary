@@ -14,9 +14,9 @@ trait CanConvertAnimeToCaption
      * @param Anime $anime
      * @return array
      */
-    private function convertToCaption(Anime $anime): array
+    private function convertToCaption(Anime $anime, ?int $userId = null): array
     {
-        return [
+        $response = [
             'caption' => sprintf(
                 "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТэги: %s",
                 $anime->title,
@@ -39,5 +39,11 @@ trait CanConvertAnimeToCaption
                 ]
             ]
         ];
+
+        if ($userId) {
+            $response['chat_id'] = $userId;
+        }
+
+        return $response;
     }
 }

@@ -4,6 +4,8 @@ namespace App\Handlers;
 
 use App\Handlers\History\UserHistory;
 use App\Handlers\Traits\CanCheckIfUserHasAccessForBot;
+use App\Jobs\PickRandomAnimeJob;
+use Illuminate\Support\Facades\Cache;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
@@ -43,17 +45,20 @@ class CommandHandler extends UpdateHandler
     public function handle(): void
     {
         $message = $this->update->message;
-        if ($this->userHasAccess($message->from->id)) {
+        $telegramId = $message->from->id;
+
+        if ($this->userHasAccess($telegramId)) {
             if (in_array($message->text, $this->commands, true)) {
-                UserHistory::addLastActiveTime($message->from->id);
-                UserHistory::addExecutedCommand($message->from->id, $message->text);
+                UserHistory::addLastActiveTime($telegramId);
+                UserHistory::addExecutedCommand($telegramId, $message->text);
             }
 
             match ($message->text) {
                 CommandEnum::ADD_NEW_TITLE->value => $this->sendMessage([
                     'text' => AnimeHandlerEnum::PROVIDE_URL->value,
                 ]),
-                default => ''
+                CommandEnum::RANDOM_ANIME->value => PickRandomAnimeJob::dispatch($telegramId),
+                default => UserHistory::addLastActiveTime($telegramId)
             };
         }
     }

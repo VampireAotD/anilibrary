@@ -15,7 +15,7 @@ services:
     container_name: php
     tty: true
     ports:
-      - 9000:9000
+      - "9000:9000"
     volumes:
       - ./app:/var/www/anilibrary
     networks:
@@ -47,6 +47,29 @@ services:
       PMA_HOST: database
       PMA_PORT: 3306
     ports:
-    - 7760:80
+    - "7760:80"
+    networks:
+      backend:
+
+  redis:
+    image: redis:6.2.6
+    container_name: redis
+    hostname: ${REDIS_HOSTNAME:-localhost}
+    command: redis-server --requirepass ${REDIS_PASSWORD:-default}
+    volumes:
+      - ./runtime/redis/:/data
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    networks:
+      backend:
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=${REDIS_HOSTS:-local:redis:${REDIS_PORT}:0:${REDIS_PASSWORD}}
+    ports:
+      - "8081:8081"
     networks:
       backend:
