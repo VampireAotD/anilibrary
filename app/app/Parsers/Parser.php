@@ -2,11 +2,19 @@
 
 namespace App\Parsers;
 
+use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
+use App\Repositories\GenreRepository;
+use App\Repositories\VoiceActingRepository;
+use App\Services\AnimeService;
+use App\Services\GenreService;
+use App\Services\VoiceActingService;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
+use JetBrains\PhpStorm\ArrayShape;
 use voku\helper\HtmlDomParser;
-use voku\helper\SimpleHtmlDomInterface;
 
 /**
  * Class Parser
@@ -14,8 +22,47 @@ use voku\helper\SimpleHtmlDomInterface;
  */
 abstract class Parser
 {
-    public function __construct(protected Client $client)
+    protected const MINIMAL_ANIME_RATING = 0.0;
+
+    protected const MINIMAL_ANIME_EPISODES = '0 / ?';
+
+    protected const DEFAULT_HEADERS = [
+        'Accept' => 'application/json, text/plain, */*',
+        'Accept-Language' => 'en-US,en;q=0.5',
+        'X-Application-Type' => 'WebClient',
+        'X-Client-Version' => '2.10.4',
+        'Origin' => 'https://www.googe.com',
+        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0',
+    ];
+
+    protected const MIN_DELAY_IN_MILLISECONDS = 5000;
+
+    protected const MAX_DELAY_IN_MILLISECONDS = 10000;
+
+    protected const MAX_REDIRECTS = 10;
+
+    protected const READ_TIMEOUT = 10;
+
+    public function __construct(
+        protected Client                $client,
+        protected VoiceActingRepository $voiceActingRepository,
+        protected VoiceActingService    $voiceActingService,
+        protected AnimeService          $animeService,
+        protected GenreRepository       $genreRepository,
+        protected GenreService          $genreService
+    )
     {
+    }
+
+    /**
+     * @param string $url
+     * @param array $options
+     * @return string
+     * @throws GuzzleException
+     */
+    protected function sendRequest(string $url, array $options): string
+    {
+        return $this->client->get($url, $options)->getBody()->getContents();
     }
 
     /**
@@ -25,62 +72,83 @@ abstract class Parser
      */
     protected function getInitialData(string $url): HtmlDomParser
     {
-        $rawHtml = $this->client->get($url)->getBody()->getContents();
+        $rawHtml = $this->sendRequest($url, [
+            RequestOptions::COOKIES => new CookieJar(),
+            RequestOptions::HEADERS => self::DEFAULT_HEADERS,
+            RequestOptions::DELAY => rand(self::MIN_DELAY_IN_MILLISECONDS, self::MAX_DELAY_IN_MILLISECONDS),
+            RequestOptions::ALLOW_REDIRECTS => [
+                'max' => self::MAX_REDIRECTS,
+            ],
+            RequestOptions::READ_TIMEOUT => self::READ_TIMEOUT,
+        ]);
 
         return HtmlDomParser::str_get_html($rawHtml);
     }
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|string
+     * @return string
      */
-    abstract protected function getTitle(HtmlDomParser $domParser): false|string;
+    abstract protected function getTitle(HtmlDomParser $domParser): string;
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|array
+     * @return array
      */
-    abstract protected function syncVoiceActing(HtmlDomParser $domParser): false|array;
+    abstract protected function syncVoiceActing(HtmlDomParser $domParser): array;
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|string
+     * @return string
      */
-    abstract protected function getImage(HtmlDomParser $domParser): false|string;
+    abstract protected function getImage(HtmlDomParser $domParser): string;
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|string
+     * @return string
      */
-    abstract protected function getStatus(HtmlDomParser $domParser): false|string;
+    abstract protected function getStatus(HtmlDomParser $domParser): string;
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|string
+     * @return float
      */
-    abstract protected function getRating(HtmlDomParser $domParser): false|string;
+    abstract protected function getRating(HtmlDomParser $domParser): float;
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|string
+     * @return string
      */
-    abstract protected function getEpisodes(HtmlDomParser $domParser): false|string;
+    abstract protected function getEpisodes(HtmlDomParser $domParser): string;
 
     /**
      * @param HtmlDomParser $domParser
-     * @return false|array
+     * @return array
      */
-    abstract protected function syncGenres(HtmlDomParser $domParser): false|array;
+    abstract protected function syncGenres(HtmlDomParser $domParser): array;
 
     /**
      * @param HtmlDomParser $domParser
      * @param string $url
+     * @param int|null $telegramId
      * @return array
      */
-    protected function parseInitialData(HtmlDomParser $domParser, string $url): array
+    #[ArrayShape([
+        'url' => "string",
+        'telegramId' => "int|null",
+        'title' => "string",
+        'voiceActing' => "array",
+        'image' => "string",
+        'status' => "string",
+        'rating' => "float",
+        'episodes' => "string",
+        'genres' => "array"
+    ])]
+    protected function parseInitialData(HtmlDomParser $domParser, string $url, ?int $telegramId = null): array
     {
         return [
             'url' => $url,
+            'telegramId' => $telegramId,
             'title' => $this->getTitle($domParser),
             'voiceActing' => $this->syncVoiceActing($domParser),
             'image' => $this->getImage($domParser),
@@ -95,6 +163,8 @@ abstract class Parser
      * @param string $url
      * @param int|null $telegramId
      * @return Anime
+     * @throws GuzzleException
+     * @throws InvalidUrlException
      */
     abstract public function parse(string $url, ?int $telegramId = null): Anime;
 }

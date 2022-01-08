@@ -4,8 +4,13 @@ namespace App\Services;
 
 use App\Models\Anime;
 use App\Models\Image;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
+/**
+ * Class ImageService
+ * @package App\Services
+ */
 class ImageService
 {
     private const BASE_FOLDER_NAME = 'anime';
@@ -22,7 +27,7 @@ class ImageService
             $anime->image->delete();
         }
 
-        return Image::create([
+        $image = Image::create([
             'model_type' => $anime::class,
             'model_id' => $anime->id,
             'alias' => $alias = sprintf('%s/%s/%s', self::BASE_FOLDER_NAME, $anime->id, Str::random()),
@@ -30,5 +35,11 @@ class ImageService
                 'public_id' => $alias,
             ])->getSecurePath(),
         ])->save();
+
+        if (File::exists($url)) {
+            File::delete($url);
+        }
+
+        return $image;
     }
 }

@@ -17,7 +17,7 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - ./app:/var/www/anilibrary
+      - ./app:/anilibrary
     networks:
       backend:
 

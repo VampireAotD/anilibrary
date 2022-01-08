@@ -2,18 +2,20 @@
 
 namespace App\Parsers;
 
+use App\Enums\AnimeHandlerEnum;
 use App\Enums\AnimeStatusEnum;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Str;
 use voku\helper\HtmlDomParser;
-use App\Enums\AnimeHandlerEnum;
 
 /**
- * Class AnimeGoParser
+ * Class YummyAnimeParser
  * @package App\Parsers
  */
-class AnimeGoParser extends Parser
+class YummyAnimeParser extends Parser
 {
     /**
      * @param HtmlDomParser $domParser
@@ -21,7 +23,7 @@ class AnimeGoParser extends Parser
      */
     protected function getTitle(HtmlDomParser $domParser): string
     {
-        if (!$title = $domParser->findOneOrFalse('.anime-title div h1')) {
+        if (!$title = $domParser->findOneOrFalse('.anime-page h1')) {
             return '';
         }
 
@@ -34,29 +36,35 @@ class AnimeGoParser extends Parser
      */
     protected function syncVoiceActing(HtmlDomParser $domParser): array
     {
-        $voiceActingList = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Озвучка) + dd');
-
-        if (!$voiceActingList) {
+        if (!$voiceActing = $domParser->findOneOrFalse('.animeVoices')) {
             return [];
         }
 
-        $voiceActing = explode(
-            ',',
-            preg_replace("#,\s+#mi", ',', $voiceActingList->text)
-        );
+        $voiceActingList = $voiceActing->findMultiOrFalse('li');
 
-        $voiceActingInDb = $this->voiceActingRepository->findSimilarByNames($voiceActing, ['name'])
+        $voiceActingText = [];
+
+        foreach ($voiceActingList as $voiceActing) {
+            if ($voiceActing->parent()->getAttribute('class') === 'animeVoices') {
+                $voiceActingText[] = substr(
+                    $voiceActing->text,
+                    0,
+                    stripos($voiceActing->text, 'Озвучили') ?: null
+                );
+            }
+        }
+
+        $voiceActingInDb = $this->voiceActingRepository->findSimilarByNames($voiceActingText, ['name'])
             ->pluck('name')
             ->toArray();
 
-        $notInDb = array_diff($voiceActing, $voiceActingInDb);
+        $notInDb = array_diff($voiceActingText, $voiceActingInDb);
 
         if ($notInDb) {
             $this->voiceActingService->batchInsert($notInDb);
         }
 
-        return $this->voiceActingRepository->findSimilarByNames($voiceActing, ['id'])
+        return $this->voiceActingRepository->findSimilarByNames($voiceActingText, ['id'])
             ->pluck('id')
             ->toArray();
     }
@@ -67,13 +75,11 @@ class AnimeGoParser extends Parser
      */
     protected function getImage(HtmlDomParser $domParser): string
     {
-        if (!$image = $domParser->findOneOrFalse('.anime-poster img')) {
+        if (!$image = $domParser->findOneOrFalse('.poster-block img')) {
             return '';
         }
 
-        $imageUrl = $image->getAttribute('src');
-
-        return str_replace('/media/cache/thumbs_250x350', '', $imageUrl);
+        return $image->getAttribute('src');
     }
 
     /**
@@ -82,14 +88,13 @@ class AnimeGoParser extends Parser
      */
     protected function getStatus(HtmlDomParser $domParser): string
     {
-        $statusText = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Статус) + dd');
-
-        if (!$statusText) {
+        if (!$status = $domParser->findOneOrFalse('.badge')) {
             return '';
         }
 
-        $status = AnimeStatusEnum::tryFrom($statusText->text);
+        $convertedStatus = mb_convert_case($status->text, MB_CASE_TITLE, 'UTF-8');
+
+        $status = AnimeStatusEnum::tryFrom(ucfirst($convertedStatus));
 
         if (!$status) {
             return '';
@@ -104,11 +109,11 @@ class AnimeGoParser extends Parser
      */
     protected function getRating(HtmlDomParser $domParser): float
     {
-        if (!$rating = $domParser->findOneOrFalse('.rating-value')) {
+        if (!$rating = $domParser->findOneOrFalse('.main-rating')) {
             return self::MINIMAL_ANIME_RATING;
         }
 
-        return str_replace(',', '.', $rating->text);
+        return $rating->text;
     }
 
     /**
@@ -117,14 +122,11 @@ class AnimeGoParser extends Parser
      */
     protected function getEpisodes(HtmlDomParser $domParser): string
     {
-        $episodesText = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Эпизоды) + dd');
-
-        if (!$episodesText) {
-            return '';
+        if (!$episodes = $domParser->findOneOrFalse('li span:contains(Серии)')) {
+            return self::MINIMAL_ANIME_EPISODES;
         }
 
-        return $episodesText->text;
+        return $episodes->nextSibling()->text;
     }
 
     /**
@@ -133,14 +135,15 @@ class AnimeGoParser extends Parser
      */
     protected function syncGenres(HtmlDomParser $domParser): array
     {
-        $genresList = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Жанр) + dd');
-
-        if (!$genresList) {
+        if (!$genres = $domParser->findOneOrFalse('li span:contains(Жанр)')) {
             return [];
         }
 
-        $genres = explode(',', preg_replace("#\s#mi", '', $genresList->text()));
+        $genres = $genres->parent()->findOneOrFalse('ul')->text;
+
+        $genres = preg_replace('#\n\s+#mi', PHP_EOL, $genres);
+
+        $genres = explode(PHP_EOL, $genres);
 
         $genresInDb = $this->genreRepository->findSimilarByNames($genres, ['name'])
             ->pluck('name')
@@ -157,6 +160,25 @@ class AnimeGoParser extends Parser
             ->toArray();
     }
 
+    /**
+     * @param string $siteUrl
+     * @param string $imageUrl
+     * @return string
+     * @throws GuzzleException
+     */
+    private function getTmpImagePath(string $siteUrl, string $imageUrl): string
+    {
+        $urlParts = parse_url($siteUrl);
+
+        $domain = sprintf('%s://%s', $urlParts['scheme'], $urlParts['host']);
+
+        $this->sendRequest(sprintf('%s%s', $domain, $imageUrl), [
+            RequestOptions::HEADERS => self::DEFAULT_HEADERS,
+            RequestOptions::SINK => $storagePath = storage_path(sprintf('tmp/%s.webp', Str::random())),
+        ]);
+
+        return $storagePath;
+    }
 
     /**
      * @param string $url
@@ -174,6 +196,8 @@ class AnimeGoParser extends Parser
         if (in_array('', array_values($parsedData), true)) {
             throw new InvalidUrlException(AnimeHandlerEnum::INVALID_URL->value);
         }
+
+        $parsedData['image'] = $this->getTmpImagePath($url, $parsedData['image']);
 
         return $this->animeService->create($parsedData);
     }
