@@ -189,13 +189,7 @@ class YummyAnimeParser extends Parser
      */
     public function parse(string $url, ?int $telegramId = null): Anime
     {
-        $dom = $this->getInitialData($url);
-
-        $parsedData = $this->parseInitialData($dom, $url, $telegramId);
-
-        if (in_array('', array_values($parsedData), true)) {
-            throw new InvalidUrlException(AnimeHandlerEnum::INVALID_URL->value);
-        }
+        $parsedData = $this->getParsedData($url, $telegramId);
 
         $parsedData['image'] = $this->getTmpImagePath($url, $parsedData['image']);
 

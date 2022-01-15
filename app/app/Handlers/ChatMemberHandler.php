@@ -32,7 +32,7 @@ class ChatMemberHandler extends UpdateHandler
         $chatMember = $this->update->my_chat_member;
 
         match ($chatMember->new_chat_member->status) {
-            ChatMemberStatusEnum::KICKED->value => UserHistory::clearUserHistory($chatMember->from->id),
+            ChatMemberStatusEnum::KICKED->value => UserHistory::clearUserExecutedCommandsHistory($chatMember->from->id),
             default => '',
         };
     }

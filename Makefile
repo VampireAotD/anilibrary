@@ -1,9 +1,9 @@
-.PHONY: setup build down app
+.PHONY: setup down app up
 
 setup:
 	docker-compose up -d --build
 
-build:
+up:
 	docker-compose up -d
 
 down:

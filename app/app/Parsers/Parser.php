@@ -4,6 +4,7 @@ namespace App\Parsers;
 
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
+use App\Parsers\Traits\CanParseData;
 use App\Repositories\GenreRepository;
 use App\Repositories\VoiceActingRepository;
 use App\Services\AnimeService;
@@ -22,6 +23,8 @@ use voku\helper\HtmlDomParser;
  */
 abstract class Parser
 {
+    use CanParseData;
+
     protected const MINIMAL_ANIME_RATING = 0.0;
 
     protected const MINIMAL_ANIME_EPISODES = '0 / ?';
