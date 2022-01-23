@@ -2,7 +2,6 @@
 
 namespace App\Parsers;
 
-use App\Enums\AnimeHandlerEnum;
 use App\Enums\AnimeStatusEnum;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;

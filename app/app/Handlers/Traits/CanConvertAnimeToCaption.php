@@ -2,6 +2,7 @@
 
 namespace App\Handlers\Traits;
 
+use App\Enums\AnimeCaptionEnum;
 use App\Models\Anime;
 
 /**
@@ -12,13 +13,14 @@ trait CanConvertAnimeToCaption
 {
     /**
      * @param Anime $anime
+     * @param int|null $userId
      * @return array
      */
     private function convertToCaption(Anime $anime, ?int $userId = null): array
     {
         $response = [
             'caption' => sprintf(
-                "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТэги: %s",
+                "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
                 $anime->title,
                 $anime->status,
                 $anime->episodes,
@@ -32,12 +34,12 @@ trait CanConvertAnimeToCaption
                 'inline_keyboard' => [
                     [
                         [
-                            'text' => 'Ссылка',
+                            'text' => AnimeCaptionEnum::LINK->value,
                             'url' => $anime->url,
-                        ]
-                    ]
+                        ],
+                    ],
                 ]
-            ]
+            ],
         ];
 
         if ($userId) {

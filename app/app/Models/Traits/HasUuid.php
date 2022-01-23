@@ -2,6 +2,7 @@
 
 namespace App\Models\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
@@ -19,9 +20,9 @@ trait HasUuid
     {
         parent::boot();
 
-        static::creating(function ($model) {
+        static::creating(function (Model $model) {
             if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = Str::uuid();
+                $model->{$model->getKeyName()} = Str::orderedUuid();
             }
         });
     }

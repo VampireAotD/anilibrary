@@ -12,6 +12,10 @@ class UserHistory
 {
     private const MAX_EXECUTED_COMMANDS_STORAGE_TTL = 3000;
 
+    /**
+     * @param int $userId
+     * @return void
+     */
     public static function addLastActiveTime(int $userId): void
     {
         [$lastActiveTime] = self::generateUserStorageName($userId);

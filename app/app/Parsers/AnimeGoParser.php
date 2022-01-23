@@ -7,7 +7,6 @@ use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
 use GuzzleHttp\Exception\GuzzleException;
 use voku\helper\HtmlDomParser;
-use App\Enums\AnimeHandlerEnum;
 
 /**
  * Class AnimeGoParser

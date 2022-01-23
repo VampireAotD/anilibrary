@@ -14,15 +14,48 @@ trait CanPrepareDataForBatchInsert
      * @param array $data
      * @return array
      */
-    public function prepareData(array $data): array
+    public function prepareArrayForInsert(array $data): array
     {
-        return array_reduce($data, function (array $preparedData, string $name) {
-            $preparedData[] = [
-                'id' => Str::uuid(),
-                'name' => $name
-            ];
+        if (!$this->arrayIsMultidimensional($data)) {
+            $data = $this->prepareNamesArray($data);
+        }
 
-            return $preparedData;
-        }, []);
+        array_walk($data, function (mixed &$value, string|int $key) {
+            if (is_array($value)) {
+                $value['id'] = Str::orderedUuid();
+                return $value;
+            }
+
+            $value = [
+                'id' => Str::orderedUuid(),
+                $key => $value,
+            ];
+        });
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    private function prepareNamesArray(array $data): array
+    {
+        array_walk($data, function (mixed &$value) {
+            $value = [
+                'name' => $value
+            ];
+        });
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     */
+    private function arrayIsMultidimensional(array $data): bool
+    {
+        return count($data) !== count($data, COUNT_RECURSIVE);
     }
 }

@@ -83,7 +83,7 @@ class AddNewAnimeJob implements ShouldQueue
                                         [
                                             'text' => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
                                             'callback_data' => sprintf(
-                                                '%s,%s',
+                                                'command=%s&animeId=%s',
                                                 CallbackQueryEnum::CHECK_ADDED_ANIME->value,
                                                 $animeId,
                                             ),

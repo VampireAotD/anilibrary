@@ -19,6 +19,6 @@ class VoiceActingService
      */
     public function batchInsert(array $data): bool
     {
-        return VoiceActing::insert($this->prepareData($data));
+        return VoiceActing::insert($this->prepareArrayForInsert($data));
     }
 }

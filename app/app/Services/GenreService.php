@@ -19,6 +19,6 @@ class GenreService
      */
     public function batchInsert(array $data): bool
     {
-        return Genre::insert($this->prepareData($data));
+        return Genre::insert($this->prepareArrayForInsert($data));
     }
 }

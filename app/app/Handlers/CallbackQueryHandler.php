@@ -45,14 +45,17 @@ class CallbackQueryHandler extends UpdateHandler
         $callbackData = $this->update->callback_query->data;
         UserHistory::addLastActiveTime($this->update->callback_query->from->id);
 
-        $callbackParameters = explode(',', $callbackData);
+        parse_str($callbackData, $callbackParameters);
 
-        switch (reset($callbackParameters)) {
-            case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
-                $anime = $this->animeRepository->findById(end($callbackParameters));
-                $this->sendPhoto($this->convertToCaption($anime));
-                break;
-            default:
+        if (isset($callbackParameters['command'])) {
+            switch ($callbackParameters['command']) {
+                case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
+                    $anime = $this->animeRepository->findById($callbackParameters['animeId']);
+                    $this->sendPhoto($this->convertToCaption($anime));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

@@ -30,7 +30,12 @@ class ImageService
         $image = Image::create([
             'model_type' => $anime::class,
             'model_id' => $anime->id,
-            'alias' => $alias = sprintf('%s/%s/%s', self::BASE_FOLDER_NAME, $anime->id, Str::random()),
+            'alias' => $alias = sprintf(
+                '%s/%s/%s',
+                self::BASE_FOLDER_NAME,
+                $anime->id,
+                Str::random()
+            ),
             'path' => cloudinary()->uploadFile($url, [
                 'public_id' => $alias,
             ])->getSecurePath(),

@@ -3,39 +3,43 @@
 namespace Database\Seeders;
 
 use App\Models\VoiceActing;
+use App\Services\Traits\CanPrepareDataForBatchInsert;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
+/**
+ * Class VoiceActingSeeder
+ * @package Database\Seeders
+ */
 class VoiceActingSeeder extends Seeder
 {
+    use CanPrepareDataForBatchInsert;
+
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-        VoiceActing::insert([
+        $voiceActing = [
             [
-                'id' => Str::uuid(),
                 'name' => 'AniDUB',
             ],
             [
-                'id' => Str::uuid(),
                 'name' => 'AniLibria',
             ],
             [
-                'id' => Str::uuid(),
                 'name' => 'Студийная Банда',
             ],
             [
-                'id' => Str::uuid(),
                 'name' => 'AnimeVost',
             ],
             [
-                'id' => Str::uuid(),
                 'name' => 'Dream Cast',
             ],
-        ]);
+        ];
+
+        VoiceActing::insert($this->prepareArrayForInsert($voiceActing));
     }
 }
