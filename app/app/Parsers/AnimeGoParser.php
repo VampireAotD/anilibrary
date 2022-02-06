@@ -33,10 +33,7 @@ class AnimeGoParser extends Parser
      */
     protected function syncVoiceActing(HtmlDomParser $domParser): array
     {
-        $voiceActingList = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Озвучка) + dd');
-
-        if (!$voiceActingList) {
+        if (!$voiceActingList = $domParser->findOneOrFalse('.anime-info .row dt:contains(Озвучка) + dd')) {
             return [];
         }
 
@@ -69,17 +66,14 @@ class AnimeGoParser extends Parser
      */
     protected function getStatus(HtmlDomParser $domParser): string
     {
-        $statusText = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Статус) + dd');
-
-        if (!$statusText) {
-            return '';
+        if (!$statusText = $domParser->findOneOrFalse('.anime-info .row dt:contains(Статус) + dd')) {
+            return AnimeStatusEnum::READY->value;
         }
 
         $status = AnimeStatusEnum::tryFrom($statusText->text);
 
         if (!$status) {
-            return '';
+            return AnimeStatusEnum::READY->value;
         }
 
         return $status->value;
@@ -104,11 +98,8 @@ class AnimeGoParser extends Parser
      */
     protected function getEpisodes(HtmlDomParser $domParser): string
     {
-        $episodesText = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Эпизоды) + dd');
-
-        if (!$episodesText) {
-            return '';
+        if (!$episodesText = $domParser->findOneOrFalse('.anime-info .row dt:contains(Эпизоды) + dd')) {
+            return self::MINIMAL_ANIME_EPISODES;
         }
 
         return $episodesText->text;
@@ -120,10 +111,7 @@ class AnimeGoParser extends Parser
      */
     protected function syncGenres(HtmlDomParser $domParser): array
     {
-        $genresList = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Жанр) + dd');
-
-        if (!$genresList) {
+        if (!$genresList = $domParser->findOneOrFalse('.anime-info .row dt:contains(Жанр) + dd')) {
             return [];
         }
 

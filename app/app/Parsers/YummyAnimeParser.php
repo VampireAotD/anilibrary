@@ -76,7 +76,7 @@ class YummyAnimeParser extends Parser
     protected function getStatus(HtmlDomParser $domParser): string
     {
         if (!$status = $domParser->findOneOrFalse('.badge')) {
-            return '';
+            return AnimeStatusEnum::READY->value;
         }
 
         $convertedStatus = mb_convert_case($status->text, MB_CASE_TITLE, 'UTF-8');
@@ -84,7 +84,7 @@ class YummyAnimeParser extends Parser
         $status = AnimeStatusEnum::tryFrom(ucfirst($convertedStatus));
 
         if (!$status) {
-            return '';
+            return AnimeStatusEnum::READY->value;
         }
 
         return $status->value;

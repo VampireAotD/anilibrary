@@ -18,8 +18,12 @@ class TmpFolderSeeder extends Seeder
      */
     public function run(): void
     {
-        File::makeDirectory(storage_path('tmp'));
+        if (!File::exists(storage_path('tmp'))) {
+            File::makeDirectory(storage_path('tmp'));
 
-        copy(storage_path('logs/.gitignore'), storage_path('tmp/.gitignore'));
+            if (!File::exists(storage_path('tmp/.gitignore'))) {
+                copy(storage_path('logs/.gitignore'), storage_path('tmp/.gitignore'));
+            }
+        }
     }
 }

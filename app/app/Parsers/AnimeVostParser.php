@@ -94,7 +94,9 @@ class AnimeVostParser extends Parser
 
         $episodes = $episodes->nextSibling()->text;
 
-        return substr($episodes, 0, strripos($episodes, '+'));
+        $episodes = str_replace('+', ' ', $episodes);
+
+        return trim(substr($episodes, 0, strripos($episodes, ' (')));
     }
 
     /**

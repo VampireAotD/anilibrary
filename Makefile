@@ -16,5 +16,6 @@ app:
 
 install:
 	@cp .env.example .env;
-	$(docker_compose_bin) run --rm app cp txt1.txt txt2.txt;
+	$(docker_compose_bin) run --rm app .env.example .env;
 	$(docker_compose_bin) run --rm app ./artisan migrate:fresh --seed;
+	$(docker_compose_bin) run --rm app ./artisan url-list:parse;
