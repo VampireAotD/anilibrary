@@ -4,13 +4,13 @@ namespace App\Repositories;
 
 use App\Enums\TagSeederEnum;
 use App\Models\Tag;
-use App\Repositories\Contracts\Tag\Repository;
+use App\Repositories\Contracts\Tag\TagRepositoryInterface;
 
 /**
  * Class TagRepository
  * @package App\Repositories
  */
-class TagRepository extends BaseRepository implements Repository
+class TagRepository extends BaseRepository implements TagRepositoryInterface
 {
     /**
      * @return string

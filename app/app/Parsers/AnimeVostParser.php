@@ -3,28 +3,33 @@
 namespace App\Parsers;
 
 use App\Enums\AnimeStatusEnum;
+use App\Enums\VoiceActingSeederEnum;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
 use GuzzleHttp\Exception\GuzzleException;
 use voku\helper\HtmlDomParser;
 
 /**
- * Class AnimeGoParser
+ * Class AnimeVostParser
  * @package App\Parsers
  */
-class AnimeGoParser extends Parser
+class AnimeVostParser extends Parser
 {
+    private const AMOUNT_TO_MAKE_FLOAT = 10;
+
     /**
      * @param HtmlDomParser $domParser
      * @return string
      */
     protected function getTitle(HtmlDomParser $domParser): string
     {
-        if (!$title = $domParser->findOneOrFalse('.anime-title div h1')) {
+        if (!$title = $domParser->findOneOrFalse('.shortstoryHead h1')) {
             return '';
         }
 
-        return $title->text;
+        $title = $title->text;
+
+        return substr($title, 0, strripos($title, ' /'));
     }
 
     /**
@@ -33,19 +38,9 @@ class AnimeGoParser extends Parser
      */
     protected function syncVoiceActing(HtmlDomParser $domParser): array
     {
-        $voiceActingList = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Озвучка) + dd');
+        $animeVostVoiceActing = $this->voiceActingRepository->findByName(VoiceActingSeederEnum::ANIMEVOST->value);
 
-        if (!$voiceActingList) {
-            return [];
-        }
-
-        $voiceActing = explode(
-            ',',
-            preg_replace("#,\s+#mi", ',', $voiceActingList->text)
-        );
-
-        return $this->syncVoiceActingToDb($voiceActing);
+        return [$animeVostVoiceActing?->id];
     }
 
     /**
@@ -54,13 +49,11 @@ class AnimeGoParser extends Parser
      */
     protected function getImage(HtmlDomParser $domParser): string
     {
-        if (!$image = $domParser->findOneOrFalse('.anime-poster img')) {
+        if (!$image = $domParser->findOneOrFalse('.imgRadius')) {
             return '';
         }
 
-        $imageUrl = $image->getAttribute('src');
-
-        return str_replace('/media/cache/thumbs_250x350', '', $imageUrl);
+        return $image->getAttribute('src');
     }
 
     /**
@@ -69,20 +62,11 @@ class AnimeGoParser extends Parser
      */
     protected function getStatus(HtmlDomParser $domParser): string
     {
-        $statusText = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Статус) + dd');
-
-        if (!$statusText) {
-            return '';
+        if (!$domParser->findOneOrFalse('#nexttime')) {
+            return AnimeStatusEnum::READY->value;
         }
 
-        $status = AnimeStatusEnum::tryFrom($statusText->text);
-
-        if (!$status) {
-            return '';
-        }
-
-        return $status->value;
+        return AnimeStatusEnum::ONGOING->value;
     }
 
     /**
@@ -91,11 +75,11 @@ class AnimeGoParser extends Parser
      */
     protected function getRating(HtmlDomParser $domParser): float
     {
-        if (!$rating = $domParser->findOneOrFalse('.rating-value')) {
+        if (!$rating = $domParser->findOneOrFalse('.current-rating')) {
             return self::MINIMAL_ANIME_RATING;
         }
 
-        return str_replace(',', '.', $rating->text);
+        return (int)$rating->text / self::AMOUNT_TO_MAKE_FLOAT;
     }
 
     /**
@@ -104,14 +88,13 @@ class AnimeGoParser extends Parser
      */
     protected function getEpisodes(HtmlDomParser $domParser): string
     {
-        $episodesText = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Эпизоды) + dd');
-
-        if (!$episodesText) {
-            return '';
+        if (!$episodes = $domParser->findOneOrFalse('p strong:contains(Количество серий)')) {
+            return self::MINIMAL_ANIME_EPISODES;
         }
 
-        return $episodesText->text;
+        $episodes = $episodes->nextSibling()->text;
+
+        return substr($episodes, 0, strripos($episodes, '+'));
     }
 
     /**
@@ -120,18 +103,18 @@ class AnimeGoParser extends Parser
      */
     protected function syncGenres(HtmlDomParser $domParser): array
     {
-        $genresList = $domParser
-            ->findOneOrFalse('.anime-info .row dt:contains(Жанр) + dd');
-
-        if (!$genresList) {
+        if (!$genres = $domParser->findOneOrFalse('p strong:contains(Жанр)')) {
             return [];
         }
 
-        $genres = explode(',', preg_replace("#\s#mi", '', $genresList->text()));
+        $genres = trim($genres->nextSibling()->text);
+
+        $convertedGenres = mb_convert_case($genres, MB_CASE_TITLE, 'UTF-8');
+
+        $genres = explode(',', $convertedGenres);
 
         return $this->syncGenresToDb($genres);
     }
-
 
     /**
      * @param string $url
@@ -143,6 +126,10 @@ class AnimeGoParser extends Parser
     public function parse(string $url, ?int $telegramId = null): Anime
     {
         $parsedData = $this->getParsedData($url, $telegramId);
+
+        $domain = $this->getDomainFromUrl($url);
+
+        $parsedData['image'] = sprintf('%s%s', $domain, $parsedData['image']);
 
         return $this->animeService->create($parsedData);
     }

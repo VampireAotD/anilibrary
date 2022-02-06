@@ -5,10 +5,10 @@ namespace App\Repositories\Contracts\TelegramUser;
 use App\Models\TelegramUser;
 
 /**
- * Interface Repository
+ * Interface AnimeRepositoryInterface
  * @package App\Repositories\Contracts\TelegramUser
  */
-interface Repository
+interface TelegramUserRepositoryInterface
 {
     /**
      * @param int $telegramId

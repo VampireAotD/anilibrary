@@ -34,7 +34,7 @@ abstract class Parser
         'Accept-Language' => 'en-US,en;q=0.5',
         'X-Application-Type' => 'WebClient',
         'X-Client-Version' => '2.10.4',
-        'Origin' => 'https://www.googe.com',
+        'Origin' => 'https://www.google.com',
         'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0',
     ];
 
@@ -95,10 +95,42 @@ abstract class Parser
     abstract protected function getTitle(HtmlDomParser $domParser): string;
 
     /**
+     * @param array $voiceActing
+     * @return array
+     */
+    protected function syncVoiceActingToDb(array $voiceActing): array
+    {
+        $voiceActingInDb = $this->voiceActingRepository->findSimilarByNames($voiceActing, ['name'])
+            ->pluck('name')
+            ->toArray();
+
+        $notInDb = array_diff($voiceActing, $voiceActingInDb);
+
+        if ($notInDb) {
+            $this->voiceActingService->batchInsert($notInDb);
+        }
+
+        return $this->voiceActingRepository->findSimilarByNames($voiceActing, ['id'])
+            ->pluck('id')
+            ->toArray();
+    }
+
+    /**
      * @param HtmlDomParser $domParser
      * @return array
      */
     abstract protected function syncVoiceActing(HtmlDomParser $domParser): array;
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    protected function getDomainFromUrl(string $url): string
+    {
+        $urlParts = parse_url($url);
+
+        return sprintf('%s://%s', $urlParts['scheme'], $urlParts['host']);
+    }
 
     /**
      * @param HtmlDomParser $domParser
@@ -123,6 +155,27 @@ abstract class Parser
      * @return string
      */
     abstract protected function getEpisodes(HtmlDomParser $domParser): string;
+
+    /**
+     * @param array $genres
+     * @return array
+     */
+    protected function syncGenresToDb(array $genres): array
+    {
+        $genresInDb = $this->genreRepository->findSimilarByNames($genres, ['name'])
+            ->pluck('name')
+            ->toArray();
+
+        $notInDb = array_diff($genres, $genresInDb);
+
+        if ($notInDb) {
+            $this->genreService->batchInsert($notInDb);
+        }
+
+        return $this->genreRepository->findSimilarByNames($genres, ['id'])
+            ->pluck('id')
+            ->toArray();
+    }
 
     /**
      * @param HtmlDomParser $domParser

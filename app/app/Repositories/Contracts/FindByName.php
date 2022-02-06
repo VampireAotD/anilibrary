@@ -5,14 +5,15 @@ namespace App\Repositories\Contracts;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Interface FindById
+ * Interface FindByName
  * @package App\Repositories\Contracts
  */
-interface FindById
+interface FindByName
 {
     /**
-     * @param string $id
+     * @param string $name
+     * @param array $columns
      * @return Model|null
      */
-    public function findById(string $id): ?Model;
+    public function findByName(string $name, array $columns = ['*']): ?Model;
 }

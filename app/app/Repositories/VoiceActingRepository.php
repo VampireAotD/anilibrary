@@ -3,15 +3,16 @@
 namespace App\Repositories;
 
 use App\Models\VoiceActing;
-use App\Repositories\Traits\CanSearchBySimilarNames;
+use App\Repositories\Contracts\FindByName;
+use App\Repositories\Traits\CanSearchByName;
 
 /**
  * Class VoiceActingRepository
  * @package App\Repositories
  */
-class VoiceActingRepository extends BaseRepository
+class VoiceActingRepository extends BaseRepository implements FindByName
 {
-    use CanSearchBySimilarNames;
+    use CanSearchByName;
 
     /**
      * @return string

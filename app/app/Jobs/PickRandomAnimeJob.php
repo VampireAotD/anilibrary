@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Enums\QueueEnum;
 use App\Handlers\History\UserHistory;
 use App\Handlers\Traits\CanConvertAnimeToCaption;
-use App\Repositories\Contracts\Anime\Repository as AnimeRepository;
+use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,7 +22,7 @@ class PickRandomAnimeJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CanConvertAnimeToCaption;
 
-    private AnimeRepository $animeRepository;
+    private AnimeRepositoryInterface $animeRepository;
 
     private const EMPTY_ANIME_DATABASE = "К сожалению сейчас бот не содержит информацию ни об одном аниме \xF0\x9F\x98\xAD";
 
@@ -33,7 +33,7 @@ class PickRandomAnimeJob implements ShouldQueue
      */
     public function __construct(private int $userId)
     {
-        $this->animeRepository = app(AnimeRepository::class);
+        $this->animeRepository = app(AnimeRepositoryInterface::class);
 
         $this->onQueue(QueueEnum::PICK_RANDOM_ANIME_QUEUE->value);
     }

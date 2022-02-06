@@ -3,8 +3,9 @@
 namespace App\Repositories\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-trait CanSearchBySimilarNames
+trait CanSearchByName
 {
     /**
      * @param array $similarNames
@@ -14,5 +15,15 @@ trait CanSearchBySimilarNames
     public function findSimilarByNames(array $similarNames, array $columns = ['*']): Collection
     {
         return $this->query()->select($columns)->whereIn('name', $similarNames)->get();
+    }
+
+    /**
+     * @param string $name
+     * @param array $columns
+     * @return Model|null
+     */
+    public function findByName(string $name, array $columns = ['*']): ?Model
+    {
+        return $this->query()->select($columns)->where('name', $name)->first();
     }
 }

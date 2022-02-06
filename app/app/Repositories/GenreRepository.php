@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Genre;
-use App\Repositories\Traits\CanSearchBySimilarNames;
+use App\Repositories\Traits\CanSearchByName;
 
 /**
  * Class GenreRepository
@@ -11,7 +11,7 @@ use App\Repositories\Traits\CanSearchBySimilarNames;
  */
 class GenreRepository extends BaseRepository
 {
-    use CanSearchBySimilarNames;
+    use CanSearchByName;
 
     /**
      * @return string

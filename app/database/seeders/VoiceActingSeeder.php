@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enums\VoiceActingSeederEnum;
 use App\Models\VoiceActing;
 use App\Services\Traits\CanPrepareDataForBatchInsert;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 /**
  * Class VoiceActingSeeder
@@ -24,19 +24,19 @@ class VoiceActingSeeder extends Seeder
     {
         $voiceActing = [
             [
-                'name' => 'AniDUB',
+                'name' => VoiceActingSeederEnum::ANIDUB->value,
             ],
             [
-                'name' => 'AniLibria',
+                'name' => VoiceActingSeederEnum::ANILIBRIA->value,
             ],
             [
-                'name' => 'Студийная Банда',
+                'name' => VoiceActingSeederEnum::STUDIO_BAND->value,
             ],
             [
-                'name' => 'AnimeVost',
+                'name' => VoiceActingSeederEnum::ANIMEVOST->value,
             ],
             [
-                'name' => 'Dream Cast',
+                'name' => VoiceActingSeederEnum::DREAM_CAST->value,
             ],
         ];
 

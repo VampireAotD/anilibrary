@@ -4,7 +4,7 @@ namespace App\Handlers;
 
 use App\Handlers\History\UserHistory;
 use App\Handlers\Traits\CanConvertAnimeToCaption;
-use App\Repositories\Contracts\Anime\Repository as AnimeRepository;
+use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
@@ -18,13 +18,13 @@ class CallbackQueryHandler extends UpdateHandler
 {
     use CanConvertAnimeToCaption;
 
-    private AnimeRepository $animeRepository;
+    private AnimeRepositoryInterface $animeRepository;
 
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
 
-        $this->animeRepository = app(AnimeRepository::class);
+        $this->animeRepository = app(AnimeRepositoryInterface::class);
     }
 
     /**

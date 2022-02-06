@@ -5,10 +5,10 @@ namespace App\Repositories\Contracts\Anime;
 use App\Models\Anime;
 
 /**
- * Interface Repository
+ * Interface AnimeRepositoryInterface
  * @package App\Repositories\Contracts\Anime
  */
-interface Repository
+interface AnimeRepositoryInterface
 {
     /**
      * @param string $title

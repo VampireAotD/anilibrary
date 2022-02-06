@@ -3,13 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\TelegramUser;
-use App\Repositories\Contracts\TelegramUser\Repository;
+use App\Repositories\Contracts\TelegramUser\TelegramUserRepositoryInterface;
 
 /**
  * Class TelegramUserRepository
  * @package App\Repositories
  */
-class TelegramUserRepository extends BaseRepository implements Repository
+class TelegramUserRepository extends BaseRepository implements TelegramUserRepositoryInterface
 {
     /**
      * @return string

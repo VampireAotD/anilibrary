@@ -4,7 +4,7 @@ namespace App\Console\Commands\Telegram;
 
 use App\Enums\CommandEnum;
 use App\Handlers\Traits\CanCheckIfUserHasAccessForBot;
-use App\Repositories\Contracts\TelegramUser\Repository;
+use App\Repositories\Contracts\TelegramUser\TelegramUserRepositoryInterface;
 use App\Services\TelegramUserService;
 use WeStacks\TeleBot\Handlers\CommandHandler;
 use WeStacks\TeleBot\Objects\Update;
@@ -33,9 +33,9 @@ class StartCommand extends CommandHandler
     protected static $description = 'Send "/start" or "/s" to get description of what this bot can do';
 
     /**
-     * @var Repository
+     * @var TelegramUserRepositoryInterface
      */
-    private Repository $telegramUserRepository;
+    private TelegramUserRepositoryInterface $telegramUserRepository;
 
     /**
      * @var TelegramUserService
@@ -50,7 +50,7 @@ class StartCommand extends CommandHandler
     {
         parent::__construct($bot, $update);
 
-        $this->telegramUserRepository = app(Repository::class);
+        $this->telegramUserRepository = app(TelegramUserRepositoryInterface::class);
         $this->telegramUserService = app(TelegramUserService::class);
     }
 

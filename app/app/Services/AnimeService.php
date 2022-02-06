@@ -3,8 +3,7 @@
 namespace App\Services;
 
 use App\Models\Anime;
-use App\Models\Image;
-use App\Repositories\Contracts\Tag\Repository as TagRepository;
+use App\Repositories\Contracts\Tag\TagRepositoryInterface;
 
 /**
  * Class AnimeService
@@ -13,7 +12,7 @@ use App\Repositories\Contracts\Tag\Repository as TagRepository;
 class AnimeService
 {
     public function __construct(
-        private TagRepository $tagRepository,
+        private TagRepositoryInterface $tagRepository,
         private ImageService  $imageService
     )
     {

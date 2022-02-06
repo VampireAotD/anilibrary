@@ -53,19 +53,7 @@ class YummyAnimeParser extends Parser
             }
         }
 
-        $voiceActingInDb = $this->voiceActingRepository->findSimilarByNames($voiceActingText, ['name'])
-            ->pluck('name')
-            ->toArray();
-
-        $notInDb = array_diff($voiceActingText, $voiceActingInDb);
-
-        if ($notInDb) {
-            $this->voiceActingService->batchInsert($notInDb);
-        }
-
-        return $this->voiceActingRepository->findSimilarByNames($voiceActingText, ['id'])
-            ->pluck('id')
-            ->toArray();
+        return $this->syncVoiceActingToDb($voiceActingText);
     }
 
     /**
@@ -144,19 +132,7 @@ class YummyAnimeParser extends Parser
 
         $genres = explode(PHP_EOL, $genres);
 
-        $genresInDb = $this->genreRepository->findSimilarByNames($genres, ['name'])
-            ->pluck('name')
-            ->toArray();
-
-        $notInDb = array_diff($genres, $genresInDb);
-
-        if ($notInDb) {
-            $this->genreService->batchInsert($notInDb);
-        }
-
-        return $this->genreRepository->findSimilarByNames($genres, ['id'])
-            ->pluck('id')
-            ->toArray();
+        return $this->syncGenresToDb($genres);
     }
 
     /**
@@ -167,9 +143,7 @@ class YummyAnimeParser extends Parser
      */
     private function getTmpImagePath(string $siteUrl, string $imageUrl): string
     {
-        $urlParts = parse_url($siteUrl);
-
-        $domain = sprintf('%s://%s', $urlParts['scheme'], $urlParts['host']);
+        $domain = $this->getDomainFromUrl($siteUrl);
 
         $this->sendRequest(sprintf('%s%s', $domain, $imageUrl), [
             RequestOptions::HEADERS => self::DEFAULT_HEADERS,

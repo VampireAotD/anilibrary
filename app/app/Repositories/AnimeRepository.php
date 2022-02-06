@@ -3,13 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\Anime;
-use App\Repositories\Contracts\Anime\Repository;
+use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
 
 /**
  * Class AnimeRepository
  * @package App\Repositories
  */
-class AnimeRepository extends BaseRepository implements Repository
+class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
 {
     /**
      * @return string
