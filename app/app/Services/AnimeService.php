@@ -28,17 +28,19 @@ class AnimeService
 
         $this->imageService->upsert($data['image'], $anime);
 
-        if (isset($data['voiceActing']) && $data['voiceActing']) {
+        if ($data['voiceActing']) {
             $anime->voiceActing()->sync($data['voiceActing']);
         }
 
-        if (isset($data['genres']) && $data['genres']) {
+        if ($data['genres']) {
             $anime->genres()->sync($data['genres']);
         }
 
-        if (isset($data['telegramId']) && $data['telegramId']) {
+        if ($data['telegramId']) {
             $anime->tags()->sync(
-                $this->tagRepository->findByTelegramId($data['telegramId']),
+                $this->tagRepository->findByTelegramId(
+                    $data['telegramId']
+                ),
                 false
             );
         }

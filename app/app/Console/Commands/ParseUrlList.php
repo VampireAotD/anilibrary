@@ -31,8 +31,6 @@ class ParseUrlList extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct(private ParserFactory $parserFactory)
     {
@@ -50,6 +48,7 @@ class ParseUrlList extends Command
 
         if (!File::exists($pathToFile)) {
             $this->line('Url list not found', 'warning');
+
             return Command::FAILURE;
         }
 
@@ -63,7 +62,7 @@ class ParseUrlList extends Command
             try {
                 $this->parserFactory->getParser($link)->parse($link);
                 $bar->advance();
-            } catch (GuzzleException|InvalidUrlException|UndefinedAnimeParserException $e) {
+            } catch (GuzzleException | InvalidUrlException | UndefinedAnimeParserException $e) {
                 logger()->info($link, [
                     'exceptionMessage' => $e->getMessage(),
                     'exceptionTrace' => $e->getTraceAsString(),

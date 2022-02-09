@@ -204,7 +204,7 @@ abstract class Parser
     {
         return [
             'url' => $url,
-            'telegramId' => $telegramId,
+            'telegramId' => $telegramId ?? config('telebot.adminId'),
             'title' => $this->getTitle($domParser),
             'voiceActing' => $this->syncVoiceActing($domParser),
             'image' => $this->getImage($domParser),

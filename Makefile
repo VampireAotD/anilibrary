@@ -6,7 +6,9 @@ build:
 	$(docker_compose_bin) up -d --build
 
 up:
-	$(docker_compose_bin) up -d
+	$(docker_compose_bin) up -d;
+	$(docker_compose_bin) exec -d app ./artisan telebot:polling;
+	$(docker_compose_bin) exec -d app ./artisan schedule:work;
 
 down:
 	$(docker_compose_bin) down
@@ -16,6 +18,6 @@ app:
 
 install:
 	@cp .env.example .env;
-	$(docker_compose_bin) run --rm app .env.example .env;
+	$(docker_compose_bin) run --rm app cp .env.example .env;
 	$(docker_compose_bin) run --rm app ./artisan migrate:fresh --seed;
 	$(docker_compose_bin) run --rm app ./artisan url-list:parse;

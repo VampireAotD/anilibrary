@@ -3,6 +3,7 @@
 namespace App\Repositories\Contracts\Anime;
 
 use App\Models\Anime;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Interface AnimeRepositoryInterface
@@ -28,4 +29,14 @@ interface AnimeRepositoryInterface
      * @return Anime|null
      */
     public function findRandomAnime(): ?Anime;
+
+    /**
+     * @param array $columns
+     * @param array $relations
+     * @return Collection
+     */
+    public function getAll(
+        array $columns = ['*'],
+        array $relations = ['image', 'genres', 'tags', 'voiceActing']
+    ): Collection;
 }

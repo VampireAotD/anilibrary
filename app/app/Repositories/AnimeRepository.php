@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Anime;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class AnimeRepository
@@ -53,5 +54,18 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     public function findRandomAnime(): ?Anime
     {
         return $this->query()->inRandomOrder()->limit(1)->first();
+    }
+
+    /**
+     * @param array $columns
+     * @param array $relations
+     * @return Collection
+     */
+    public function getAll(
+        array $columns = ['*'],
+        array $relations = ['image', 'genres', 'tags', 'voiceActing']
+    ): Collection
+    {
+        return $this->query()->select($columns)->with($relations)->get();
     }
 }
