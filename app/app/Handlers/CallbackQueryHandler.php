@@ -69,14 +69,18 @@ class CallbackQueryHandler extends UpdateHandler
                             'media' => new InputMediaPhoto(
                                 [
                                     'media' => $caption['photo'],
-                                    'type' => 'photo'
+                                    'type' => 'photo',
+                                    'caption' => $caption['caption']
                                 ]
                             ),
+                            'reply_markup' => $caption['reply_markup']
                         ]);
-
-                        $this->editMessageCaption($caption);
                     } catch (\Exception $exception) {
                         // Prevent bot from breaking because of next or prev page spam
+                        logger()->info('Probably spam from buttons', [
+                            'exceptionMessage' => $exception->getMessage(),
+                            'exceptionTrace' => $exception->getTraceAsString(),
+                        ]);
                     }
                     break;
                 default:
