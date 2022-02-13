@@ -6,6 +6,7 @@ use App\Handlers\History\UserHistory;
 use App\Handlers\Traits\CanConvertAnimeToCaption;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
+use WeStacks\TeleBot\Objects\InputMedia\InputMediaPhoto;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 use App\Enums\CallbackQueryEnum;
@@ -52,6 +53,31 @@ class CallbackQueryHandler extends UpdateHandler
                 case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
                     $anime = $this->animeRepository->findById($callbackParameters['animeId']);
                     $this->sendPhoto($this->convertToCaption($anime));
+                    break;
+                case CallbackQueryEnum::PAGINATION->value:
+                    $page = $callbackParameters['page'] ?? 1;
+                    $list = $this->animeRepository->paginate(currentPage: $page);
+
+                    $caption = $this->convertToCaption(
+                        $list->first(),
+                        $this->update->callback_query->from->id,
+                        $list
+                    );
+
+                    try {
+                        $this->editMessageMedia([
+                            'media' => new InputMediaPhoto(
+                                [
+                                    'media' => $caption['photo'],
+                                    'type' => 'photo'
+                                ]
+                            ),
+                        ]);
+
+                        $this->editMessageCaption($caption);
+                    } catch (\Exception $exception) {
+                        // Prevent bot from breaking because of next or prev page spam
+                    }
                     break;
                 default:
                     break;

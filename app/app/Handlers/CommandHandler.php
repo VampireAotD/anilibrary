@@ -5,6 +5,7 @@ namespace App\Handlers;
 use App\Handlers\History\UserHistory;
 use App\Handlers\Traits\CanCheckIfUserHasAccessForBot;
 use App\Jobs\PickRandomAnimeJob;
+use App\Jobs\ProvideAnimeListJob;
 use Illuminate\Support\Facades\Cache;
 use WeStacks\TeleBot\Interfaces\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
@@ -54,10 +55,20 @@ class CommandHandler extends UpdateHandler
             }
 
             match ($message->text) {
-                CommandEnum::ADD_NEW_TITLE->value => $this->sendMessage([
+                CommandEnum::ADD_NEW_TITLE->value,
+                CommandEnum::ADD_NEW_TITLE_COMMAND->value =>
+                $this->sendMessage([
                     'text' => AnimeHandlerEnum::PROVIDE_URL->value,
                 ]),
-                CommandEnum::RANDOM_ANIME->value => PickRandomAnimeJob::dispatch($telegramId),
+
+                CommandEnum::RANDOM_ANIME->value,
+                CommandEnum::RANDOM_ANIME_COMMAND->value =>
+                PickRandomAnimeJob::dispatch($telegramId),
+
+                CommandEnum::ANIME_LIST->value,
+                CommandEnum::ANIME_LIST_COMMAND->value =>
+                ProvideAnimeListJob::dispatch($telegramId),
+
                 default => UserHistory::addLastActiveTime($telegramId)
             };
         }

@@ -22,8 +22,14 @@ class AddNewAnimeHandler extends UpdateHandler
      */
     public static function trigger(Update $update, TeleBot $bot): bool
     {
-        return isset($update->message->text) && UserHistory::userLastExecutedCommand($update->message->from->id)
-            === CommandEnum::ADD_NEW_TITLE->value;
+        $allowedCommands = [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
+
+        return isset($update->message->text)
+            && in_array(
+                UserHistory::userLastExecutedCommand($update->message->from->id),
+                $allowedCommands,
+                true
+            );
     }
 
     /**
@@ -33,6 +39,6 @@ class AddNewAnimeHandler extends UpdateHandler
     {
         $message = $this->update->message;
 
-        AddNewAnimeJob::dispatch($message)->onConnection('redis');
+        AddNewAnimeJob::dispatch($message);
     }
 }

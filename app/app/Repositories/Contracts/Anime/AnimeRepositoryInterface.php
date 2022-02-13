@@ -3,13 +3,14 @@
 namespace App\Repositories\Contracts\Anime;
 
 use App\Models\Anime;
+use App\Repositories\Contracts\Paginate;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Interface AnimeRepositoryInterface
  * @package App\Repositories\Contracts\Anime
  */
-interface AnimeRepositoryInterface
+interface AnimeRepositoryInterface extends Paginate
 {
     /**
      * @param string $title

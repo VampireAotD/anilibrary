@@ -43,6 +43,7 @@ class AddNewAnimeJob implements ShouldQueue
         $this->parserFactory = app(ParserFactory::class);
 
         $this->onQueue(QueueEnum::ADD_ANIME_QUEUE->value);
+        $this->onConnection('redis');
     }
 
     /**
@@ -54,11 +55,11 @@ class AddNewAnimeJob implements ShouldQueue
     {
         $message = $this->message;
         $telegramId = $message->from->id;
+        $excludeMessages = [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
 
         try {
             UserHistory::addLastActiveTime($telegramId);
-
-            if ($message->text !== CommandEnum::ADD_NEW_TITLE->value) {
+            if (!in_array($message->text, $excludeMessages, true)) {
                 $data = [
                     'url' => $message->text
                 ];

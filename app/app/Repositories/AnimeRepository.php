@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Anime;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Class AnimeRepository
@@ -67,5 +68,22 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     ): Collection
     {
         return $this->query()->select($columns)->with($relations)->get();
+    }
+
+    /**
+     * @param int $perPage
+     * @param array $columns
+     * @param string $pageName
+     * @param int $currentPage
+     * @return LengthAwarePaginator
+     */
+    public function paginate(
+        int $perPage = 1,
+        array $columns = ['*'],
+        string $pageName = 'page',
+        int $currentPage = 1
+    ): LengthAwarePaginator
+    {
+        return $this->query()->paginate($perPage, $columns, $pageName, $currentPage);
     }
 }

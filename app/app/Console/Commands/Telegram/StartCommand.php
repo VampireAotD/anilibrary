@@ -89,7 +89,12 @@ class StartCommand extends CommandHandler
                             [
                                 'text' => CommandEnum::RANDOM_ANIME->value,
                             ],
-                        ]
+                        ],
+                        [
+                            [
+                                'text' => CommandEnum::ANIME_LIST->value,
+                            ],
+                        ],
                     ],
                     'resize_keyboard' => true,
                 ]
