@@ -8,10 +8,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
 /**
- * Class GenerateUrlList
+ * Class GenerateAnimeList
  * @package App\Console\Commands
  */
-class GenerateUrlList extends Command
+class GenerateAnimeList extends Command
 {
     /**
      * The name and signature of the console command.
@@ -42,34 +42,21 @@ class GenerateUrlList extends Command
      */
     public function handle(): int
     {
-        $pathToFile = storage_path('lists/urlList.csv');
+        $pathToFile = storage_path('lists/animeList.json');
 
         if (File::exists($pathToFile)) {
             File::delete($pathToFile);
         }
 
-        foreach ($this->animeListGenerator() as $anime) {
-            /**
-             * @var $anime Anime
-             */
-            File::append($pathToFile, $anime->url . PHP_EOL);
-        }
-
-        return Command::SUCCESS;
-    }
-
-    /**
-     * @return \Generator
-     */
-    private function animeListGenerator(): \Generator
-    {
         $animeList = $this->animeRepository->getAll(
-            ['url'],
+            ['title', 'url', 'rating', 'episodes',],
             []
         );
 
-        foreach ($animeList as $anime) {
-            yield $anime;
-        }
+        $pathToFile = storage_path('lists/animeList.json');
+
+        File::put($pathToFile, $animeList->toJson(JSON_PRETTY_PRINT));
+
+        return Command::SUCCESS;
     }
 }

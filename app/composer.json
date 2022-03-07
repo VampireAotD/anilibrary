@@ -13,6 +13,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "predis/predis": "^1.1",
+        "tuupola/base62": "^2.1",
         "voku/simple_html_dom": "^4.7",
         "westacks/telebot": "^1.13"
     },

@@ -10,10 +10,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
 /**
- * Class ParseUrlList
+ * Class ParseAnimeList
  * @package App\Console\Commands
  */
-class ParseUrlList extends Command
+class ParseAnimeList extends Command
 {
     /**
      * The name and signature of the console command.
@@ -44,7 +44,7 @@ class ParseUrlList extends Command
      */
     public function handle(): int
     {
-        $pathToFile = storage_path('lists/urlList.csv');
+        $pathToFile = storage_path('lists/animeList.json');
 
         if (!File::exists($pathToFile)) {
             $this->line('Url list not found', 'warning');
@@ -52,15 +52,13 @@ class ParseUrlList extends Command
             return Command::FAILURE;
         }
 
-        $links = File::get($pathToFile);
+        $animeList = json_decode(File::get($pathToFile));
 
-        $links = explode(PHP_EOL, $links);
+        $bar = $this->output->createProgressBar(count($animeList));
 
-        $bar = $this->output->createProgressBar(count($links));
-
-        foreach ($links as $link) {
+        foreach ($animeList as $anime) {
             try {
-                $this->parserFactory->getParser($link)->parse($link);
+                $this->parserFactory->getParser($anime->url)->parse($link);
                 $bar->advance();
             } catch (GuzzleException | InvalidUrlException | UndefinedAnimeParserException $e) {
                 logger()->info($link, [
