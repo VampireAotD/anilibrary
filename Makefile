@@ -31,3 +31,8 @@ install:
 	$(docker_compose_bin) run --rm app cp .env.example .env;
 	$(docker_compose_bin) run --rm app ./artisan migrate:fresh --seed;
 	$(docker_compose_bin) run --rm app ./artisan url-list:parse;
+
+.PHONY: supervisor
+supervisor:
+	$(info Launching supervisor...)
+	docker-compose run -d app supervisord

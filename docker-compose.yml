@@ -18,13 +18,15 @@ services:
       - "9000:9000"
     volumes:
       - ./app:/anilibrary
+      - ./supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
+      - ./supervisor/conf.d/:/etc/supervisor/conf.d/
     networks:
       backend:
 
   database:
     build:
-      context: ./
-      dockerfile: ./mysql/mysql.Dockerfile
+      context: ./mysql
+      dockerfile: ./mysql.Dockerfile
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 1
