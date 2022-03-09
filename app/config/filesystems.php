@@ -70,4 +70,13 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Anime list storage path
+    |--------------------------------------------------------------------------
+    |
+    | Path to all parsed anime
+    |
+    */
+    'animeListPath' => storage_path('lists/animeList.json'),
 ];

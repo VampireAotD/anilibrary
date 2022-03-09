@@ -19,7 +19,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('anime-list:generate')->hourly();
+        $schedule->command('anime-list:generate')
+            ->dailyAt('12:00');
     }
 
     /**

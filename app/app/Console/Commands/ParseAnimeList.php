@@ -44,7 +44,7 @@ class ParseAnimeList extends Command
      */
     public function handle(): int
     {
-        $pathToFile = storage_path('lists/animeList.json');
+        $pathToFile = config('filesystems.animeListPath');
 
         if (!File::exists($pathToFile)) {
             $this->line('Anime list not found', 'warning');

@@ -1,5 +1,5 @@
 docker_compose_bin := $(shell command -v docker-compose 2> /dev/null)
-queue_list         := add-anime,random-anime,anime-list
+queue_list         := add-anime,random-anime,anime-list,mail
 
 .PHONY: build
 build:
@@ -22,7 +22,7 @@ down:
 .PHONY: app
 app:
 	$(info Entering app container...)
-	docker exec -it php bash
+	$(docker_compose_bin) exec app bash
 
 .PHONY: install
 install:
@@ -35,4 +35,4 @@ install:
 .PHONY: supervisor
 supervisor:
 	$(info Launching supervisor...)
-	docker-compose run -d app supervisord
+	docker-compose run -d --name supervisor app supervisord
