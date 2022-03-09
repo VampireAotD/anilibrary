@@ -6,6 +6,10 @@ use App\Enums\AnimeHandlerEnum;
 use App\Exceptions\Parsers\InvalidUrlException;
 use GuzzleHttp\Exception\GuzzleException;
 
+/**
+ * Trait CanParseData
+ * @package App\Parsers\Traits
+ */
 trait CanParseData
 {
     /**
@@ -19,7 +23,7 @@ trait CanParseData
     {
         $dom = $this->getInitialData($url);
 
-        $parsedData = $this->parseInitialData($dom, $url, $telegramId);
+        $parsedData = $this->parseInitialData($dom, $url, $telegramId)->toArray();
 
         if (in_array('', array_values($parsedData), true)) {
             throw new InvalidUrlException(AnimeHandlerEnum::INVALID_URL->value);

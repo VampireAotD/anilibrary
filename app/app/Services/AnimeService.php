@@ -14,8 +14,7 @@ class AnimeService
     public function __construct(
         private TagRepositoryInterface $tagRepository,
         private ImageService  $imageService
-    )
-    {
+    ) {
     }
 
     /**

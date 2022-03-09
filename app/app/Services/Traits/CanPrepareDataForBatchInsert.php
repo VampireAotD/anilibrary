@@ -20,7 +20,7 @@ trait CanPrepareDataForBatchInsert
             $data = $this->prepareNamesArray($data);
         }
 
-        array_walk($data, function (mixed &$value, string|int $key) {
+        array_walk($data, function (mixed &$value, string | int $key) {
             if (is_array($value)) {
                 $value['id'] = Str::orderedUuid();
                 return $value;

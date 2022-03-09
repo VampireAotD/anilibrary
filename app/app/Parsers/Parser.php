@@ -2,6 +2,7 @@
 
 namespace App\Parsers;
 
+use App\Dto\Parsers\ParseInitialDataDto;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
 use App\Parsers\Traits\CanParseData;
@@ -14,7 +15,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
-use JetBrains\PhpStorm\ArrayShape;
 use voku\helper\HtmlDomParser;
 
 /**
@@ -187,32 +187,24 @@ abstract class Parser
      * @param HtmlDomParser $domParser
      * @param string $url
      * @param int|null $telegramId
-     * @return array
+     * @return ParseInitialDataDto
      */
-    #[ArrayShape([
-        'url' => "string",
-        'telegramId' => "int|null",
-        'title' => "string",
-        'voiceActing' => "array",
-        'image' => "string",
-        'status' => "string",
-        'rating' => "float",
-        'episodes' => "string",
-        'genres' => "array"
-    ])]
-    protected function parseInitialData(HtmlDomParser $domParser, string $url, ?int $telegramId = null): array
-    {
-        return [
-            'url' => $url,
-            'telegramId' => $telegramId ?? config('telebot.adminId'),
-            'title' => $this->getTitle($domParser),
-            'voiceActing' => $this->syncVoiceActing($domParser),
-            'image' => $this->getImage($domParser),
-            'status' => $this->getStatus($domParser),
-            'rating' => $this->getRating($domParser),
-            'episodes' => $this->getEpisodes($domParser),
-            'genres' => $this->syncGenres($domParser),
-        ];
+    protected function parseInitialData(
+        HtmlDomParser $domParser,
+        string $url,
+        ?int $telegramId = null
+    ): ParseInitialDataDto {
+        return new ParseInitialDataDto(
+            $url,
+            $this->getTitle($domParser),
+            $this->syncVoiceActing($domParser),
+            $this->getImage($domParser),
+            $this->getStatus($domParser),
+            $this->getRating($domParser),
+            $this->getEpisodes($domParser),
+            $this->syncGenres($domParser),
+            $telegramId ?? config('telebot.adminId')
+        );
     }
 
     /**

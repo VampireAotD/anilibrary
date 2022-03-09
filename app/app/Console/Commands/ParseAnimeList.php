@@ -20,7 +20,7 @@ class ParseAnimeList extends Command
      *
      * @var string
      */
-    protected $signature = 'url-list:parse';
+    protected $signature = 'anime-list:parse';
 
     /**
      * The console command description.
@@ -47,7 +47,7 @@ class ParseAnimeList extends Command
         $pathToFile = storage_path('lists/animeList.json');
 
         if (!File::exists($pathToFile)) {
-            $this->line('Url list not found', 'warning');
+            $this->line('Anime list not found', 'warning');
 
             return Command::FAILURE;
         }
@@ -57,8 +57,10 @@ class ParseAnimeList extends Command
         $bar = $this->output->createProgressBar(count($animeList));
 
         foreach ($animeList as $anime) {
+            $link = $anime->url;
+
             try {
-                $this->parserFactory->getParser($anime->url)->parse($link);
+                $this->parserFactory->getParser($link)->parse($link);
                 $bar->advance();
             } catch (GuzzleException | InvalidUrlException | UndefinedAnimeParserException $e) {
                 logger()->info($link, [

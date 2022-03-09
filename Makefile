@@ -30,7 +30,7 @@ install:
 	@cp .env.example .env;
 	$(docker_compose_bin) run --rm app cp .env.example .env;
 	$(docker_compose_bin) run --rm app ./artisan migrate:fresh --seed;
-	$(docker_compose_bin) run --rm app ./artisan url-list:parse;
+	$(docker_compose_bin) run --rm app ./artisan anime-list:parse;
 
 .PHONY: supervisor
 supervisor:

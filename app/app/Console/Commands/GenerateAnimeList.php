@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Anime;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -18,14 +17,14 @@ class GenerateAnimeList extends Command
      *
      * @var string
      */
-    protected $signature = 'url-list:generate';
+    protected $signature = 'anime-list:generate';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generates url list';
+    protected $description = 'Generate anime list';
 
     /**
      * Create a new command instance.
@@ -42,14 +41,13 @@ class GenerateAnimeList extends Command
      */
     public function handle(): int
     {
-        $pathToFile = storage_path('lists/animeList.json');
-
-        if (File::exists($pathToFile)) {
-            File::delete($pathToFile);
-        }
-
         $animeList = $this->animeRepository->getAll(
-            ['title', 'url', 'rating', 'episodes',],
+            [
+                'title',
+                'url',
+                'rating',
+                'episodes',
+            ],
             []
         );
 
