@@ -2,6 +2,7 @@
 
 namespace App\Handlers\Traits;
 
+use App\Dto\Handlers\CallbackDataDto;
 use App\Enums\AnimeCaptionEnum;
 use App\Enums\CallbackQueryEnum;
 use App\Models\Anime;
@@ -13,17 +14,19 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 trait CanConvertAnimeToCaption
 {
+    use CanCreateCallbackData;
+
     /**
      * @param Anime $anime
      * @param int|null $userId
+     * @param LengthAwarePaginator|null $pagination
      * @return array
      */
     private function convertToCaption(
         Anime $anime,
         ?int $userId = null,
         ?LengthAwarePaginator $pagination = null
-    ): array
-    {
+    ): array {
         $response = [
             'caption' => sprintf(
                 "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
@@ -58,22 +61,20 @@ trait CanConvertAnimeToCaption
             if ($pagination->previousPageUrl()) {
                 $pages[] = [
                     'text' => '<',
-                    'callback_data' => sprintf(
-                        'command=%s&page=%d',
-                        CallbackQueryEnum::PAGINATION->value,
-                        $pagination->currentPage() - 1
-                    )
+                    'callback_data' => $this->createCallbackData(
+                        CallbackQueryEnum::PAGINATION,
+                        new CallbackDataDto(pageNumber: $pagination->currentPage() - 1),
+                    ),
                 ];
             }
 
             if ($pagination->nextPageUrl()) {
                 $pages[] = [
                     'text' => '>',
-                    'callback_data' => sprintf(
-                        'command=%s&page=%d',
-                        CallbackQueryEnum::PAGINATION->value,
-                        $pagination->currentPage() + 1
-                    )
+                    'callback_data' => $this->createCallbackData(
+                        CallbackQueryEnum::PAGINATION,
+                        new CallbackDataDto(pageNumber: $pagination->currentPage() + 1),
+                    ),
                 ];
             }
 

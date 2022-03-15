@@ -53,8 +53,7 @@ abstract class Parser
         protected AnimeService          $animeService,
         protected GenreRepository       $genreRepository,
         protected GenreService          $genreService
-    )
-    {
+    ) {
     }
 
     /**

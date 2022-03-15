@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Dto\Handlers\CallbackDataDto;
 use App\Enums\AnimeHandlerEnum;
 use App\Enums\CallbackQueryEnum;
 use App\Enums\CommandEnum;
@@ -10,6 +11,7 @@ use App\Exceptions\Parsers\InvalidUrlException;
 use App\Exceptions\Parsers\UndefinedAnimeParserException;
 use App\Factories\ParserFactory;
 use App\Handlers\History\UserHistory;
+use App\Handlers\Traits\CanCreateCallbackData;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -29,7 +31,7 @@ use WeStacks\TeleBot\Objects\Message;
  */
 class AddNewAnimeJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CanCreateCallbackData;
 
     private ParserFactory $parserFactory;
 
@@ -83,10 +85,9 @@ class AddNewAnimeJob implements ShouldQueue
                                     [
                                         [
                                             'text' => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
-                                            'callback_data' => sprintf(
-                                                'command=%s&animeId=%s',
-                                                CallbackQueryEnum::CHECK_ADDED_ANIME->value,
-                                                $animeId,
+                                            'callback_data' => $this->createCallbackData(
+                                                CallbackQueryEnum::CHECK_ADDED_ANIME,
+                                                new CallbackDataDto($animeId)
                                             ),
                                         ]
                                     ]
