@@ -27,12 +27,12 @@ class ProvideAnimeListJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        private int  $telegramId,
-        private int $page = 1
-    )
-    {
+        private int $telegramId,
+        private int $page = 1,
+    ) {
         $this->animeRepository = app(AnimeRepositoryInterface::class);
 
+        $this->resolveBindings();
         $this->onQueue(QueueEnum::ANIME_LIST_QUEUE->value);
         $this->onConnection('redis');
     }

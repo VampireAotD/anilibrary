@@ -12,9 +12,9 @@ use Tuupola\Base62\PhpEncoder;
  */
 trait CanResolveIdHash
 {
-    protected GmpEncoder|PhpEncoder $encoder;
+    protected GmpEncoder | PhpEncoder $encoder;
 
-    public function __construct()
+    public function resolveBindings(): void
     {
         $this->encoder = extension_loaded('gmp') ? new GmpEncoder() : new PhpEncoder();
     }

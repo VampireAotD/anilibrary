@@ -35,6 +35,7 @@ class PickRandomAnimeJob implements ShouldQueue
     {
         $this->animeRepository = app(AnimeRepositoryInterface::class);
 
+        $this->resolveBindings();
         $this->onQueue(QueueEnum::PICK_RANDOM_ANIME_QUEUE->value);
         $this->onConnection('redis');
     }

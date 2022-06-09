@@ -25,6 +25,7 @@ class CallbackQueryHandler extends UpdateHandler
     {
         parent::__construct($bot, $update);
 
+        $this->resolveBindings();
         $this->animeRepository = app(AnimeRepositoryInterface::class);
     }
 
@@ -51,7 +52,8 @@ class CallbackQueryHandler extends UpdateHandler
         if (isset($callbackParameters['command'])) {
             switch ($callbackParameters['command']) {
                 case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
-                    $anime = $this->animeRepository->findById($callbackParameters['animeId']);
+                    $animeId = $this->decode($callbackParameters['animeId']);
+                    $anime = $this->animeRepository->findById($animeId);
                     $this->sendPhoto($this->convertToCaption($anime));
                     break;
                 case CallbackQueryEnum::PAGINATION->value:

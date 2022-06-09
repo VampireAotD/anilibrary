@@ -7,7 +7,7 @@ use App\Enums\CallbackQueryEnum;
 
 /**
  * Trait CanCreateCallbackData
- * @package Handlers\Traits
+ * @package App\Handlers\Traits
  */
 trait CanCreateCallbackData
 {

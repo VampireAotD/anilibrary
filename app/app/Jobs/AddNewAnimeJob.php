@@ -40,10 +40,11 @@ class AddNewAnimeJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(private Message $message)
+    public function __construct(private readonly Message $message)
     {
         $this->parserFactory = app(ParserFactory::class);
 
+        $this->resolveBindings();
         $this->onQueue(QueueEnum::ADD_ANIME_QUEUE->value);
         $this->onConnection('redis');
     }
