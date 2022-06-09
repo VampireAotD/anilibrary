@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Handlers\Traits;
 
-use App\Dto\Handlers\CallbackDataDto;
+use App\Dto\Handlers\CallbackDataDTO;
 use App\Enums\CallbackQueryEnum;
 
 /**
@@ -15,12 +17,12 @@ trait CanCreateCallbackData
 
     /**
      * @param CallbackQueryEnum $callbackQueryEnum
-     * @param CallbackDataDto $callbackDataDto
+     * @param CallbackDataDTO   $callbackDataDto
      * @return string
      */
     public function createCallbackData(
         CallbackQueryEnum $callbackQueryEnum,
-        CallbackDataDto $callbackDataDto
+        CallbackDataDTO $callbackDataDto
     ): string {
         return match ($callbackQueryEnum) {
             CallbackQueryEnum::CHECK_ADDED_ANIME => sprintf(

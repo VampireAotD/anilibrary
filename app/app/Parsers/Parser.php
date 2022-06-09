@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Parsers;
 
-use App\Dto\Parsers\ParseInitialDataDto;
+use App\Dto\Parsers\ParseInitialDataDTO;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
 use App\Parsers\Traits\CanParseData;
@@ -186,14 +188,14 @@ abstract class Parser
      * @param HtmlDomParser $domParser
      * @param string $url
      * @param int|null $telegramId
-     * @return ParseInitialDataDto
+     * @return ParseInitialDataDTO
      */
     protected function parseInitialData(
         HtmlDomParser $domParser,
         string $url,
         ?int $telegramId = null
-    ): ParseInitialDataDto {
-        return new ParseInitialDataDto(
+    ): ParseInitialDataDTO {
+        return new ParseInitialDataDTO(
             $url,
             $this->getTitle($domParser),
             $this->syncVoiceActing($domParser),

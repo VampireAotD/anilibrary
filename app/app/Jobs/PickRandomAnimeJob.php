@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Enums\QueueEnum;
@@ -53,10 +55,12 @@ class PickRandomAnimeJob implements ShouldQueue
             $randomAnime = $this->animeRepository->findRandomAnime();
 
             if (!$randomAnime) {
-                TeleBot::sendMessage([
-                    'text' => self::EMPTY_ANIME_DATABASE,
-                    'chat_id' => $this->userId,
-                ]);
+                TeleBot::sendMessage(
+                    [
+                        'text'    => self::EMPTY_ANIME_DATABASE,
+                        'chat_id' => $this->userId,
+                    ]
+                );
 
                 UserHistory::clearUserExecutedCommandsHistory($this->userId);
                 return;

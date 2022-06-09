@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Exceptions\Parsers\InvalidUrlException;
@@ -63,10 +65,13 @@ class ParseAnimeList extends Command
                 $this->parserFactory->getParser($link)->parse($link);
                 $bar->advance();
             } catch (GuzzleException | InvalidUrlException | UndefinedAnimeParserException $e) {
-                logger()->info($link, [
-                    'exceptionMessage' => $e->getMessage(),
-                    'exceptionTrace' => $e->getTraceAsString(),
-                ]);
+                logger()->info(
+                    $link,
+                    [
+                        'exceptionMessage' => $e->getMessage(),
+                        'exceptionTrace'   => $e->getTraceAsString(),
+                    ]
+                );
             }
         }
 

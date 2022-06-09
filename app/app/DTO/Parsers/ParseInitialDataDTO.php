@@ -1,26 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto\Parsers;
 
 use Illuminate\Contracts\Support\Arrayable;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
- * Class ParseInitialDataDto
- * @package App\Dto\Parsers
+ * Class ParseInitialDataDTO
+ * @package App\DTO\Parsers
  */
-class ParseInitialDataDto implements Arrayable
+class ParseInitialDataDTO implements Arrayable
 {
     public function __construct(
         public readonly string $url,
         public readonly string $title,
-        public readonly array $voiceActing,
+        public readonly array  $voiceActing,
         public readonly string $image,
         public readonly string $status,
-        public readonly float $rating,
+        public readonly float  $rating,
         public readonly string $episodes,
-        public readonly array $genres,
-        public readonly ?int $telegramId,
+        public readonly array  $genres,
+        public readonly ?int   $telegramId,
     ) {
     }
 

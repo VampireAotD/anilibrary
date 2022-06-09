@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Telegram;
 
 use App\Enums\CommandEnum;
@@ -51,7 +53,7 @@ class StartCommand extends CommandHandler
         parent::__construct($bot, $update);
 
         $this->telegramUserRepository = app(TelegramUserRepositoryInterface::class);
-        $this->telegramUserService = app(TelegramUserService::class);
+        $this->telegramUserService    = app(TelegramUserService::class);
     }
 
     /**
@@ -64,7 +66,7 @@ class StartCommand extends CommandHandler
         $messageFrom = $this->update->message->from;
 
         if (!$this->telegramUserRepository->findByTelegramId($messageFrom->id)) {
-            $data = $messageFrom->toArray();
+            $data                = $messageFrom->toArray();
             $data['telegram_id'] = $data['id'];
 
             $this->telegramUserService->register($data);
@@ -72,33 +74,37 @@ class StartCommand extends CommandHandler
 
         try {
             if (!$this->userHasAccess($messageFrom->id)) {
-                $this->sendMessage([
-                    'text' => self::DENIAL_MESSAGE,
-                ]);
+                $this->sendMessage(
+                    [
+                        'text' => self::DENIAL_MESSAGE,
+                    ]
+                );
                 return;
             }
 
-            $this->sendMessage([
-                'text' => self::WELCOME_MESSAGE,
-                'reply_markup' => [
-                    'keyboard' => [
-                        [
+            $this->sendMessage(
+                [
+                    'text'         => self::WELCOME_MESSAGE,
+                    'reply_markup' => [
+                        'keyboard'        => [
                             [
-                                'text' => CommandEnum::ADD_NEW_TITLE->value,
+                                [
+                                    'text' => CommandEnum::ADD_NEW_TITLE->value,
+                                ],
+                                [
+                                    'text' => CommandEnum::RANDOM_ANIME->value,
+                                ],
                             ],
                             [
-                                'text' => CommandEnum::RANDOM_ANIME->value,
+                                [
+                                    'text' => CommandEnum::ANIME_LIST->value,
+                                ],
                             ],
                         ],
-                        [
-                            [
-                                'text' => CommandEnum::ANIME_LIST->value,
-                            ],
-                        ],
+                        'resize_keyboard' => true,
                     ],
-                    'resize_keyboard' => true,
                 ]
-            ]);
+            );
         } catch (\Exception $exception) {
             logger()->channel('single')->warning(
                 $exception->getMessage(),

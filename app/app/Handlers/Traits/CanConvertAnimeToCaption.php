@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Handlers\Traits;
 
-use App\Dto\Handlers\CallbackDataDto;
+use App\Dto\Handlers\CallbackDataDTO;
 use App\Enums\AnimeCaptionEnum;
 use App\Enums\CallbackQueryEnum;
 use App\Models\Anime;
@@ -63,7 +65,7 @@ trait CanConvertAnimeToCaption
                     'text' => '<',
                     'callback_data' => $this->createCallbackData(
                         CallbackQueryEnum::PAGINATION,
-                        new CallbackDataDto(pageNumber: $pagination->currentPage() - 1),
+                        new CallbackDataDTO(pageNumber: $pagination->currentPage() - 1),
                     ),
                 ];
             }
@@ -73,7 +75,7 @@ trait CanConvertAnimeToCaption
                     'text' => '>',
                     'callback_data' => $this->createCallbackData(
                         CallbackQueryEnum::PAGINATION,
-                        new CallbackDataDto(pageNumber: $pagination->currentPage() + 1),
+                        new CallbackDataDTO(pageNumber: $pagination->currentPage() + 1),
                     ),
                 ];
             }
