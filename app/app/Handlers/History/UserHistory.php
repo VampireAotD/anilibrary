@@ -26,7 +26,7 @@ class UserHistory
     }
 
     /**
-     * @param int $userId
+     * @param int    $userId
      * @param string $command
      * @return void
      */
@@ -45,11 +45,11 @@ class UserHistory
      * @param int $userId
      * @return false|string
      */
-    public static function userLastExecutedCommand(int $userId): false|string
+    public static function userLastExecutedCommand(int $userId): false | string
     {
         [, $executedCommands] = self::generateUserStorageName($userId);
 
-        $commands = json_decode(Redis::get($executedCommands)) ?? [];
+        $commands = json_decode(Redis::get($executedCommands) ?? '') ?? [];
 
         return end($commands);
     }

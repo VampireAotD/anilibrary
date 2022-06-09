@@ -121,7 +121,7 @@ class AnimeVostParser extends Parser
     }
 
     /**
-     * @param string $url
+     * @param string   $url
      * @param int|null $telegramId
      * @return Anime
      * @throws GuzzleException

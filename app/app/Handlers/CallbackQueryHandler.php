@@ -32,7 +32,7 @@ class CallbackQueryHandler extends UpdateHandler
     }
 
     /**
-     * @param Update $update
+     * @param Update  $update
      * @param TeleBot $bot
      * @return bool
      */
@@ -55,11 +55,11 @@ class CallbackQueryHandler extends UpdateHandler
             switch ($callbackParameters['command']) {
                 case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
                     $animeId = $this->decode($callbackParameters['animeId']);
-                    $anime = $this->animeRepository->findById($animeId);
+                    $anime   = $this->animeRepository->findById($animeId);
                     $this->sendPhoto($this->convertToCaption($anime));
                     break;
                 case CallbackQueryEnum::PAGINATION->value:
-                    $page = $callbackParameters['page'] ?? 1;
+                    $page = (int)$callbackParameters['page'] ?? 1;
                     $list = $this->animeRepository->paginate(currentPage: $page);
 
                     $caption = $this->convertToCaption(
@@ -69,22 +69,27 @@ class CallbackQueryHandler extends UpdateHandler
                     );
 
                     try {
-                        $this->editMessageMedia([
-                            'media' => new InputMediaPhoto(
-                                [
-                                    'media' => $caption['photo'],
-                                    'type' => 'photo',
-                                    'caption' => $caption['caption']
-                                ]
-                            ),
-                            'reply_markup' => $caption['reply_markup']
-                        ]);
+                        $this->editMessageMedia(
+                            [
+                                'media'        => new InputMediaPhoto(
+                                    [
+                                        'media'   => $caption['photo'],
+                                        'type'    => 'photo',
+                                        'caption' => $caption['caption'],
+                                    ]
+                                ),
+                                'reply_markup' => $caption['reply_markup'],
+                            ]
+                        );
                     } catch (\Exception $exception) {
                         // Prevent bot from breaking because of next or prev page spam
-                        logger()->info('Probably spam from buttons', [
-                            'exceptionMessage' => $exception->getMessage(),
-                            'exceptionTrace' => $exception->getTraceAsString(),
-                        ]);
+                        logger()->info(
+                            'Probably spam from buttons',
+                            [
+                                'exceptionMessage' => $exception->getMessage(),
+                                'exceptionTrace'   => $exception->getTraceAsString(),
+                            ]
+                        );
                     }
                     break;
                 default:

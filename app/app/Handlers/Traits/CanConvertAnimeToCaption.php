@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Handlers\Traits;
 
-use App\Dto\Handlers\CallbackDataDTO;
+use App\DTO\Handlers\CallbackDataDTO;
 use App\Enums\AnimeCaptionEnum;
 use App\Enums\CallbackQueryEnum;
 use App\Models\Anime;

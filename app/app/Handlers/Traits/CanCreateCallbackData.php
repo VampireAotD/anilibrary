@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Handlers\Traits;
 
-use App\Dto\Handlers\CallbackDataDTO;
+use App\DTO\Handlers\CallbackDataDTO;
 use App\Enums\CallbackQueryEnum;
 
 /**
@@ -17,23 +17,23 @@ trait CanCreateCallbackData
 
     /**
      * @param CallbackQueryEnum $callbackQueryEnum
-     * @param CallbackDataDTO   $callbackDataDto
+     * @param CallbackDataDTO   $callbackDataDTO
      * @return string
      */
     public function createCallbackData(
         CallbackQueryEnum $callbackQueryEnum,
-        CallbackDataDTO $callbackDataDto
+        CallbackDataDTO $callbackDataDTO
     ): string {
         return match ($callbackQueryEnum) {
             CallbackQueryEnum::CHECK_ADDED_ANIME => sprintf(
                 'command=%s&animeId=%s',
                 CallbackQueryEnum::CHECK_ADDED_ANIME->value,
-                $this->encode($callbackDataDto->animeId),
+                $this->encode($callbackDataDTO->animeId),
             ),
             CallbackQueryEnum::PAGINATION => sprintf(
                 'command=%s&page=%d',
                 CallbackQueryEnum::PAGINATION->value,
-                $callbackDataDto->pageNumber
+                $callbackDataDTO->pageNumber
             ),
             default => ''
         };

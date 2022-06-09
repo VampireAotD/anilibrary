@@ -38,6 +38,6 @@ trait CanResolveIdHash
      */
     public function decode(string $encodedId): string
     {
-        return Uuid::fromBytes($this->encoder->decode($encodedId));
+        return Uuid::fromBytes($this->encoder->decode($encodedId))->toString();
     }
 }

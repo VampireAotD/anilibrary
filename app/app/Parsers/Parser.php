@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Parsers;
 
-use App\Dto\Parsers\ParseInitialDataDTO;
+use App\DTO\Parsers\ParseInitialDataDTO;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
 use App\Parsers\Traits\CanParseData;
@@ -32,12 +32,12 @@ abstract class Parser
     protected const MINIMAL_ANIME_EPISODES = '0 / ?';
 
     protected const DEFAULT_HEADERS = [
-        'Accept' => 'application/json, text/plain, */*',
-        'Accept-Language' => 'en-US,en;q=0.5',
+        'Accept'             => 'application/json, text/plain, */*',
+        'Accept-Language'    => 'en-US,en;q=0.5',
         'X-Application-Type' => 'WebClient',
-        'X-Client-Version' => '2.10.4',
-        'Origin' => 'https://www.google.com',
-        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0',
+        'X-Client-Version'   => '2.10.4',
+        'Origin'             => 'https://www.google.com',
+        'User-Agent'         => 'Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0',
     ];
 
     protected const MIN_DELAY_IN_MILLISECONDS = 5000;
@@ -60,7 +60,7 @@ abstract class Parser
 
     /**
      * @param string $url
-     * @param array $options
+     * @param array  $options
      * @return string
      * @throws GuzzleException
      */
@@ -76,15 +76,21 @@ abstract class Parser
      */
     protected function getInitialData(string $url): HtmlDomParser
     {
-        $rawHtml = $this->sendRequest($url, [
-            RequestOptions::COOKIES => new CookieJar(),
-            RequestOptions::HEADERS => self::DEFAULT_HEADERS,
-            RequestOptions::DELAY => rand(self::MIN_DELAY_IN_MILLISECONDS, self::MAX_DELAY_IN_MILLISECONDS),
-            RequestOptions::ALLOW_REDIRECTS => [
-                'max' => self::MAX_REDIRECTS,
-            ],
-            RequestOptions::READ_TIMEOUT => self::READ_TIMEOUT,
-        ]);
+        $rawHtml = $this->sendRequest(
+            $url,
+            [
+                RequestOptions::COOKIES         => new CookieJar(),
+                RequestOptions::HEADERS         => self::DEFAULT_HEADERS,
+                RequestOptions::DELAY           => rand(
+                    self::MIN_DELAY_IN_MILLISECONDS,
+                    self::MAX_DELAY_IN_MILLISECONDS
+                ),
+                RequestOptions::ALLOW_REDIRECTS => [
+                    'max' => self::MAX_REDIRECTS,
+                ],
+                RequestOptions::READ_TIMEOUT    => self::READ_TIMEOUT,
+            ]
+        );
 
         return HtmlDomParser::str_get_html($rawHtml);
     }
@@ -186,14 +192,14 @@ abstract class Parser
 
     /**
      * @param HtmlDomParser $domParser
-     * @param string $url
-     * @param int|null $telegramId
+     * @param string        $url
+     * @param int|null      $telegramId
      * @return ParseInitialDataDTO
      */
     protected function parseInitialData(
         HtmlDomParser $domParser,
-        string $url,
-        ?int $telegramId = null
+        string        $url,
+        ?int          $telegramId = null
     ): ParseInitialDataDTO {
         return new ParseInitialDataDTO(
             $url,
@@ -209,7 +215,7 @@ abstract class Parser
     }
 
     /**
-     * @param string $url
+     * @param string   $url
      * @param int|null $telegramId
      * @return Anime
      * @throws GuzzleException

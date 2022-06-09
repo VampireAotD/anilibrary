@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Dto\Parsers;
+namespace App\DTO\Parsers;
 
 use Illuminate\Contracts\Support\Arrayable;
 use JetBrains\PhpStorm\ArrayShape;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Dto\Handlers\CallbackDataDTO;
+use App\DTO\Handlers\CallbackDataDTO;
 use App\Enums\AnimeHandlerEnum;
 use App\Enums\CallbackQueryEnum;
 use App\Enums\CommandEnum;
@@ -90,7 +90,7 @@ class AddNewAnimeJob implements ShouldQueue
                                             'text' => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
                                             'callback_data' => $this->createCallbackData(
                                                 CallbackQueryEnum::CHECK_ADDED_ANIME,
-                                                new CallbackDataDTO($animeId)
+                                                new CallbackDataDTO((string)$animeId)
                                             ),
                                         ]
                                     ]

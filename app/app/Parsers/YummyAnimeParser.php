@@ -102,7 +102,7 @@ class YummyAnimeParser extends Parser
             return self::MINIMAL_ANIME_RATING;
         }
 
-        return $rating->text;
+        return (float)$rating->text;
     }
 
     /**
@@ -147,16 +147,19 @@ class YummyAnimeParser extends Parser
     {
         $domain = $this->getDomainFromUrl($siteUrl);
 
-        $this->sendRequest(sprintf('%s%s', $domain, $imageUrl), [
-            RequestOptions::HEADERS => self::DEFAULT_HEADERS,
-            RequestOptions::SINK => $storagePath = storage_path(sprintf('tmp/%s.webp', Str::random())),
-        ]);
+        $this->sendRequest(
+            sprintf('%s%s', $domain, $imageUrl),
+            [
+                RequestOptions::HEADERS => self::DEFAULT_HEADERS,
+                RequestOptions::SINK    => $storagePath = storage_path(sprintf('tmp/%s.webp', Str::random())),
+            ]
+        );
 
         return $storagePath;
     }
 
     /**
-     * @param string $url
+     * @param string   $url
      * @param int|null $telegramId
      * @return Anime
      * @throws GuzzleException

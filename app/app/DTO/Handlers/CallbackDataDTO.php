@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Dto\Handlers;
+namespace App\DTO\Handlers;
 
 /**
  * Class CallbackDataDTO

@@ -91,7 +91,7 @@ class AnimeGoParser extends Parser
             return self::MINIMAL_ANIME_RATING;
         }
 
-        return str_replace(',', '.', $rating->text);
+        return (float)str_replace(',', '.', $rating->text);
     }
 
     /**
