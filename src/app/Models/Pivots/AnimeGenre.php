@@ -27,4 +27,6 @@ class AnimeGenre extends Pivot
     use HasUuid, CanProvideTableName;
 
     protected $table = 'anime_genres';
+
+    protected $hidden = ['pivot'];
 }

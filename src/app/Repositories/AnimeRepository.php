@@ -25,7 +25,7 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
 
     /**
      * @param string $title
-     * @param bool $useLike
+     * @param bool   $useLike
      * @return Anime|null
      */
     public function findByTitle(string $title, bool $useLike = false): ?Anime
@@ -39,7 +39,7 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
 
     /**
      * @param string $url
-     * @param bool $useLike
+     * @param bool   $useLike
      * @return Anime|null
      */
     public function findByUrl(string $url, bool $useLike = false): ?Anime
@@ -67,25 +67,23 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     public function getAll(
         array $columns = ['*'],
         array $relations = ['image', 'genres', 'tags', 'voiceActing']
-    ): Collection
-    {
+    ): Collection {
         return $this->query()->select($columns)->with($relations)->get();
     }
 
     /**
-     * @param int $perPage
-     * @param array $columns
+     * @param int    $perPage
+     * @param array  $columns
      * @param string $pageName
-     * @param int $currentPage
+     * @param int    $currentPage
      * @return LengthAwarePaginator
      */
     public function paginate(
-        int $perPage = 1,
-        array $columns = ['*'],
+        int    $perPage = 1,
+        array  $columns = ['*'],
         string $pageName = 'page',
-        int $currentPage = 1
-    ): LengthAwarePaginator
-    {
+        int    $currentPage = 1
+    ): LengthAwarePaginator {
         return $this->query()->paginate($perPage, $columns, $pageName, $currentPage);
     }
 }

@@ -17,15 +17,15 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * Class Anime
  *
  * @package App\Models
- * @property string $id
- * @property string $title
- * @property string $url
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $deleted_at
- * @property-read \App\Models\Image|null $image
+ * @property string                                                                  $id
+ * @property string                                                                  $title
+ * @property string                                                                  $url
+ * @property \Illuminate\Support\Carbon|null                                         $created_at
+ * @property \Illuminate\Support\Carbon|null                                         $updated_at
+ * @property string|null                                                             $deleted_at
+ * @property-read \App\Models\Image|null                                             $image
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VoiceActing[] $voiceActing
- * @property-read int|null $voice_acting_count
+ * @property-read int|null                                                           $voice_acting_count
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime query()
@@ -36,16 +36,16 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereUrl($value)
  * @mixin \Eloquent
- * @property string $status
- * @property float $rating
- * @property string|null $episodes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Genre[] $genres
- * @property-read int|null $genres_count
+ * @property string                                                                  $status
+ * @property float                                                                   $rating
+ * @property string|null                                                             $episodes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Genre[]       $genres
+ * @property-read int|null                                                           $genres_count
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereEpisodes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereRating($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereStatus($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
- * @property-read int|null $tags_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[]         $tags
+ * @property-read int|null                                                           $tags_count
  */
 class Anime extends Model
 {
@@ -64,7 +64,8 @@ class Anime extends Model
      */
     public function voiceActing(): BelongsToMany
     {
-        return $this->belongsToMany(VoiceActing::class)->using(AnimeVoiceActing::class);
+        return $this->belongsToMany(VoiceActing::class)
+            ->using(AnimeVoiceActing::class);
     }
 
     /**
@@ -89,6 +90,7 @@ class Anime extends Model
      */
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, AnimeTag::getTableName())->using(AnimeTag::class);
+        return $this->belongsToMany(Tag::class, AnimeTag::getTableName())
+            ->using(AnimeTag::class);
     }
 }

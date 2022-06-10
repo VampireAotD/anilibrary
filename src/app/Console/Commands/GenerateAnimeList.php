@@ -47,18 +47,22 @@ class GenerateAnimeList extends Command
     {
         $animeList = $this->animeRepository->getAll(
             [
+                'id',
                 'title',
                 'url',
                 'rating',
                 'episodes',
             ],
-            []
+            [
+                'image:model_id,path',
+                'genres:name',
+                'voiceActing:name',
+            ]
         );
 
         File::put(config('filesystems.animeListPath'), $animeList->toJson(JSON_PRETTY_PRINT));
 
-        Mail::to(config('admin.email'))
-            ->queue(new AnimeListMail());
+        Mail::to(config('admin.email'))->queue(new AnimeListMail());
 
         return Command::SUCCESS;
     }

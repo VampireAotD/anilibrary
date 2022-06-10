@@ -24,4 +24,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class AnimeVoiceActing extends Pivot
 {
     use HasUuid;
+
+    protected $hidden = ['pivot'];
 }
