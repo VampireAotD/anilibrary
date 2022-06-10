@@ -22,7 +22,7 @@ trait CanCreateCallbackData
      */
     public function createCallbackData(
         CallbackQueryEnum $callbackQueryEnum,
-        CallbackDataDTO $callbackDataDTO
+        CallbackDataDTO   $callbackDataDTO
     ): string {
         return match ($callbackQueryEnum) {
             CallbackQueryEnum::CHECK_ADDED_ANIME => sprintf(
@@ -30,12 +30,12 @@ trait CanCreateCallbackData
                 CallbackQueryEnum::CHECK_ADDED_ANIME->value,
                 $this->encode($callbackDataDTO->animeId),
             ),
-            CallbackQueryEnum::PAGINATION => sprintf(
+            CallbackQueryEnum::PAGINATION        => sprintf(
                 'command=%s&page=%d',
                 CallbackQueryEnum::PAGINATION->value,
                 $callbackDataDTO->pageNumber
             ),
-            default => ''
+            default                              => ''
         };
     }
 }

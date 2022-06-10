@@ -19,18 +19,18 @@ trait CanConvertAnimeToCaption
     use CanCreateCallbackData;
 
     /**
-     * @param Anime $anime
-     * @param int|null $userId
+     * @param Anime                     $anime
+     * @param int|null                  $userId
      * @param LengthAwarePaginator|null $pagination
      * @return array
      */
     private function convertToCaption(
-        Anime $anime,
-        ?int $userId = null,
+        Anime                 $anime,
+        ?int                  $userId = null,
         ?LengthAwarePaginator $pagination = null
     ): array {
         $response = [
-            'caption' => sprintf(
+            'caption'      => sprintf(
                 "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
                 $anime->title,
                 $anime->status,
@@ -40,16 +40,16 @@ trait CanConvertAnimeToCaption
                 $anime->genres->implode('name', ', '),
                 $anime->tags->implode('name', ', '),
             ),
-            'photo' => $anime->image->path,
+            'photo'        => $anime->image->path,
             'reply_markup' => [
                 'inline_keyboard' => [
                     [
                         [
                             'text' => AnimeCaptionEnum::LINK->value,
-                            'url' => $anime->url,
+                            'url'  => $anime->url,
                         ],
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -62,7 +62,7 @@ trait CanConvertAnimeToCaption
 
             if ($pagination->previousPageUrl()) {
                 $pages[] = [
-                    'text' => '<',
+                    'text'          => '<',
                     'callback_data' => $this->createCallbackData(
                         CallbackQueryEnum::PAGINATION,
                         new CallbackDataDTO(pageNumber: $pagination->currentPage() - 1),
@@ -72,7 +72,7 @@ trait CanConvertAnimeToCaption
 
             if ($pagination->nextPageUrl()) {
                 $pages[] = [
-                    'text' => '>',
+                    'text'          => '>',
                     'callback_data' => $this->createCallbackData(
                         CallbackQueryEnum::PAGINATION,
                         new CallbackDataDTO(pageNumber: $pagination->currentPage() + 1),

@@ -6,7 +6,7 @@ namespace App\Handlers;
 
 use App\Enums\ChatMemberStatusEnum;
 use App\Handlers\History\UserHistory;
-use WeStacks\TeleBot\Interfaces\UpdateHandler;
+use WeStacks\TeleBot\Handlers\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 
@@ -17,13 +17,11 @@ use WeStacks\TeleBot\TeleBot;
 class ChatMemberHandler extends UpdateHandler
 {
     /**
-     * @param Update $update
-     * @param TeleBot $bot
      * @return bool
      */
-    public static function trigger(Update $update, TeleBot $bot): bool
+    public function trigger(): bool
     {
-        return isset($update->my_chat_member);
+        return isset($this->update->my_chat_member);
     }
 
     /**
@@ -35,7 +33,7 @@ class ChatMemberHandler extends UpdateHandler
 
         match ($chatMember->new_chat_member->status) {
             ChatMemberStatusEnum::KICKED->value => UserHistory::clearUserExecutedCommandsHistory($chatMember->from->id),
-            default => '',
+            default                             => '',
         };
     }
 }

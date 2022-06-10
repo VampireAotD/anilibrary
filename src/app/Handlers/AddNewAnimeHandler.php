@@ -6,7 +6,7 @@ namespace App\Handlers;
 
 use App\Handlers\History\UserHistory;
 use App\Jobs\AddNewAnimeJob;
-use WeStacks\TeleBot\Interfaces\UpdateHandler;
+use WeStacks\TeleBot\Handlers\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 use App\Enums\CommandEnum;
@@ -18,17 +18,15 @@ use App\Enums\CommandEnum;
 class AddNewAnimeHandler extends UpdateHandler
 {
     /**
-     * @param Update $update
-     * @param TeleBot $bot
      * @return bool
      */
-    public static function trigger(Update $update, TeleBot $bot): bool
+    public function trigger(): bool
     {
         $allowedCommands = [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
 
-        return isset($update->message->text)
+        return isset($this->update->message->text)
             && in_array(
-                UserHistory::userLastExecutedCommand($update->message->from->id),
+                UserHistory::userLastExecutedCommand($this->update->message->from->id),
                 $allowedCommands,
                 true
             );

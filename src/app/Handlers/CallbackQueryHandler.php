@@ -7,8 +7,7 @@ namespace App\Handlers;
 use App\Handlers\History\UserHistory;
 use App\Handlers\Traits\CanConvertAnimeToCaption;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
-use WeStacks\TeleBot\Interfaces\UpdateHandler;
-use WeStacks\TeleBot\Objects\InputMedia\InputMediaPhoto;
+use WeStacks\TeleBot\Handlers\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 use App\Enums\CallbackQueryEnum;
@@ -32,13 +31,11 @@ class CallbackQueryHandler extends UpdateHandler
     }
 
     /**
-     * @param Update  $update
-     * @param TeleBot $bot
      * @return bool
      */
-    public static function trigger(Update $update, TeleBot $bot): bool
+    public function trigger(): bool
     {
-        return isset($update->callback_query);
+        return isset($this->update->callback_query);
     }
 
     /**
@@ -68,16 +65,15 @@ class CallbackQueryHandler extends UpdateHandler
                         $list
                     );
 
+
                     try {
                         $this->editMessageMedia(
                             [
-                                'media'        => new InputMediaPhoto(
-                                    [
-                                        'media'   => $caption['photo'],
-                                        'type'    => 'photo',
-                                        'caption' => $caption['caption'],
-                                    ]
-                                ),
+                                'media'        => [
+                                    'media'   => $caption['photo'],
+                                    'type'    => 'photo',
+                                    'caption' => $caption['caption'],
+                                ],
                                 'reply_markup' => $caption['reply_markup'],
                             ]
                         );

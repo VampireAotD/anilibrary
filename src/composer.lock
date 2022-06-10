@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17b159a87ee14b3f783743732505a18e",
+    "content-hash": "f60c5b025d044730940ba768113428b0",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -5894,24 +5894,25 @@
         },
         {
             "name": "westacks/telebot",
-            "version": "1.14.9",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/westacks/telebot.git",
-                "reference": "024dd2cec1a555130eab1e42d6e3a0468980b62a"
+                "reference": "e031682cb5b5d680843b268117848ed45c636396"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/westacks/telebot/zipball/024dd2cec1a555130eab1e42d6e3a0468980b62a",
-                "reference": "024dd2cec1a555130eab1e42d6e3a0468980b62a",
+                "url": "https://api.github.com/repos/westacks/telebot/zipball/e031682cb5b5d680843b268117848ed45c636396",
+                "reference": "e031682cb5b5d680843b268117848ed45c636396",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.0 || ^7.0",
                 "illuminate/support": "^5.5 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
-                "php": "^7.2 || ^8.0"
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.8",
                 "orchestra/testbench": "^3.5 || ^4.0 || ^5.0 || ^6.0 || ^7.0",
                 "php-coveralls/php-coveralls": "^2.2",
                 "phpunit/phpunit": "^8.0 || ^9.0"
@@ -5920,7 +5921,7 @@
             "extra": {
                 "laravel": {
                     "providers": [
-                        "WeStacks\\TeleBot\\Laravel\\TeleBotServiceProvider"
+                        "WeStacks\\TeleBot\\Laravel\\Providers\\TeleBotServiceProvider"
                     ],
                     "aliases": {
                         "TeleBot": "WeStacks\\TeleBot\\Laravel\\TeleBot"
@@ -5947,9 +5948,9 @@
             "homepage": "https://github.com/westacks/telebot",
             "support": {
                 "issues": "https://github.com/westacks/telebot/issues",
-                "source": "https://github.com/westacks/telebot/tree/1.14.9"
+                "source": "https://github.com/westacks/telebot/tree/2.0.2"
             },
-            "time": "2022-04-16T06:52:25+00:00"
+            "time": "2022-05-19T08:32:15+00:00"
         }
     ],
     "packages-dev": [
