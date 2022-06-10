@@ -117,7 +117,9 @@ class AnimeGoParser extends Parser
             return [];
         }
 
-        $genres = explode(',', preg_replace("#\s#mi", '', $genresList->text()));
+        $genres = explode(',', $genresList->text());
+
+        $genres = array_map('trim', $genres);
 
         return $this->syncGenresToDb($genres);
     }

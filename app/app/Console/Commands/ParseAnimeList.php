@@ -34,8 +34,9 @@ class ParseAnimeList extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct(private ParserFactory $parserFactory)
-    {
+    public function __construct(
+        private readonly ParserFactory $parserFactory
+    ) {
         parent::__construct();
     }
 
@@ -49,7 +50,7 @@ class ParseAnimeList extends Command
         $pathToFile = config('filesystems.animeListPath');
 
         if (!File::exists($pathToFile)) {
-            $this->line('Anime list not found', 'warning');
+            $this->warn('Anime list not found');
 
             return Command::FAILURE;
         }

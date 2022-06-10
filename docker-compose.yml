@@ -24,21 +24,20 @@ services:
       backend:
 
   database:
-    build:
-      context: docker/mysql
-      dockerfile: ./mysql.Dockerfile
-    command: --default-authentication-plugin=mysql_native_password
+    image: mysql:8.0
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: 1
-      MYSQL_DATABASE: anilibrary
-      MYSQL_USER: u_anilibrary
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-anilibrary}
+      MYSQL_USER: ${MYSQL_USER:-u_anilibrary}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-default}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
     container_name: database
     tty: true
     volumes:
-    - ./runtime/mysql:/var/lib/mysql:rw
+      - ./runtime/mysql:/var/lib/mysql:rw
+      - ./docker/mysql/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
     ports:
-    - ${MYSQL_PORT:-3306}:3306
+      - ${MYSQL_PORT:-3306}:3306
     networks:
       backend:
 
@@ -49,7 +48,7 @@ services:
       PMA_HOST: database
       PMA_PORT: 3306
     ports:
-    - "7760:80"
+      - "7760:80"
     networks:
       backend:
 
