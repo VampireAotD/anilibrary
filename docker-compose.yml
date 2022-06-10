@@ -17,7 +17,7 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - ./app:/anilibrary
+      - ./src:/anilibrary
       - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
       - ./docker/supervisor/conf.d/:/etc/supervisor/conf.d/
     networks:
