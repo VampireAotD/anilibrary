@@ -29,7 +29,9 @@ install:
 	$(info Initialising app...)
 	@cp .env.example .env;
 	$(docker_compose_bin) run --rm app cp .env.example .env;
-	$(docker_compose_bin) run --rm app ./artisan migrate:fresh --seed;
+	$(docker_compose_bin) run --rm app composer update;
+	$(docker_compose_bin) run --rm app ./artisan key:generate;
+	$(docker_compose_bin) run --rm app ./artisan migrate --seed;
 	$(docker_compose_bin) run --rm app ./artisan anime-list:parse;
 
 .PHONY: supervisor
