@@ -41,6 +41,7 @@ class Tag extends Model
      */
     public function anime(): BelongsToMany
     {
-        return $this->belongsToMany(Anime::class)->using(AnimeTag::class);
+        return $this->belongsToMany(Anime::class)
+            ->using(AnimeTag::class);
     }
 }

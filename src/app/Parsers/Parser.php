@@ -210,7 +210,7 @@ abstract class Parser
             $this->getRating($domParser),
             $this->getEpisodes($domParser),
             $this->syncGenres($domParser),
-            $telegramId ?? config('telebot.adminId')
+            $telegramId ?? config('admin.id')
         );
     }
 

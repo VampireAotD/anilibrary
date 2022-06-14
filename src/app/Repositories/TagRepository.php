@@ -29,14 +29,8 @@ class TagRepository extends BaseRepository implements TagRepositoryInterface
     public function findByTelegramId(int $telegramId): array
     {
         return match ($telegramId) {
-            config('telebot.adminId') => [
+            config('admin.id') => [
                 $this->findByName(TagSeederEnum::ADMIN_TAG->value)?->id,
-            ],
-            config('telebot.firstAllowedUserId') => [
-                $this->findByName(TagSeederEnum::FIRST_MODERATOR_TAG->value, ['id'])?->id,
-            ],
-            config('telebot.secondAllowedUserId') => [
-                $this->findByName(TagSeederEnum::SECOND_MODERATOR_TAG->value, ['id'])?->id,
             ],
             default => []
         };

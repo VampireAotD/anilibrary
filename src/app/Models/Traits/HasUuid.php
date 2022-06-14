@@ -22,11 +22,13 @@ trait HasUuid
     {
         parent::boot();
 
-        static::creating(function (Model $model) {
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = Str::orderedUuid();
+        static::creating(
+            function (Model $model) {
+                if (empty($model->{$model->getKeyName()})) {
+                    $model->{$model->getKeyName()} = Str::orderedUuid();
+                }
             }
-        });
+        );
     }
 
     /**

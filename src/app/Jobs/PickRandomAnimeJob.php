@@ -26,14 +26,10 @@ class PickRandomAnimeJob implements ShouldQueue
 
     private AnimeRepositoryInterface $animeRepository;
 
-    private const EMPTY_ANIME_DATABASE = "К сожалению сейчас бот не содержит информацию ни об одном аниме \xF0\x9F\x98\xAD";
-
     /**
-     * Create a new job instance.
-     *
-     * @return void
+     * @param int $userId
      */
-    public function __construct(private int $userId)
+    public function __construct(private readonly int $userId)
     {
         $this->animeRepository = app(AnimeRepositoryInterface::class);
 
@@ -57,7 +53,7 @@ class PickRandomAnimeJob implements ShouldQueue
             if (!$randomAnime) {
                 TeleBot::sendMessage(
                     [
-                        'text'    => self::EMPTY_ANIME_DATABASE,
+                        'text'    => QueueEnum::EMPTY_ANIME_DATABASE->value,
                         'chat_id' => $this->userId,
                     ]
                 );
