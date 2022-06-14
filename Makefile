@@ -35,4 +35,4 @@ install:
 .PHONY: supervisor
 supervisor:
 	$(info Launching supervisor...)
-	docker-compose run -d --name supervisor app supervisord
+	$(docker_compose_bin) run -d --name supervisor app supervisord

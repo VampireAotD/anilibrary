@@ -13,14 +13,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Class TelegramUser
  *
  * @package App\Models
- * @property string $id
- * @property int $telegram_id
+ * @property string                          $id
+ * @property int                             $telegram_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $first_name
- * @property string|null $last_name
- * @property string|null $username
- * @property-read \App\Models\User $user
+ * @property string|null                     $first_name
+ * @property string|null                     $last_name
+ * @property string|null                     $username
+ * @property-read \App\Models\User           $user
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser query()

@@ -62,24 +62,4 @@ return [
             ],
         ],
     ],
-
-    /*-------------------------------------------------------------------------
-    | Allowed Telegram Ids
-    |--------------------------------------------------------------------------
-    |
-    | List of allowed Telegram ids who can use the bot
-    |
-    */
-
-    'adminId'               => $adminId = (int)env('ADMIN_ID', ''),
-
-    'firstAllowedUserId'    => $firstAllowedUserId = (int)env('FIRST_ALLOWED_USER_ID', ''),
-
-    'secondAllowedUserId'   => $secondAllowedUserId = (int)env('SECOND_ALLOWED_USER_ID', ''),
-
-    'allowedTelegramIds' => [
-        $adminId,
-        $firstAllowedUserId,
-        $secondAllowedUserId,
-    ],
 ];

@@ -13,9 +13,13 @@ use App\Repositories\Contracts\Tag\TagRepositoryInterface;
  */
 class AnimeService
 {
+    /**
+     * @param TagRepositoryInterface $tagRepository
+     * @param ImageService           $imageService
+     */
     public function __construct(
         private TagRepositoryInterface $tagRepository,
-        private ImageService  $imageService
+        private ImageService           $imageService
     ) {
     }
 
@@ -25,7 +29,8 @@ class AnimeService
      */
     public function create(array $data): Anime
     {
-        $anime = Anime::updateOrCreate(['title' => $data['title'], 'url' => $data['url']], $data);
+        // TODO receive DTO
+        $anime = Anime::updateOrCreate(['title' => $data['title']], $data);
 
         $this->imageService->upsert($data['image'], $anime);
 

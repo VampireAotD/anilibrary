@@ -16,8 +16,6 @@ trait CanCheckIfUserHasAccessForBot
      */
     private function userHasAccess(int $id): bool
     {
-        $allowedIds = config('telebot.allowedTelegramIds');
-
-        return in_array($id, $allowedIds, true);
+        return $id === config('admin.id');
     }
 }

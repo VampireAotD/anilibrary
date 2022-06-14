@@ -8,6 +8,10 @@ use App\Repositories\Contracts\FindById;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class BaseRepository
+ * @package App\Repositories
+ */
 abstract class BaseRepository implements FindById
 {
     private Model $model;
@@ -31,11 +35,11 @@ abstract class BaseRepository implements FindById
     }
 
     /**
-     * @param string $uuid
+     * @param string $id
      * @return Model|null
      */
-    public function findById(string $uuid): ?Model
+    public function findById(string $id): ?Model
     {
-        return $this->query()->find($uuid);
+        return $this->query()->find($id);
     }
 }
