@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\AnimeList;
 
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Exceptions\Parsers\UndefinedAnimeParserException;
@@ -12,10 +12,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
 /**
- * Class ParseAnimeList
- * @package App\Console\Commands
+ * Class Parse
+ * @package App\Console\Commands\AnimeList
  */
-class ParseAnimeList extends Command
+class Parse extends Command
 {
     /**
      * The name and signature of the console command.

@@ -1,8 +1,5 @@
 version: '3.9'
 
-networks:
-  backend:
-
 services:
   app:
     build:
@@ -21,7 +18,8 @@ services:
       - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
       - ./docker/supervisor/conf.d/:/etc/supervisor/conf.d/
     networks:
-      backend:
+      - local
+      - anilibrary
 
   database:
     image: mysql:8.0
@@ -32,14 +30,13 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
     container_name: database
-    tty: true
     volumes:
-      - ./runtime/mysql:/var/lib/mysql:rw
+      - mysql-data:/var/lib/mysql:rw
       - ./docker/mysql/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
     ports:
       - ${MYSQL_PORT:-3306}:3306
     networks:
-      backend:
+      - local
 
   phpmyadmin:
     image: phpmyadmin
@@ -50,7 +47,7 @@ services:
     ports:
       - "7760:80"
     networks:
-      backend:
+      - local
 
   redis:
     image: redis:6.2.6
@@ -58,11 +55,11 @@ services:
     hostname: ${REDIS_HOSTNAME:-localhost}
     command: redis-server --requirepass ${REDIS_PASSWORD:-default}
     volumes:
-      - ./runtime/redis/:/data
+      - anilibrary-redis-data:/data
     ports:
       - ${REDIS_PORT:-6379}:6379
     networks:
-      backend:
+      - local
 
   redis-commander:
     container_name: redis-commander
@@ -73,4 +70,14 @@ services:
     ports:
       - "8081:8081"
     networks:
-      backend:
+      - local
+
+networks:
+  local:
+    driver: bridge
+  anilibrary:
+    name: anilibrary
+
+volumes:
+  mysql-data:
+  anilibrary-redis-data:
