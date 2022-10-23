@@ -16,7 +16,7 @@
         "predis/predis": "^2.0.0",
         "tuupola/base62": "^2.1",
         "voku/simple_html_dom": "^4.8.6",
-        "westacks/telebot": "^2.0.2"
+        "westacks/telebot": "^2.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12.3",
