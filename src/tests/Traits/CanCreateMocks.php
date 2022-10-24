@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Traits;
 
-use App\Telegram\Handlers\History\UserHistory;
+use App\Telegram\History\UserHistory;
 use Mockery;
 use WeStacks\TeleBot\Laravel\TeleBot as LaravelWrapper;
 use WeStacks\TeleBot\TeleBot;

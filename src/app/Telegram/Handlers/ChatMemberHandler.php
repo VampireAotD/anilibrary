@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Telegram\Handlers;
 
 use App\Enums\Telegram\ChatMemberStatusEnum;
-use App\Telegram\Handlers\History\UserHistory;
+use App\Telegram\History\UserHistory;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
 
 /**

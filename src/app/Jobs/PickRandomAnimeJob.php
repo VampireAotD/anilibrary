@@ -6,8 +6,8 @@ namespace App\Jobs;
 
 use App\Enums\QueueEnum;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
-use App\Telegram\Handlers\History\UserHistory;
 use App\Telegram\Handlers\Traits\CanConvertAnimeToCaption;
+use App\Telegram\History\UserHistory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

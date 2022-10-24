@@ -9,8 +9,8 @@ use App\Enums\QueueEnum;
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CallbackQueryEnum;
 use App\Factories\ParserFactory;
-use App\Telegram\Handlers\History\UserHistory;
 use App\Telegram\Handlers\Traits\CanCreateCallbackData;
+use App\Telegram\History\UserHistory;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -55,7 +55,7 @@ class AddNewAnimeJob implements ShouldQueue
     public function handle(): void
     {
         $message    = $this->message;
-        $telegramId = $message->from->id;
+        $telegramId = $message->chat->id;
 
         try {
             UserHistory::addLastActiveTime($telegramId);

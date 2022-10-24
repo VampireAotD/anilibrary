@@ -10,20 +10,42 @@ trait CanCreateFakeUpdates
 {
     private int $fakeTelegramId = -1;
 
-    public function createFakeMessageUpdate(?int $telegramId = null, ?string $message = null): Update
+    /**
+     * @param int|null    $chatId
+     * @param string|null $message
+     * @return Update
+     */
+    public function createFakeTextMessageUpdate(?int $chatId = null, ?string $message = null): Update
     {
-        $message    ??= Str::random();
-        $telegramId ??= $this->fakeTelegramId;
+        $message ??= Str::random();
+        $chatId  ??= $this->fakeTelegramId;
 
-        return new Update([
+        return Update::create([
             'message' => [
-                'from' => [
-                    'id' => $telegramId,
-                ],
                 'chat' => [
-                    'id' => $this->fakeTelegramId,
+                    'id' => $chatId,
                 ],
                 'text' => $message,
+            ],
+        ]);
+    }
+
+    /**
+     * @param int|null $chatId
+     * @return Update
+     */
+    public function createFakeStickerMessageUpdate(?int $chatId = null): Update
+    {
+        $chatId ??= $this->fakeTelegramId;
+
+        return Update::create([
+            'message' => [
+                'chat'    => [
+                    'id' => $chatId,
+                ],
+                'sticker' => [
+                    'set_name' => Str::random(),
+                ],
             ],
         ]);
     }

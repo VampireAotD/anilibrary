@@ -6,8 +6,8 @@ namespace App\Telegram\Handlers;
 
 use App\Enums\Telegram\CallbackQueryEnum;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
-use App\Telegram\Handlers\History\UserHistory;
 use App\Telegram\Handlers\Traits\CanConvertAnimeToCaption;
+use App\Telegram\History\UserHistory;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;

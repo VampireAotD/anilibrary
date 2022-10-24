@@ -8,9 +8,11 @@ use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
 use App\Jobs\AddNewAnimeJob;
 use App\Rules\SupportedUrl;
-use App\Telegram\Handlers\History\UserHistory;
+use App\Telegram\History\UserHistory;
+use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Support\Facades\Validator;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
+use WeStacks\TeleBot\Objects\Message;
 
 /**
  * Class AddNewAnimeHandler
@@ -27,21 +29,25 @@ class AddNewAnimeHandler extends UpdateHandler
 
         return isset($this->update->message->text)
             && in_array(
-                UserHistory::userLastExecutedCommand($this->update->message->from->id),
+                UserHistory::userLastExecutedCommand($this->update->message->chat->id),
                 $allowedCommands,
                 true
             );
     }
 
+    /**
+     * @return PromiseInterface|void|Message
+     */
     public function handle()
     {
         $message = $this->update->message;
+        $chatId  = $message->chat->id;
 
         if (!in_array($message->text, [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value], true)) {
             if (!$this->validUrl($message->text)) {
                 return $this->sendMessage([
                     'text'    => AnimeHandlerEnum::INVALID_URL->value,
-                    'chat_id' => $message->from->id,
+                    'chat_id' => $chatId,
                 ]);
             }
 
@@ -49,11 +55,15 @@ class AddNewAnimeHandler extends UpdateHandler
 
             return $this->sendMessage([
                 'text'    => AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value,
-                'chat_id' => $message->from->id,
+                'chat_id' => $chatId,
             ]);
         }
     }
 
+    /**
+     * @param string $url
+     * @return bool
+     */
     private function validUrl(string $url): bool
     {
         $validator = Validator::make(['url' => $url], [

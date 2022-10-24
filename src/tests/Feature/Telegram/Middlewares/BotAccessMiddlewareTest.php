@@ -31,7 +31,7 @@ class BotAccessMiddlewareTest extends TestCase
      */
     public function testUserCannotInteractWithBotIfHeIsNotAdmin(): void
     {
-        $update   = $this->createFakeMessageUpdate();
+        $update   = $this->createFakeTextMessageUpdate();
         $response = $this->bot->handleUpdate($update);
 
         $this->assertEquals(BotAccessEnum::ACCESS_DENIED_MESSAGE->value, $response->text);
@@ -42,7 +42,7 @@ class BotAccessMiddlewareTest extends TestCase
      */
     public function testAdminCanInteractWithBot(): void
     {
-        $update   = $this->createFakeMessageUpdate(config('admin.id'));
+        $update   = $this->createFakeTextMessageUpdate(config('admin.id'));
         $response = $this->bot->handleUpdate($update);
 
         // If user is an admin he can interact with bot commands

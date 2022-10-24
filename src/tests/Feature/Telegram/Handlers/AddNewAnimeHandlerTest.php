@@ -38,7 +38,7 @@ class AddNewAnimeHandlerTest extends TestCase
 
     public function testBotWillNotScrapeInvalid(): void
     {
-        $update   = $this->createFakeMessageUpdate();
+        $update   = $this->createFakeTextMessageUpdate();
         $response = $this->bot->handleUpdate($update);
 
         $this->assertEquals(AnimeHandlerEnum::INVALID_URL->value, $response->text);
@@ -46,7 +46,7 @@ class AddNewAnimeHandlerTest extends TestCase
 
     public function testBotWillNotScrapeUnsupportedUrl(): void
     {
-        $update   = $this->createFakeMessageUpdate(message: $this->faker->url);
+        $update   = $this->createFakeTextMessageUpdate(message: $this->faker->url);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertEquals(AnimeHandlerEnum::INVALID_URL->value, $response->text);
@@ -56,7 +56,7 @@ class AddNewAnimeHandlerTest extends TestCase
     {
         Bus::fake();
 
-        $update   = $this->createFakeMessageUpdate(message: self::ANIME_GO_URL);
+        $update   = $this->createFakeTextMessageUpdate(message: self::ANIME_GO_URL);
         $response = $this->bot->handleUpdate($update);
 
         Bus::assertDispatched(AddNewAnimeJob::class);

@@ -6,6 +6,7 @@ use App\Telegram\Handlers\CallbackQueryHandler;
 use App\Telegram\Handlers\ChatMemberHandler;
 use App\Telegram\Handlers\CommandHandler;
 use App\Telegram\Middlewares\BotAccessMiddleware;
+use App\Telegram\Middlewares\UserActivityMiddleware;
 
 return [
     /*-------------------------------------------------------------------------
@@ -54,6 +55,7 @@ return [
             'handlers' => [
                 // Middlewares
                 new BotAccessMiddleware,
+                new UserActivityMiddleware,
 
                 // Commands
                 StartCommand::class,
