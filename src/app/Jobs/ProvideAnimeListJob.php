@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Enums\QueueEnum;
-use App\Handlers\Traits\CanConvertAnimeToCaption;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
+use App\Telegram\Handlers\Traits\CanConvertAnimeToCaption;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -17,6 +16,7 @@ use WeStacks\TeleBot\Laravel\TeleBot;
 
 /**
  * Class ProvideAnimeListJob
+ *
  * @package App\Jobs
  */
 class ProvideAnimeListJob implements ShouldQueue

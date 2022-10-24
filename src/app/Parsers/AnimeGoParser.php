@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Parsers;
 
-use App\Enums\AnimeStatusEnum;
+use App\Enums\Telegram\AnimeStatusEnum;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
 use GuzzleHttp\Exception\GuzzleException;
@@ -91,7 +91,7 @@ class AnimeGoParser extends Parser
             return self::MINIMAL_ANIME_RATING;
         }
 
-        return (float)str_replace(',', '.', $rating->text);
+        return (float) str_replace(',', '.', $rating->text);
     }
 
     /**
@@ -126,7 +126,7 @@ class AnimeGoParser extends Parser
 
 
     /**
-     * @param string $url
+     * @param string   $url
      * @param int|null $telegramId
      * @return Anime
      * @throws GuzzleException

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Parsers;
 
-use App\Enums\AnimeStatusEnum;
+use App\Enums\Telegram\AnimeStatusEnum;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
 use GuzzleHttp\Exception\GuzzleException;
@@ -102,7 +102,7 @@ class YummyAnimeParser extends Parser
             return self::MINIMAL_ANIME_RATING;
         }
 
-        return (float)$rating->text;
+        return (float) $rating->text;
     }
 
     /**

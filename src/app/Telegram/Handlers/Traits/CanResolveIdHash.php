@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Handlers\Traits;
+namespace App\Telegram\Handlers\Traits;
 
 use Ramsey\Uuid\Uuid;
 use Tuupola\Base62\GmpEncoder;

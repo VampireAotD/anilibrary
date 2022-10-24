@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Handlers;
+namespace App\Telegram\Handlers;
 
-use App\Handlers\History\UserHistory;
-use App\Handlers\Traits\CanConvertAnimeToCaption;
+use App\Enums\Telegram\CallbackQueryEnum;
 use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
+use App\Telegram\Handlers\History\UserHistory;
+use App\Telegram\Handlers\Traits\CanConvertAnimeToCaption;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
-use App\Enums\CallbackQueryEnum;
 
 /**
  * Class CallbackQueryHandler
@@ -56,7 +56,7 @@ class CallbackQueryHandler extends UpdateHandler
                     $this->sendPhoto($this->convertToCaption($anime));
                     break;
                 case CallbackQueryEnum::PAGINATION->value:
-                    $page = (int)$callbackParameters['page'] ?? 1;
+                    $page = (int) $callbackParameters['page'] ?? 1;
                     $list = $this->animeRepository->paginate(currentPage: $page);
 
                     $caption = $this->convertToCaption(

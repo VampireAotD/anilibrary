@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Parsers\Traits;
 
-use App\Enums\AnimeHandlerEnum;
+use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Exceptions\Parsers\InvalidUrlException;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -15,7 +15,7 @@ use GuzzleHttp\Exception\GuzzleException;
 trait CanParseData
 {
     /**
-     * @param string $url
+     * @param string   $url
      * @param int|null $telegramId
      * @return array
      * @throws InvalidUrlException

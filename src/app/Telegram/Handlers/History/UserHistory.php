@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Handlers\History;
+namespace App\Telegram\Handlers\History;
 
 use Illuminate\Support\Facades\Redis;
 

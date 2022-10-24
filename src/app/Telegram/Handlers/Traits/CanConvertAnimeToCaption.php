@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Handlers\Traits;
+namespace App\Telegram\Handlers\Traits;
 
 use App\DTO\Handlers\CallbackDataDTO;
-use App\Enums\AnimeCaptionEnum;
-use App\Enums\CallbackQueryEnum;
+use App\Enums\Telegram\AnimeCaptionEnum;
+use App\Enums\Telegram\CallbackQueryEnum;
 use App\Models\Anime;
 use Illuminate\Pagination\LengthAwarePaginator;
 

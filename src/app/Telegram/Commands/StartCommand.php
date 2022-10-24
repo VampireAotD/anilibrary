@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands\Telegram;
+namespace App\Telegram\Commands;
 
-use App\Enums\CommandEnum;
-use App\Handlers\Traits\CanCheckIfUserHasAccessForBot;
+use App\Enums\Telegram\CommandEnum;
 use App\Repositories\Contracts\TelegramUser\TelegramUserRepositoryInterface;
 use App\Services\TelegramUserService;
 use WeStacks\TeleBot\Handlers\CommandHandler;
@@ -18,8 +17,6 @@ use WeStacks\TeleBot\TeleBot;
  */
 class StartCommand extends CommandHandler
 {
-    use CanCheckIfUserHasAccessForBot;
-
     /**
      * The name and signature of the console command.
      *
@@ -43,8 +40,6 @@ class StartCommand extends CommandHandler
      * @var TelegramUserService
      */
     private TelegramUserService $telegramUserService;
-
-    private const DENIAL_MESSAGE = "\xF0\x9F\x98\xBF К сожалению, у Вас нету полномочий пользоваться данным ботом";
 
     private const WELCOME_MESSAGE = "Вас приветствует AniLibrary Bot!\xF0\x9F\x91\x8B\nПожалуйста, выберете интересующее Вас действие:";
 
@@ -73,15 +68,6 @@ class StartCommand extends CommandHandler
         }
 
         try {
-            if (!$this->userHasAccess($messageFrom->id)) {
-                $this->sendMessage(
-                    [
-                        'text' => self::DENIAL_MESSAGE,
-                    ]
-                );
-                return;
-            }
-
             $this->sendMessage(
                 [
                     'text'         => self::WELCOME_MESSAGE,

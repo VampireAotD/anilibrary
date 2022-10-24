@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Factories;
 
+use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Exceptions\Parsers\UndefinedAnimeParserException;
 use App\Parsers\AnimeGoParser;
 use App\Parsers\AnimeVostParser;
 use App\Parsers\Parser;
-use App\Enums\AnimeHandlerEnum;
 use App\Parsers\YummyAnimeParser;
 
 /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Parsers;
 
-use App\Enums\AnimeStatusEnum;
+use App\Enums\Telegram\AnimeStatusEnum;
 use App\Enums\VoiceActingSeederEnum;
 use App\Exceptions\Parsers\InvalidUrlException;
 use App\Models\Anime;
@@ -81,7 +81,7 @@ class AnimeVostParser extends Parser
             return self::MINIMAL_ANIME_RATING;
         }
 
-        return (int)$rating->text / self::AMOUNT_TO_MAKE_FLOAT;
+        return (int) $rating->text / self::AMOUNT_TO_MAKE_FLOAT;
     }
 
     /**

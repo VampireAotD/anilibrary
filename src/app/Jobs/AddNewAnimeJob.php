@@ -5,30 +5,25 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\DTO\Handlers\CallbackDataDTO;
-use App\Enums\AnimeHandlerEnum;
-use App\Enums\CallbackQueryEnum;
-use App\Enums\CommandEnum;
 use App\Enums\QueueEnum;
-use App\Exceptions\Parsers\InvalidUrlException;
-use App\Exceptions\Parsers\UndefinedAnimeParserException;
+use App\Enums\Telegram\AnimeHandlerEnum;
+use App\Enums\Telegram\CallbackQueryEnum;
 use App\Factories\ParserFactory;
-use App\Handlers\History\UserHistory;
-use App\Handlers\Traits\CanCreateCallbackData;
+use App\Telegram\Handlers\History\UserHistory;
+use App\Telegram\Handlers\Traits\CanCreateCallbackData;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Lazy\LazyUuidFromString;
 use WeStacks\TeleBot\Laravel\TeleBot;
 use WeStacks\TeleBot\Objects\Message;
 
 /**
  * Class AddNewAnimeJob
+ *
  * @package App\Jobs
  */
 class AddNewAnimeJob implements ShouldQueue
@@ -55,64 +50,42 @@ class AddNewAnimeJob implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws GuzzleException
      */
     public function handle(): void
     {
-        $message = $this->message;
+        $message    = $this->message;
         $telegramId = $message->from->id;
-        $excludeMessages = [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
 
         try {
             UserHistory::addLastActiveTime($telegramId);
-            if (!in_array($message->text, $excludeMessages, true)) {
-                $data = [
-                    'url' => $message->text
-                ];
 
-                if ($validated = $this->makeUrlValidator($data)) {
-                    TeleBot::sendMessage([
-                        'text' => AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value,
-                        'chat_id' => $telegramId,
-                    ]);
+            $anime = $this->parserFactory->getParser($message->text)
+                                         ->parse($message->text, $telegramId);
 
-                    $anime = $this->parserFactory->getParser($validated['url'])
-                        ->parse($validated['url'], $telegramId);
+            if ($anime) {
+                $animeId = $anime->id instanceof LazyUuidFromString ? $anime->id->toString() : $anime->id;
 
-                    if ($anime) {
-                        $animeId = $anime->id instanceof LazyUuidFromString ? $anime->id->toString() : $anime->id;
-
-                        TeleBot::sendMessage([
-                            'text' => AnimeHandlerEnum::PARSE_HAS_ENDED->value,
-                            'reply_markup' => [
-                                'inline_keyboard' => [
-                                    [
-                                        [
-                                            'text' => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
-                                            'callback_data' => $this->createCallbackData(
-                                                CallbackQueryEnum::CHECK_ADDED_ANIME,
-                                                new CallbackDataDTO((string)$animeId)
-                                            ),
-                                        ]
-                                    ]
-                                ]
+                TeleBot::sendMessage([
+                    'text'         => AnimeHandlerEnum::PARSE_HAS_ENDED->value,
+                    'reply_markup' => [
+                        'inline_keyboard' => [
+                            [
+                                [
+                                    'text'          => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
+                                    'callback_data' => $this->createCallbackData(
+                                        CallbackQueryEnum::CHECK_ADDED_ANIME,
+                                        new CallbackDataDTO((string) $animeId)
+                                    ),
+                                ],
                             ],
-                            'chat_id' => $telegramId,
-                        ]);
+                        ],
+                    ],
+                    'chat_id'      => $telegramId,
+                ]);
 
-                        UserHistory::clearUserExecutedCommandsHistory($telegramId);
-                    }
-                }
+                UserHistory::clearUserExecutedCommandsHistory($telegramId);
             }
-        } catch (ValidationException $exception) {
-            TeleBot::sendMessage([
-                'text' => $exception->validator->errors()->first(),
-                'chat_id' => $telegramId,
-            ]);
-        } catch (UndefinedAnimeParserException | InvalidUrlException | GuzzleException $exception) {
-            TeleBot::sendMessage([
-                'text' => $exception->getMessage(),
-                'chat_id' => $telegramId,
-            ]);
         } catch (\Exception $exception) {
             logger()->channel('single')->warning(
                 $exception->getMessage(),
@@ -121,19 +94,5 @@ class AddNewAnimeJob implements ShouldQueue
                 ]
             );
         }
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    private function makeUrlValidator(array $data): array
-    {
-        return Validator::make($data, [
-            'url' => 'required|url',
-        ], [
-            'url' => AnimeHandlerEnum::INVALID_URL->value
-        ])->validate();
     }
 }

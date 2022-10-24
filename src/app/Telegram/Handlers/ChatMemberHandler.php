@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Handlers;
+namespace App\Telegram\Handlers;
 
-use App\Enums\ChatMemberStatusEnum;
-use App\Handlers\History\UserHistory;
+use App\Enums\Telegram\ChatMemberStatusEnum;
+use App\Telegram\Handlers\History\UserHistory;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
-use WeStacks\TeleBot\Objects\Update;
-use WeStacks\TeleBot\TeleBot;
 
 /**
  * Class ChatMemberHandler
