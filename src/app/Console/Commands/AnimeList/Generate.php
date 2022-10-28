@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands\AnimeList;
 
 use App\Mail\AnimeListMail;
-use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
+use App\Repositories\Contracts\AnimeRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
@@ -33,7 +33,7 @@ class Generate extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct(private AnimeRepositoryInterface $animeRepository)
+    public function __construct(private readonly AnimeRepositoryInterface $animeRepository)
     {
         parent::__construct();
     }

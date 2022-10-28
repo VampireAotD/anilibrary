@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\TelegramUser;
-use App\Repositories\Contracts\TelegramUser\TelegramUserRepositoryInterface;
+use App\Repositories\Contracts\TelegramUserRepositoryInterface;
 
 /**
  * Class TelegramUserRepository

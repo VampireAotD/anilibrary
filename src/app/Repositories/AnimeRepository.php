@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Anime;
-use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
+use App\Repositories\Contracts\AnimeRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 

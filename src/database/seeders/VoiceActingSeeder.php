@@ -6,7 +6,7 @@ namespace Database\Seeders;
 
 use App\Enums\VoiceActingSeederEnum;
 use App\Models\VoiceActing;
-use App\Services\Traits\CanPrepareDataForBatchInsert;
+use App\Services\Traits\CanGenerateNamesArray;
 use Illuminate\Database\Seeder;
 
 /**
@@ -15,7 +15,7 @@ use Illuminate\Database\Seeder;
  */
 class VoiceActingSeeder extends Seeder
 {
-    use CanPrepareDataForBatchInsert;
+    use CanGenerateNamesArray;
 
     /**
      * Run the database seeds.
@@ -42,6 +42,6 @@ class VoiceActingSeeder extends Seeder
             ],
         ];
 
-        VoiceActing::insert($this->prepareArrayForInsert($voiceActing));
+        VoiceActing::insert($this->generateNamesArray($voiceActing));
     }
 }

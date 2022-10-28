@@ -6,8 +6,8 @@ namespace App\Telegram\Handlers;
 
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
-use App\Jobs\PickRandomAnimeJob;
-use App\Jobs\ProvideAnimeListJob;
+use App\Jobs\Telegram\PickRandomAnimeJob;
+use App\Jobs\Telegram\ProvideAnimeListJob;
 use App\Telegram\History\UserHistory;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
 

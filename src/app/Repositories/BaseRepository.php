@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Repositories\Contracts\FindById;
-use Illuminate\Database\Eloquent\Collection;
+use App\Repositories\Contracts\Common\FindById;
 use Illuminate\Database\Eloquent\Model;
 
 /**

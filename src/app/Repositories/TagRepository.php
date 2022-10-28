@@ -6,7 +6,8 @@ namespace App\Repositories;
 
 use App\Enums\TagSeederEnum;
 use App\Models\Tag;
-use App\Repositories\Contracts\Tag\TagRepositoryInterface;
+use App\Repositories\Contracts\TagRepositoryInterface;
+use App\Repositories\Traits\CanSearchByName;
 
 /**
  * Class TagRepository
@@ -14,6 +15,8 @@ use App\Repositories\Contracts\Tag\TagRepositoryInterface;
  */
 class TagRepository extends BaseRepository implements TagRepositoryInterface
 {
+    use CanSearchByName;
+
     /**
      * @return string
      */
@@ -24,7 +27,7 @@ class TagRepository extends BaseRepository implements TagRepositoryInterface
 
     /**
      * @param int $telegramId
-     * @return array
+     * @return string[]
      */
     public function findByTelegramId(int $telegramId): array
     {
@@ -32,17 +35,7 @@ class TagRepository extends BaseRepository implements TagRepositoryInterface
             config('admin.id') => [
                 $this->findByName(TagSeederEnum::ADMIN_TAG->value)?->id,
             ],
-            default => []
+            default            => []
         };
-    }
-
-    /**
-     * @param string $name
-     * @param array $columns
-     * @return Tag|null
-     */
-    public function findByName(string $name, array $columns = ['*']): ?Tag
-    {
-        return $this->query()->select($columns)->where('name', $name)->first();
     }
 }

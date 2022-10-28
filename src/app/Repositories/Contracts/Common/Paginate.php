@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Contracts;
+namespace App\Repositories\Contracts\Common;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -11,10 +11,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface Paginate
 {
     /**
-     * @param int $perPage
-     * @param array $columns
+     * @param int    $perPage
+     * @param array  $columns
      * @param string $pageName
-     * @param int $currentPage
+     * @param int    $currentPage
      * @return LengthAwarePaginator
      */
     public function paginate(

@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Repositories\AnimeRepository;
-use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
-use App\Repositories\Contracts\Tag\TagRepositoryInterface;
-use App\Repositories\Contracts\TelegramUser\TelegramUserRepositoryInterface;
+use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Contracts\GenreRepositoryInterface;
+use App\Repositories\Contracts\TagRepositoryInterface;
+use App\Repositories\Contracts\TelegramUserRepositoryInterface;
+use App\Repositories\Contracts\VoiceActingRepositoryInterface;
+use App\Repositories\GenreRepository;
 use App\Repositories\TagRepository;
 use App\Repositories\TelegramUserRepository;
+use App\Repositories\VoiceActingRepository;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -18,12 +22,20 @@ use Illuminate\Support\ServiceProvider;
  */
 class RepositoryServiceProvider extends ServiceProvider
 {
+    public array $bindings = [
+        TelegramUserRepositoryInterface::class => TelegramUserRepository::class,
+        AnimeRepositoryInterface::class        => AnimeRepository::class,
+        TagRepositoryInterface::class          => TagRepository::class,
+        VoiceActingRepositoryInterface::class  => VoiceActingRepository::class,
+        GenreRepositoryInterface::class        => GenreRepository::class,
+    ];
+
     /**
      * Register services.
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
@@ -33,10 +45,10 @@ class RepositoryServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->app->bind(TelegramUserRepositoryInterface::class, TelegramUserRepository::class);
-        $this->app->bind(AnimeRepositoryInterface::class, AnimeRepository::class);
-        $this->app->bind(TagRepositoryInterface::class, TagRepository::class);
+        foreach ($this->bindings as $abstract => $concrete) {
+            $this->app->bind($abstract, $concrete);
+        }
     }
 }

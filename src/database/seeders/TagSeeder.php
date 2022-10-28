@@ -6,9 +6,8 @@ namespace Database\Seeders;
 
 use App\Enums\TagSeederEnum;
 use App\Models\Tag;
-use App\Services\Traits\CanPrepareDataForBatchInsert;
+use App\Services\Traits\CanGenerateNamesArray;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 /**
  * Class TagSeeder
@@ -16,7 +15,7 @@ use Illuminate\Support\Str;
  */
 class TagSeeder extends Seeder
 {
-    use CanPrepareDataForBatchInsert;
+    use CanGenerateNamesArray;
 
     /**
      * Run the database seeds.
@@ -37,6 +36,6 @@ class TagSeeder extends Seeder
             ],
         ];
 
-        Tag::insert($this->prepareArrayForInsert($tags));
+        Tag::insert($this->generateNamesArray($tags));
     }
 }

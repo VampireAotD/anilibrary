@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories\Contracts\Anime;
+namespace App\Repositories\Contracts;
 
 use App\Models\Anime;
-use App\Repositories\Contracts\Paginate;
+use App\Repositories\Contracts\Common\Paginate;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -14,14 +14,14 @@ interface AnimeRepositoryInterface extends Paginate
 {
     /**
      * @param string $title
-     * @param bool $useLike
+     * @param bool   $useLike
      * @return Anime|null
      */
     public function findByTitle(string $title, bool $useLike = false): ?Anime;
 
     /**
      * @param string $url
-     * @param bool $useLike
+     * @param bool   $useLike
      * @return Anime|null
      */
     public function findByUrl(string $url, bool $useLike = false): ?Anime;

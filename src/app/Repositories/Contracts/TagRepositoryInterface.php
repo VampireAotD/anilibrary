@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repositories\Contracts\Tag;
+namespace App\Repositories\Contracts;
 
-use App\Repositories\Contracts\FindByName;
+use App\Repositories\Contracts\Common\FindByName;
 
 /**
  * Interface TagRepositoryInterface

@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Handlers;
 
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
-use App\Jobs\AddNewAnimeJob;
+use App\Jobs\Telegram\AddNewAnimeJob;
 use App\Telegram\Handlers\AddNewAnimeHandler;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;

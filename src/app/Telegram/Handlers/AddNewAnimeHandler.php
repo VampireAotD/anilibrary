@@ -6,7 +6,7 @@ namespace App\Telegram\Handlers;
 
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
-use App\Jobs\AddNewAnimeJob;
+use App\Jobs\Telegram\AddNewAnimeJob;
 use App\Rules\SupportedUrl;
 use App\Telegram\History\UserHistory;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -43,20 +43,28 @@ class AddNewAnimeHandler extends UpdateHandler
         $message = $this->update->message;
         $chatId  = $message->chat->id;
 
-        if (!in_array($message->text, [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value], true)) {
+        if (!in_array(
+            $message->text,
+            [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value],
+            true
+        )) {
             if (!$this->validUrl($message->text)) {
-                return $this->sendMessage([
-                    'text'    => AnimeHandlerEnum::INVALID_URL->value,
-                    'chat_id' => $chatId,
-                ]);
+                return $this->sendMessage(
+                    [
+                        'text'    => AnimeHandlerEnum::INVALID_URL->value,
+                        'chat_id' => $chatId,
+                    ]
+                );
             }
 
             AddNewAnimeJob::dispatch($message);
 
-            return $this->sendMessage([
-                'text'    => AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value,
-                'chat_id' => $chatId,
-            ]);
+            return $this->sendMessage(
+                [
+                    'text'    => AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value,
+                    'chat_id' => $chatId,
+                ]
+            );
         }
     }
 
@@ -66,13 +74,16 @@ class AddNewAnimeHandler extends UpdateHandler
      */
     private function validUrl(string $url): bool
     {
-        $validator = Validator::make(['url' => $url], [
-            'url' => [
-                'required',
-                'url',
-                new SupportedUrl(),
-            ],
-        ]);
+        $validator = Validator::make(
+            ['url' => $url],
+            [
+                'url' => [
+                    'required',
+                    'url',
+                    new SupportedUrl(),
+                ],
+            ]
+        );
 
         return !$validator->fails();
     }
