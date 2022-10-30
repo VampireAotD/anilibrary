@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Traits;
@@ -6,6 +7,10 @@ namespace Tests\Traits;
 use Illuminate\Support\Str;
 use WeStacks\TeleBot\Objects\Update;
 
+/**
+ * Trait CanCreateFakeUpdates
+ * @package Tests\Traits
+ */
 trait CanCreateFakeUpdates
 {
     private int $fakeTelegramId = -1;
@@ -20,14 +25,16 @@ trait CanCreateFakeUpdates
         $message ??= Str::random();
         $chatId  ??= $this->fakeTelegramId;
 
-        return Update::create([
-            'message' => [
-                'chat' => [
-                    'id' => $chatId,
+        return Update::create(
+            [
+                'message' => [
+                    'chat' => [
+                        'id' => $chatId,
+                    ],
+                    'text' => $message,
                 ],
-                'text' => $message,
-            ],
-        ]);
+            ]
+        );
     }
 
     /**
@@ -38,15 +45,42 @@ trait CanCreateFakeUpdates
     {
         $chatId ??= $this->fakeTelegramId;
 
-        return Update::create([
-            'message' => [
-                'chat'    => [
-                    'id' => $chatId,
+        return Update::create(
+            [
+                'message' => [
+                    'chat'    => [
+                        'id' => $chatId,
+                    ],
+                    'sticker' => [
+                        'set_name' => Str::random(),
+                    ],
                 ],
-                'sticker' => [
-                    'set_name' => Str::random(),
+            ]
+        );
+    }
+
+    /**
+     * @param int|null $chatId
+     * @return Update
+     */
+    public function createFakeChatMemberUpdate(?int $chatId = null): Update
+    {
+        $chatId ??= $this->fakeTelegramId;
+
+        return Update::create(
+            [
+                'my_chat_member' => [
+                    'chat'            => [
+                        'id' => $chatId,
+                    ],
+                    'old_chat_member' => [
+                        'status' => 'kicked',
+                    ],
+                    'new_chat_member' => [
+                        'status' => 'member',
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
     }
 }

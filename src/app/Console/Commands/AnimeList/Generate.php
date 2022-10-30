@@ -50,13 +50,15 @@ class Generate extends Command
                 'id',
                 'title',
                 'url',
+                'status',
                 'rating',
                 'episodes',
             ],
             [
-                'image:model_id,path',
-                'genres:name',
-                'voiceActing:name',
+                'image:id,model_id,path,alias',
+                'tags:id,name',
+                'genres:id,name',
+                'voiceActing:id,name',
             ]
         );
 

@@ -65,7 +65,7 @@ class Anime extends Model
     public function voiceActing(): BelongsToMany
     {
         return $this->belongsToMany(VoiceActing::class)
-            ->using(AnimeVoiceActing::class);
+                    ->using(AnimeVoiceActing::class);
     }
 
     /**
@@ -82,7 +82,7 @@ class Anime extends Model
     public function genres(): BelongsToMany
     {
         return $this->belongsToMany(Genre::class, AnimeGenre::getTableName())
-            ->using(AnimeGenre::class);
+                    ->using(AnimeGenre::class);
     }
 
     /**
@@ -91,6 +91,6 @@ class Anime extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, AnimeTag::getTableName())
-            ->using(AnimeTag::class);
+                    ->using(AnimeTag::class);
     }
 }

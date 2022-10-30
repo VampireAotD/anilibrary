@@ -70,7 +70,7 @@ class AddNewAnimeJob implements ShouldQueue
             );
 
             $data  = array_merge(
-                ['url', $message->text, 'telegramId' => $telegramId],
+                ['url' => $message->text, 'telegramId' => $telegramId],
                 json_decode($response->getBody()->getContents(), true)
             );
             $anime = $animeUseCase->createAnime(new ScrapedDataDTO(...$data));

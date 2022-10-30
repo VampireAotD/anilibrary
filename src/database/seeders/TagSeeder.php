@@ -25,17 +25,11 @@ class TagSeeder extends Seeder
     public function run(): void
     {
         $tags = [
-            [
-                'name' => TagSeederEnum::ADMIN_TAG->value,
-            ],
-            [
-                'name' => TagSeederEnum::FIRST_MODERATOR_TAG->value,
-            ],
-            [
-                'name' => TagSeederEnum::SECOND_MODERATOR_TAG->value,
-            ],
+            TagSeederEnum::ADMIN_TAG->value,
+            TagSeederEnum::FIRST_MODERATOR_TAG->value,
+            TagSeederEnum::SECOND_MODERATOR_TAG->value,
         ];
 
-        Tag::insert($this->generateNamesArray($tags));
+        Tag::upsert($this->generateNamesArray($tags), 'name');
     }
 }

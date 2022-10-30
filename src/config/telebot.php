@@ -54,8 +54,8 @@ return [
 
             'handlers' => [
                 // Middlewares
-                new BotAccessMiddleware,
-                new UserActivityMiddleware,
+                new BotAccessMiddleware(),
+                new UserActivityMiddleware(),
 
                 // Commands
                 StartCommand::class,

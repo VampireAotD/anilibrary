@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Middlewares;
@@ -27,8 +28,22 @@ class UserActivityMiddlewareTest extends TestCase
         parent::setUp();
 
         $this->bot = $this->createFakeBot();
-        $this->bot->addHandler([new UserActivityMiddleware]);
+        $this->bot->addHandler([new UserActivityMiddleware()]);
         $this->userHistoryMock = $this->createUserHistoryMock();
+    }
+
+    public function testBotWillOnlyTrackUpdatesWithMessage(): void
+    {
+        $this->userHistoryMock
+            ->shouldReceive('addLastActiveTime')
+            ->with($this->fakeTelegramId)
+            ->once();
+
+        $update   = $this->createFakeChatMemberUpdate();
+        $response = $this->bot->handleUpdate($update);
+
+        $this->assertInstanceOf(Closure::class, $response);
+        $this->assertNull($response());
     }
 
     public function testBotWillNotTrackRandomMessages(): void
@@ -71,7 +86,10 @@ class UserActivityMiddlewareTest extends TestCase
         $update   = $this->createFakeTextMessageUpdate(message: CommandEnum::ANIME_LIST->value);
         $response = $this->bot->handleUpdate($update);
 
-        $this->assertEquals(CommandEnum::ANIME_LIST->value, UserHistory::userLastExecutedCommand($this->fakeTelegramId));
+        $this->assertEquals(
+            CommandEnum::ANIME_LIST->value,
+            UserHistory::userLastExecutedCommand($this->fakeTelegramId)
+        );
         $this->assertInstanceOf(Closure::class, $response);
         $this->assertNull($response());
     }

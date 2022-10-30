@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Telegram\Middlewares;
@@ -22,10 +23,14 @@ class UserActivityMiddleware
     {
         $supportedCommands = CommandEnum::values();
         $userId            = $update->chat()->id;
-        $message           = $update->message;
 
         UserHistory::addLastActiveTime($userId);
 
+        if (!isset($update->message)) {
+            return $next();
+        }
+
+        $message = $update->message;
         if (isset($message->text) && in_array($message->text, $supportedCommands, true)) {
             UserHistory::addExecutedCommand($userId, $message->text);
         }

@@ -25,23 +25,13 @@ class VoiceActingSeeder extends Seeder
     public function run(): void
     {
         $voiceActing = [
-            [
-                'name' => VoiceActingSeederEnum::ANIDUB->value,
-            ],
-            [
-                'name' => VoiceActingSeederEnum::ANILIBRIA->value,
-            ],
-            [
-                'name' => VoiceActingSeederEnum::STUDIO_BAND->value,
-            ],
-            [
-                'name' => VoiceActingSeederEnum::ANIMEVOST->value,
-            ],
-            [
-                'name' => VoiceActingSeederEnum::DREAM_CAST->value,
-            ],
+            VoiceActingSeederEnum::ANIDUB->value,
+            VoiceActingSeederEnum::ANILIBRIA->value,
+            VoiceActingSeederEnum::STUDIO_BAND->value,
+            VoiceActingSeederEnum::ANIMEVOST->value,
+            VoiceActingSeederEnum::DREAM_CAST->value,
         ];
 
-        VoiceActing::insert($this->generateNamesArray($voiceActing));
+        VoiceActing::upsert($this->generateNamesArray($voiceActing), 'name');
     }
 }

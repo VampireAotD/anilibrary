@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\AnimeList;
 
-use App\Exceptions\Parsers\InvalidUrlException;
-use App\Exceptions\Parsers\UndefinedAnimeParserException;
-use App\Factories\ParserFactory;
-use GuzzleHttp\Exception\GuzzleException;
+use App\DTO\Service\Anime\CreateDTO;
+use App\Models\Anime;
+use App\Models\Genre;
+use App\Models\Image;
+use App\Models\Tag;
+use App\Models\VoiceActing;
+use App\Services\AnimeService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 /**
@@ -35,7 +39,7 @@ class Parse extends Command
      * Create a new command instance.
      */
     public function __construct(
-        private readonly ParserFactory $parserFactory
+        private readonly AnimeService $animeService,
     ) {
         parent::__construct();
     }
@@ -51,30 +55,45 @@ class Parse extends Command
 
         if (!File::exists($pathToFile)) {
             $this->warn('Anime list not found');
-
             return Command::FAILURE;
         }
 
-        $animeList = json_decode(File::get($pathToFile));
+        $animeList = json_decode(File::get($pathToFile), true);
+        $bar       = $this->output->createProgressBar(count($animeList));
 
-        $bar = $this->output->createProgressBar(count($animeList));
+        foreach ($animeList as $parsed) {
+            DB::transaction(
+                function () use ($parsed) {
+                    $anime = $this->animeService->create(
+                        new CreateDTO(
+                            $parsed['url'],
+                            $parsed['title'],
+                            $parsed['status'],
+                            $parsed['rating'],
+                            $parsed['episodes']
+                        )
+                    );
 
-        foreach ($animeList as $anime) {
-            $link = $anime->url;
+                    Image::insert(
+                        array_merge($parsed['image'], ['model_id' => $anime->id, 'model_type' => Anime::class])
+                    );
 
-            try {
-                $this->parserFactory->getParser($link)->parse($link);
-                $bar->advance();
-            } catch (GuzzleException | InvalidUrlException | UndefinedAnimeParserException $e) {
-                logger()->info(
-                    $link,
-                    [
-                        'exceptionMessage' => $e->getMessage(),
-                        'exceptionTrace'   => $e->getTraceAsString(),
-                    ]
-                );
-            }
+                    Tag::upsert($parsed['tags'], 'name');
+                    $anime->tags()->sync(collect($parsed['tags'])->pluck('id')->toArray());
+
+                    Genre::upsert($parsed['genres'], 'name');
+                    $anime->genres()->sync(collect($parsed['genres'])->pluck('id')->toArray());
+
+                    VoiceActing::upsert($parsed['voice_acting'], 'name');
+                    $anime->voiceActing()->sync(collect($parsed['voice_acting'])->pluck('id')->toArray());
+                }
+            );
+
+            $bar->advance(1);
         }
+
+        $bar->finish();
+        $this->newLine()->info('Parsed anime list');
 
         return Command::SUCCESS;
     }

@@ -21,6 +21,5 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(VoiceActingSeeder::class);
         $this->call(TagSeeder::class);
-        $this->call(TmpFolderSeeder::class);
     }
 }
