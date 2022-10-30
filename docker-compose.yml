@@ -38,17 +38,6 @@ services:
     networks:
       - local
 
-  phpmyadmin:
-    image: phpmyadmin
-    container_name: phpmyadmin
-    environment:
-      PMA_HOST: database
-      PMA_PORT: 3306
-    ports:
-      - "7760:80"
-    networks:
-      - local
-
   redis:
     image: redis:6.2.6
     container_name: redis
@@ -58,17 +47,6 @@ services:
       - anilibrary-redis-data:/data
     ports:
       - ${REDIS_PORT:-6379}:6379
-    networks:
-      - local
-
-  redis-commander:
-    container_name: redis-commander
-    hostname: redis-commander
-    image: rediscommander/redis-commander:latest
-    environment:
-      - REDIS_HOSTS=${REDIS_HOSTS:-local:redis:${REDIS_PORT}:0:${REDIS_PASSWORD}}
-    ports:
-      - "8081:8081"
     networks:
       - local
 
