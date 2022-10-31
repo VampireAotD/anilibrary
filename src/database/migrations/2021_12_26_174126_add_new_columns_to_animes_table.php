@@ -14,11 +14,14 @@ class AddNewColumnsToAnimesTable extends Migration
      */
     public function up()
     {
-        Schema::table('animes', function (Blueprint $table) {
-            $table->enum('status', AnimeStatusEnum::values());
-            $table->float('rating')->default(1);
-            $table->string('episodes')->nullable();
-        });
+        Schema::table(
+            'animes',
+            function (Blueprint $table) {
+                $table->enum('status', AnimeStatusEnum::values());
+                $table->float('rating')->default(1);
+                $table->string('episodes')->nullable();
+            }
+        );
     }
 
     /**
@@ -28,10 +31,11 @@ class AddNewColumnsToAnimesTable extends Migration
      */
     public function down()
     {
-        Schema::table('animes', function (Blueprint $table) {
-            $table->dropColumn('status');
-            $table->dropColumn('rating');
-            $table->dropColumn('episodes');
-        });
+        Schema::table(
+            'animes',
+            function (Blueprint $table) {
+                $table->dropColumn(['status', 'rating', 'episodes']);
+            }
+        );
     }
 }

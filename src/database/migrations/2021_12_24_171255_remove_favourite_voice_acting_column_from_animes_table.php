@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class RemoveFavouriteVoiceActingColumnFromAnimesTable extends Migration
@@ -13,9 +14,21 @@ class RemoveFavouriteVoiceActingColumnFromAnimesTable extends Migration
      */
     public function up()
     {
-        Schema::table('animes', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('favourite_voice_acting');
-        });
+        if (DB::getDriverName() !== 'sqlite') {
+            Schema::table(
+                'animes',
+                function (Blueprint $table) {
+                    $table->dropConstrainedForeignId('favourite_voice_acting');
+                }
+            );
+        }
+
+        Schema::table(
+            'animes',
+            function (Blueprint $table) {
+                $table->dropColumn('favourite_voice_acting');
+            }
+        );
     }
 
     /**
@@ -25,11 +38,14 @@ class RemoveFavouriteVoiceActingColumnFromAnimesTable extends Migration
      */
     public function down()
     {
-        Schema::table('animes', function (Blueprint $table) {
-            $table->foreignUuid('favourite_voice_acting')
-                ->nullable()
-                ->constrained('voice_acting')
-                ->nullOnDelete();
-        });
+        Schema::table(
+            'animes',
+            function (Blueprint $table) {
+                $table->foreignUuid('favourite_voice_acting')
+                      ->nullable()
+                      ->constrained('voice_acting')
+                      ->nullOnDelete();
+            }
+        );
     }
 }

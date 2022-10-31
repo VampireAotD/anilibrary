@@ -8,6 +8,7 @@ use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
 use App\Jobs\Telegram\AddNewAnimeJob;
 use App\Telegram\Handlers\AddNewAnimeHandler;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
@@ -17,7 +18,8 @@ use WeStacks\TeleBot\TeleBot;
 
 class AddNewAnimeHandlerTest extends TestCase
 {
-    use CanCreateMocks,
+    use RefreshDatabase,
+        CanCreateMocks,
         CanCreateFakeUpdates,
         WithFaker;
 

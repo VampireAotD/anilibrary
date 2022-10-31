@@ -13,9 +13,12 @@ class AddAliasColumnToImagesTable extends Migration
      */
     public function up()
     {
-        Schema::table('images', function (Blueprint $table) {
-            $table->string('alias')->after('path');
-        });
+        Schema::table(
+            'images',
+            function (Blueprint $table) {
+                $table->string('alias')->after('path');
+            }
+        );
     }
 
     /**
@@ -25,8 +28,11 @@ class AddAliasColumnToImagesTable extends Migration
      */
     public function down()
     {
-        Schema::table('images', function (Blueprint $table) {
-            $table->dropColumn('alias');
-        });
+        Schema::table(
+            'images',
+            function (Blueprint $table) {
+                $table->dropColumn(['alias']);
+            }
+        );
     }
 }
