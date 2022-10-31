@@ -6,7 +6,6 @@ namespace App\Mail;
 
 use App\Enums\QueueEnum;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -36,7 +35,7 @@ class AnimeListMail extends Mailable
     public function build(): self
     {
         return $this->from(config('admin.email'))
-            ->attach(config('filesystems.animeListPath'))
-            ->markdown('emails.lists.anime-list');
+                    ->attach(config('filesystems.animeListPath'))
+                    ->markdown('emails.lists.anime-list');
     }
 }

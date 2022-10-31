@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 trait CanSearchByName
 {
     /**
-     * @param array $similarNames
+     * @param array          $similarNames
      * @param array|string[] $columns
      * @return Collection
      */
@@ -21,7 +21,7 @@ trait CanSearchByName
 
     /**
      * @param string $name
-     * @param array $columns
+     * @param array  $columns
      * @return Model|null
      */
     public function findByName(string $name, array $columns = ['*']): ?Model

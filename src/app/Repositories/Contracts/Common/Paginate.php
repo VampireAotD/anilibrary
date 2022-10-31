@@ -18,9 +18,9 @@ interface Paginate
      * @return LengthAwarePaginator
      */
     public function paginate(
-        int $perPage = 1,
-        array $columns = ['*'],
+        int    $perPage = 1,
+        array  $columns = ['*'],
         string $pageName = 'page',
-        int $currentPage = 1
+        int    $currentPage = 1
     ): LengthAwarePaginator;
 }

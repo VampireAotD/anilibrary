@@ -19,7 +19,7 @@ class ImageService
 
     /**
      * @param string $url
-     * @param Anime $anime
+     * @param Anime  $anime
      * @return bool
      */
     public function upsert(string $url, Anime $anime): bool
@@ -29,19 +29,24 @@ class ImageService
             $anime->image->delete();
         }
 
-        $image = Image::create([
-            'model_type' => $anime::class,
-            'model_id' => $anime->id,
-            'alias' => $alias = sprintf(
-                '%s/%s/%s',
-                self::BASE_FOLDER_NAME,
-                $anime->id,
-                Str::random()
-            ),
-            'path' => cloudinary()->uploadFile($url, [
-                'public_id' => $alias,
-            ])->getSecurePath(),
-        ])->save();
+        $image = Image::create(
+            [
+                'model_type' => $anime::class,
+                'model_id'   => $anime->id,
+                'alias'      => $alias = sprintf(
+                    '%s/%s/%s',
+                    self::BASE_FOLDER_NAME,
+                    $anime->id,
+                    Str::random()
+                ),
+                'path'       => cloudinary()->uploadFile(
+                    $url,
+                    [
+                        'public_id' => $alias,
+                    ]
+                )->getSecurePath(),
+            ]
+        )->save();
 
         if (File::exists($url)) {
             File::delete($url);

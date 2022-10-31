@@ -23,10 +23,12 @@ class BotAccessMiddleware
         $userId = $update->chat()->id;
 
         if ($userId !== config('admin.id')) {
-            return $bot->sendMessage([
-                'chat_id' => $userId,
-                'text'    => BotAccessEnum::ACCESS_DENIED_MESSAGE->value,
-            ]);
+            return $bot->sendMessage(
+                [
+                    'chat_id' => $userId,
+                    'text'    => BotAccessEnum::ACCESS_DENIED_MESSAGE->value,
+                ]
+            );
         }
 
         return $next();

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Traits\HasUuid;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -15,17 +14,28 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * App\Models\User
  *
- * @property string                                                                                                         $id
- * @property string                                                                                                         $telegram_user_id
- * @property string                                                                                                         $password
- * @property string|null                                                                                                    $remember_token
- * @property \Illuminate\Support\Carbon|null                                                                                $created_at
- * @property \Illuminate\Support\Carbon|null                                                                                $updated_at
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read int|null                                                                                                  $notifications_count
- * @property-read \App\Models\TelegramUser|null                                                                             $telegramUser
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[]                           $tokens
- * @property-read int|null                                                                                                  $tokens_count
+ * @property string
+ *               $id
+ * @property string
+ *               $telegram_user_id
+ * @property string
+ *               $password
+ * @property string|null
+ *               $remember_token
+ * @property \Illuminate\Support\Carbon|null
+ *               $created_at
+ * @property \Illuminate\Support\Carbon|null
+ *               $updated_at
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[]
+ *                $notifications
+ * @property-read int|null
+ *                    $notifications_count
+ * @property-read \App\Models\TelegramUser|null
+ *                    $telegramUser
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[]
+ *                    $tokens
+ * @property-read int|null
+ *                    $tokens_count
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()

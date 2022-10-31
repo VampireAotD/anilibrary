@@ -13,17 +13,20 @@ class CreateAnimesTable extends Migration
      */
     public function up()
     {
-        Schema::create('animes', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('title');
-            $table->string('url');
-            $table->foreignUuid('favourite_voice_acting')
-                ->nullable()
-                ->constrained('voice_acting')
-                ->nullOnDelete();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        Schema::create(
+            'animes',
+            function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->string('title');
+                $table->string('url');
+                $table->foreignUuid('favourite_voice_acting')
+                      ->nullable()
+                      ->constrained('voice_acting')
+                      ->nullOnDelete();
+                $table->timestamps();
+                $table->softDeletes();
+            }
+        );
     }
 
     /**
