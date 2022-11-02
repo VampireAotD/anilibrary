@@ -9,12 +9,12 @@ use App\DTO\UseCase\Anime\ScrapedDataDTO;
 use App\Enums\QueueEnum;
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CallbackQueryEnum;
+use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Telegram\Handlers\Traits\CanCreateCallbackData;
 use App\Telegram\History\UserHistory;
 use App\UseCase\AnimeUseCase;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Bus\Queueable;
@@ -50,7 +50,6 @@ class AddNewAnimeJob implements ShouldQueue
      * @param Client       $client
      * @param AnimeUseCase $animeUseCase
      * @return void
-     * @throws GuzzleException
      */
     public function handle(Client $client, AnimeUseCase $animeUseCase): void
     {
@@ -98,14 +97,14 @@ class AddNewAnimeJob implements ShouldQueue
             );
 
             UserHistory::clearUserExecutedCommandsHistory($telegramId);
-        } catch (BadResponseException $exception) {
+        } catch (GuzzleException $exception) {
             TeleBot::sendMessage(
                 [
                     'chat_id' => $message->chat->id,
                     'text'    => $exception->getMessage(),
                 ]
             );
-        } catch (Exception $exception) {
+        } catch (InvalidScrapedDataException | Exception $exception) {
             logger()->channel('single')->warning(
                 $exception->getMessage(),
                 [

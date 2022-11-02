@@ -32,6 +32,9 @@ class UserActivityMiddlewareTest extends TestCase
         $this->userHistoryMock = $this->createUserHistoryMock();
     }
 
+    /**
+     * @return void
+     */
     public function testBotWillOnlyTrackUpdatesWithMessage(): void
     {
         $this->userHistoryMock
@@ -46,6 +49,9 @@ class UserActivityMiddlewareTest extends TestCase
         $this->assertNull($response());
     }
 
+    /**
+     * @return void
+     */
     public function testBotWillNotTrackRandomMessages(): void
     {
         $this->userHistoryMock
@@ -66,6 +72,9 @@ class UserActivityMiddlewareTest extends TestCase
         $this->assertNull($response());
     }
 
+    /**
+     * @return void
+     */
     public function testBotWillTrackOnlyAvailableCommands(): void
     {
         $this->userHistoryMock

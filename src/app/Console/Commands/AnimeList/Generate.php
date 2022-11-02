@@ -7,8 +7,8 @@ namespace App\Console\Commands\AnimeList;
 use App\Mail\AnimeListMail;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class Generate
@@ -62,9 +62,12 @@ class Generate extends Command
             ]
         );
 
-        File::put(config('filesystems.animeListPath'), $animeList->toJson(JSON_PRETTY_PRINT));
+        Storage::disk('lists')
+               ->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
 
         Mail::to(config('admin.email'))->queue(new AnimeListMail());
+
+        $this->info('Anime list successfully generated');
 
         return Command::SUCCESS;
     }

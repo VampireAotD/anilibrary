@@ -13,7 +13,7 @@ use App\Models\VoiceActing;
 use App\Services\AnimeService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class Parse
@@ -51,14 +51,14 @@ class Parse extends Command
      */
     public function handle(): int
     {
-        $pathToFile = config('filesystems.animeListPath');
+        $pathToFile = config('lists.anime.file');
 
-        if (!File::exists($pathToFile)) {
+        if (!Storage::disk('lists')->exists($pathToFile)) {
             $this->warn('Anime list not found');
             return Command::FAILURE;
         }
 
-        $animeList = json_decode(File::get($pathToFile), true);
+        $animeList = json_decode(Storage::disk('lists')->get($pathToFile), true);
         $bar       = $this->output->createProgressBar(count($animeList));
 
         foreach ($animeList as $parsed) {

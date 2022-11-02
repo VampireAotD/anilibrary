@@ -7,7 +7,7 @@ namespace App\Telegram\Handlers;
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
 use App\Jobs\Telegram\AddNewAnimeJob;
-use App\Rules\SupportedUrl;
+use App\Rules\Telegram\SupportedUrl;
 use App\Telegram\History\UserHistory;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Support\Facades\Validator;
@@ -85,6 +85,6 @@ class AddNewAnimeHandler extends UpdateHandler
             ]
         );
 
-        return !$validator->fails();
+        return $validator->passes();
     }
 }

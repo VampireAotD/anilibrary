@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Rules;
+namespace App\Rules\Telegram;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class SupportedUrl implements Rule
+class ValidBase64EncodedImage implements Rule
 {
     /**
      * Create a new rule instance.
@@ -27,7 +27,11 @@ class SupportedUrl implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        return (bool) preg_match('#(animego.org|animevost.org)#mi', $value);
+        return $value === config('cloudinary.default_image') ||
+            preg_match(
+                '#data:(image/jpeg|image/jpg|image/png|image/gif|image/webp);base64,\w+#mi',
+                $value
+            );
     }
 
     /**
@@ -37,6 +41,6 @@ class SupportedUrl implements Rule
      */
     public function message(): string
     {
-        return 'The validation error message.';
+        return 'Invalid encoded image';
     }
 }

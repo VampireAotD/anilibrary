@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\DTO\UseCase\Anime;
 
-use App\DTO\Contract\Common\FromArray;
+use App\Rules\Telegram\ValidBase64EncodedImage;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class ScrapedDataDTO
@@ -15,15 +16,51 @@ class ScrapedDataDTO implements Arrayable
 {
     public function __construct(
         public readonly string $url,
-        public readonly string $image,
-        public readonly string $title,
         public readonly string $status,
         public readonly string $episodes,
-        public readonly array  $genres,
-        public readonly array  $voiceActing,
         public readonly float  $rating,
-        public readonly ?int   $telegramId = null,
+        public readonly string $title = '',
+        public readonly array  $genres = [],
+        public readonly array  $voiceActing = [],
+        private ?string        $image = null,
+        private ?int           $telegramId = null,
     ) {
+        $this->image      ??= config('cloudinary.default_image');
+        $this->telegramId ??= config('admin.id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getImage(): string
+    {
+        return $this->image;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTelegramId(): ?int
+    {
+        return $this->telegramId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function validate(): bool
+    {
+        return Validator::make(
+            $this->toArray(),
+            [
+                'title' => 'required|string',
+                'image' => [
+                    'nullable',
+                    'string',
+                    new ValidBase64EncodedImage(),
+                ],
+            ]
+        )->passes();
     }
 
     /**
@@ -33,14 +70,14 @@ class ScrapedDataDTO implements Arrayable
     {
         return [
             'url'         => $this->url,
-            'image'       => $this->image,
             'title'       => $this->title,
             'status'      => $this->status,
             'episodes'    => $this->episodes,
             'genres'      => $this->genres,
             'voiceActing' => $this->voiceActing,
             'rating'      => $this->rating,
-            'telegramId'  => $this->telegramId,
+            'image'       => $this->getImage(),
+            'telegramId'  => $this->getTelegramId(),
         ];
     }
 }

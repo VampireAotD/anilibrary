@@ -6,6 +6,7 @@ namespace App\UseCase;
 
 use App\DTO\Service\Anime\CreateDTO;
 use App\DTO\UseCase\Anime\ScrapedDataDTO;
+use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Models\Anime;
 use App\Repositories\Contracts\TagRepositoryInterface;
 use App\Services\AnimeService;
@@ -31,15 +32,20 @@ class AnimeUseCase
     /**
      * @param ScrapedDataDTO $dto
      * @return Anime
+     * @throws InvalidScrapedDataException
      */
     public function createAnime(ScrapedDataDTO $dto): Anime
     {
+        if (!$dto->validate()) {
+            throw new InvalidScrapedDataException();
+        }
+
         $anime = $this->animeService->create(
             new CreateDTO($dto->url, $dto->title, $dto->status, $dto->rating, $dto->episodes)
         );
 
-        if ($dto->image) {
-            $this->imageService->upsert($dto->image, $anime);
+        if ($dto->getImage()) {
+            $this->imageService->upsert($dto->getImage(), $anime);
         }
 
         if ($dto->voiceActing) {
@@ -50,8 +56,8 @@ class AnimeUseCase
             $anime->genres()->sync($this->genreService->sync($dto->genres), false);
         }
 
-        if ($dto->telegramId) {
-            $anime->tags()->sync($this->tagRepository->findByTelegramId($dto->telegramId), false);
+        if ($dto->getTelegramId()) {
+            $anime->tags()->sync($this->tagRepository->findByTelegramId($dto->getTelegramId()), false);
         }
 
         return $anime;

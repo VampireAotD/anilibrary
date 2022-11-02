@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Models\Anime;
 use App\Models\Image;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 /**
@@ -29,7 +28,7 @@ class ImageService
             $anime->image->delete();
         }
 
-        $image = Image::create(
+        return Image::create(
             [
                 'model_type' => $anime::class,
                 'model_id'   => $anime->id,
@@ -47,11 +46,5 @@ class ImageService
                 )->getSecurePath(),
             ]
         )->save();
-
-        if (File::exists($url)) {
-            File::delete($url);
-        }
-
-        return $image;
     }
 }

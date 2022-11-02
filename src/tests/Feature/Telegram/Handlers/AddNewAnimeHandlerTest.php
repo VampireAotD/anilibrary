@@ -8,7 +8,6 @@ use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
 use App\Jobs\Telegram\AddNewAnimeJob;
 use App\Telegram\Handlers\AddNewAnimeHandler;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
@@ -18,8 +17,7 @@ use WeStacks\TeleBot\TeleBot;
 
 class AddNewAnimeHandlerTest extends TestCase
 {
-    use RefreshDatabase,
-        CanCreateMocks,
+    use CanCreateMocks,
         CanCreateFakeUpdates,
         WithFaker;
 
@@ -39,6 +37,9 @@ class AddNewAnimeHandlerTest extends TestCase
              ->andReturn(CommandEnum::ADD_NEW_TITLE->value);
     }
 
+    /**
+     * @return void
+     */
     public function testBotWillNotScrapeInvalid(): void
     {
         $update   = $this->createFakeTextMessageUpdate();
@@ -47,6 +48,9 @@ class AddNewAnimeHandlerTest extends TestCase
         $this->assertEquals(AnimeHandlerEnum::INVALID_URL->value, $response->text);
     }
 
+    /**
+     * @return void
+     */
     public function testBotWillNotScrapeUnsupportedUrl(): void
     {
         $update   = $this->createFakeTextMessageUpdate(message: $this->faker->url);
@@ -55,6 +59,9 @@ class AddNewAnimeHandlerTest extends TestCase
         $this->assertEquals(AnimeHandlerEnum::INVALID_URL->value, $response->text);
     }
 
+    /**
+     * @return void
+     */
     public function testBotCanScrapeSupportedUrls(): void
     {
         Bus::fake();
