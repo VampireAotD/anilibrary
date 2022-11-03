@@ -3,10 +3,10 @@
 use App\Telegram\Commands\StartCommand;
 use App\Telegram\Handlers\AddNewAnimeHandler;
 use App\Telegram\Handlers\CallbackQueryHandler;
-use App\Telegram\Handlers\ChatMemberHandler;
 use App\Telegram\Handlers\CommandHandler;
 use App\Telegram\Middlewares\BotAccessMiddleware;
 use App\Telegram\Middlewares\UserActivityMiddleware;
+use App\Telegram\Middlewares\UserStatusMiddleware;
 
 return [
     /*-------------------------------------------------------------------------
@@ -54,6 +54,7 @@ return [
 
             'handlers' => [
                 // Middlewares
+                new UserStatusMiddleware(),
                 new BotAccessMiddleware(),
                 new UserActivityMiddleware(),
 
@@ -63,7 +64,6 @@ return [
                 // Handlers,
                 CommandHandler::class,
                 CallbackQueryHandler::class,
-                ChatMemberHandler::class,
                 AddNewAnimeHandler::class,
             ],
         ],

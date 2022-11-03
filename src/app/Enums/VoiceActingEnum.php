@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Enums\Traits\CanProvideCasesValues;
+
 /**
- * enum VoiceActingSeederEnum
+ * enum VoiceActingEnum
  * @package App\Enums
  */
-enum VoiceActingSeederEnum: string
+enum VoiceActingEnum: string
 {
+    use CanProvideCasesValues;
+
     case ANIDUB = 'AniDUB';
     case ANILIBRIA = 'AniLibria';
     case STUDIO_BAND = 'Студийная Банда';

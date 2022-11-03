@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Traits;
 
+use App\Enums\Telegram\ChatMemberStatusEnum;
 use Illuminate\Support\Str;
 use WeStacks\TeleBot\Objects\Update;
 
@@ -61,11 +62,13 @@ trait CanCreateFakeUpdates
 
     /**
      * @param int|null $chatId
+     * @param array    $newChatMember
      * @return Update
      */
-    public function createFakeChatMemberUpdate(?int $chatId = null): Update
+    public function createFakeChatMemberUpdate(?int $chatId = null, array $newChatMember = []): Update
     {
-        $chatId ??= $this->fakeTelegramId;
+        $chatId        ??= $this->fakeTelegramId;
+        $newChatMember = array_merge(['user' => [], 'status' => ChatMemberStatusEnum::MEMBER->value], $newChatMember);
 
         return Update::create(
             [
@@ -74,11 +77,9 @@ trait CanCreateFakeUpdates
                         'id' => $chatId,
                     ],
                     'old_chat_member' => [
-                        'status' => 'kicked',
-                    ],
-                    'new_chat_member' => [
                         'status' => 'member',
                     ],
+                    'new_chat_member' => $newChatMember,
                 ],
             ]
         );

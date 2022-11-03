@@ -27,7 +27,7 @@ class SupportedUrl implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        return (bool) preg_match('#(animego.org|animevost.org)#mi', $value);
+        return (bool) preg_match('#(animego\.org|animevost\.org)#mi', $value);
     }
 
     /**

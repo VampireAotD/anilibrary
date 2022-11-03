@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Models\VoiceActing;
 use App\Repositories\Contracts\VoiceActingRepositoryInterface;
-use App\Services\Traits\CanGenerateNamesArray;
+use App\Traits\CanGenerateNamesArray;
 
 /**
  * Class VoiceActingService

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Enums\TagSeederEnum;
+use App\Enums\TagEnum;
 use App\Models\Tag;
 use App\Repositories\Contracts\TagRepositoryInterface;
 use App\Repositories\Traits\CanSearchByName;
@@ -33,7 +33,7 @@ class TagRepository extends BaseRepository implements TagRepositoryInterface
     {
         return match ($telegramId) {
             config('admin.id') => [
-                $this->findByName(TagSeederEnum::ADMIN_TAG->value)?->id,
+                $this->findByName(TagEnum::ADMIN_TAG->value)?->id,
             ],
             default            => []
         };

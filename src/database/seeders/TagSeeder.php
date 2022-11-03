@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\TagSeederEnum;
+use App\Enums\TagEnum;
 use App\Models\Tag;
-use App\Services\Traits\CanGenerateNamesArray;
+use App\Traits\CanGenerateNamesArray;
 use Illuminate\Database\Seeder;
 
 /**
@@ -24,12 +24,6 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        $tags = [
-            TagSeederEnum::ADMIN_TAG->value,
-            TagSeederEnum::FIRST_MODERATOR_TAG->value,
-            TagSeederEnum::SECOND_MODERATOR_TAG->value,
-        ];
-
-        Tag::upsert($this->generateNamesArray($tags), 'name');
+        Tag::query()->upsert($this->generateNamesArray(TagEnum::values()), 'name');
     }
 }

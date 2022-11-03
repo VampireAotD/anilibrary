@@ -6,7 +6,7 @@ namespace App\Rules\Telegram;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class ValidBase64EncodedImage implements Rule
+class ValidEncodedImage implements Rule
 {
     /**
      * Create a new rule instance.

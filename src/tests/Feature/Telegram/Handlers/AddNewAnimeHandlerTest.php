@@ -8,6 +8,7 @@ use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
 use App\Jobs\Telegram\AddNewAnimeJob;
 use App\Telegram\Handlers\AddNewAnimeHandler;
+use Closure;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
@@ -21,16 +22,19 @@ class AddNewAnimeHandlerTest extends TestCase
         CanCreateFakeUpdates,
         WithFaker;
 
-    private const ANIME_GO_URL = 'https://animego.org/anime/blich-tysyacheletnyaya-krovavaya-voyna-2129';
+    private const SUPPORTED_URLS = [
+        'https://animego.org/anime/blich-tysyacheletnyaya-krovavaya-voyna-2129',
+        'https://animevost.org/tip/tv/5-naruto-shippuuden12.html',
+    ];
 
     private TeleBot $bot;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->bot = $this->createFakeBot()->fake();
+        $this->bot->addHandler([AddNewAnimeHandler::class]);
 
-        $this->bot = $this->createFakeBot();
-        $this->bot->addHandler(AddNewAnimeHandler::class);
         $this->createUserHistoryMock()
              ->shouldReceive('userLastExecutedCommand')
              ->withArgs([$this->fakeTelegramId])
@@ -40,12 +44,13 @@ class AddNewAnimeHandlerTest extends TestCase
     /**
      * @return void
      */
-    public function testBotWillNotScrapeInvalid(): void
+    public function testBotWillNotScrapeInvalidMessage(): void
     {
-        $update   = $this->createFakeTextMessageUpdate();
+        $update   = $this->createFakeStickerMessageUpdate();
         $response = $this->bot->handleUpdate($update);
 
-        $this->assertEquals(AnimeHandlerEnum::INVALID_URL->value, $response->text);
+        $this->assertInstanceOf(Closure::class, $response);
+        $this->assertNull($response());
     }
 
     /**
@@ -66,10 +71,16 @@ class AddNewAnimeHandlerTest extends TestCase
     {
         Bus::fake();
 
-        $update   = $this->createFakeTextMessageUpdate(message: self::ANIME_GO_URL);
-        $response = $this->bot->handleUpdate($update);
+        foreach (self::SUPPORTED_URLS as $supportedUrl) {
+            $update = $this->createFakeTextMessageUpdate(message: $supportedUrl);
+            // After each setUp in loop bot settings reverts to default for no reason,
+            // and it considers itself not fake, but regular bot again,
+            // so need to specify each iteration that its fake
+            // TODO try to fix this
+            $response = $this->bot->fake()->handleUpdate($update);
 
-        Bus::assertDispatched(AddNewAnimeJob::class);
-        $this->assertEquals(AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value, $response->text);
+            Bus::assertDispatched(AddNewAnimeJob::class);
+            $this->assertEquals(AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value, $response->text);
+        }
     }
 }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\VoiceActingSeederEnum;
+use App\Enums\VoiceActingEnum;
 use App\Models\VoiceActing;
-use App\Services\Traits\CanGenerateNamesArray;
+use App\Traits\CanGenerateNamesArray;
 use Illuminate\Database\Seeder;
 
 /**
@@ -24,14 +24,6 @@ class VoiceActingSeeder extends Seeder
      */
     public function run(): void
     {
-        $voiceActing = [
-            VoiceActingSeederEnum::ANIDUB->value,
-            VoiceActingSeederEnum::ANILIBRIA->value,
-            VoiceActingSeederEnum::STUDIO_BAND->value,
-            VoiceActingSeederEnum::ANIMEVOST->value,
-            VoiceActingSeederEnum::DREAM_CAST->value,
-        ];
-
-        VoiceActing::upsert($this->generateNamesArray($voiceActing), 'name');
+        VoiceActing::query()->upsert($this->generateNamesArray(VoiceActingEnum::values()), 'name');
     }
 }

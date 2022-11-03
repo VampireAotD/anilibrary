@@ -31,7 +31,7 @@ class CommandHandler extends UpdateHandler
     public function handle(): void
     {
         $message    = $this->update->message;
-        $telegramId = $message->from->id;
+        $telegramId = $message->chat->id;
 
         match ($message->text) {
             CommandEnum::ADD_NEW_TITLE->value,

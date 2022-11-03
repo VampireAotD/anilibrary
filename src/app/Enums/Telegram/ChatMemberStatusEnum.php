@@ -11,5 +11,6 @@ namespace App\Enums\Telegram;
 enum ChatMemberStatusEnum: string
 {
     case MEMBER = 'member';
+    case LEFT = 'left';
     case KICKED = 'kicked';
 }

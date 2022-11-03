@@ -12,7 +12,7 @@ class RemoveFavouriteVoiceActingColumnFromAnimesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (DB::getDriverName() !== 'sqlite') {
             Schema::table(
@@ -21,6 +21,8 @@ class RemoveFavouriteVoiceActingColumnFromAnimesTable extends Migration
                     $table->dropConstrainedForeignId('favourite_voice_acting');
                 }
             );
+
+            return;
         }
 
         Schema::table(
@@ -36,7 +38,7 @@ class RemoveFavouriteVoiceActingColumnFromAnimesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table(
             'animes',

@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Models\Genre;
 use App\Repositories\Contracts\GenreRepositoryInterface;
-use App\Services\Traits\CanGenerateNamesArray;
+use App\Traits\CanGenerateNamesArray;
 
 /**
  * Class GenreService

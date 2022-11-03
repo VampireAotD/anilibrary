@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DTO\UseCase\Anime;
 
-use App\Rules\Telegram\ValidBase64EncodedImage;
+use App\Rules\Telegram\ValidEncodedImage;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Validator;
 
@@ -57,7 +57,7 @@ class ScrapedDataDTO implements Arrayable
                 'image' => [
                     'nullable',
                     'string',
-                    new ValidBase64EncodedImage(),
+                    new ValidEncodedImage(),
                 ],
             ]
         )->passes();
