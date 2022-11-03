@@ -22,7 +22,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Ramsey\Uuid\Lazy\LazyUuidFromString;
 use WeStacks\TeleBot\Laravel\TeleBot;
 use WeStacks\TeleBot\Objects\Message;
 
@@ -53,10 +52,10 @@ class AddNewAnimeJob implements ShouldQueue
      */
     public function handle(Client $client, AnimeUseCase $animeUseCase): void
     {
-        $message    = $this->message;
-        $telegramId = $message->chat->id;
+        $message = $this->message;
+        $chatId  = $message->chat->id;
 
-        UserHistory::addLastActiveTime($telegramId);
+        UserHistory::addLastActiveTime($chatId);
 
         try {
             $response = $client->post(
@@ -69,12 +68,10 @@ class AddNewAnimeJob implements ShouldQueue
             );
 
             $data  = array_merge(
-                ['url' => $message->text, 'telegramId' => $telegramId],
+                ['url' => $message->text, 'telegramId' => $chatId],
                 json_decode($response->getBody()->getContents(), true)
             );
             $anime = $animeUseCase->createAnime(new ScrapedDataDTO(...$data));
-
-            $animeId = $anime->id instanceof LazyUuidFromString ? $anime->id->toString() : $anime->id;
 
             TeleBot::sendMessage(
                 [
@@ -86,30 +83,28 @@ class AddNewAnimeJob implements ShouldQueue
                                     'text'          => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
                                     'callback_data' => $this->createCallbackData(
                                         CallbackQueryEnum::CHECK_ADDED_ANIME,
-                                        new CallbackDataDTO((string) $animeId)
+                                        new CallbackDataDTO($anime->id)
                                     ),
                                 ],
                             ],
                         ],
                     ],
-                    'chat_id'      => $telegramId,
+                    'chat_id'      => $chatId,
                 ]
             );
 
-            UserHistory::clearUserExecutedCommandsHistory($telegramId);
-        } catch (GuzzleException $exception) {
+            UserHistory::clearUserExecutedCommandsHistory($chatId);
+        } catch (GuzzleException | InvalidScrapedDataException | Exception $exception) {
             TeleBot::sendMessage(
                 [
-                    'chat_id' => $message->chat->id,
-                    'text'    => $exception->getMessage(),
+                    'chat_id' => $chatId,
+                    'text'    => AnimeHandlerEnum::PARSE_FAILED->value,
                 ]
             );
-        } catch (InvalidScrapedDataException | Exception $exception) {
+
             logger()->channel('single')->warning(
                 $exception->getMessage(),
-                [
-                    'exceptionTrace' => $exception->getTraceAsString(),
-                ]
+                ['exceptionTrace' => $exception->getTraceAsString()]
             );
         }
     }

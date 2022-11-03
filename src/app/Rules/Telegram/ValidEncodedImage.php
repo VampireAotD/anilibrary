@@ -6,6 +6,10 @@ namespace App\Rules\Telegram;
 
 use Illuminate\Contracts\Validation\Rule;
 
+/**
+ * Class ValidEncodedImage
+ * @package App\Rules\Telegram
+ */
 class ValidEncodedImage implements Rule
 {
     /**

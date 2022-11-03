@@ -22,7 +22,7 @@ use Illuminate\Support\ServiceProvider;
  */
 class RepositoryServiceProvider extends ServiceProvider
 {
-    public array $bindings = [
+    protected array $repositoryBindings = [
         TelegramUserRepositoryInterface::class => TelegramUserRepository::class,
         AnimeRepositoryInterface::class        => AnimeRepository::class,
         TagRepositoryInterface::class          => TagRepository::class,
@@ -47,7 +47,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        foreach ($this->bindings as $abstract => $concrete) {
+        foreach ($this->repositoryBindings as $abstract => $concrete) {
             $this->app->bind($abstract, $concrete);
         }
     }

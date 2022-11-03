@@ -6,6 +6,10 @@ namespace App\Rules\Telegram;
 
 use Illuminate\Contracts\Validation\Rule;
 
+/**
+ * Class SupportedUrl
+ * @package App\Rules\Telegram
+ */
 class SupportedUrl implements Rule
 {
     /**

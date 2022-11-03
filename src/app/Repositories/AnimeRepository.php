@@ -25,30 +25,20 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
 
     /**
      * @param string $title
-     * @param bool   $useLike
      * @return Anime|null
      */
-    public function findByTitle(string $title, bool $useLike = false): ?Anime
+    public function findByTitle(string $title): ?Anime
     {
-        if ($useLike) {
-            return $this->query()->where('title', 'like', sprintf('%%%s%%'), $title)->first();
-        }
-
-        return $this->query()->where('title', $title)->first();
+        return $this->model()->where('title', $title)->first();
     }
 
     /**
      * @param string $url
-     * @param bool   $useLike
      * @return Anime|null
      */
-    public function findByUrl(string $url, bool $useLike = false): ?Anime
+    public function findByUrl(string $url): ?Anime
     {
-        if ($useLike) {
-            return $this->query()->where('url', 'like', sprintf('%%%s%%'), $url)->first();
-        }
-
-        return $this->query()->where('url', $url)->first();
+        return $this->model()->where('url', $url)->first();
     }
 
     /**
@@ -56,7 +46,7 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
      */
     public function findRandomAnime(): ?Anime
     {
-        return $this->query()->inRandomOrder()->limit(1)->first();
+        return $this->model()->inRandomOrder()->limit(1)->first();
     }
 
     /**
@@ -68,7 +58,7 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
         array $columns = ['*'],
         array $relations = ['image', 'genres', 'tags', 'voiceActing']
     ): Collection {
-        return $this->query()->select($columns)->with($relations)->get();
+        return $this->model()->select($columns)->with($relations)->get();
     }
 
     /**
@@ -84,6 +74,6 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
         string $pageName = 'page',
         int    $currentPage = 1
     ): LengthAwarePaginator {
-        return $this->query()->paginate($perPage, $columns, $pageName, $currentPage);
+        return $this->model()->paginate($perPage, $columns, $pageName, $currentPage);
     }
 }

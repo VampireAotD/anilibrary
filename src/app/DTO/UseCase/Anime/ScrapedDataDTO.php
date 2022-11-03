@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\DTO\UseCase\Anime;
 
-use App\Rules\Telegram\ValidEncodedImage;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,11 +53,7 @@ class ScrapedDataDTO implements Arrayable
             $this->toArray(),
             [
                 'title' => 'required|string',
-                'image' => [
-                    'nullable',
-                    'string',
-                    new ValidEncodedImage(),
-                ],
+                'image' => 'nullable|string|valid_image',
             ]
         )->passes();
     }

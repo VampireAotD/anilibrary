@@ -14,17 +14,15 @@ interface AnimeRepositoryInterface extends Paginate
 {
     /**
      * @param string $title
-     * @param bool   $useLike
      * @return Anime|null
      */
-    public function findByTitle(string $title, bool $useLike = false): ?Anime;
+    public function findByTitle(string $title): ?Anime;
 
     /**
      * @param string $url
-     * @param bool   $useLike
      * @return Anime|null
      */
-    public function findByUrl(string $url, bool $useLike = false): ?Anime;
+    public function findByUrl(string $url): ?Anime;
 
     /**
      * @return Anime|null

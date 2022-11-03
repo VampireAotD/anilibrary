@@ -7,7 +7,6 @@ namespace App\Telegram\Handlers;
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
 use App\Jobs\Telegram\AddNewAnimeJob;
-use App\Rules\Telegram\SupportedUrl;
 use App\Telegram\History\UserHistory;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Support\Facades\Validator;
@@ -61,7 +60,7 @@ class AddNewAnimeHandler extends UpdateHandler
 
             return $this->sendMessage(
                 [
-                    'text'    => AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value,
+                    'text'    => AnimeHandlerEnum::PARSE_STARTED->value,
                     'chat_id' => $chatId,
                 ]
             );
@@ -76,13 +75,7 @@ class AddNewAnimeHandler extends UpdateHandler
     {
         $validator = Validator::make(
             ['url' => $url],
-            [
-                'url' => [
-                    'required',
-                    'url',
-                    new SupportedUrl(),
-                ],
-            ]
+            ['url' => 'required|supported_url']
         );
 
         return $validator->passes();

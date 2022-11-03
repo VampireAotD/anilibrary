@@ -17,11 +17,11 @@ class ImageService
     private const BASE_FOLDER_NAME = 'anime';
 
     /**
-     * @param string $url
+     * @param string $image
      * @param Anime  $anime
      * @return bool
      */
-    public function upsert(string $url, Anime $anime): bool
+    public function upsert(string $image, Anime $anime): bool
     {
         if ($anime->image) {
             cloudinary()->destroy($anime->image->alias);
@@ -39,7 +39,7 @@ class ImageService
                     Str::random()
                 ),
                 'path'       => cloudinary()->uploadFile(
-                    $url,
+                    $image,
                     [
                         'public_id' => $alias,
                     ]

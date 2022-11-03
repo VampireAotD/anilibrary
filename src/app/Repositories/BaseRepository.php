@@ -13,13 +13,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 abstract class BaseRepository implements FindById
 {
-    private Model $model;
-
-    public function __construct()
-    {
-        $this->model = app($this->resolveModel());
-    }
-
     /**
      * @return string
      */
@@ -28,9 +21,9 @@ abstract class BaseRepository implements FindById
     /**
      * @return Model
      */
-    public function query(): Model
+    public function model(): Model
     {
-        return clone $this->model;
+        return app($this->resolveModel());
     }
 
     /**
@@ -39,6 +32,6 @@ abstract class BaseRepository implements FindById
      */
     public function findById(string $id): ?Model
     {
-        return $this->query()->find($id);
+        return $this->model()->find($id);
     }
 }

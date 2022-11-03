@@ -90,8 +90,9 @@ class AnimeUseCaseTest extends TestCase
 
         $anime->load('image');
 
+        $this->assertIsString($anime->id);
         $this->assertNotEmpty($anime->title);
-        $this->assertContains($anime->status, AnimeStatusEnum::values());
+        $this->assertContainsEquals($anime->status, AnimeStatusEnum::values());
         $this->assertNotNull($anime->image);
         $this->assertNotNull($anime->voiceActing);
         $this->assertNotNull($anime->genres);

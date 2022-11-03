@@ -32,7 +32,7 @@ class AddNewAnimeHandlerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->bot = $this->createFakeBot()->fake();
+        $this->bot = $this->createFakeBot();
         $this->bot->addHandler([AddNewAnimeHandler::class]);
 
         $this->createUserHistoryMock()
@@ -79,8 +79,8 @@ class AddNewAnimeHandlerTest extends TestCase
             // TODO try to fix this
             $response = $this->bot->fake()->handleUpdate($update);
 
+            $this->assertEquals(AnimeHandlerEnum::PARSE_STARTED->value, $response->text);
             Bus::assertDispatched(AddNewAnimeJob::class);
-            $this->assertEquals(AnimeHandlerEnum::STARTED_PARSE_MESSAGE->value, $response->text);
         }
     }
 }

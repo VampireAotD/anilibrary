@@ -59,6 +59,10 @@ class Anime extends Model
         'episodes',
     ];
 
+    protected $casts = [
+        'id' => 'string',
+    ];
+
     /**
      * @return BelongsToMany
      */
