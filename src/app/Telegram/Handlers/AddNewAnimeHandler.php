@@ -15,7 +15,7 @@ use WeStacks\TeleBot\Objects\Message;
 
 /**
  * Class AddNewAnimeHandler
- * @package App\Handlers
+ * @package App\Telegram\Handlers
  */
 class AddNewAnimeHandler extends UpdateHandler
 {

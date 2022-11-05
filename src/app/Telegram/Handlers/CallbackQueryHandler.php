@@ -4,30 +4,32 @@ declare(strict_types=1);
 
 namespace App\Telegram\Handlers;
 
+use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
 use App\Enums\Telegram\CallbackQueryEnum;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
-use App\Telegram\Handlers\Traits\CanConvertAnimeToCaption;
+use App\Services\Telegram\CaptionService;
 use App\Telegram\History\UserHistory;
+use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
+use WeStacks\TeleBot\Objects\Message;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 
 /**
  * Class CallbackQueryHandler
- * @package App\Handlers
+ * @package App\Telegram\Handlers
  */
 class CallbackQueryHandler extends UpdateHandler
 {
-    use CanConvertAnimeToCaption;
-
     private AnimeRepositoryInterface $animeRepository;
+    private CaptionService           $captionService;
 
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
 
-        $this->resolveBindings();
         $this->animeRepository = app(AnimeRepositoryInterface::class);
+        $this->captionService  = app(CaptionService::class);
     }
 
     /**
@@ -39,13 +41,14 @@ class CallbackQueryHandler extends UpdateHandler
     }
 
     /**
-     * @return void
+     * @return bool|PromiseInterface|void|Message
      */
-    public function handle(): void
+    public function handle()
     {
         $callbackData = $this->update->callback_query->data;
-        UserHistory::addLastActiveTime($this->update->callback_query->from->id);
+        $chatId       = $this->update->chat()->id;
 
+        UserHistory::addLastActiveTime($chatId);
         parse_str($callbackData, $callbackParameters);
 
         if (isset($callbackParameters['command'])) {
@@ -53,21 +56,16 @@ class CallbackQueryHandler extends UpdateHandler
                 case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
                     $animeId = $this->decode($callbackParameters['animeId']);
                     $anime   = $this->animeRepository->findById($animeId);
-                    $this->sendPhoto($this->convertToCaption($anime));
-                    break;
+
+                    return $this->sendPhoto($this->captionService->create(new CreateAnimeCaptionDTO($anime, $chatId)));
                 case CallbackQueryEnum::PAGINATION->value:
                     $page = (int) $callbackParameters['page'] ?? 1;
                     $list = $this->animeRepository->paginate(currentPage: $page);
 
-                    $caption = $this->convertToCaption(
-                        $list->first(),
-                        $this->update->callback_query->from->id,
-                        $list
-                    );
-
+                    $caption = $this->captionService->create(new CreateAnimeCaptionDTO($list->first(), $chatId, $list));
 
                     try {
-                        $this->editMessageMedia(
+                        return $this->editMessageMedia(
                             [
                                 'media'        => [
                                     'media'   => $caption['photo'],
@@ -87,9 +85,9 @@ class CallbackQueryHandler extends UpdateHandler
                             ]
                         );
                     }
-                    break;
+                    return;
                 default:
-                    break;
+                    return;
             }
         }
     }

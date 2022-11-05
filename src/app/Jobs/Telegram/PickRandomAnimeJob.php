@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
+use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
 use App\Enums\QueueEnum;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
-use App\Telegram\Handlers\Traits\CanConvertAnimeToCaption;
+use App\Services\Telegram\CaptionService;
 use App\Telegram\History\UserHistory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,19 +18,14 @@ use WeStacks\TeleBot\Laravel\TeleBot;
 
 /**
  * Class PickRandomAnimeJob
- *
- * @package App\Jobs
+ * @package App\Jobs\Telegram
  */
 class PickRandomAnimeJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CanConvertAnimeToCaption;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * @param int $userId
-     */
-    public function __construct(private readonly int $userId)
+    public function __construct(private readonly int $chatId)
     {
-        $this->resolveBindings();
         $this->onQueue(QueueEnum::PICK_RANDOM_ANIME_QUEUE->value);
         $this->onConnection('redis');
     }
@@ -38,12 +34,13 @@ class PickRandomAnimeJob implements ShouldQueue
      * Execute the job.
      *
      * @param AnimeRepositoryInterface $animeRepository
+     * @param CaptionService           $captionService
      * @return void
      */
-    public function handle(AnimeRepositoryInterface $animeRepository): void
+    public function handle(AnimeRepositoryInterface $animeRepository, CaptionService $captionService): void
     {
         try {
-            UserHistory::addLastActiveTime($this->userId);
+            UserHistory::addLastActiveTime($this->chatId);
 
             $randomAnime = $animeRepository->findRandomAnime();
 
@@ -51,17 +48,17 @@ class PickRandomAnimeJob implements ShouldQueue
                 TeleBot::sendMessage(
                     [
                         'text'    => QueueEnum::EMPTY_ANIME_DATABASE->value,
-                        'chat_id' => $this->userId,
+                        'chat_id' => $this->chatId,
                     ]
                 );
 
-                UserHistory::clearUserExecutedCommandsHistory($this->userId);
+                UserHistory::clearUserExecutedCommandsHistory($this->chatId);
                 return;
             }
 
-            TeleBot::sendPhoto($this->convertToCaption($randomAnime, $this->userId));
+            TeleBot::sendPhoto($captionService->create(new CreateAnimeCaptionDTO($randomAnime, $this->chatId)));
 
-            UserHistory::clearUserExecutedCommandsHistory($this->userId);
+            UserHistory::clearUserExecutedCommandsHistory($this->chatId);
         } catch (\Exception $exception) {
             logger()->channel('single')->warning(
                 $exception->getMessage(),

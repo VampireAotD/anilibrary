@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 /**
  * Trait CanGenerateNamesArray
- * @package App\Services\Traits
+ * @package App\Traits
  */
 trait CanGenerateNamesArray
 {

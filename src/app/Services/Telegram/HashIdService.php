@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Telegram\Handlers\Traits;
+namespace App\Services\Telegram;
 
 use Ramsey\Uuid\Uuid;
 use Tuupola\Base62\GmpEncoder;
 use Tuupola\Base62\PhpEncoder;
 
 /**
- * Trait CanResolveIdHash
- * @package App\Handlers\Traits
+ * Class HashIdService
+ * @package App\Services
  */
-trait CanResolveIdHash
+class HashIdService
 {
     protected GmpEncoder | PhpEncoder $encoder;
 
-    public function resolveBindings(): void
+    public function __construct()
     {
         $this->encoder = extension_loaded('gmp') ? new GmpEncoder() : new PhpEncoder();
     }

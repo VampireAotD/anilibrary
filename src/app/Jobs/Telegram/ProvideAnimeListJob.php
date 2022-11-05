@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
+use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
 use App\Enums\QueueEnum;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
-use App\Telegram\Handlers\Traits\CanConvertAnimeToCaption;
+use App\Services\Telegram\CaptionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -16,39 +17,30 @@ use WeStacks\TeleBot\Laravel\TeleBot;
 
 /**
  * Class ProvideAnimeListJob
- *
- * @package App\Jobs
+ * @package App\Jobs\Telegram
  */
 class ProvideAnimeListJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CanConvertAnimeToCaption;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private AnimeRepositoryInterface $animeRepository;
-
-    /**
-     * Create a new job instance.
-     */
     public function __construct(
-        private int $telegramId,
-        private int $page = 1,
+        private readonly int $telegramId,
+        private readonly int $page = 1,
     ) {
-        $this->animeRepository = app(AnimeRepositoryInterface::class);
-
-        $this->resolveBindings();
         $this->onQueue(QueueEnum::ANIME_LIST_QUEUE->value);
         $this->onConnection('redis');
     }
 
     /**
-     * Execute the job.
-     *
+     * @param AnimeRepositoryInterface $animeRepository
+     * @param CaptionService           $captionService
      * @return void
      */
-    public function handle(): void
+    public function handle(AnimeRepositoryInterface $animeRepository, CaptionService $captionService): void
     {
-        $list = $this->animeRepository->paginate(currentPage: $this->page);
+        $list = $animeRepository->paginate(currentPage: $this->page);
 
-        $caption = $this->convertToCaption($list->first(), $this->telegramId, $list);
+        $caption = $captionService->create(new CreateAnimeCaptionDTO($list->first(), $this->telegramId, $list));
 
         TeleBot::sendPhoto($caption);
     }

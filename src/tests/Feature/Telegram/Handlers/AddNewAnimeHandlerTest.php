@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
+use WeStacks\TeleBot\Objects\Message;
 use WeStacks\TeleBot\TeleBot;
 
 class AddNewAnimeHandlerTest extends TestCase
@@ -77,6 +78,7 @@ class AddNewAnimeHandlerTest extends TestCase
             /** @see https://github.com/westacks/telebot/issues/58 */
             $response = $this->bot->fake()->handleUpdate($update);
 
+            $this->assertInstanceOf(Message::class, $response);
             $this->assertEquals(AnimeHandlerEnum::PARSE_STARTED->value, $response->text);
             Bus::assertDispatched(AddNewAnimeJob::class);
         }

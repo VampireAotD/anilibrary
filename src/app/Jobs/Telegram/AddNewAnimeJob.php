@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
-use App\DTO\Handlers\CallbackDataDTO;
+use App\DTO\Handlers\CallbackQueryDTO;
 use App\DTO\UseCase\Anime\ScrapedDataDTO;
 use App\Enums\QueueEnum;
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CallbackQueryEnum;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
-use App\Telegram\Handlers\Traits\CanCreateCallbackData;
+use App\Services\Telegram\CallbackQueryService;
 use App\Telegram\History\UserHistory;
 use App\UseCase\AnimeUseCase;
 use Exception;
@@ -31,26 +31,24 @@ use WeStacks\TeleBot\Objects\Message;
  */
 class AddNewAnimeJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, CanCreateCallbackData;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * @param Message $message
      */
     public function __construct(private readonly Message $message)
     {
-        $this->resolveBindings();
         $this->onQueue(QueueEnum::ADD_ANIME_QUEUE->value);
         $this->onConnection('redis');
     }
 
     /**
-     * Execute the job.
-     *
-     * @param Client       $client
-     * @param AnimeUseCase $animeUseCase
+     * @param Client               $client
+     * @param AnimeUseCase         $animeUseCase
+     * @param CallbackQueryService $callbackQueryService
      * @return void
      */
-    public function handle(Client $client, AnimeUseCase $animeUseCase): void
+    public function handle(Client $client, AnimeUseCase $animeUseCase, CallbackQueryService $callbackQueryService): void
     {
         $message = $this->message;
         $chatId  = $message->chat->id;
@@ -76,20 +74,19 @@ class AddNewAnimeJob implements ShouldQueue
             TeleBot::sendMessage(
                 [
                     'text'         => AnimeHandlerEnum::PARSE_HAS_ENDED->value,
+                    'chat_id'      => $chatId,
                     'reply_markup' => [
                         'inline_keyboard' => [
                             [
                                 [
                                     'text'          => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
-                                    'callback_data' => $this->createCallbackData(
-                                        CallbackQueryEnum::CHECK_ADDED_ANIME,
-                                        new CallbackDataDTO($anime->id)
+                                    'callback_data' => $callbackQueryService->create(
+                                        new CallbackQueryDTO(CallbackQueryEnum::CHECK_ADDED_ANIME, $anime->id)
                                     ),
                                 ],
                             ],
                         ],
                     ],
-                    'chat_id'      => $chatId,
                 ]
             );
 

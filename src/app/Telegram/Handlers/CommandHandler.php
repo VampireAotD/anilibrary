@@ -14,7 +14,7 @@ use WeStacks\TeleBot\Objects\Message;
 
 /**
  * Class CommandHandler
- * @package App\Handlers
+ * @package App\Telegram\Handlers
  */
 class CommandHandler extends UpdateHandler
 {
