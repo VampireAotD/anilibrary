@@ -42,7 +42,7 @@ class UserStatusMiddlewareTest extends TestCase
     /**
      * @return void
      */
-    public function testMiddlewareDeleteUserActivityIfHeDeletedOrLeftChatWithBot(): void
+    public function testMiddlewareWillDeleteUserActivityIfHeDeletedOrLeftChatWithBot(): void
     {
         $this->createUserHistoryMock()->shouldReceive('clearUserExecutedCommandsHistory')->once();
         $update   = $this->createFakeChatMemberUpdate(

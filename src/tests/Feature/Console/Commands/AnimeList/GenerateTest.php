@@ -40,10 +40,21 @@ class GenerateTest extends TestCase
              ->assertSuccessful()
              ->expectsOutput('Anime list successfully generated');
 
-        Storage::disk('lists')->assertExists(config('lists.anime.file'));
-        Mail::assertQueued(AnimeListMail::class);
+        $listFile = config('lists.anime.file');
 
-        $json = Storage::disk('lists')->get(config('lists.anime.file'));
+        Storage::disk('lists')->assertExists($listFile);
+        Mail::assertQueued(
+            AnimeListMail::class,
+            function (AnimeListMail $mail) use ($listFile) {
+                $mail->build();
+
+                return $mail->hasFrom(config('admin.email')) &&
+                    $mail->hasTo(config('admin.email')) &&
+                    $mail->hasAttachmentFromStorageDisk('lists', $listFile);
+            }
+        );
+
+        $json = Storage::disk('lists')->get($listFile);
 
         $this->assertJson($json);
         $this->assertJsonStringEqualsJsonString(
@@ -54,7 +65,7 @@ class GenerateTest extends TestCase
             $json
         );
 
-        Storage::disk('lists')->delete(config('lists.anime.file'));
-        Storage::disk('lists')->assertMissing(config('lists.anime.file'));
+        Storage::disk('lists')->delete($listFile);
+        Storage::disk('lists')->assertMissing($listFile);
     }
 }

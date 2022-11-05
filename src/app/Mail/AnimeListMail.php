@@ -8,7 +8,6 @@ use App\Enums\QueueEnum;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Class AnimeListMail
@@ -36,7 +35,7 @@ class AnimeListMail extends Mailable
     public function build(): self
     {
         return $this->from(config('admin.email'))
-                    ->attach(Storage::disk('lists')->get(config('lists.anime.file')))
+                    ->attachFromStorageDisk('lists', config('lists.anime.file'))
                     ->markdown('emails.lists.anime-list');
     }
 }
