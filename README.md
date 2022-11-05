@@ -7,7 +7,8 @@ Application for scrapping anime
 ## Branches:
 
 ### - [`main`](https://github.com/VampireAotD/anilibrary)
-### - [`refactor`](https://github.com/VampireAotD/anilibrary/tree/refactor)
+
+### - [`dev`](https://github.com/VampireAotD/anilibrary/tree/dev)
 
 --- 
 
@@ -15,7 +16,7 @@ Application for scrapping anime
 
 To build image you can use Makefile commands
 
-First, you need to build images : 
+First, you need to build images :
 
 ```shell
 make build # docker-compose up -d --build
@@ -47,7 +48,8 @@ docker-compose run --rm app ./artisan anime-list:parse
 
 ## Launch
 
-To launch application you can use following command : 
+To launch application you can use following command :
+
 ```shell
 make up
 ```
@@ -78,7 +80,7 @@ bot will always work
 make supervisor
 ```
 
-or 
+or
 
 ```shell
 docker-compose run -d --name supervisor app supervisord
@@ -86,8 +88,20 @@ docker-compose run -d --name supervisor app supervisord
 
 ---
 
+## Bot config
+
+Project is using [`Telebot`](https://github.com/westacks/telebot) library
+so all bots configs can be found in `src/config/telebot.php`.
+
+Also some tests can require additional call of `fake()`
+method, more info in this [`issue`](https://github.com/westacks/telebot/issues/58).
+
+---
+
 ## TODO:
-1. Move parsers logic to Go microservice
+
+1. <del>Move parsers logic to Go microservice</del>
 2. Add Elasticsearch and Logstash
-3. Write tests
+3. Write more tests
+
 ---

@@ -73,10 +73,8 @@ class AddNewAnimeHandlerTest extends TestCase
 
         foreach (self::SUPPORTED_URLS as $supportedUrl) {
             $update = $this->createFakeTextMessageUpdate(message: $supportedUrl);
-            // After each setUp in loop bot settings reverts to default for no reason,
-            // and it considers itself not fake, but regular bot again,
-            // so need to specify each iteration that its fake
-            // TODO try to fix this
+
+            /** @see https://github.com/westacks/telebot/issues/58 */
             $response = $this->bot->fake()->handleUpdate($update);
 
             $this->assertEquals(AnimeHandlerEnum::PARSE_STARTED->value, $response->text);

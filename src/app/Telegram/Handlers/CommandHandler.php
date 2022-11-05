@@ -8,8 +8,9 @@ use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
 use App\Jobs\Telegram\PickRandomAnimeJob;
 use App\Jobs\Telegram\ProvideAnimeListJob;
-use App\Telegram\History\UserHistory;
+use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
+use WeStacks\TeleBot\Objects\Message;
 
 /**
  * Class CommandHandler
@@ -26,31 +27,31 @@ class CommandHandler extends UpdateHandler
     }
 
     /**
-     * @return void
+     * @return PromiseInterface|void|Message
      */
-    public function handle(): void
+    public function handle()
     {
         $message    = $this->update->message;
         $telegramId = $message->chat->id;
 
-        match ($message->text) {
-            CommandEnum::ADD_NEW_TITLE->value,
-            CommandEnum::ADD_NEW_TITLE_COMMAND->value =>
-            $this->sendMessage(
-                [
-                    'text' => AnimeHandlerEnum::PROVIDE_URL->value,
-                ]
-            ),
-
-            CommandEnum::RANDOM_ANIME->value,
-            CommandEnum::RANDOM_ANIME_COMMAND->value  =>
-            PickRandomAnimeJob::dispatch($telegramId),
-
-            CommandEnum::ANIME_LIST->value,
-            CommandEnum::ANIME_LIST_COMMAND->value    =>
-            ProvideAnimeListJob::dispatch($telegramId),
-
-            default                                   => UserHistory::addLastActiveTime($telegramId)
-        };
+        switch ($message->text) {
+            case CommandEnum::ADD_NEW_TITLE->value:
+            case CommandEnum::ADD_NEW_TITLE_COMMAND->value:
+                return $this->sendMessage(
+                    [
+                        'text' => AnimeHandlerEnum::PROVIDE_URL->value,
+                    ]
+                );
+            case CommandEnum::RANDOM_ANIME->value :
+            case CommandEnum::RANDOM_ANIME_COMMAND->value :
+                PickRandomAnimeJob::dispatch($telegramId);
+                return;
+            case CommandEnum::ANIME_LIST->value:
+            case CommandEnum::ANIME_LIST_COMMAND->value:
+                ProvideAnimeListJob::dispatch($telegramId);
+                return;
+            default:
+                return;
+        }
     }
 }

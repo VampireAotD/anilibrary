@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Handlers;
 
+use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
 use App\Jobs\Telegram\PickRandomAnimeJob;
 use App\Jobs\Telegram\ProvideAnimeListJob;
@@ -26,6 +27,21 @@ class CommandHandlerTest extends TestCase
         parent::setUp();
         $this->bot = $this->createFakeBot();
         $this->bot->addHandler([CommandHandler::class]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testBotCanCreateAnime(): void
+    {
+        $cases = [CommandEnum::ADD_NEW_TITLE_COMMAND->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
+
+        foreach ($cases as $case) {
+            $update   = $this->createFakeTextMessageUpdate(message: $case);
+            $response = $this->bot->fake()->handleUpdate($update);
+
+            $this->assertEquals(AnimeHandlerEnum::PROVIDE_URL->value, $response->text);
+        }
     }
 
     /**
