@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\DTO\Handlers;
+namespace App\DTO\Service\CallbackData;
 
 use App\Enums\Telegram\CallbackQueryEnum;
 
 /**
- * Class CallbackQueryDTO
- * @package App\DTO\Handlers
+ * Class CreateCallbackDataDTO
+ * @package App\DTO\Service\CallbackData
  */
-class CallbackQueryDTO
+class CreateCallbackDataDTO
 {
     /**
      * @param CallbackQueryEnum $option

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Telegram\Handlers;
 
-use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
+use App\DTO\UseCase\CallbackQuery\AddedAnimeDTO;
+use App\DTO\UseCase\CallbackQuery\PaginationDTO;
 use App\Enums\Telegram\CallbackQueryEnum;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
-use App\Services\Telegram\CaptionService;
 use App\Telegram\History\UserHistory;
+use App\UseCase\CallbackQueryUseCase;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
 use WeStacks\TeleBot\Objects\Message;
@@ -21,15 +21,13 @@ use WeStacks\TeleBot\TeleBot;
  */
 class CallbackQueryHandler extends UpdateHandler
 {
-    private AnimeRepositoryInterface $animeRepository;
-    private CaptionService           $captionService;
+    private CallbackQueryUseCase $callbackQueryUseCase;
 
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
 
-        $this->animeRepository = app(AnimeRepositoryInterface::class);
-        $this->captionService  = app(CaptionService::class);
+        $this->callbackQueryUseCase = app(CallbackQueryUseCase::class);
     }
 
     /**
@@ -51,44 +49,55 @@ class CallbackQueryHandler extends UpdateHandler
         UserHistory::addLastActiveTime($chatId);
         parse_str($callbackData, $callbackParameters);
 
-        if (isset($callbackParameters['command'])) {
-            switch ($callbackParameters['command']) {
-                case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
-                    $animeId = $this->decode($callbackParameters['animeId']);
-                    $anime   = $this->animeRepository->findById($animeId);
+        switch ($callbackParameters['command'] ?? '') {
+            case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
+                $caption = $this->callbackQueryUseCase->addedAnimeCaption(
+                    new AddedAnimeDTO($callbackParameters['animeId'], $chatId)
+                );
 
-                    return $this->sendPhoto($this->captionService->create(new CreateAnimeCaptionDTO($anime, $chatId)));
-                case CallbackQueryEnum::PAGINATION->value:
-                    $page = (int) $callbackParameters['page'] ?? 1;
-                    $list = $this->animeRepository->paginate(currentPage: $page);
+                if (!$caption) {
+                    return $this->sendMessage(
+                        [
+                            'text'    => '',
+                            'chat_id' => $chatId
+                        ]
+                    );
+                }
 
-                    $caption = $this->captionService->create(new CreateAnimeCaptionDTO($list->first(), $chatId, $list));
+                return $this->sendPhoto(
+                    $this->callbackQueryUseCase->addedAnimeCaption(
+                        new AddedAnimeDTO($callbackParameters['animeId'], $chatId)
+                    )
+                );
+            case CallbackQueryEnum::PAGINATION->value:
+                $page    = (int) $callbackParameters['page'] ?? 1;
+                $caption = $this->callbackQueryUseCase->paginate(new PaginationDTO($chatId, $page));
 
-                    try {
-                        return $this->editMessageMedia(
-                            [
-                                'media'        => [
-                                    'media'   => $caption['photo'],
-                                    'type'    => 'photo',
-                                    'caption' => $caption['caption'],
-                                ],
-                                'reply_markup' => $caption['reply_markup'],
-                            ]
-                        );
-                    } catch (\Exception $exception) {
-                        // Prevent bot from breaking because of next or prev page spam
-                        logger()->info(
-                            'Probably spam from buttons',
-                            [
-                                'exceptionMessage' => $exception->getMessage(),
-                                'exceptionTrace'   => $exception->getTraceAsString(),
-                            ]
-                        );
-                    }
-                    return;
-                default:
-                    return;
-            }
+                try {
+                    return $this->editMessageMedia(
+                        [
+                            'media'        => [
+                                'media'   => $caption['photo'],
+                                'type'    => 'photo',
+                                'caption' => $caption['caption'],
+                            ],
+                            'reply_markup' => $caption['reply_markup'],
+                        ]
+                    );
+                } catch (\Exception $exception) {
+                    dump($exception);
+                    // Prevent bot from breaking because of next or prev page spam
+                    logger()->info(
+                        'Probably spam from buttons',
+                        [
+                            'exceptionMessage' => $exception->getMessage(),
+                            'exceptionTrace'   => $exception->getTraceAsString(),
+                        ]
+                    );
+                }
+                return;
+            default:
+                return;
         }
     }
 }

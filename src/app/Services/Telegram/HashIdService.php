@@ -10,7 +10,7 @@ use Tuupola\Base62\PhpEncoder;
 
 /**
  * Class HashIdService
- * @package App\Services
+ * @package App\Services\Telegram
  */
 class HashIdService
 {

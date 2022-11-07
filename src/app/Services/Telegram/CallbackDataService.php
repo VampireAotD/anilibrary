@@ -4,35 +4,35 @@ declare(strict_types=1);
 
 namespace App\Services\Telegram;
 
-use App\DTO\Handlers\CallbackQueryDTO;
+use App\DTO\Service\CallbackData\CreateCallbackDataDTO;
 use App\Enums\Telegram\CallbackQueryEnum;
 
 /**
- * Class CallbackQueryService
- * @package App\Services
+ * Class CallbackDataService
+ * @package App\Services\Telegram
  */
-class CallbackQueryService
+class CallbackDataService
 {
     public function __construct(private readonly HashIdService $hashIdService)
     {
     }
 
     /**
-     * @param CallbackQueryDTO $callbackQueryDTO
+     * @param CreateCallbackDataDTO $callbackDataDTO
      * @return string
      */
-    public function create(CallbackQueryDTO $callbackQueryDTO): string
+    public function create(CreateCallbackDataDTO $callbackDataDTO): string
     {
-        return match ($callbackQueryDTO->option) {
+        return match ($callbackDataDTO->option) {
             CallbackQueryEnum::CHECK_ADDED_ANIME => sprintf(
                 'command=%s&animeId=%s',
                 CallbackQueryEnum::CHECK_ADDED_ANIME->value,
-                $this->hashIdService->encode($callbackQueryDTO->animeId),
+                $this->hashIdService->encode($callbackDataDTO->animeId),
             ),
             CallbackQueryEnum::PAGINATION        => sprintf(
                 'command=%s&page=%d',
                 CallbackQueryEnum::PAGINATION->value,
-                $callbackQueryDTO->pageNumber
+                $callbackDataDTO->pageNumber
             ),
             default                              => ''
         };

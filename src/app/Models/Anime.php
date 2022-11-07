@@ -46,6 +46,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereStatus($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[]         $tags
  * @property-read int|null                                                           $tags_count
+ * @property-read string $caption
+ * @method static \Database\Factories\AnimeFactory factory(...$parameters)
  */
 class Anime extends Model
 {
@@ -96,5 +98,19 @@ class Anime extends Model
     {
         return $this->belongsToMany(Tag::class, AnimeTag::getTableName())
                     ->using(AnimeTag::class);
+    }
+
+    public function getCaptionAttribute(): string
+    {
+        return sprintf(
+            "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
+            $this->title,
+            $this->status,
+            $this->episodes,
+            $this->rating,
+            $this->voiceActing->implode('name', ', '),
+            $this->genres->implode('name', ', '),
+            $this->tags->implode('name', ', '),
+        );
     }
 }

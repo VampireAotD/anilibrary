@@ -84,4 +84,22 @@ trait CanCreateFakeUpdates
             ]
         );
     }
+
+    public function createFakeCallbackQueryUpdate(?int $chatId = null, string $query = ''): Update
+    {
+        $chatId ??= $this->fakeTelegramId;
+
+        return Update::create(
+            [
+                'callback_query' => [
+                    'data'    => $query,
+                    'message' => [
+                        'chat' => [
+                            'id' => $chatId,
+                        ],
+                    ],
+                ],
+            ]
+        );
+    }
 }

@@ -8,6 +8,7 @@ use App\Models\Anime;
 use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
+use Illuminate\Support\Collection;
 
 /**
  * Trait CanCreateFakeData
@@ -17,9 +18,9 @@ trait CanCreateFakeData
 {
     /**
      * @param int $count
-     * @return mixed
+     * @return Collection<Anime>
      */
-    public function createRandomAnimeWithRelations(int $count = 1): mixed
+    public function createRandomAnimeWithRelations(int $count = 1): Collection
     {
         return Anime::factory($count)->create()->each(
             function (Anime $anime) {
@@ -27,6 +28,6 @@ trait CanCreateFakeData
                 $anime->genres()->save(Genre::factory()->make());
                 $anime->voiceActing()->save(VoiceActing::factory()->make());
             }
-        );
+        )->toBase();
     }
 }

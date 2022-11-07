@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Telegram;
 
-use App\DTO\Handlers\CallbackQueryDTO;
+use App\DTO\Service\CallbackData\CreateCallbackDataDTO;
 use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
 use App\Enums\Telegram\AnimeCaptionEnum;
 use App\Enums\Telegram\CallbackQueryEnum;
@@ -12,11 +12,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Class CaptionService
- * @package App\Services
+ * @package App\Services\Telegram
  */
 class CaptionService
 {
-    public function __construct(private readonly CallbackQueryService $callbackQueryService)
+    public function __construct(private readonly CallbackDataService $callbackQueryService)
     {
     }
 
@@ -29,16 +29,7 @@ class CaptionService
         $anime = $dto->anime;
 
         $response = [
-            'caption'      => sprintf(
-                "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
-                $anime->title,
-                $anime->status,
-                $anime->episodes,
-                $anime->rating,
-                $anime->voiceActing->implode('name', ', '),
-                $anime->genres->implode('name', ', '),
-                $anime->tags->implode('name', ', '),
-            ),
+            'caption'      => $anime->caption,
             'photo'        => $anime->image->path,
             'reply_markup' => [
                 'inline_keyboard' => [
@@ -72,7 +63,7 @@ class CaptionService
             $pages[] = [
                 'text'          => '<',
                 'callback_data' => $this->callbackQueryService->create(
-                    new CallbackQueryDTO(CallbackQueryEnum::PAGINATION, pageNumber: $paginator->currentPage() - 1),
+                    new CreateCallbackDataDTO(CallbackQueryEnum::PAGINATION, pageNumber: $paginator->currentPage() - 1),
                 ),
             ];
         }
@@ -81,7 +72,7 @@ class CaptionService
             $pages[] = [
                 'text'          => '>',
                 'callback_data' => $this->callbackQueryService->create(
-                    new CallbackQueryDTO(CallbackQueryEnum::PAGINATION, pageNumber: $paginator->currentPage() + 1)
+                    new CreateCallbackDataDTO(CallbackQueryEnum::PAGINATION, pageNumber: $paginator->currentPage() + 1)
                 ),
             ];
         }

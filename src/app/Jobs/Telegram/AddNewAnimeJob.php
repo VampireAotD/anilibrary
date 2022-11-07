@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
-use App\DTO\Handlers\CallbackQueryDTO;
+use App\DTO\Service\CallbackData\CreateCallbackDataDTO;
 use App\DTO\UseCase\Anime\ScrapedDataDTO;
 use App\Enums\QueueEnum;
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CallbackQueryEnum;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
-use App\Services\Telegram\CallbackQueryService;
+use App\Services\Telegram\CallbackDataService;
 use App\Telegram\History\UserHistory;
 use App\UseCase\AnimeUseCase;
 use Exception;
@@ -43,12 +43,12 @@ class AddNewAnimeJob implements ShouldQueue
     }
 
     /**
-     * @param Client               $client
-     * @param AnimeUseCase         $animeUseCase
-     * @param CallbackQueryService $callbackQueryService
+     * @param Client              $client
+     * @param AnimeUseCase        $animeUseCase
+     * @param CallbackDataService $callbackQueryService
      * @return void
      */
-    public function handle(Client $client, AnimeUseCase $animeUseCase, CallbackQueryService $callbackQueryService): void
+    public function handle(Client $client, AnimeUseCase $animeUseCase, CallbackDataService $callbackQueryService): void
     {
         $message = $this->message;
         $chatId  = $message->chat->id;
@@ -81,7 +81,7 @@ class AddNewAnimeJob implements ShouldQueue
                                 [
                                     'text'          => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
                                     'callback_data' => $callbackQueryService->create(
-                                        new CallbackQueryDTO(CallbackQueryEnum::CHECK_ADDED_ANIME, $anime->id)
+                                        new CreateCallbackDataDTO(CallbackQueryEnum::CHECK_ADDED_ANIME, $anime->id)
                                     ),
                                 ],
                             ],
