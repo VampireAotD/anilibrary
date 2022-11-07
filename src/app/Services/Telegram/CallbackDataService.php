@@ -13,7 +13,7 @@ use App\Enums\Telegram\CallbackQueryEnum;
  */
 class CallbackDataService
 {
-    public function __construct(private readonly HashIdService $hashIdService)
+    public function __construct(private readonly Base62Service $base62Service)
     {
     }
 
@@ -27,7 +27,7 @@ class CallbackDataService
             CallbackQueryEnum::CHECK_ADDED_ANIME => sprintf(
                 'command=%s&animeId=%s',
                 CallbackQueryEnum::CHECK_ADDED_ANIME->value,
-                $this->hashIdService->encode($callbackDataDTO->animeId),
+                $this->base62Service->encode($callbackDataDTO->animeId),
             ),
             CallbackQueryEnum::PAGINATION        => sprintf(
                 'command=%s&page=%d',

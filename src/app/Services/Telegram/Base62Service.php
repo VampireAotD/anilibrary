@@ -9,10 +9,10 @@ use Tuupola\Base62\GmpEncoder;
 use Tuupola\Base62\PhpEncoder;
 
 /**
- * Class HashIdService
+ * Class Base62Service
  * @package App\Services\Telegram
  */
-class HashIdService
+class Base62Service
 {
     protected GmpEncoder | PhpEncoder $encoder;
 

@@ -3,6 +3,7 @@
 namespace App\Repositories\Contracts;
 
 use App\Models\Anime;
+use App\Repositories\Contracts\Common\FindById;
 use App\Repositories\Contracts\Common\Paginate;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
  * Interface AnimeRepositoryInterface
  * @package App\Repositories\Contracts\Anime
  */
-interface AnimeRepositoryInterface extends Paginate
+interface AnimeRepositoryInterface extends FindById, Paginate
 {
     /**
      * @param string $title

@@ -9,7 +9,9 @@ use App\DTO\UseCase\CallbackQuery\PaginationDTO;
 use App\Enums\Telegram\CallbackQueryEnum;
 use App\Telegram\History\UserHistory;
 use App\UseCase\CallbackQueryUseCase;
+use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
+use WeStacks\TeleBot\Exceptions\TeleBotException;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
 use WeStacks\TeleBot\Objects\Message;
 use WeStacks\TeleBot\Objects\Update;
@@ -58,8 +60,8 @@ class CallbackQueryHandler extends UpdateHandler
                 if (!$caption) {
                     return $this->sendMessage(
                         [
-                            'text'    => '',
-                            'chat_id' => $chatId
+                            'text'    => 'Не удалось найти тайтл по данному запросу',
+                            'chat_id' => $chatId,
                         ]
                     );
                 }
@@ -84,11 +86,11 @@ class CallbackQueryHandler extends UpdateHandler
                             'reply_markup' => $caption['reply_markup'],
                         ]
                     );
-                } catch (\Exception $exception) {
-                    dump($exception);
+                } catch (TeleBotException) {
                     // Prevent bot from breaking because of next or prev page spam
+                } catch (Exception $exception) {
                     logger()->info(
-                        'Probably spam from buttons',
+                        'Edit message media',
                         [
                             'exceptionMessage' => $exception->getMessage(),
                             'exceptionTrace'   => $exception->getTraceAsString(),

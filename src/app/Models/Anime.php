@@ -46,7 +46,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereStatus($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[]         $tags
  * @property-read int|null                                                           $tags_count
- * @property-read string $caption
+ * @property-read string                                                             $caption
  * @method static \Database\Factories\AnimeFactory factory(...$parameters)
  */
 class Anime extends Model
@@ -100,6 +100,9 @@ class Anime extends Model
                     ->using(AnimeTag::class);
     }
 
+    /**
+     * @return string
+     */
     public function getCaptionAttribute(): string
     {
         return sprintf(

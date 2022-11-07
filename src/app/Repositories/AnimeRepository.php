@@ -24,6 +24,15 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     }
 
     /**
+     * @param string $id
+     * @return Anime|null
+     */
+    public function findById(string $id): ?Anime
+    {
+        return $this->model()->find($id);
+    }
+
+    /**
      * @param string $title
      * @return Anime|null
      */
