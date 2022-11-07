@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Pivots;
 
-use App\Models\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class AnimeVoiceActing extends Pivot
 {
-    use HasUuid;
+    use HasUuids;
 
     protected $hidden = ['pivot'];
 }

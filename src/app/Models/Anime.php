@@ -7,7 +7,7 @@ namespace App\Models;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeTag;
 use App\Models\Pivots\AnimeVoiceActing;
-use App\Models\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -51,7 +51,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class Anime extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'title',
