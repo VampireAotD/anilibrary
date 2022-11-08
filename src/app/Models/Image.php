@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @mixin \Eloquent
  * @property string                          $alias
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereAlias($value)
+ * @method static \Database\Factories\ImageFactory factory(...$parameters)
  */
 class Image extends Model
 {

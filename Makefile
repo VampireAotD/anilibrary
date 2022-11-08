@@ -1,6 +1,21 @@
 docker_compose_bin := $(shell command -v docker-compose 2> /dev/null)
 queue_list         := add-anime,random-anime,anime-list,mail
 
+.PHONY: supervisor
+supervisor:
+	$(info Launching supervisor...)
+	$(docker_compose_bin) exec -d app supervisord
+
+.PHONY: scheduler
+scheduler:
+	$(info Launching Laravel scheduler...)
+	$(docker_compose_bin) exec -d app ./artisan schedule:work
+
+.PHONY: queues
+queues:
+	$(info Launching queue worker...)
+	$(docker_compose_bin) exec -d app ./artisan queue:work --queue=$(queue_list)
+
 .PHONY: build
 build:
 	$(info Building app containers...)
@@ -10,14 +25,14 @@ build:
 up:
 	$(info Launching app containers...)
 	$(docker_compose_bin) up -d;
-	$(docker_compose_bin) exec -d app ./artisan telebot:polling;
-	$(docker_compose_bin) exec -d app ./artisan schedule:work;
-	$(docker_compose_bin) exec -d app ./artisan queue:work --queue=$(queue_list);
+	@make supervisor
+	@make scheduler
+	@make queues
 
 .PHONY: down
 down:
 	$(info Shutting down app containers...)
-	$(docker_compose_bin) down
+	$(docker_compose_bin) down --remove-orphans
 
 .PHONY: app
 app:
@@ -28,13 +43,24 @@ app:
 install:
 	$(info Initialising app...)
 	@cp .env.example .env;
-	$(docker_compose_bin) run --rm app cp .env.example .env;
-	$(docker_compose_bin) run --rm app composer update;
-	$(docker_compose_bin) run --rm app ./artisan key:generate;
-	$(docker_compose_bin) run --rm app ./artisan migrate --seed;
-	$(docker_compose_bin) run --rm app ./artisan anime-list:parse;
+	@make build
+	$(docker_compose_bin) exec app cp .env.example .env;
+	$(docker_compose_bin) exec app composer install;
+	$(docker_compose_bin) exec app ./artisan key:generate;
+	$(docker_compose_bin) exec app ./artisan migrate --seed;
+	$(docker_compose_bin) exec app ./artisan anime-list:parse;
 
-.PHONY: supervisor
-supervisor:
-	$(info Launching supervisor...)
-	$(docker_compose_bin) run -d --name supervisor app supervisord
+.PHONY: test
+test:
+	$(docker_compose_bin) exec app ./artisan test
+
+.PHONY: optimize
+optimize:
+	$(docker_compose_bin) exec app ./artisan optimize:clear;
+	$(docker_compose_bin) exec app ./artisan optimize;
+
+.PHONY: ide-helper
+ide-helper:
+	$(docker_compose_bin) exec app ./artisan ide-helper:generate;
+	$(docker_compose_bin) exec app ./artisan ide-helper:model -W;
+	$(docker_compose_bin) exec app ./artisan ide-helper:meta;

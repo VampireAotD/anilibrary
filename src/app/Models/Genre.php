@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\GenreFactory factory(...$parameters)
  */
 class Genre extends Model
 {

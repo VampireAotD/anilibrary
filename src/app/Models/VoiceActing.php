@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\VoiceActingFactory factory(...$parameters)
  */
 class VoiceActing extends Model
 {

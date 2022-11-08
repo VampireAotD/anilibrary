@@ -12,12 +12,12 @@ class AddNewColumnsToAnimesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table(
             'animes',
             function (Blueprint $table) {
-                $table->enum('status', AnimeStatusEnum::values());
+                $table->enum('status', AnimeStatusEnum::values())->default(AnimeStatusEnum::ANNOUNCE->value);
                 $table->float('rating')->default(1);
                 $table->string('episodes')->nullable();
             }
@@ -29,7 +29,7 @@ class AddNewColumnsToAnimesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table(
             'animes',

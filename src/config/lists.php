@@ -14,6 +14,6 @@ return [
     */
 
     'anime' => [
-        'file' => 'animeList1.json',
+        'file' => 'animeList.json',
     ],
 ];
