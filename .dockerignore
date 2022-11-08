@@ -6,3 +6,6 @@
 docker-compose.yml
 Makefile
 README.md
+/src/.phpstorm.meta.php
+/src/.phpunit.result.cache
+/src/_ide_helper.php
