@@ -13,11 +13,14 @@ class CreateAnimeGenresTable extends Migration
      */
     public function up()
     {
-        Schema::create('anime_genres', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('genre_id')->constrained()->cascadeOnDelete();
-        });
+        Schema::create(
+            'anime_genres',
+            function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
+                $table->foreignUuid('genre_id')->constrained()->cascadeOnDelete();
+            }
+        );
     }
 
     /**

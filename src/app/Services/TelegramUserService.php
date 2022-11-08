@@ -18,9 +18,11 @@ class TelegramUserService
     {
         $telegramUser = TelegramUser::create($data);
 
-        return User::create([
-            'telegram_user_id' => $telegramUser->id,
-            'password' => Str::random(),
-        ])->save();
+        return User::create(
+            [
+                'telegram_user_id' => $telegramUser->id,
+                'password'         => Str::random(),
+            ]
+        )->save();
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Pivots\AnimeGenre;
-use App\Models\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -29,10 +29,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\GenreFactory factory(...$parameters)
  */
 class Genre extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuids;
 
     protected $fillable = ['name'];
 
@@ -43,7 +44,7 @@ class Genre extends Model
      */
     public function anime(): BelongsToMany
     {
-        return $this->belongsToMany(Anime::class)
-            ->using(AnimeGenre::class);
+        return $this->belongsToMany(Anime::class, AnimeGenre::getTableName())
+                    ->using(AnimeGenre::class);
     }
 }

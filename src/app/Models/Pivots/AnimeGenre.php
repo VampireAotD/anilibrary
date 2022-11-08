@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Pivots;
 
 use App\Models\Traits\CanProvideTableName;
-use App\Models\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class AnimeGenre extends Pivot
 {
-    use HasUuid, CanProvideTableName;
+    use HasUuids, CanProvideTableName;
 
     protected $table = 'anime_genres';
 

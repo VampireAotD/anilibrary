@@ -13,11 +13,14 @@ class CreateAnimeTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('anime_tags', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('tag_id')->constrained()->cascadeOnDelete();
-        });
+        Schema::create(
+            'anime_tags',
+            function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
+                $table->foreignUuid('tag_id')->constrained()->cascadeOnDelete();
+            }
+        );
     }
 
     /**

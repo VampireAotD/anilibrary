@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\TagSeederEnum;
+use App\Enums\TagEnum;
 use App\Models\Tag;
-use App\Services\Traits\CanPrepareDataForBatchInsert;
+use App\Traits\CanGenerateNamesArray;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 /**
  * Class TagSeeder
@@ -16,7 +15,7 @@ use Illuminate\Support\Str;
  */
 class TagSeeder extends Seeder
 {
-    use CanPrepareDataForBatchInsert;
+    use CanGenerateNamesArray;
 
     /**
      * Run the database seeds.
@@ -25,18 +24,6 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        $tags = [
-            [
-                'name' => TagSeederEnum::ADMIN_TAG->value,
-            ],
-            [
-                'name' => TagSeederEnum::FIRST_MODERATOR_TAG->value,
-            ],
-            [
-                'name' => TagSeederEnum::SECOND_MODERATOR_TAG->value,
-            ],
-        ];
-
-        Tag::insert($this->prepareArrayForInsert($tags));
+        Tag::query()->upsert($this->generateNamesArray(TagEnum::values()), 'name');
     }
 }

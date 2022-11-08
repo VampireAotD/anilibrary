@@ -7,7 +7,7 @@ namespace App\Models;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeTag;
 use App\Models\Pivots\AnimeVoiceActing;
-use App\Models\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -46,10 +46,12 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereStatus($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[]         $tags
  * @property-read int|null                                                           $tags_count
+ * @property-read string                                                             $caption
+ * @method static \Database\Factories\AnimeFactory factory(...$parameters)
  */
 class Anime extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'title',
@@ -59,13 +61,17 @@ class Anime extends Model
         'episodes',
     ];
 
+    protected $casts = [
+        'id' => 'string',
+    ];
+
     /**
      * @return BelongsToMany
      */
     public function voiceActing(): BelongsToMany
     {
         return $this->belongsToMany(VoiceActing::class)
-            ->using(AnimeVoiceActing::class);
+                    ->using(AnimeVoiceActing::class);
     }
 
     /**
@@ -82,7 +88,7 @@ class Anime extends Model
     public function genres(): BelongsToMany
     {
         return $this->belongsToMany(Genre::class, AnimeGenre::getTableName())
-            ->using(AnimeGenre::class);
+                    ->using(AnimeGenre::class);
     }
 
     /**
@@ -91,6 +97,23 @@ class Anime extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, AnimeTag::getTableName())
-            ->using(AnimeTag::class);
+                    ->using(AnimeTag::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCaptionAttribute(): string
+    {
+        return sprintf(
+            "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
+            $this->title,
+            $this->status,
+            $this->episodes,
+            $this->rating,
+            $this->voiceActing->implode('name', ', '),
+            $this->genres->implode('name', ', '),
+            $this->tags->implode('name', ', '),
+        );
     }
 }

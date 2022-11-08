@@ -1,93 +1,59 @@
 # Anilibrary
 
-Application for scrapping anime
+Application for scraping anime data from different supported sites. For scraping uses microservice
+written in Go - [`anilibrary-scraper`](https://github.com/VampireAotD/anilibrary-scraper/tree/v1).
 
 ---
 
 ## Branches:
 
 ### - [`main`](https://github.com/VampireAotD/anilibrary)
-### - [`refactor`](https://github.com/VampireAotD/anilibrary/tree/refactor)
+
+### - [`dev`](https://github.com/VampireAotD/anilibrary/tree/dev)
 
 --- 
 
 ## Build
 
-To build image you can use Makefile commands
+Before building Anilibrary you need to place anime list in **src/storage/lists** folder
+so that application could parse it.
 
-First, you need to build images : 
+> **WARNING**: File name must be called `animeList.json` and has a valid JSON
 
-```shell
-make build # docker-compose up -d --build
-```
+You can skip this step and build Anilibrary if you don't need scraped data.
 
-After that you need to place anime list in **src/storage/lists** folder
-so that app could parse it.
-
-> **WARNING**: Anime list should be called animeList and be a valid JSON
-
-Now we can initialize application :
+To build Anilibrary you can use Makefile command `install` :
 
 ```shell
 make install
 ```
 
-or if you want to do it step by step :
+it will ensure that all images were built correctly, launch Supervisor,
+scheduler and queues worker. Queue list can be found in Makefile,
+it is called **queue_list**.
 
-```shell
-cp .env.example .env
-docker-compose run --rm app cp .env.example .env
-docker-compose run --rm app composer update
-docker-compose run --rm app ./artisan key:generate
-docker-compose run --rm app ./artisan migrate --seed
-docker-compose run --rm app ./artisan anime-list:parse
+Example of queue_list :
+
+```
+queue_list := add-anime,random-anime,anime-list,mail
 ```
 
 ---
 
-## Launch
+## Bot config
 
-To launch application you can use following command : 
-```shell
-make up
-```
+Project is using [`Telebot`](https://github.com/westacks/telebot) library
+so all bots configs can be found in `src/config/telebot.php`.
 
-or if you want to do it step by step :
-
-```shell
-docker-compose up -d;
-docker-compose exec -d app ./artisan telebot:polling;
-docker-compose exec -d app ./artisan schedule:work;
-docker-compose exec -d app ./artisan queue:work --queue=$(queue_list);
-```
-
-**queue_list** is a variable from Makefile,
-basically you can just type name of queues you want
-to listen
-
-List of queues :
-
-```
-add-anime,random-anime,anime-list,mail
-```
-
-Also you can use **Supervisor** that will insure that
-bot will always work
-
-```shell
-make supervisor
-```
-
-or 
-
-```shell
-docker-compose run -d --name supervisor app supervisord
-```
+Also, some tests can require additional call of `fake()`
+method, more info in this [`issue`](https://github.com/westacks/telebot/issues/58).
 
 ---
 
 ## TODO:
-1. Move parsers logic to Go microservice
+
+1. <del>Move parsers logic to Go microservice</del>
 2. Add Elasticsearch and Logstash
-3. Write tests
+3. Write more tests
+
 ---

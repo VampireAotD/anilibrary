@@ -4,23 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Repositories\Contracts\FindById;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class BaseRepository
  * @package App\Repositories
  */
-abstract class BaseRepository implements FindById
+abstract class BaseRepository
 {
-    private Model $model;
-
-    public function __construct()
-    {
-        $this->model = app($this->resolveModel());
-    }
-
     /**
      * @return string
      */
@@ -29,17 +20,8 @@ abstract class BaseRepository implements FindById
     /**
      * @return Model
      */
-    public function query(): Model
+    public function model(): Model
     {
-        return clone $this->model;
-    }
-
-    /**
-     * @param string $id
-     * @return Model|null
-     */
-    public function findById(string $id): ?Model
-    {
-        return $this->query()->find($id);
+        return app($this->resolveModel());
     }
 }

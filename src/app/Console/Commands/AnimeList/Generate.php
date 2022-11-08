@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Console\Commands\AnimeList;
 
 use App\Mail\AnimeListMail;
-use App\Repositories\Contracts\Anime\AnimeRepositoryInterface;
+use App\Repositories\Contracts\AnimeRepositoryInterface;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class Generate
@@ -33,7 +33,7 @@ class Generate extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct(private AnimeRepositoryInterface $animeRepository)
+    public function __construct(private readonly AnimeRepositoryInterface $animeRepository)
     {
         parent::__construct();
     }
@@ -50,19 +50,24 @@ class Generate extends Command
                 'id',
                 'title',
                 'url',
+                'status',
                 'rating',
                 'episodes',
             ],
             [
-                'image:model_id,path',
-                'genres:name',
-                'voiceActing:name',
+                'image:id,model_id,path,alias',
+                'tags:id,name',
+                'genres:id,name',
+                'voiceActing:id,name',
             ]
         );
 
-        File::put(config('filesystems.animeListPath'), $animeList->toJson(JSON_PRETTY_PRINT));
+        Storage::disk('lists')
+               ->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
 
         Mail::to(config('admin.email'))->queue(new AnimeListMail());
+
+        $this->info('Anime list successfully generated');
 
         return Command::SUCCESS;
     }

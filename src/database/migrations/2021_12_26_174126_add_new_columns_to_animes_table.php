@@ -1,9 +1,9 @@
 <?php
 
+use App\Enums\Telegram\AnimeStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\AnimeStatusEnum;
 
 class AddNewColumnsToAnimesTable extends Migration
 {
@@ -12,13 +12,16 @@ class AddNewColumnsToAnimesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('animes', function (Blueprint $table) {
-            $table->enum('status', AnimeStatusEnum::values());
-            $table->float('rating')->default(1);
-            $table->string('episodes')->nullable();
-        });
+        Schema::table(
+            'animes',
+            function (Blueprint $table) {
+                $table->enum('status', AnimeStatusEnum::values())->default(AnimeStatusEnum::ANNOUNCE->value);
+                $table->float('rating')->default(1);
+                $table->string('episodes')->nullable();
+            }
+        );
     }
 
     /**
@@ -26,12 +29,13 @@ class AddNewColumnsToAnimesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('animes', function (Blueprint $table) {
-            $table->dropColumn('status');
-            $table->dropColumn('rating');
-            $table->dropColumn('episodes');
-        });
+        Schema::table(
+            'animes',
+            function (Blueprint $table) {
+                $table->dropColumn(['status', 'rating', 'episodes']);
+            }
+        );
     }
 }

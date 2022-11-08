@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\TelegramUser;
-use App\Repositories\Contracts\TelegramUser\TelegramUserRepositoryInterface;
+use App\Repositories\Contracts\TelegramUserRepositoryInterface;
 
 /**
  * Class TelegramUserRepository
@@ -27,7 +27,7 @@ class TelegramUserRepository extends BaseRepository implements TelegramUserRepos
      */
     public function findByTelegramId(int $telegramId): ?TelegramUser
     {
-        return $this->query()->where('telegram_id', $telegramId)->first();
+        return $this->model()->where('telegram_id', $telegramId)->first();
     }
 
     /**
@@ -36,7 +36,7 @@ class TelegramUserRepository extends BaseRepository implements TelegramUserRepos
      */
     public function findByNickname(string $nickname): ?TelegramUser
     {
-        return $this->query()->where('nickname', $nickname)->first();
+        return $this->model()->where('nickname', $nickname)->first();
     }
 
     /**
@@ -45,6 +45,6 @@ class TelegramUserRepository extends BaseRepository implements TelegramUserRepos
      */
     public function findByUsername(string $username): ?TelegramUser
     {
-        return $this->query()->where('username', $username)->first();
+        return $this->model()->where('username', $username)->first();
     }
 }

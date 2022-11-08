@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\VoiceActing;
-use App\Services\Traits\CanPrepareDataForBatchInsert;
+use App\Repositories\Contracts\VoiceActingRepositoryInterface;
+use App\Traits\CanGenerateNamesArray;
 
 /**
  * Class VoiceActingService
@@ -13,14 +14,29 @@ use App\Services\Traits\CanPrepareDataForBatchInsert;
  */
 class VoiceActingService
 {
-    use CanPrepareDataForBatchInsert;
+    use CanGenerateNamesArray;
+
+    public function __construct(
+        private readonly VoiceActingRepositoryInterface $voiceActingRepository
+    ) {
+    }
 
     /**
-     * @param array $data
-     * @return bool
+     * @param string[] $voiceActing
+     * @return string[]
      */
-    public function batchInsert(array $data): bool
+    public function sync(array $voiceActing): array
     {
-        return VoiceActing::insert($this->prepareArrayForInsert($data));
+        $stored         = $this->voiceActingRepository->findSimilarByNames($voiceActing);
+        $newVoiceActing = array_diff($voiceActing, $stored->pluck('name')->toArray());
+
+        if (!$newVoiceActing) {
+            return $stored->pluck('id')->toArray();
+        }
+
+        $newVoiceActing = $this->generateNamesArray($newVoiceActing);
+        VoiceActing::upsert($newVoiceActing, ['name']);
+
+        return $stored->toBase()->merge($newVoiceActing)->pluck('id')->toArray();
     }
 }

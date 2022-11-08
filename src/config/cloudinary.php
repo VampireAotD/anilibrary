@@ -30,13 +30,26 @@ return [
     | Here you may configure your Cloudinary settings. Cloudinary is a cloud hosted
     | media management service for all file uploads, storage, delivery and transformation needs.
     |
+    */
+    'cloud_url'        => env('CLOUDINARY_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cloudinary Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Upload Preset From Cloudinary Dashboard
     |
     */
-    'cloud_url' => env('CLOUDINARY_URL'),
+    'upload_preset'    => env('CLOUDINARY_UPLOAD_PRESET'),
 
-    /**
-     * Upload Preset From Cloudinary Dashboard
-     *
-     */
-    'upload_preset' => env('CLOUDINARY_UPLOAD_PRESET')
+    /*
+    |--------------------------------------------------------------------------
+    | Cloudinary Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Default image url to store anime
+    |
+    */
+    'default_image'    => env('CLOUDINARY_DEFAULT_IMAGE', ''),
 ];

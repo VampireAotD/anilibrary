@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Genre;
-use App\Services\Traits\CanPrepareDataForBatchInsert;
+use App\Repositories\Contracts\GenreRepositoryInterface;
+use App\Traits\CanGenerateNamesArray;
 
 /**
  * Class GenreService
@@ -13,14 +14,29 @@ use App\Services\Traits\CanPrepareDataForBatchInsert;
  */
 class GenreService
 {
-    use CanPrepareDataForBatchInsert;
+    use CanGenerateNamesArray;
+
+    public function __construct(
+        private readonly GenreRepositoryInterface $genreRepository
+    ) {
+    }
 
     /**
-     * @param array $data
-     * @return bool
+     * @param string[] $genres
+     * @return string[]
      */
-    public function batchInsert(array $data): bool
+    public function sync(array $genres): array
     {
-        return Genre::insert($this->prepareArrayForInsert($data));
+        $stored    = $this->genreRepository->findSimilarByNames($genres);
+        $newGenres = array_diff($genres, $stored->pluck('name')->toArray());
+
+        if (!$newGenres) {
+            return $stored->pluck('id')->toArray();
+        }
+
+        $newGenres = $this->generateNamesArray($newGenres);
+        Genre::upsert($newGenres, ['name']);
+
+        return $stored->toBase()->merge($newGenres)->pluck('id')->toArray();
     }
 }

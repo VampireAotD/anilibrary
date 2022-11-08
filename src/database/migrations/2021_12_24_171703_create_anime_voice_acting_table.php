@@ -13,12 +13,15 @@ class CreateAnimeVoiceActingTable extends Migration
      */
     public function up()
     {
-        Schema::create('anime_voice_acting', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('voice_acting_id')->constrained('voice_acting')
-                ->cascadeOnDelete();
-        });
+        Schema::create(
+            'anime_voice_acting',
+            function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
+                $table->foreignUuid('voice_acting_id')->constrained('voice_acting')
+                      ->cascadeOnDelete();
+            }
+        );
     }
 
     /**

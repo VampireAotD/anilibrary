@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\VoiceActing;
-use App\Repositories\Contracts\FindByName;
+use App\Repositories\Contracts\VoiceActingRepositoryInterface;
 use App\Repositories\Traits\CanSearchByName;
 
 /**
  * Class VoiceActingRepository
  * @package App\Repositories
  */
-class VoiceActingRepository extends BaseRepository implements FindByName
+class VoiceActingRepository extends BaseRepository implements VoiceActingRepositoryInterface
 {
     use CanSearchByName;
 
