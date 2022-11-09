@@ -8,6 +8,7 @@ use App\Enums\TagEnum;
 use App\Models\Tag;
 use App\Repositories\Contracts\TagRepositoryInterface;
 use App\Repositories\Traits\CanSearchByName;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class TagRepository
@@ -18,11 +19,11 @@ class TagRepository extends BaseRepository implements TagRepositoryInterface
     use CanSearchByName;
 
     /**
-     * @return string
+     * @return Builder|Tag
      */
-    protected function resolveModel(): string
+    protected function model(): Builder | Tag
     {
-        return Tag::class;
+        return Tag::query();
     }
 
     /**

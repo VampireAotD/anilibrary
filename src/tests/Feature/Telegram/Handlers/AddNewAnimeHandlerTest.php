@@ -6,6 +6,7 @@ namespace Tests\Feature\Telegram\Handlers;
 
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
+use App\Enums\Validation\SupportedUrlEnum;
 use App\Jobs\Telegram\AddNewAnimeJob;
 use App\Telegram\Handlers\AddNewAnimeHandler;
 use Closure;
@@ -62,7 +63,7 @@ class AddNewAnimeHandlerTest extends TestCase
         $update   = $this->createFakeTextMessageUpdate(message: $this->faker->url);
         $response = $this->bot->handleUpdate($update);
 
-        $this->assertEquals(AnimeHandlerEnum::INVALID_URL->value, $response->text);
+        $this->assertEquals(SupportedUrlEnum::UNSUPPORTED_URL->value, $response->text);
     }
 
     /**

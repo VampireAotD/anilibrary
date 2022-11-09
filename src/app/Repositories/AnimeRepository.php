@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Anime;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -18,9 +19,9 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     /**
      * @return string
      */
-    protected function resolveModel(): string
+    protected function model(): Builder | Anime
     {
-        return Anime::class;
+        return Anime::query();
     }
 
     /**

@@ -14,37 +14,33 @@ use Illuminate\Support\Str;
  */
 class ImageService
 {
-    private const BASE_FOLDER_NAME = 'anime';
+    private const BASE_FOLDER = 'anime';
 
     /**
      * @param string $image
      * @param Anime  $anime
-     * @return bool
+     * @return Image
      */
-    public function upsert(string $image, Anime $anime): bool
+    public function upsert(string $image, Anime $anime): Image
     {
         if ($anime->image) {
             cloudinary()->destroy($anime->image->alias);
-            $anime->image->delete();
         }
 
-        return Image::create(
+        return Image::query()->updateOrCreate(
             [
-                'model_type' => $anime::class,
                 'model_id'   => $anime->id,
-                'alias'      => $alias = sprintf(
+                'model_type' => $anime::class,
+            ],
+            [
+                'alias' => $alias = sprintf(
                     '%s/%s/%s',
-                    self::BASE_FOLDER_NAME,
+                    self::BASE_FOLDER,
                     $anime->id,
                     Str::random()
                 ),
-                'path'       => cloudinary()->uploadFile(
-                    $image,
-                    [
-                        'public_id' => $alias,
-                    ]
-                )->getSecurePath(),
+                'path'  => cloudinary()->uploadFile($image, ['public_id' => $alias])->getSecurePath(),
             ]
-        )->save();
+        );
     }
 }

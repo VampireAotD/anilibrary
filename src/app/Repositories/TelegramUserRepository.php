@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\TelegramUser;
 use App\Repositories\Contracts\TelegramUserRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class TelegramUserRepository
@@ -14,11 +15,11 @@ use App\Repositories\Contracts\TelegramUserRepositoryInterface;
 class TelegramUserRepository extends BaseRepository implements TelegramUserRepositoryInterface
 {
     /**
-     * @return string
+     * @return Builder|TelegramUser
      */
-    protected function resolveModel(): string
+    protected function model(): Builder | TelegramUser
     {
-        return TelegramUser::class;
+        return TelegramUser::query();
     }
 
     /**

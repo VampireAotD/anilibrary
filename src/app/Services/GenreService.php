@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\Genre;
 use App\Repositories\Contracts\GenreRepositoryInterface;
 use App\Traits\CanGenerateNamesArray;
 
@@ -35,7 +34,8 @@ class GenreService
         }
 
         $newGenres = $this->generateNamesArray($newGenres);
-        Genre::upsert($newGenres, ['name']);
+
+        $this->genreRepository->upsertMany($newGenres, ['name']);
 
         return $stored->toBase()->merge($newGenres)->pluck('id')->toArray();
     }

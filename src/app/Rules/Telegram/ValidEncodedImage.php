@@ -33,7 +33,7 @@ class ValidEncodedImage implements Rule
     {
         return $value === config('cloudinary.default_image') ||
             preg_match(
-                '#data:(image/jpeg|image/jpg|image/png|image/gif|image/webp);base64,\w+#mi',
+                '#data:(image/jpeg|image/jpg|image/png|image/gif|image/webp);base64,.#mi',
                 $value
             );
     }

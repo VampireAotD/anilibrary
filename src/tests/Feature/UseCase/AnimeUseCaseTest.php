@@ -55,16 +55,20 @@ class AnimeUseCaseTest extends TestCase
      */
     public function testCannotCreateAnimeWithInvalidImage(): void
     {
-        $this->expectException(InvalidScrapedDataException::class);
-        $this->animeUseCase->createAnime(
-            new ScrapedDataDTO(
-                $this->faker->url,
-                $this->faker->randomElement(AnimeStatusEnum::values()),
-                (string) $this->faker->randomNumber(),
-                $this->faker->randomFloat(),
-                image: Str::random()
-            )
-        );
+        $cases = [Str::random(), 'data:text/html;base64,' . Str::random()];
+
+        foreach ($cases as $case) {
+            $this->expectException(InvalidScrapedDataException::class);
+            $this->animeUseCase->createAnime(
+                new ScrapedDataDTO(
+                    $this->faker->url,
+                    $this->faker->randomElement(AnimeStatusEnum::values()),
+                    (string) $this->faker->randomNumber(),
+                    $this->faker->randomFloat(),
+                    image: $case
+                )
+            );
+        }
     }
 
     /**

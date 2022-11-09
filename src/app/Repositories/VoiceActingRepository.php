@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Models\VoiceActing;
 use App\Repositories\Contracts\VoiceActingRepositoryInterface;
 use App\Repositories\Traits\CanSearchByName;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class VoiceActingRepository
@@ -17,10 +18,20 @@ class VoiceActingRepository extends BaseRepository implements VoiceActingReposit
     use CanSearchByName;
 
     /**
-     * @return string
+     * @return Builder|VoiceActing
      */
-    protected function resolveModel(): string
+    protected function model(): Builder | VoiceActing
     {
-        return VoiceActing::class;
+        return VoiceActing::query();
+    }
+
+    /**
+     * @param array        $data
+     * @param string|array $uniqueBy
+     * @return int
+     */
+    public function upsertMany(array $data, array | string $uniqueBy): int
+    {
+        return $this->model()->upsert($data, $uniqueBy);
     }
 }

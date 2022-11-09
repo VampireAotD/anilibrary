@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\VoiceActing;
 use App\Repositories\Contracts\VoiceActingRepositoryInterface;
 use App\Traits\CanGenerateNamesArray;
 
@@ -35,7 +34,8 @@ class VoiceActingService
         }
 
         $newVoiceActing = $this->generateNamesArray($newVoiceActing);
-        VoiceActing::upsert($newVoiceActing, ['name']);
+
+        $this->voiceActingRepository->upsertMany($newVoiceActing, ['name']);
 
         return $stored->toBase()->merge($newVoiceActing)->pluck('id')->toArray();
     }

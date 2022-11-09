@@ -14,6 +14,5 @@ enum AnimeHandlerEnum: string
     case PARSE_STARTED = 'Начался парсинг тайтла, это может занять несколько минут';
     case PARSE_FAILED = 'Не удалось спарсить тайтл, попробуйте ещё раз';
     case PARSE_HAS_ENDED = 'Парсинг тайла закончился';
-    case INVALID_URL = 'Ссылка оказалась невалидной, попробуйте ещё раз';
     case WATCH_RECENTLY_ADDED_ANIME = 'Просмотр';
 }

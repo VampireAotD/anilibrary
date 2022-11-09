@@ -6,10 +6,12 @@ namespace App\Telegram\Handlers;
 
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
+use App\Enums\Validation\SupportedUrlEnum;
 use App\Jobs\Telegram\AddNewAnimeJob;
 use App\Telegram\History\UserHistory;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
 use WeStacks\TeleBot\Objects\Message;
 
@@ -47,10 +49,12 @@ class AddNewAnimeHandler extends UpdateHandler
             [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value],
             true
         )) {
-            if (!$this->validUrl($message->text)) {
+            try {
+                $this->validUrl($message->text);
+            } catch (ValidationException $exception) {
                 return $this->sendMessage(
                     [
-                        'text'    => AnimeHandlerEnum::INVALID_URL->value,
+                        'text'    => $exception->getMessage(),
                         'chat_id' => $chatId,
                     ]
                 );
@@ -69,15 +73,14 @@ class AddNewAnimeHandler extends UpdateHandler
 
     /**
      * @param string $url
-     * @return bool
+     * @return array
      */
-    private function validUrl(string $url): bool
+    private function validUrl(string $url): array
     {
-        $validator = Validator::make(
+        return Validator::validate(
             ['url' => $url],
-            ['url' => 'required|supported_url']
+            ['url' => 'required|supported_url'],
+            ['required' => SupportedUrlEnum::INVALID_URL->value]
         );
-
-        return $validator->passes();
     }
 }

@@ -19,6 +19,6 @@ class AnimeService
      */
     public function create(CreateDTO $dto): Anime
     {
-        return Anime::updateOrCreate(['title' => $dto->title], $dto->toArray());
+        return Anime::query()->updateOrCreate(['title' => $dto->title], $dto->toArray());
     }
 }
