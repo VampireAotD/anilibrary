@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Handlers;
 
+use App\Facades\Telegram\History\UserHistory;
 use App\Telegram\Handlers\CallbackQueryHandler;
 use Closure;
 use Illuminate\Support\Str;
@@ -27,7 +28,7 @@ class CallbackQueryHandlerTest extends TestCase
 
         $this->bot = $this->createFakeBot();
         $this->bot->addHandler([CallbackQueryHandler::class]);
-        $this->createUserHistoryMock()->shouldReceive('addLastActiveTime')->once();
+        UserHistory::shouldReceive('addLastActiveTime')->once();
     }
 
     /**

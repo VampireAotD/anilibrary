@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Telegram\Middlewares;
 
 use App\Enums\Telegram\CommandEnum;
-use App\Telegram\History\UserHistory;
+use App\Facades\Telegram\History\UserHistory;
 use App\Telegram\Middlewares\UserActivityMiddleware;
 use Closure;
-use Mockery\LegacyMockInterface;
-use Mockery\MockInterface;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
@@ -20,8 +18,7 @@ class UserActivityMiddlewareTest extends TestCase
     use CanCreateMocks,
         CanCreateFakeUpdates;
 
-    private TeleBot                             $bot;
-    private LegacyMockInterface | MockInterface $userHistoryMock;
+    private TeleBot $bot;
 
     protected function setUp(): void
     {
@@ -29,7 +26,6 @@ class UserActivityMiddlewareTest extends TestCase
 
         $this->bot = $this->createFakeBot();
         $this->bot->addHandler([new UserActivityMiddleware()]);
-        $this->userHistoryMock = $this->createUserHistoryMock();
     }
 
     /**
@@ -37,10 +33,9 @@ class UserActivityMiddlewareTest extends TestCase
      */
     public function testBotWillOnlyTrackUpdatesWithMessage(): void
     {
-        $this->userHistoryMock
-            ->shouldReceive('addLastActiveTime')
-            ->with($this->fakeTelegramId)
-            ->once();
+        UserHistory::shouldReceive('addLastActiveTime')
+                   ->with($this->fakeTelegramId)
+                   ->once();
 
         $update   = $this->createFakeChatMemberUpdate();
         $response = $this->bot->handleUpdate($update);
@@ -54,15 +49,13 @@ class UserActivityMiddlewareTest extends TestCase
      */
     public function testBotWillNotTrackRandomMessages(): void
     {
-        $this->userHistoryMock
-            ->shouldReceive('addLastActiveTime')
-            ->with($this->fakeTelegramId)
-            ->once();
+        UserHistory::shouldReceive('addLastActiveTime')
+                   ->with($this->fakeTelegramId)
+                   ->once();
 
-        $this->userHistoryMock
-            ->shouldReceive('userLastExecutedCommand')
-            ->with($this->fakeTelegramId)
-            ->andReturnFalse();
+        UserHistory::shouldReceive('userLastExecutedCommand')
+                   ->with($this->fakeTelegramId)
+                   ->andReturnFalse();
 
         $update   = $this->createFakeStickerMessageUpdate();
         $response = $this->bot->handleUpdate($update);
@@ -77,20 +70,17 @@ class UserActivityMiddlewareTest extends TestCase
      */
     public function testBotWillTrackOnlyAvailableCommands(): void
     {
-        $this->userHistoryMock
-            ->shouldReceive('addLastActiveTime')
-            ->with($this->fakeTelegramId)
-            ->once();
+        UserHistory::shouldReceive('addLastActiveTime')
+                   ->with($this->fakeTelegramId)
+                   ->once();
 
-        $this->userHistoryMock
-            ->shouldReceive('addExecutedCommand')
-            ->with($this->fakeTelegramId, CommandEnum::ANIME_LIST->value)
-            ->once();
+        UserHistory::shouldReceive('addExecutedCommand')
+                   ->with($this->fakeTelegramId, CommandEnum::ANIME_LIST->value)
+                   ->once();
 
-        $this->userHistoryMock
-            ->shouldReceive('userLastExecutedCommand')
-            ->with($this->fakeTelegramId)
-            ->andReturn(CommandEnum::ANIME_LIST->value);
+        UserHistory::shouldReceive('userLastExecutedCommand')
+                   ->with($this->fakeTelegramId)
+                   ->andReturn(CommandEnum::ANIME_LIST->value);
 
         $update   = $this->createFakeTextMessageUpdate(message: CommandEnum::ANIME_LIST->value);
         $response = $this->bot->handleUpdate($update);

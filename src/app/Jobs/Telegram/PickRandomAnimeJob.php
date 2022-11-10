@@ -6,9 +6,9 @@ namespace App\Jobs\Telegram;
 
 use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
 use App\Enums\QueueEnum;
+use App\Facades\Telegram\History\UserHistory;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Services\Telegram\CaptionService;
-use App\Telegram\History\UserHistory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

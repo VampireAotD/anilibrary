@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Telegram\Middlewares;
 
 use App\Enums\Telegram\ChatMemberStatusEnum;
+use App\Facades\Telegram\History\UserHistory;
 use App\Telegram\Middlewares\UserStatusMiddleware;
 use Closure;
 use Tests\TestCase;
@@ -44,7 +45,7 @@ class UserStatusMiddlewareTest extends TestCase
      */
     public function testMiddlewareWillDeleteUserActivityIfHeDeletedOrLeftChatWithBot(): void
     {
-        $this->createUserHistoryMock()->shouldReceive('clearUserExecutedCommandsHistory')->once();
+        UserHistory::shouldReceive('clearUserExecutedCommandsHistory')->once();
         $update   = $this->createFakeChatMemberUpdate(
             newChatMember: [
                 'status'     => ChatMemberStatusEnum::KICKED->value,
@@ -56,6 +57,7 @@ class UserStatusMiddlewareTest extends TestCase
         $this->assertInstanceOf(Closure::class, $response);
         $this->assertNull($response());
 
+        UserHistory::shouldReceive('clearUserExecutedCommandsHistory')->once();
         $update   = $this->createFakeChatMemberUpdate(newChatMember: ['status' => ChatMemberStatusEnum::LEFT->value]);
         $response = $this->bot->handleUpdate($update);
 

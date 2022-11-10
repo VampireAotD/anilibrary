@@ -176,6 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         \App\Providers\RepositoryServiceProvider::class,
         \App\Providers\ValidationRulesServiceProvider::class,
+        \App\Providers\FacadeServiceProvider::class,
     ],
 
     /*
@@ -230,6 +231,7 @@ return [
         'URL'          => Illuminate\Support\Facades\URL::class,
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
+        'UserHistory'  => \App\Facades\Telegram\History\UserHistory::class,
 
     ],
 

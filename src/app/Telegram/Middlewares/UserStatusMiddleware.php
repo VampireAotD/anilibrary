@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Telegram\Middlewares;
 
-use App\Telegram\History\UserHistory;
+use App\Facades\Telegram\History\UserHistory;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Objects\ChatMemberBanned;
 use WeStacks\TeleBot\Objects\ChatMemberLeft;

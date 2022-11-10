@@ -7,7 +7,7 @@ namespace App\Telegram\Handlers;
 use App\DTO\UseCase\CallbackQuery\AddedAnimeDTO;
 use App\DTO\UseCase\CallbackQuery\PaginationDTO;
 use App\Enums\Telegram\CallbackQueryEnum;
-use App\Telegram\History\UserHistory;
+use App\Facades\Telegram\History\UserHistory;
 use App\UseCase\CallbackQueryUseCase;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;

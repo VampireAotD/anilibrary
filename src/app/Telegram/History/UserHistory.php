@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Redis;
 
 /**
  * Class UserHistory
- * @package App\Handlers\History
+ * @package App\Telegram\History
  */
 class UserHistory
 {
@@ -18,9 +18,9 @@ class UserHistory
      * @param int $userId
      * @return void
      */
-    public static function addLastActiveTime(int $userId): void
+    public function addLastActiveTime(int $userId): void
     {
-        [$lastActiveTime] = self::generateUserStorageName($userId);
+        [$lastActiveTime] = $this->generateUserStorageName($userId);
 
         Redis::set($lastActiveTime, now()->format('Y-m-d H:i:s'));
     }
@@ -30,9 +30,9 @@ class UserHistory
      * @param string $command
      * @return void
      */
-    public static function addExecutedCommand(int $userId, string $command): void
+    public function addExecutedCommand(int $userId, string $command): void
     {
-        [, $executedCommands] = self::generateUserStorageName($userId);
+        [, $executedCommands] = $this->generateUserStorageName($userId);
 
         $commands = json_decode(Redis::get($executedCommands) ?? '');
 
@@ -45,9 +45,9 @@ class UserHistory
      * @param int $userId
      * @return false|string
      */
-    public static function userLastExecutedCommand(int $userId): false | string
+    public function userLastExecutedCommand(int $userId): false | string
     {
-        [, $executedCommands] = self::generateUserStorageName($userId);
+        [, $executedCommands] = $this->generateUserStorageName($userId);
 
         $commands = json_decode(Redis::get($executedCommands) ?? '') ?? [];
 
@@ -58,9 +58,9 @@ class UserHistory
      * @param int $userId
      * @return void
      */
-    public static function clearUserExecutedCommandsHistory(int $userId): void
+    public function clearUserExecutedCommandsHistory(int $userId): void
     {
-        [, $executedCommands] = self::generateUserStorageName($userId);
+        [, $executedCommands] = $this->generateUserStorageName($userId);
 
         Redis::del($executedCommands);
     }
@@ -69,7 +69,7 @@ class UserHistory
      * @param int $userId
      * @return array
      */
-    private static function generateUserStorageName(int $userId): array
+    private function generateUserStorageName(int $userId): array
     {
         return [
             sprintf('history:lastActiveTime:%s', $userId),
