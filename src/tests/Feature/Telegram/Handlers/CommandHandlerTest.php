@@ -35,10 +35,10 @@ class CommandHandlerTest extends TestCase
      */
     public function testBotCanCreateAnime(): void
     {
-        $cases = [CommandEnum::ADD_NEW_TITLE_COMMAND->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
+        $commands = [CommandEnum::ADD_NEW_TITLE_COMMAND->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
 
-        foreach ($cases as $case) {
-            $update   = $this->createFakeTextMessageUpdate(message: $case);
+        foreach ($commands as $command) {
+            $update   = $this->createFakeTextMessageUpdate(message: $command);
             $response = $this->bot->fake()->handleUpdate($update);
 
             $this->assertInstanceOf(Message::class, $response);
@@ -51,11 +51,11 @@ class CommandHandlerTest extends TestCase
      */
     public function testBotCanPickRandomAnime(): void
     {
-        $cases = [CommandEnum::RANDOM_ANIME_COMMAND->value, CommandEnum::RANDOM_ANIME->value];
+        $commands = [CommandEnum::RANDOM_ANIME_COMMAND->value, CommandEnum::RANDOM_ANIME->value];
 
         Bus::fake();
-        foreach ($cases as $case) {
-            $update = $this->createFakeTextMessageUpdate(message: $case);
+        foreach ($commands as $command) {
+            $update = $this->createFakeTextMessageUpdate(message: $command);
             $this->bot->handleUpdate($update);
 
             Bus::assertDispatched(PickRandomAnimeJob::class);
@@ -67,11 +67,11 @@ class CommandHandlerTest extends TestCase
      */
     public function testBotCanProvideAnimeList(): void
     {
-        $cases = [CommandEnum::ANIME_LIST_COMMAND->value, CommandEnum::ANIME_LIST->value];
+        $commands = [CommandEnum::ANIME_LIST_COMMAND->value, CommandEnum::ANIME_LIST->value];
 
         Bus::fake();
-        foreach ($cases as $case) {
-            $update = $this->createFakeTextMessageUpdate(message: $case);
+        foreach ($commands as $command) {
+            $update = $this->createFakeTextMessageUpdate(message: $command);
             $this->bot->handleUpdate($update);
 
             Bus::assertDispatched(ProvideAnimeListJob::class);

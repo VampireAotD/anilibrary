@@ -13,6 +13,7 @@ use App\Services\AnimeService;
 use App\Services\GenreService;
 use App\Services\ImageService;
 use App\Services\VoiceActingService;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class AnimeUseCase
@@ -40,26 +41,30 @@ class AnimeUseCase
             throw new InvalidScrapedDataException();
         }
 
-        $anime = $this->animeService->create(
-            new CreateDTO($dto->url, $dto->title, $dto->status, $dto->rating, $dto->episodes)
+        return DB::transaction(
+            function () use ($dto): Anime {
+                $anime = $this->animeService->create(
+                    new CreateDTO($dto->url, $dto->title, $dto->status, $dto->rating, $dto->episodes)
+                );
+
+                if ($dto->getImage()) {
+                    $this->imageService->upsert($dto->getImage(), $anime);
+                }
+
+                if ($dto->voiceActing) {
+                    $anime->voiceActing()->sync($this->voiceActingService->sync($dto->voiceActing), false);
+                }
+
+                if ($dto->genres) {
+                    $anime->genres()->sync($this->genreService->sync($dto->genres), false);
+                }
+
+                if ($dto->getTelegramId()) {
+                    $anime->tags()->sync($this->tagRepository->findByTelegramId($dto->getTelegramId()), false);
+                }
+
+                return $anime;
+            }
         );
-
-        if ($dto->getImage()) {
-            $this->imageService->upsert($dto->getImage(), $anime);
-        }
-
-        if ($dto->voiceActing) {
-            $anime->voiceActing()->sync($this->voiceActingService->sync($dto->voiceActing), false);
-        }
-
-        if ($dto->genres) {
-            $anime->genres()->sync($this->genreService->sync($dto->genres), false);
-        }
-
-        if ($dto->getTelegramId()) {
-            $anime->tags()->sync($this->tagRepository->findByTelegramId($dto->getTelegramId()), false);
-        }
-
-        return $anime;
     }
 }
