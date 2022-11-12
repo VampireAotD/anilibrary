@@ -17,7 +17,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
 {
     /**
-     * @return string
+     * @return Builder | Anime
      */
     protected function model(): Builder | Anime
     {

@@ -28,7 +28,7 @@ class TagRepository extends BaseRepository implements TagRepositoryInterface
 
     /**
      * @param int $telegramId
-     * @return string[]
+     * @return array<string>|array
      */
     public function findByTelegramId(int $telegramId): array
     {
