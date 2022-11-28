@@ -54,6 +54,10 @@ install:
 test:
 	$(docker_compose_bin) exec app ./artisan test
 
+.PHONY: psalm
+psalm:
+	$(docker_compose_bin) exec app vendor/bin/psalm
+
 .PHONY: optimize
 optimize:
 	$(docker_compose_bin) exec app ./artisan optimize:clear;

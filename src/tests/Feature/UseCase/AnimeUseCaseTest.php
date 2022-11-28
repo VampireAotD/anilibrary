@@ -7,6 +7,8 @@ namespace Tests\Feature\UseCase;
 use App\DTO\UseCase\Anime\ScrapedDataDTO;
 use App\Enums\Telegram\AnimeStatusEnum;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
+use App\Models\Genre;
+use App\Models\VoiceActing;
 use App\UseCase\AnimeUseCase;
 use Database\Seeders\TagSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -35,6 +37,17 @@ class AnimeUseCaseTest extends TestCase
     }
 
     /**
+     * @return array<array<string>>
+     */
+    public function invalidImageProvider(): array
+    {
+        return [
+            [Str::random()],
+            ['data:text/html;base64,' . Str::random()],
+        ];
+    }
+
+    /**
      * @return void
      */
     public function testCannotCreateAnimeWithoutTitle(): void
@@ -51,24 +64,22 @@ class AnimeUseCaseTest extends TestCase
     }
 
     /**
+     * @dataProvider invalidImageProvider
+     * @param string $invalidImage
      * @return void
      */
-    public function testCannotCreateAnimeWithInvalidImage(): void
+    public function testCannotCreateAnimeWithInvalidImage(string $invalidImage): void
     {
-        $testCases = [Str::random(), 'data:text/html;base64,' . Str::random()];
-
-        foreach ($testCases as $testCase) {
-            $this->expectException(InvalidScrapedDataException::class);
-            $this->animeUseCase->createAnime(
-                new ScrapedDataDTO(
-                    $this->faker->url,
-                    $this->faker->randomElement(AnimeStatusEnum::values()),
-                    (string) $this->faker->randomNumber(),
-                    $this->faker->randomFloat(),
-                    image: $testCase
-                )
-            );
-        }
+        $this->expectException(InvalidScrapedDataException::class);
+        $this->animeUseCase->createAnime(
+            new ScrapedDataDTO(
+                $this->faker->url,
+                $this->faker->randomElement(AnimeStatusEnum::values()),
+                (string) $this->faker->randomNumber(),
+                $this->faker->randomFloat(),
+                image: $invalidImage
+            )
+        );
     }
 
     /**
@@ -86,9 +97,9 @@ class AnimeUseCaseTest extends TestCase
                 (string) $this->faker->randomNumber(),
                 $this->faker->randomFloat(),
                 $this->faker->title,
-                $this->faker->randomElements(),
-                $this->faker->randomElements(),
-                config('cloudinary.default_image'),
+                Genre::factory(5)->create()->pluck('name')->toArray(),
+                VoiceActing::factory(5)->create()->pluck('name')->toArray(),
+                config('cloudinary.default_image')
             )
         );
 

@@ -25,11 +25,6 @@ class AddNewAnimeHandlerTest extends TestCase
         CanCreateFakeUpdates,
         WithFaker;
 
-    private const SUPPORTED_URLS = [
-        'https://animego.org/anime/blich-tysyacheletnyaya-krovavaya-voyna-2129',
-        'https://animevost.org/tip/tv/5-naruto-shippuuden12.html',
-    ];
-
     private TeleBot $bot;
 
     protected function setUp(): void
@@ -41,6 +36,17 @@ class AddNewAnimeHandlerTest extends TestCase
         UserHistory::shouldReceive('userLastExecutedCommand')
                    ->withArgs([$this->fakeTelegramId])
                    ->andReturn(CommandEnum::ADD_NEW_TITLE->value);
+    }
+
+    /**
+     * @return array<array<string>>
+     */
+    public function supportedUrlsProvider(): array
+    {
+        return [
+            ['https://animego.org/anime/blich-tysyacheletnyaya-krovavaya-voyna-2129'],
+            ['https://animevost.org/tip/tv/5-naruto-shippuuden12.html'],
+        ];
     }
 
     /**
@@ -67,21 +73,21 @@ class AddNewAnimeHandlerTest extends TestCase
     }
 
     /**
+     * @dataProvider supportedUrlsProvider
+     * @param string $url
      * @return void
      */
-    public function testBotCanScrapeSupportedUrls(): void
+    public function testBotCanScrapeSupportedUrls(string $url): void
     {
         Bus::fake();
 
-        foreach (self::SUPPORTED_URLS as $supportedUrl) {
-            $update = $this->createFakeTextMessageUpdate(message: $supportedUrl);
+        $update = $this->createFakeTextMessageUpdate(message: $url);
 
-            /** @see https://github.com/westacks/telebot/issues/58 */
-            $response = $this->bot->fake()->handleUpdate($update);
+        /** @see https://github.com/westacks/telebot/issues/58 */
+        $response = $this->bot->handleUpdate($update);
 
-            $this->assertInstanceOf(Message::class, $response);
-            $this->assertEquals(AnimeHandlerEnum::PARSE_STARTED->value, $response->text);
-            Bus::assertDispatched(AddNewAnimeJob::class);
-        }
+        $this->assertInstanceOf(Message::class, $response);
+        $this->assertEquals(AnimeHandlerEnum::PARSE_STARTED->value, $response->text);
+        Bus::assertDispatched(AddNewAnimeJob::class);
     }
 }
