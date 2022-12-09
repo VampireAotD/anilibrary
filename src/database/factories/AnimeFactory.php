@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\Telegram\AnimeStatusEnum;
@@ -19,7 +21,6 @@ class AnimeFactory extends Factory
     public function definition(): array
     {
         return [
-            'url'      => $this->faker->url,
             'title'    => $this->faker->title,
             'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
             'episodes' => (string) $this->faker->randomNumber(),

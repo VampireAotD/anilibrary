@@ -6,6 +6,8 @@ namespace App\Console\Commands\AnimeList;
 
 use App\DTO\Service\Anime\CreateDTO;
 use App\Models\Anime;
+use App\Models\AnimeSynonym;
+use App\Models\AnimeUrl;
 use App\Models\Genre;
 use App\Models\Image;
 use App\Models\Tag;
@@ -66,13 +68,18 @@ class Parse extends Command
                 function () use ($parsed) {
                     $anime = $this->animeService->create(
                         new CreateDTO(
-                            $parsed['url'],
                             $parsed['title'],
                             $parsed['status'],
                             $parsed['rating'],
                             $parsed['episodes']
                         )
                     );
+
+                    $synonyms = collect($parsed['synonyms'])->mapInto(AnimeSynonym::class);
+                    $anime->synonyms()->saveMany($synonyms);
+
+                    $urls = collect($parsed['urls'])->mapInto(AnimeUrl::class);
+                    $anime->urls()->saveMany($urls);
 
                     Image::insert(
                         array_merge($parsed['image'], ['model_id' => $anime->id, 'model_type' => Anime::class])

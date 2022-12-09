@@ -72,7 +72,7 @@ class CallbackQueryHandler extends UpdateHandler
                     )
                 );
             case CallbackQueryEnum::PAGINATION->value:
-                $page    = (int) $callbackParameters['page'] ?? 1;
+                $page    = (int) ($callbackParameters['page'] ?? 1);
                 $caption = $this->callbackQueryUseCase->paginate(new PaginationDTO($chatId, $page));
 
                 try {

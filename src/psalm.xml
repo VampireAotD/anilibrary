@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="6"
+    errorLevel="5"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
@@ -11,6 +11,7 @@
         <directory name="database/factories"/>
         <directory name="database/seeders"/>
         <ignoreFiles>
+            <file name="app/Providers/MacroServiceProvider.php"/>
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>

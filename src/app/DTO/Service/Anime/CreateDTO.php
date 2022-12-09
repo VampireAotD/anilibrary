@@ -13,7 +13,6 @@ use Illuminate\Contracts\Support\Arrayable;
 class CreateDTO implements Arrayable
 {
     public function __construct(
-        public readonly string $url,
         public readonly string $title,
         public readonly string $status,
         public readonly float  $rating,
@@ -27,7 +26,6 @@ class CreateDTO implements Arrayable
     public function toArray(): array
     {
         return [
-            'url'      => $this->url,
             'title'    => $this->title,
             'status'   => $this->status,
             'rating'   => $this->rating,

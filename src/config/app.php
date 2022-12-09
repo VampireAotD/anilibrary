@@ -177,6 +177,7 @@ return [
         \App\Providers\RepositoryServiceProvider::class,
         \App\Providers\ValidationRulesServiceProvider::class,
         \App\Providers\FacadeServiceProvider::class,
+        \App\Providers\MacroServiceProvider::class,
     ],
 
     /*

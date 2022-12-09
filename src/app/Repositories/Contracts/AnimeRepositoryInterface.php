@@ -14,10 +14,10 @@ use Illuminate\Database\Eloquent\Collection;
 interface AnimeRepositoryInterface extends FindById, Paginate
 {
     /**
-     * @param string $title
+     * @param array<string> $data
      * @return Anime|null
      */
-    public function findByTitle(string $title): ?Anime;
+    public function findByTitleAndSynonyms(array $data): ?Anime;
 
     /**
      * @param string $url
@@ -37,6 +37,6 @@ interface AnimeRepositoryInterface extends FindById, Paginate
      */
     public function getAll(
         array $columns = ['*'],
-        array $relations = ['image', 'genres', 'tags', 'voiceActing']
+        array $relations = ['image', 'genres', 'tags', 'voiceActing', 'urls', 'synonyms']
     ): Collection;
 }

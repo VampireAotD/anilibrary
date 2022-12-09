@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Jobs\Telegram;
 
 use App\DTO\Service\CallbackData\CreateCallbackDataDTO;
-use App\DTO\UseCase\Anime\ScrapedDataDTO;
 use App\Enums\QueueEnum;
 use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CallbackQueryEnum;
@@ -13,15 +12,14 @@ use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Facades\Telegram\History\UserHistory;
 use App\Services\Telegram\CallbackDataService;
 use App\UseCase\AnimeUseCase;
-use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\RequestOptions;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Throwable;
 use WeStacks\TeleBot\Laravel\TeleBot;
 use WeStacks\TeleBot\Objects\Message;
 
@@ -56,42 +54,25 @@ class AddNewAnimeJob implements ShouldQueue
         UserHistory::addLastActiveTime($chatId);
 
         try {
-            $response = $client->post(
-                sprintf('%s/api/v1/anime/parse', config('scraper.url')),
-                [
-                    RequestOptions::JSON => [
-                        'url' => $message->text,
-                    ],
-                ]
-            );
+            if ($anime = $animeUseCase->findByUrl($message->text)) {
+                $callbackData = $callbackQueryService->create(
+                    new CreateCallbackDataDTO(CallbackQueryEnum::CHECK_ADDED_ANIME, $anime->id)
+                );
 
-            $data  = array_merge(
-                ['url' => $message->text, 'telegramId' => $chatId],
-                json_decode($response->getBody()->getContents(), true)
-            );
-            $anime = $animeUseCase->createAnime(new ScrapedDataDTO(...$data));
+                $this->sendScrapedStatusMessage($chatId, $callbackData);
+                return;
+            }
 
-            TeleBot::sendMessage(
-                [
-                    'text'         => AnimeHandlerEnum::PARSE_HAS_ENDED->value,
-                    'chat_id'      => $chatId,
-                    'reply_markup' => [
-                        'inline_keyboard' => [
-                            [
-                                [
-                                    'text'          => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
-                                    'callback_data' => $callbackQueryService->create(
-                                        new CreateCallbackDataDTO(CallbackQueryEnum::CHECK_ADDED_ANIME, $anime->id)
-                                    ),
-                                ],
-                            ],
-                        ],
-                    ],
-                ]
+            $dto   = $animeUseCase->sendScrapeRequest($message->text, $chatId);
+            $anime = $animeUseCase->createAnime($dto);
+
+            $callbackData = $callbackQueryService->create(
+                new CreateCallbackDataDTO(CallbackQueryEnum::CHECK_ADDED_ANIME, $anime->id)
             );
+            $this->sendScrapedStatusMessage($chatId, $callbackData);
 
             UserHistory::clearUserExecutedCommandsHistory($chatId);
-        } catch (GuzzleException | InvalidScrapedDataException | Exception $exception) {
+        } catch (RequestException | InvalidScrapedDataException | Throwable $exception) {
             TeleBot::sendMessage(
                 [
                     'chat_id' => $chatId,
@@ -101,8 +82,32 @@ class AddNewAnimeJob implements ShouldQueue
 
             logger()->channel('single')->warning(
                 $exception->getMessage(),
-                ['exceptionTrace' => $exception->getTraceAsString()]
+                [
+                    'url'              => $message->text,
+                    'exceptionMessage' => $exception->getMessage(),
+                    'exceptionTrace'   => $exception->getTraceAsString(),
+                ]
             );
         }
+    }
+
+    private function sendScrapedStatusMessage(int $chatId, string $callbackData): void
+    {
+        TeleBot::sendMessage(
+            [
+                'text'         => AnimeHandlerEnum::PARSE_HAS_ENDED->value,
+                'chat_id'      => $chatId,
+                'reply_markup' => [
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text'          => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
+                                'callback_data' => $callbackData,
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
     }
 }

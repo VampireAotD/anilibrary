@@ -12,16 +12,19 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * App\Models\Image
  *
- * @property string                          $id
- * @property string                          $model_type
- * @property string                          $model_id
- * @property string                          $path
+ * @property string $id
+ * @property string $model_type
+ * @property string $model_id
+ * @property string $path
+ * @property string $alias
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Model|\Eloquent            $anime
+ * @property-read Model|\Eloquent $anime
+ * @method static \Database\Factories\ImageFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Image newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Image newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Image query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Image whereAlias($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereModelId($value)
@@ -29,9 +32,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Image wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property string                          $alias
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereAlias($value)
- * @method static \Database\Factories\ImageFactory factory(...$parameters)
  */
 class Image extends Model
 {

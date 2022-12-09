@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Image;
+use App\Models\AnimeSynonym;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Image>
+ * @extends Factory<AnimeSynonym>
  */
-class ImageFactory extends Factory
+class AnimeSynonymFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,8 +20,7 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            'alias' => $this->faker->sentence,
-            'path'  => $this->faker->imageUrl,
+            'synonym' => $this->faker->unique()->word,
         ];
     }
 }

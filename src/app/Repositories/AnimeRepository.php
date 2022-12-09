@@ -34,12 +34,16 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     }
 
     /**
-     * @param string $title
+     * @param array<string> $data
      * @return Anime|null
      */
-    public function findByTitle(string $title): ?Anime
+    public function findByTitleAndSynonyms(array $data): ?Anime
     {
-        return $this->model()->where('title', $title)->first();
+        return $this->model()
+                    ->whereIn('title', $data)
+                    ->with('synonyms')
+                    ->orWhereHas('synonyms', fn(Builder $query) => $query->whereIn('synonym', $data))
+                    ->first();
     }
 
     /**
@@ -48,7 +52,10 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
      */
     public function findByUrl(string $url): ?Anime
     {
-        return $this->model()->where('url', $url)->first();
+        return $this->model()->withWhereHas(
+            'urls',
+            fn($query) => $query->where('url', $url)
+        )->first();
     }
 
     /**

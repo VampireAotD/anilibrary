@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 trait CanSearchByName
 {
     /**
-     * @param array    $similarNames
-     * @param string[] $columns
+     * @param array $similarNames
+     * @param array $columns
      * @return Collection
      */
     public function findSimilarByNames(array $similarNames, array $columns = ['*']): Collection
@@ -24,8 +24,8 @@ trait CanSearchByName
     }
 
     /**
-     * @param string   $name
-     * @param string[] $columns
+     * @param string $name
+     * @param array  $columns
      * @return Model|null
      */
     public function findByName(string $name, array $columns = ['*']): ?Model
