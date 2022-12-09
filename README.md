@@ -3,6 +3,8 @@
 Application for scraping anime data from different supported sites. For scraping uses microservice
 written in Go - [`anilibrary-scraper`](https://github.com/VampireAotD/anilibrary-scraper/tree/v1).
 
+[![Build](https://github.com/VampireAotD/anilibrary/actions/workflows/build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/build.yml)
+
 ---
 
 ## Branches:
