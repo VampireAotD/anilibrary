@@ -70,8 +70,7 @@ class AnimeUseCase
             throw new InvalidScrapedDataException();
         }
 
-        $data  = array_merge($dto->synonyms, [$dto->title]);
-        $anime = $this->animeService->findByTitleAndSynonyms($data);
+        $anime = $this->animeService->findByTitleAndSynonyms(array_merge($dto->synonyms, [$dto->title]));
 
         if ($anime) {
             $anime->synonyms()->upsertRelated(

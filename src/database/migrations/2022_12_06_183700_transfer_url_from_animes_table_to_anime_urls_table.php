@@ -45,10 +45,11 @@ return new class extends Migration {
             }
         );
 
-        AnimeUrl::query()->select(['anime_id', 'url'])->each(
+        AnimeUrl::query()->select(['anime_id', 'url'])->eachById(
             function (AnimeUrl $animeUrl) {
                 Anime::query()->where('id', $animeUrl->anime_id)->update(['url' => $animeUrl->url]);
-            }
+            },
+            column: 'anime_id'
         );
 
         AnimeUrl::truncate();

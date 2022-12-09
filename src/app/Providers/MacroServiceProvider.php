@@ -26,6 +26,10 @@ class MacroServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        /**
+         * @see            https://github.com/laravel/framework/pull/40057
+         * @psalm-suppress UndefinedMethod
+         */
         HasMany::macro(
             'upsertRelated',
             function (array $values, array | string $uniqueBy, array | null $update = null): int {

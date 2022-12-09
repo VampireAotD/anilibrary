@@ -12,7 +12,6 @@ use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Facades\Telegram\History\UserHistory;
 use App\Services\Telegram\CallbackDataService;
 use App\UseCase\AnimeUseCase;
-use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -41,12 +40,11 @@ class AddNewAnimeJob implements ShouldQueue
     }
 
     /**
-     * @param Client              $client
      * @param AnimeUseCase        $animeUseCase
      * @param CallbackDataService $callbackQueryService
      * @return void
      */
-    public function handle(Client $client, AnimeUseCase $animeUseCase, CallbackDataService $callbackQueryService): void
+    public function handle(AnimeUseCase $animeUseCase, CallbackDataService $callbackQueryService): void
     {
         $message = $this->message;
         $chatId  = $message->chat->id;
