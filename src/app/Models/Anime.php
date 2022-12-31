@@ -17,26 +17,26 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 /**
  * App\Models\Anime
  *
- * @property string $id
- * @property string $title
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $deleted_at
- * @property string $status
- * @property float $rating
- * @property string|null $episodes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Genre[] $genres
- * @property-read int|null $genres_count
- * @property-read string $caption
- * @property-read \App\Models\Image|null $image
+ * @property string                                                                   $id
+ * @property string                                                                   $title
+ * @property \Illuminate\Support\Carbon|null                                          $created_at
+ * @property \Illuminate\Support\Carbon|null                                          $updated_at
+ * @property string|null                                                              $deleted_at
+ * @property string                                                                   $status
+ * @property float                                                                    $rating
+ * @property string|null                                                              $episodes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Genre[]        $genres
+ * @property-read int|null                                                            $genres_count
+ * @property-read string                                                              $caption
+ * @property-read \App\Models\Image|null                                              $image
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AnimeSynonym[] $synonyms
- * @property-read int|null $synonyms_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
- * @property-read int|null $tags_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AnimeUrl[] $urls
- * @property-read int|null $urls_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VoiceActing[] $voiceActing
- * @property-read int|null $voice_acting_count
+ * @property-read int|null                                                            $synonyms_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[]          $tags
+ * @property-read int|null                                                            $tags_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AnimeUrl[]     $urls
+ * @property-read int|null                                                            $urls_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VoiceActing[]  $voiceActing
+ * @property-read int|null                                                            $voice_acting_count
  * @method static \Database\Factories\AnimeFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newQuery()

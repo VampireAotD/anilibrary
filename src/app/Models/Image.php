@@ -12,14 +12,14 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 /**
  * App\Models\Image
  *
- * @property string $id
- * @property string $model_type
- * @property string $model_id
- * @property string $path
- * @property string $alias
+ * @property string                          $id
+ * @property string                          $model_type
+ * @property string                          $model_id
+ * @property string                          $path
+ * @property string                          $alias
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Model|\Eloquent $anime
+ * @property-read Model|\Eloquent            $anime
  * @method static \Database\Factories\ImageFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Image newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Image newQuery()
