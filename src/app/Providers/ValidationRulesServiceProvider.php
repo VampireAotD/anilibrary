@@ -19,7 +19,7 @@ class ValidationRulesServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
@@ -29,10 +29,10 @@ class ValidationRulesServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         foreach ($this->rules as $alias => $rule) {
-            Validator::extend($alias, $rule . '@passes');
+            Validator::extend($alias, $rule . '@passes', $this->app->make($rule)->message());
         }
     }
 }

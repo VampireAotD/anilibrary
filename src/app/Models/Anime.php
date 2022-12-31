@@ -11,51 +11,52 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * Class Anime
+ * App\Models\Anime
  *
- * @package App\Models
- * @property string                                                                  $id
- * @property string                                                                  $title
- * @property string                                                                  $url
- * @property \Illuminate\Support\Carbon|null                                         $created_at
- * @property \Illuminate\Support\Carbon|null                                         $updated_at
- * @property string|null                                                             $deleted_at
- * @property-read \App\Models\Image|null                                             $image
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VoiceActing[] $voiceActing
- * @property-read int|null                                                           $voice_acting_count
+ * @property string                                                                   $id
+ * @property string                                                                   $title
+ * @property \Illuminate\Support\Carbon|null                                          $created_at
+ * @property \Illuminate\Support\Carbon|null                                          $updated_at
+ * @property string|null                                                              $deleted_at
+ * @property string                                                                   $status
+ * @property float                                                                    $rating
+ * @property string|null                                                              $episodes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Genre[]        $genres
+ * @property-read int|null                                                            $genres_count
+ * @property-read string                                                              $caption
+ * @property-read \App\Models\Image|null                                              $image
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AnimeSynonym[] $synonyms
+ * @property-read int|null                                                            $synonyms_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[]          $tags
+ * @property-read int|null                                                            $tags_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AnimeUrl[]     $urls
+ * @property-read int|null                                                            $urls_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VoiceActing[]  $voiceActing
+ * @property-read int|null                                                            $voice_acting_count
+ * @method static \Database\Factories\AnimeFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime query()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Anime whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Anime whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Anime whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Anime whereUrl($value)
- * @mixin \Eloquent
- * @property string                                                                  $status
- * @property float                                                                   $rating
- * @property string|null                                                             $episodes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Genre[]       $genres
- * @property-read int|null                                                           $genres_count
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereEpisodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Anime whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereRating($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereStatus($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[]         $tags
- * @property-read int|null                                                           $tags_count
- * @property-read string                                                             $caption
- * @method static \Database\Factories\AnimeFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Anime whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Anime whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Anime extends Model
 {
-    use HasFactory, HasUuids;
+    use HasUuids, HasFactory;
 
     protected $fillable = [
         'title',
-        'url',
         'status',
         'rating',
         'episodes',
@@ -98,6 +99,22 @@ class Anime extends Model
     {
         return $this->belongsToMany(Tag::class, AnimeTag::getTableName())
                     ->using(AnimeTag::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function synonyms(): HasMany
+    {
+        return $this->hasMany(AnimeSynonym::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function urls(): HasMany
+    {
+        return $this->hasMany(AnimeUrl::class);
     }
 
     /**

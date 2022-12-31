@@ -10,9 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class TelegramUser
+ * App\Models\TelegramUser
  *
- * @package App\Models
  * @property string                          $id
  * @property int                             $telegram_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -20,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null                     $first_name
  * @property string|null                     $last_name
  * @property string|null                     $username
- * @property-read \App\Models\User           $user
+ * @property-read \App\Models\User|null      $user
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser query()

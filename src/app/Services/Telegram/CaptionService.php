@@ -8,6 +8,7 @@ use App\DTO\Service\CallbackData\CreateCallbackDataDTO;
 use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
 use App\Enums\Telegram\AnimeCaptionEnum;
 use App\Enums\Telegram\CallbackQueryEnum;
+use App\Models\AnimeUrl;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -28,18 +29,18 @@ class CaptionService
     {
         $anime = $dto->anime;
 
+        $keyboard = $anime->urls->map(
+            fn(AnimeUrl $animeUrl) => [
+                'text' => AnimeCaptionEnum::LINK->value,
+                'url'  => $animeUrl->url,
+            ]
+        )->toArray();
+
         $response = [
             'caption'      => $anime->caption,
             'photo'        => $anime->image->path,
             'reply_markup' => [
-                'inline_keyboard' => [
-                    [
-                        [
-                            'text' => AnimeCaptionEnum::LINK->value,
-                            'url'  => $anime->url,
-                        ],
-                    ],
-                ],
+                'inline_keyboard' => [$keyboard],
             ],
             'chat_id'      => $dto->chatId,
         ];

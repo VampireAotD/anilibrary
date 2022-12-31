@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -13,15 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseRepository
 {
     /**
-     * @return string
+     * @return Builder|Model
      */
-    abstract protected function resolveModel(): string;
-
-    /**
-     * @return Model
-     */
-    public function model(): Model
-    {
-        return app($this->resolveModel());
-    }
+    abstract protected function model(): Builder | Model;
 }

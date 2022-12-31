@@ -1,4 +1,4 @@
-name: Test Anilibrary
+name: Build
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ 'master', 'dev' ]
 
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
     
     defaults:
@@ -26,6 +26,9 @@ jobs:
 
       - name: Install composer dependencies
         run: composer install -qn --no-ansi --no-progress --no-scripts --prefer-dist
+
+      - name: Run Psalm
+        run: ./vendor/bin/psalm -c psalm.xml
 
       - name: Run tests
         run: php artisan test --coverage

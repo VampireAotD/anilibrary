@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * App\Models\AnimeVoiceActing
+ * App\Models\Pivots\AnimeVoiceActing
  *
  * @property string $id
  * @property string $anime_id

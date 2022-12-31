@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Rules\Telegram;
 
+use App\Enums\Validation\SupportedUrlEnum;
 use Illuminate\Contracts\Validation\Rule;
 
 /**
@@ -41,6 +42,6 @@ class SupportedUrl implements Rule
      */
     public function message(): string
     {
-        return 'Бот не поддерживает парсинг данного сайта';
+        return SupportedUrlEnum::UNSUPPORTED_URL->value;
     }
 }

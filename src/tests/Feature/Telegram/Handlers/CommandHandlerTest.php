@@ -31,50 +31,77 @@ class CommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
+     * @return array<array<string>>
      */
-    public function testBotCanCreateAnime(): void
+    public function addNewTitleCommandProvider(): array
     {
-        $cases = [CommandEnum::ADD_NEW_TITLE_COMMAND->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
-
-        foreach ($cases as $case) {
-            $update   = $this->createFakeTextMessageUpdate(message: $case);
-            $response = $this->bot->fake()->handleUpdate($update);
-
-            $this->assertInstanceOf(Message::class, $response);
-            $this->assertEquals(AnimeHandlerEnum::PROVIDE_URL->value, $response->text);
-        }
+        return [
+            [CommandEnum::ADD_NEW_TITLE_COMMAND->value],
+            [CommandEnum::ADD_NEW_TITLE->value],
+        ];
     }
 
     /**
-     * @return void
+     * @return array<array<string>>
      */
-    public function testBotCanPickRandomAnime(): void
+    public function randomAnimeCommandProvider(): array
     {
-        $cases = [CommandEnum::RANDOM_ANIME_COMMAND->value, CommandEnum::RANDOM_ANIME->value];
-
-        Bus::fake();
-        foreach ($cases as $case) {
-            $update = $this->createFakeTextMessageUpdate(message: $case);
-            $this->bot->handleUpdate($update);
-
-            Bus::assertDispatched(PickRandomAnimeJob::class);
-        }
+        return [
+            [CommandEnum::RANDOM_ANIME_COMMAND->value],
+            [CommandEnum::RANDOM_ANIME->value],
+        ];
     }
 
     /**
+     * @return array<array<string>>
+     */
+    public function animeListCommandProvider(): array
+    {
+        return [
+            [CommandEnum::ANIME_LIST_COMMAND->value],
+            [CommandEnum::ANIME_LIST->value],
+        ];
+    }
+
+    /**
+     * @dataProvider addNewTitleCommandProvider
+     * @param string $command
      * @return void
      */
-    public function testBotCanProvideAnimeList(): void
+    public function testBotCanCreateAnime(string $command): void
     {
-        $cases = [CommandEnum::ANIME_LIST_COMMAND->value, CommandEnum::ANIME_LIST->value];
+        $update   = $this->createFakeTextMessageUpdate(message: $command);
+        $response = $this->bot->handleUpdate($update);
 
+        $this->assertInstanceOf(Message::class, $response);
+        $this->assertEquals(AnimeHandlerEnum::PROVIDE_URL->value, $response->text);
+    }
+
+    /**
+     * @dataProvider randomAnimeCommandProvider
+     * @param string $command
+     * @return void
+     */
+    public function testBotCanPickRandomAnime(string $command): void
+    {
         Bus::fake();
-        foreach ($cases as $case) {
-            $update = $this->createFakeTextMessageUpdate(message: $case);
-            $this->bot->handleUpdate($update);
+        $update = $this->createFakeTextMessageUpdate(message: $command);
+        $this->bot->handleUpdate($update);
 
-            Bus::assertDispatched(ProvideAnimeListJob::class);
-        }
+        Bus::assertDispatched(PickRandomAnimeJob::class);
+    }
+
+    /**
+     * @dataProvider animeListCommandProvider
+     * @param string $command
+     * @return void
+     */
+    public function testBotCanProvideAnimeList(string $command): void
+    {
+        Bus::fake();
+        $update = $this->createFakeTextMessageUpdate(message: $command);
+        $this->bot->handleUpdate($update);
+
+        Bus::assertDispatched(ProvideAnimeListJob::class);
     }
 }

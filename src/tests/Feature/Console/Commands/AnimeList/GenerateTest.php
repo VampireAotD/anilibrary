@@ -59,8 +59,15 @@ class GenerateTest extends TestCase
         $this->assertJson($json);
         $this->assertJsonStringEqualsJsonString(
             $this->animeRepository->getAll(
-                ['id', 'title', 'url', 'status', 'rating', 'episodes',],
-                ['image:id,model_id,path,alias', 'tags:id,name', 'genres:id,name', 'voiceActing:id,name',]
+                ['id', 'title', 'status', 'rating', 'episodes',],
+                [
+                    'urls:anime_id,url',
+                    'synonyms:anime_id,synonym',
+                    'image:id,model_id,path,alias',
+                    'tags:id,name',
+                    'genres:id,name',
+                    'voiceActing:id,name',
+                ]
             )->toJson(JSON_PRETTY_PRINT),
             $json
         );

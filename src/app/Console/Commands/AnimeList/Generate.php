@@ -49,12 +49,13 @@ class Generate extends Command
             [
                 'id',
                 'title',
-                'url',
                 'status',
                 'rating',
                 'episodes',
             ],
             [
+                'urls:anime_id,url',
+                'synonyms:anime_id,synonym',
                 'image:id,model_id,path,alias',
                 'tags:id,name',
                 'genres:id,name',

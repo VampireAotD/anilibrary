@@ -20,7 +20,7 @@ class StartCommand extends CommandHandler
     /**
      * The name and signature of the console command.
      *
-     * @var string
+     * @var string[]
      */
     protected static $aliases = ['/start', '/s'];
 

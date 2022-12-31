@@ -43,7 +43,7 @@ app:
 install:
 	$(info Initialising app...)
 	@cp .env.example .env;
-	@make build
+	@make build;
 	$(docker_compose_bin) exec app cp .env.example .env;
 	$(docker_compose_bin) exec app composer install;
 	$(docker_compose_bin) exec app ./artisan key:generate;
@@ -54,6 +54,10 @@ install:
 test:
 	$(docker_compose_bin) exec app ./artisan test
 
+.PHONY: psalm
+psalm:
+	$(docker_compose_bin) exec app vendor/bin/psalm
+
 .PHONY: optimize
 optimize:
 	$(docker_compose_bin) exec app ./artisan optimize:clear;
@@ -62,5 +66,5 @@ optimize:
 .PHONY: ide-helper
 ide-helper:
 	$(docker_compose_bin) exec app ./artisan ide-helper:generate;
-	$(docker_compose_bin) exec app ./artisan ide-helper:model -W;
+	$(docker_compose_bin) exec app ./artisan ide-helper:model --reset -W;
 	$(docker_compose_bin) exec app ./artisan ide-helper:meta;

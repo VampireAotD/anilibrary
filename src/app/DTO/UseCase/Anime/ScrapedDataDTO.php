@@ -21,6 +21,7 @@ class ScrapedDataDTO implements Arrayable
         public readonly string $title = '',
         public readonly array  $genres = [],
         public readonly array  $voiceActing = [],
+        public readonly array  $synonyms = [],
         private ?string        $image = null,
         private ?int           $telegramId = null,
     ) {
@@ -29,9 +30,9 @@ class ScrapedDataDTO implements Arrayable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getImage(): string
+    public function getImage(): ?string
     {
         return $this->image;
     }

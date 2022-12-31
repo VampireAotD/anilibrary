@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * App\Models\AnimeTag
+ * App\Models\Pivots\AnimeTag
  *
  * @property string $id
  * @property string $anime_id

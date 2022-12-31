@@ -60,6 +60,7 @@ class CallbackQueryUseCaseTest extends TestCase
         $this->assertEquals($anime->caption, $caption['caption']);
         $this->assertEquals($anime->image->path, $caption['photo']);
         $this->assertNotEmpty($caption['reply_markup']['inline_keyboard']);
+        $this->assertCount($anime->urls->count(), reset($caption['reply_markup']['inline_keyboard']));
     }
 
     /**

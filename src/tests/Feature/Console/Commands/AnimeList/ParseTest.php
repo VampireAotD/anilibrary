@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\AnimeList;
 
 use App\Enums\Telegram\AnimeStatusEnum;
+use App\Models\Anime;
+use App\Models\AnimeSynonym;
+use App\Models\AnimeUrl;
+use App\Models\Genre;
+use App\Models\Image;
+use App\Models\VoiceActing;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -49,8 +55,15 @@ class ParseTest extends TestCase
                ->with(config('lists.anime.file'))
                ->andReturn(
                    $this->animeRepository->getAll(
-                       ['id', 'title', 'url', 'status', 'rating', 'episodes',],
-                       ['image:id,model_id,path,alias', 'tags:id,name', 'genres:id,name', 'voiceActing:id,name',]
+                       ['id', 'title', 'status', 'rating', 'episodes'],
+                       [
+                           'urls:anime_id,url',
+                           'synonyms:anime_id,synonym',
+                           'image:id,model_id,path,alias',
+                           'tags:id,name',
+                           'genres:id,name',
+                           'voiceActing:id,name',
+                       ]
                    )->toJson(JSON_PRETTY_PRINT)
                );
 
@@ -60,14 +73,33 @@ class ParseTest extends TestCase
              ->assertSuccessful()
              ->expectsOutput('Parsed anime list');
 
+        /** @var Anime $anime */
         $anime = $this->animeRepository->getAll()->first();
 
         $this->assertModelExists($anime);
         $this->assertNotEmpty($anime->title);
         $this->assertIsFloat($anime->rating);
         $this->assertContainsEquals($anime->status, AnimeStatusEnum::values());
+
         $this->assertNotNull($anime->image);
-        $this->assertNotNull($anime->voiceActing);
-        $this->assertNotNull($anime->genres);
+        $this->assertInstanceOf(Image::class, $anime->image);
+        $this->assertNotEmpty($anime->image->path);
+        $this->assertNotEmpty($anime->image->alias);
+
+        $this->assertTrue($anime->voiceActing->isNotEmpty());
+        $this->assertInstanceOf(VoiceActing::class, $anime->voiceActing->first());
+        $this->assertNotEmpty($anime->voiceActing->first()->name);
+
+        $this->assertTrue($anime->genres->isNotEmpty());
+        $this->assertInstanceOf(Genre::class, $anime->genres->first());
+        $this->assertNotEmpty($anime->genres->first()->name);
+
+        $this->assertTrue($anime->urls->isNotEmpty());
+        $this->assertInstanceOf(AnimeUrl::class, $anime->urls->first());
+        $this->assertNotEmpty($anime->urls->first()->url);
+
+        $this->assertTrue($anime->synonyms->isNotEmpty());
+        $this->assertInstanceOf(AnimeSynonym::class, $anime->synonyms->first());
+        $this->assertNotEmpty($anime->synonyms->first()->synonym);
     }
 }
