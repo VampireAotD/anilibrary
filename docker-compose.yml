@@ -12,7 +12,7 @@ services:
     container_name: database
     healthcheck:
       test: [ "CMD", "mysqladmin", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD",  "ping", "-h", "localhost" ]
-      interval: 5s
+      interval: 2s
       timeout: 5s
       retries: 5
     volumes:
@@ -45,18 +45,20 @@ services:
         USER_ID: ${USER_ID:-1000}
       context: docker
       dockerfile: php/Dockerfile
-    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
     container_name: php
     tty: true
+    environment:
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
     ports:
       - "9000:9000"
     volumes:
       - ./src:/anilibrary
+      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
       - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
       - ./docker/supervisor/conf.d/:/etc/supervisor/conf.d/
     networks:
-      - local
       - anilibrary
+      - local
 
 networks:
   local:
