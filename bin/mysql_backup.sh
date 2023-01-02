@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-ENV_PATH=../.env
+set -eu
 
-# Load .env variables
-export $(grep -v '^#' ${ENV_PATH} | xargs)
+. ../.env
 
 docker exec database /usr/bin/mysqldump -u root \
---password=${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} > ${MYSQL_BACKUP_PATH}
+--password="${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE}" > "${MYSQL_BACKUP_PATH}"

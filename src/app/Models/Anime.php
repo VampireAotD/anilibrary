@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeTag;
 use App\Models\Pivots\AnimeVoiceActing;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -118,19 +119,21 @@ class Anime extends Model
     }
 
     /**
-     * @return string
+     * @return Attribute
      */
-    public function getCaptionAttribute(): string
+    public function caption(): Attribute
     {
-        return sprintf(
-            "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
-            $this->title,
-            $this->status,
-            $this->episodes,
-            $this->rating,
-            $this->voiceActing->implode('name', ', '),
-            $this->genres->implode('name', ', '),
-            $this->tags->implode('name', ', '),
+        return new Attribute(
+            get: fn() => sprintf(
+                "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
+                $this->title,
+                $this->status,
+                $this->episodes,
+                $this->rating,
+                $this->voiceActing->implode('name', ', '),
+                $this->genres->implode('name', ', '),
+                $this->tags->implode('name', ', '),
+            )
         );
     }
 }
