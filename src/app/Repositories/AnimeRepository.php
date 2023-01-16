@@ -8,6 +8,7 @@ use App\Models\Anime;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -17,7 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
 {
     /**
-     * @return Builder | Anime
+     * @return Builder|Anime
      */
     protected function model(): Builder | Anime
     {
@@ -54,7 +55,7 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     {
         return $this->model()->withWhereHas(
             'urls',
-            fn($query) => $query->where('url', $url)
+            fn(Builder | HasMany $query) => $query->where('url', $url)
         )->first();
     }
 

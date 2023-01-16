@@ -8,6 +8,7 @@ use App\DTO\Service\Anime\CreateDTO;
 use App\DTO\UseCase\Anime\ScrapedDataDTO;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Models\Anime;
+use App\Models\AnimeUrl;
 use App\Repositories\Contracts\TagRepositoryInterface;
 use App\Services\AnimeService;
 use App\Services\AnimeSynonymService;
@@ -72,11 +73,19 @@ class AnimeUseCase
 
         $anime = $this->animeService->findByTitleAndSynonyms(array_merge($dto->synonyms, [$dto->title]));
 
-        if ($anime) {
+        // Some anime have similar synonyms, this prevents updating wrong anime
+        // TODO try to resolve this in better way
+        $parsed = parse_url($dto->url);
+
+        if (
+            $anime
+            && $anime->urls->filter(fn(AnimeUrl $animeUrl) => str_contains($animeUrl->url, $parsed['host']))->isEmpty()
+        ) {
             $anime->synonyms()->upsertRelated(
                 $this->animeSynonymService->mapIntoSynonymsArray($dto->synonyms),
                 ['synonym']
             );
+
             $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
 
             return $anime;

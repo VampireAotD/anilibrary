@@ -55,7 +55,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array<string>
      */
     protected $fillable = [
         'telegram_user_id',
@@ -65,7 +65,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array
+     * @var array<string>
      */
     protected $hidden = [
         'password',
