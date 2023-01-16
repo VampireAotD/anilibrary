@@ -105,7 +105,7 @@ class AnimeUseCaseTest extends TestCase
 
         Http::fake(
             [
-                sprintf('%s/api/v1/anime/parse', config('scraper.url')) => [
+                '/api/v1/anime/parse' => [
                     'url'      => $url = $this->faker->url,
                     'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
                     'episodes' => $this->faker->randomAscii,

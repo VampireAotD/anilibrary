@@ -8,15 +8,16 @@ use App\DTO\Service\Anime\CreateDTO;
 use App\DTO\UseCase\Anime\ScrapedDataDTO;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Models\Anime;
+use App\Models\AnimeUrl;
 use App\Repositories\Contracts\TagRepositoryInterface;
 use App\Services\AnimeService;
 use App\Services\AnimeSynonymService;
 use App\Services\GenreService;
 use App\Services\ImageService;
+use App\Services\Scraper\RequestService;
 use App\Services\VoiceActingService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Throwable;
 
 /**
@@ -26,6 +27,7 @@ use Throwable;
 class AnimeUseCase
 {
     public function __construct(
+        private readonly RequestService         $requestService,
         private readonly AnimeService           $animeService,
         private readonly AnimeSynonymService    $animeSynonymService,
         private readonly ImageService           $imageService,
@@ -43,9 +45,10 @@ class AnimeUseCase
      */
     public function sendScrapeRequest(string $url, ?int $chatId = null): ScrapedDataDTO
     {
-        $response = Http::post(sprintf('%s/api/v1/anime/parse', config('scraper.url')), ['url' => $url])->throw();
-
-        $data = array_merge(['url' => $url, 'telegramId' => $chatId], $response->json());
+        $data = array_merge(
+            ['url' => $url, 'telegramId' => $chatId],
+            $this->requestService->sendScrapeRequest($url)->json()
+        );
 
         return new ScrapedDataDTO(...$data);
     }
@@ -72,11 +75,19 @@ class AnimeUseCase
 
         $anime = $this->animeService->findByTitleAndSynonyms(array_merge($dto->synonyms, [$dto->title]));
 
-        if ($anime) {
+        // Some anime have similar synonyms, this prevents updating wrong anime
+        // TODO try to resolve this in better way
+        $parsed = parse_url($dto->url);
+
+        if (
+            $anime
+            && $anime->urls->filter(fn(AnimeUrl $animeUrl) => str_contains($animeUrl->url, $parsed['host']))->isEmpty()
+        ) {
             $anime->synonyms()->upsertRelated(
                 $this->animeSynonymService->mapIntoSynonymsArray($dto->synonyms),
                 ['synonym']
             );
+
             $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
 
             return $anime;
