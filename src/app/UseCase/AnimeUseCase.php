@@ -14,10 +14,10 @@ use App\Services\AnimeService;
 use App\Services\AnimeSynonymService;
 use App\Services\GenreService;
 use App\Services\ImageService;
+use App\Services\Scraper\RequestService;
 use App\Services\VoiceActingService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Throwable;
 
 /**
@@ -27,6 +27,7 @@ use Throwable;
 class AnimeUseCase
 {
     public function __construct(
+        private readonly RequestService         $requestService,
         private readonly AnimeService           $animeService,
         private readonly AnimeSynonymService    $animeSynonymService,
         private readonly ImageService           $imageService,
@@ -44,9 +45,10 @@ class AnimeUseCase
      */
     public function sendScrapeRequest(string $url, ?int $chatId = null): ScrapedDataDTO
     {
-        $response = Http::post(sprintf('%s/api/v1/anime/parse', config('scraper.url')), ['url' => $url])->throw();
-
-        $data = array_merge(['url' => $url, 'telegramId' => $chatId], $response->json());
+        $data = array_merge(
+            ['url' => $url, 'telegramId' => $chatId],
+            $this->requestService->sendScrapeRequest($url)->json()
+        );
 
         return new ScrapedDataDTO(...$data);
     }
