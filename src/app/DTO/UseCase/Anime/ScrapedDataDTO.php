@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 /**
  * Class ScrapedDataDTO
+ * @template-implements Arrayable<string, mixed>
  * @package App\DTO\Service\Anime
  */
 class ScrapedDataDTO implements Arrayable

@@ -25,7 +25,7 @@ class UserStatusMiddlewareTest extends TestCase
         parent::setUp();
 
         $this->bot = $this->createFakeBot();
-        $this->bot->addHandler([new UserStatusMiddleware()]);
+        $this->bot->addHandler([(new UserStatusMiddleware())(...)]);
     }
 
     /**

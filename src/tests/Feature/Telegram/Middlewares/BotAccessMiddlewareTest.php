@@ -24,7 +24,7 @@ class BotAccessMiddlewareTest extends TestCase
         parent::setUp();
 
         $this->bot = $this->createFakeBot();
-        $this->bot->addHandler([new BotAccessMiddleware()]);
+        $this->bot->addHandler([(new BotAccessMiddleware())(...)]);
     }
 
     /**

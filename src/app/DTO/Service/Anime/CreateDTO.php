@@ -8,6 +8,7 @@ use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Class CreateDTO
+ * @template-implements Arrayable<string, string|float>
  * @package App\DTO\Service\Anime
  */
 class CreateDTO implements Arrayable
