@@ -8,7 +8,7 @@ namespace App\Enums\Telegram;
  * Enum AnimeCaptionEnum
  * @package App\Enums
  */
-enum AnimeCaptionEnum: string
+enum AnimeCaptionEnum : string
 {
     case LINK = 'Ссылка';
 }

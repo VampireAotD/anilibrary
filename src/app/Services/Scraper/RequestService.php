@@ -24,7 +24,7 @@ class RequestService
     {
         $token = $this->createJWTToken();
 
-        return Http::baseUrl(config('scraper.url'))
+        return Http::baseUrl(config('services.scraper.url'))
                    ->withToken($token)
                    ->post('/api/v1/anime/parse', ['url' => $url])
                    ->throw();

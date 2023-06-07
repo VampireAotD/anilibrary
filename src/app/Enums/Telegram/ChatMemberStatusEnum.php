@@ -8,9 +8,9 @@ namespace App\Enums\Telegram;
  * Enum ChatMemberStatusEnum
  * @package App\Enums
  */
-enum ChatMemberStatusEnum: string
+enum ChatMemberStatusEnum : string
 {
     case MEMBER = 'member';
-    case LEFT = 'left';
+    case LEFT   = 'left';
     case KICKED = 'kicked';
 }

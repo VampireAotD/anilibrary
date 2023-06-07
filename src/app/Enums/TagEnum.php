@@ -10,7 +10,7 @@ use App\Enums\Traits\CanProvideCasesValues;
  * Enum TagEnum
  * @package App\Enums
  */
-enum TagEnum: string
+enum TagEnum : string
 {
     use CanProvideCasesValues;
 

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Console\Commands\AnimeList;
 
 use App\DTO\Service\Anime\CreateDTO;
-use App\Models\Anime;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
 use App\Models\Genre;
-use App\Models\Image;
 use App\Models\Tag;
 use App\Models\VoiceActing;
 use App\Services\AnimeService;
@@ -81,9 +79,7 @@ class Parse extends Command
                     $urls = collect($parsed['urls'])->mapInto(AnimeUrl::class);
                     $anime->urls()->saveMany($urls);
 
-                    Image::insert(
-                        array_merge($parsed['image'], ['model_id' => $anime->id, 'model_type' => Anime::class])
-                    );
+                    $anime->image()->create($parsed['image']);
 
                     Tag::upsert($parsed['tags'], 'name');
                     $anime->tags()->sync(collect($parsed['tags'])->pluck('id')->toArray());
