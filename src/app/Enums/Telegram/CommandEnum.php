@@ -8,7 +8,7 @@ use App\Enums\Traits\CanProvideCasesValues;
 
 /**
  * Enum CommandEnum
- * @package App\Enums
+ * @package App\Enums\Telegram
  */
 enum CommandEnum : string
 {

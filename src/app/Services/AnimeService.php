@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\DTO\Service\Anime\CreateDTO;
+use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\Models\Anime;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 
@@ -12,17 +12,17 @@ use App\Repositories\Contracts\AnimeRepositoryInterface;
  * Class AnimeService
  * @package App\Services
  */
-class AnimeService
+readonly class AnimeService
 {
-    public function __construct(private readonly AnimeRepositoryInterface $animeRepository)
+    public function __construct(private AnimeRepositoryInterface $animeRepository)
     {
     }
 
     /**
-     * @param CreateDTO $dto
+     * @param CreateAnimeDTO $dto
      * @return Anime
      */
-    public function create(CreateDTO $dto): Anime
+    public function create(CreateAnimeDTO $dto): Anime
     {
         return Anime::query()->updateOrCreate(['title' => $dto->title], $dto->toArray());
     }

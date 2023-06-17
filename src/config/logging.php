@@ -52,7 +52,7 @@ return [
         'stack' => [
             'driver'            => 'stack',
             'channels'          => ['single', 'logstash'],
-            'ignore_exceptions' => false,
+            'ignore_exceptions' => true,
         ],
 
         'single' => [

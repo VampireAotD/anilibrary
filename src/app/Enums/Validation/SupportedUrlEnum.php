@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enums\Validation;
 
 /**
- * Class SupportedUrlEnum
+ * Enum SupportedUrlEnum
  * @package App\Enums\Validation
  */
 enum SupportedUrlEnum : string

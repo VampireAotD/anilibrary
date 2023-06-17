@@ -11,9 +11,9 @@ use App\Enums\Telegram\CallbackQueryEnum;
  * Class CallbackDataService
  * @package App\Services\Telegram
  */
-class CallbackDataService
+readonly class CallbackDataService
 {
-    public function __construct(private readonly Base62Service $base62Service)
+    public function __construct(private Base62Service $base62Service)
     {
     }
 

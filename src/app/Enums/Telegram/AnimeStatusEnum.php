@@ -8,7 +8,7 @@ use App\Enums\Traits\CanProvideCasesValues;
 
 /**
  * Enum AnimeStatusEnum
- * @package App\Enums
+ * @package App\Enums\Telegram
  */
 enum AnimeStatusEnum : string
 {

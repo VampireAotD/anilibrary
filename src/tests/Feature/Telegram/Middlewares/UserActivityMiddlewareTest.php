@@ -34,7 +34,7 @@ class UserActivityMiddlewareTest extends TestCase
     public function testBotWillOnlyTrackUpdatesWithMessage(): void
     {
         UserHistory::shouldReceive('addLastActiveTime')
-                   ->with($this->fakeTelegramId)
+                   ->with(self::FAKE_TELEGRAM_ID)
                    ->once();
 
         $update   = $this->createFakeChatMemberUpdate();
@@ -50,17 +50,17 @@ class UserActivityMiddlewareTest extends TestCase
     public function testBotWillNotTrackRandomMessages(): void
     {
         UserHistory::shouldReceive('addLastActiveTime')
-                   ->with($this->fakeTelegramId)
+                   ->with(self::FAKE_TELEGRAM_ID)
                    ->once();
 
         UserHistory::shouldReceive('userLastExecutedCommand')
-                   ->with($this->fakeTelegramId)
+                   ->with(self::FAKE_TELEGRAM_ID)
                    ->andReturnFalse();
 
         $update   = $this->createFakeStickerMessageUpdate();
         $response = $this->bot->handleUpdate($update);
 
-        $this->assertFalse(UserHistory::userLastExecutedCommand($this->fakeTelegramId));
+        $this->assertFalse(UserHistory::userLastExecutedCommand(self::FAKE_TELEGRAM_ID));
         $this->assertInstanceOf(Closure::class, $response);
         $this->assertNull($response());
     }
@@ -71,15 +71,15 @@ class UserActivityMiddlewareTest extends TestCase
     public function testBotWillTrackOnlyAvailableCommands(): void
     {
         UserHistory::shouldReceive('addLastActiveTime')
-                   ->with($this->fakeTelegramId)
+                   ->with(self::FAKE_TELEGRAM_ID)
                    ->once();
 
         UserHistory::shouldReceive('addExecutedCommand')
-                   ->with($this->fakeTelegramId, CommandEnum::ANIME_LIST->value)
+                   ->with(self::FAKE_TELEGRAM_ID, CommandEnum::ANIME_LIST->value)
                    ->once();
 
         UserHistory::shouldReceive('userLastExecutedCommand')
-                   ->with($this->fakeTelegramId)
+                   ->with(self::FAKE_TELEGRAM_ID)
                    ->andReturn(CommandEnum::ANIME_LIST->value);
 
         $update   = $this->createFakeTextMessageUpdate(message: CommandEnum::ANIME_LIST->value);
@@ -87,7 +87,7 @@ class UserActivityMiddlewareTest extends TestCase
 
         $this->assertEquals(
             CommandEnum::ANIME_LIST->value,
-            UserHistory::userLastExecutedCommand($this->fakeTelegramId)
+            UserHistory::userLastExecutedCommand(self::FAKE_TELEGRAM_ID)
         );
         $this->assertInstanceOf(Closure::class, $response);
         $this->assertNull($response());

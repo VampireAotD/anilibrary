@@ -6,9 +6,11 @@ namespace App\Jobs\Telegram;
 
 use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
 use App\Enums\QueueEnum;
+use App\Enums\Telegram\RandomAnimeEnum;
 use App\Facades\Telegram\History\UserHistory;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Services\Telegram\CaptionService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -26,8 +28,7 @@ class PickRandomAnimeJob implements ShouldQueue
 
     public function __construct(private readonly int $chatId)
     {
-        $this->onQueue(QueueEnum::PICK_RANDOM_ANIME_QUEUE->value);
-        $this->onConnection('redis');
+        $this->onQueue(QueueEnum::PICK_RANDOM_ANIME_QUEUE->value)->onConnection('redis');
     }
 
     /**
@@ -47,7 +48,7 @@ class PickRandomAnimeJob implements ShouldQueue
             if (!$randomAnime) {
                 TeleBot::sendMessage(
                     [
-                        'text'    => QueueEnum::EMPTY_ANIME_DATABASE->value,
+                        'text'    => RandomAnimeEnum::UNABLE_TO_FIND_ANIME->value,
                         'chat_id' => $this->chatId,
                     ]
                 );
@@ -59,7 +60,7 @@ class PickRandomAnimeJob implements ShouldQueue
             TeleBot::sendPhoto($captionService->create(new CreateAnimeCaptionDTO($randomAnime, $this->chatId)));
 
             UserHistory::clearUserExecutedCommandsHistory($this->chatId);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             logger()->channel('single')->warning(
                 $exception->getMessage(),
                 [

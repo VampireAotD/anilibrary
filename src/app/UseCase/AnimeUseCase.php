@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\UseCase;
 
-use App\DTO\Service\Anime\CreateDTO;
-use App\DTO\UseCase\Anime\ScrapedDataDTO;
+use App\DTO\Service\Anime\CreateAnimeDTO;
+use App\DTO\Service\Scraper\ScrapedDataDTO;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Models\Anime;
 use App\Models\AnimeUrl;
@@ -24,16 +24,16 @@ use Throwable;
  * Class AnimeUseCase
  * @package App\UseCase
  */
-class AnimeUseCase
+readonly class AnimeUseCase
 {
     public function __construct(
-        private readonly RequestService         $requestService,
-        private readonly AnimeService           $animeService,
-        private readonly AnimeSynonymService    $animeSynonymService,
-        private readonly ImageService           $imageService,
-        private readonly VoiceActingService     $voiceActingService,
-        private readonly GenreService           $genreService,
-        private readonly TagRepositoryInterface $tagRepository
+        private RequestService         $requestService,
+        private AnimeService           $animeService,
+        private AnimeSynonymService    $animeSynonymService,
+        private ImageService           $imageService,
+        private VoiceActingService     $voiceActingService,
+        private GenreService           $genreService,
+        private TagRepositoryInterface $tagRepository
     ) {
     }
 
@@ -69,7 +69,7 @@ class AnimeUseCase
      */
     public function createAnime(ScrapedDataDTO $dto): Anime
     {
-        if (!$dto->validate()) {
+        if (!$dto->hasValidData()) {
             throw new InvalidScrapedDataException();
         }
 
@@ -96,7 +96,7 @@ class AnimeUseCase
         return DB::transaction(
             function () use ($dto): Anime {
                 $anime = $this->animeService->create(
-                    new CreateDTO($dto->title, $dto->status, $dto->rating, $dto->episodes)
+                    new CreateAnimeDTO($dto->title, $dto->status, $dto->rating, $dto->episodes)
                 );
 
                 $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
@@ -108,8 +108,8 @@ class AnimeUseCase
                     );
                 }
 
-                if ($dto->getImage()) {
-                    $this->imageService->upsert($dto->getImage(), $anime);
+                if ($dto->image) {
+                    $this->imageService->upsert($dto->image, $anime);
                 }
 
                 if ($dto->voiceActing) {
@@ -120,8 +120,8 @@ class AnimeUseCase
                     $anime->genres()->sync($this->genreService->sync($dto->genres), false);
                 }
 
-                if ($dto->getTelegramId()) {
-                    $anime->tags()->sync($this->tagRepository->findByTelegramId($dto->getTelegramId()), false);
+                if ($dto->telegramId) {
+                    $anime->tags()->sync($this->tagRepository->findByTelegramId($dto->telegramId), false);
                 }
 
                 return $anime;

@@ -15,12 +15,12 @@ use App\Services\Telegram\CaptionService;
  * Class CallbackQueryUseCase
  * @package App\UseCase
  */
-class CallbackQueryUseCase
+readonly class CallbackQueryUseCase
 {
     public function __construct(
-        private readonly AnimeRepositoryInterface $animeRepository,
-        private readonly Base62Service            $base62Service,
-        private readonly CaptionService           $captionService
+        private AnimeRepositoryInterface $animeRepository,
+        private Base62Service            $base62Service,
+        private CaptionService           $captionService
     ) {
     }
 

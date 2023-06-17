@@ -35,8 +35,7 @@ class AddNewAnimeJob implements ShouldQueue
      */
     public function __construct(private readonly Message $message)
     {
-        $this->onQueue(QueueEnum::ADD_ANIME_QUEUE->value);
-        $this->onConnection('redis');
+        $this->onQueue(QueueEnum::ADD_ANIME_QUEUE->value)->onConnection('redis');
     }
 
     /**

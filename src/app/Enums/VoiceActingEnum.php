@@ -7,7 +7,7 @@ namespace App\Enums;
 use App\Enums\Traits\CanProvideCasesValues;
 
 /**
- * enum VoiceActingEnum
+ * Enum VoiceActingEnum
  * @package App\Enums
  */
 enum VoiceActingEnum : string

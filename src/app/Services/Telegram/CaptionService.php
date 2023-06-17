@@ -15,9 +15,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * Class CaptionService
  * @package App\Services\Telegram
  */
-class CaptionService
+readonly class CaptionService
 {
-    public function __construct(private readonly CallbackDataService $callbackQueryService)
+    public function __construct(private CallbackDataService $callbackQueryService)
     {
     }
 

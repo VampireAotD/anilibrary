@@ -86,6 +86,6 @@ class User extends Authenticatable
      */
     public function telegramUser(): HasOne
     {
-        return $this->hasOne(TelegramUser::class);
+        return $this->hasOne(TelegramUser::class, 'id', 'telegram_user_id')->withTimestamps();
     }
 }

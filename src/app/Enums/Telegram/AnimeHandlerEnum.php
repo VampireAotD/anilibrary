@@ -6,7 +6,7 @@ namespace App\Enums\Telegram;
 
 /**
  * Enum AnimeHandlerEnum
- * @package App\Enums
+ * @package App\Enums\Telegram
  */
 enum AnimeHandlerEnum : string
 {

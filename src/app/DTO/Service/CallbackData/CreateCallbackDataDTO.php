@@ -10,7 +10,7 @@ use App\Enums\Telegram\CallbackQueryEnum;
  * Class CreateCallbackDataDTO
  * @package App\DTO\Service\CallbackData
  */
-class CreateCallbackDataDTO
+readonly class CreateCallbackDataDTO
 {
     /**
      * @param CallbackQueryEnum $option
@@ -18,9 +18,9 @@ class CreateCallbackDataDTO
      * @param int               $pageNumber
      */
     public function __construct(
-        public readonly CallbackQueryEnum $option,
-        public readonly ?string           $animeId = null,
-        public readonly int               $pageNumber = 1
+        public CallbackQueryEnum $option,
+        public ?string           $animeId = null,
+        public int               $pageNumber = 1
     ) {
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +28,7 @@ class AlterUsersTable extends Migration
                 'users',
                 function (Blueprint $table) {
                     $table->uuid('id')->first()->primary();
-                    $table->foreignUuid('telegram_user_id')->after('id')->constrained();
+                    $table->foreignUuid('telegram_user_id')->after('id')->constrained()->cascadeOnDelete();
                 }
             );
 
@@ -34,12 +36,12 @@ class AlterUsersTable extends Migration
         }
 
         Schema::dropIfExists('users');
-        
+
         Schema::create(
             'users',
             function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->foreignUuid('telegram_user_id')->constrained();
+                $table->foreignUuid('telegram_user_id')->constrained()->cascadeOnDelete();
                 $table->string('password');
                 $table->rememberToken();
                 $table->timestamps();

@@ -63,8 +63,7 @@ class Generate extends Command
             ]
         );
 
-        Storage::disk('lists')
-               ->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
+        Storage::disk('lists')->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
 
         Mail::to(config('admin.email'))->queue(new AnimeListMail());
 

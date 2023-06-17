@@ -31,6 +31,7 @@ class UserActivityMiddleware
         }
 
         $message = $update->message;
+
         if (isset($message->text) && in_array($message->text, $supportedCommands, true)) {
             UserHistory::addExecutedCommand($userId, $message->text);
         }

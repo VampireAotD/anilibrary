@@ -11,6 +11,12 @@ use App\Models\TelegramUser;
 interface TelegramUserRepositoryInterface
 {
     /**
+     * @param array $data
+     * @return TelegramUser
+     */
+    public function upsert(array $data): TelegramUser;
+
+    /**
      * @param int $telegramId
      * @return TelegramUser|null
      */

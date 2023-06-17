@@ -7,17 +7,17 @@ namespace App\DTO\Service\Anime;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
- * Class CreateDTO
+ * Class CreateAnimeDTO
  * @template-implements Arrayable<string, string|float>
  * @package App\DTO\Service\Anime
  */
-class CreateDTO implements Arrayable
+readonly class CreateAnimeDTO implements Arrayable
 {
     public function __construct(
-        public readonly string $title,
-        public readonly string $status,
-        public readonly float  $rating,
-        public readonly string $episodes,
+        public string $title,
+        public string $status,
+        public float  $rating,
+        public string $episodes,
     ) {
     }
 

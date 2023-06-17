@@ -15,9 +15,8 @@ class VoiceActingService
 {
     use CanGenerateNamesArray;
 
-    public function __construct(
-        private readonly VoiceActingRepositoryInterface $voiceActingRepository
-    ) {
+    public function __construct(private readonly VoiceActingRepositoryInterface $voiceActingRepository)
+    {
     }
 
     /**

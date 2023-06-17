@@ -7,7 +7,7 @@ namespace App\Enums\Traits;
 use UnitEnum;
 
 /**
- * Enum AnimeHandlerEnum
+ * Trait CanProvideCasesValues
  * @package App\Enums\Traits
  */
 trait CanProvideCasesValues

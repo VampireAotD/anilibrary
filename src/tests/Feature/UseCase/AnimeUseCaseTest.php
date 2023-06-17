@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\UseCase;
 
-use App\DTO\UseCase\Anime\ScrapedDataDTO;
+use App\DTO\Service\Scraper\ScrapedDataDTO;
 use App\Enums\Telegram\AnimeStatusEnum;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Models\Anime;

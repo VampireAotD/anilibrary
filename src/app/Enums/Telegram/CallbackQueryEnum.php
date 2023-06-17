@@ -6,7 +6,7 @@ namespace App\Enums\Telegram;
 
 /**
  * Enum CallbackQueryEnum
- * @package App\Enums
+ * @package App\Enums\Telegram
  */
 enum CallbackQueryEnum : string
 {

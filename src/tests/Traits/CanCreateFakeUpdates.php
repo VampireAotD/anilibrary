@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Traits;
 
 use App\Enums\Telegram\ChatMemberStatusEnum;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
 use WeStacks\TeleBot\Objects\Update;
 
@@ -14,17 +15,18 @@ use WeStacks\TeleBot\Objects\Update;
  */
 trait CanCreateFakeUpdates
 {
-    private int $fakeTelegramId = -1;
+    use WithFaker;
+
+    private const FAKE_TELEGRAM_ID = -1;
 
     /**
      * @param int|null    $chatId
      * @param string|null $message
      * @return Update
      */
-    public function createFakeTextMessageUpdate(?int $chatId = null, ?string $message = null): Update
+    public function createFakeTextMessageUpdate(?int $chatId = self::FAKE_TELEGRAM_ID, ?string $message = null): Update
     {
         $message ??= Str::random();
-        $chatId  ??= $this->fakeTelegramId;
 
         return Update::create(
             [
@@ -38,14 +40,39 @@ trait CanCreateFakeUpdates
         );
     }
 
+    public function createFakeCommandUpdate(string $commandAlias, ?int $chatId = self::FAKE_TELEGRAM_ID)
+    {
+        return Update::create(
+            [
+                'message' => [
+                    'from'     => [
+                        'id'         => $this->faker->numberBetween(),
+                        'first_name' => $this->faker->firstName,
+                        'last_name'  => $this->faker->lastName,
+                        'username'   => $this->faker->userName,
+                    ],
+                    'chat'     => [
+                        'id' => $chatId,
+                    ],
+                    'text'     => $commandAlias,
+                    'entities' => [
+                        [
+                            'offset' => 0,
+                            'length' => strlen($commandAlias),
+                            'type'   => 'bot_command',
+                        ],
+                    ],
+                ],
+            ]
+        );
+    }
+
     /**
      * @param int|null $chatId
      * @return Update
      */
-    public function createFakeStickerMessageUpdate(?int $chatId = null): Update
+    public function createFakeStickerMessageUpdate(?int $chatId = self::FAKE_TELEGRAM_ID): Update
     {
-        $chatId ??= $this->fakeTelegramId;
-
         return Update::create(
             [
                 'message' => [
@@ -53,7 +80,7 @@ trait CanCreateFakeUpdates
                         'id' => $chatId,
                     ],
                     'sticker' => [
-                        'set_name' => Str::random(),
+                        'set_name' => $this->faker->name,
                     ],
                 ],
             ]
@@ -65,9 +92,8 @@ trait CanCreateFakeUpdates
      * @param array    $newChatMember
      * @return Update
      */
-    public function createFakeChatMemberUpdate(?int $chatId = null, array $newChatMember = []): Update
+    public function createFakeChatMemberUpdate(?int $chatId = self::FAKE_TELEGRAM_ID, array $newChatMember = []): Update
     {
-        $chatId        ??= $this->fakeTelegramId;
         $newChatMember = array_merge(['user' => [], 'status' => ChatMemberStatusEnum::MEMBER->value], $newChatMember);
 
         return Update::create(
@@ -85,10 +111,8 @@ trait CanCreateFakeUpdates
         );
     }
 
-    public function createFakeCallbackQueryUpdate(?int $chatId = null, string $query = ''): Update
+    public function createFakeCallbackQueryUpdate(?int $chatId = self::FAKE_TELEGRAM_ID, string $query = ''): Update
     {
-        $chatId ??= $this->fakeTelegramId;
-
         return Update::create(
             [
                 'callback_query' => [

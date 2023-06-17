@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\AnimeList;
 
-use App\DTO\Service\Anime\CreateDTO;
+use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
 use App\Models\Genre;
@@ -38,9 +38,8 @@ class Parse extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct(
-        private readonly AnimeService $animeService,
-    ) {
+    public function __construct(private readonly AnimeService $animeService)
+    {
         parent::__construct();
     }
 
@@ -65,7 +64,7 @@ class Parse extends Command
             DB::transaction(
                 function () use ($parsed) {
                     $anime = $this->animeService->create(
-                        new CreateDTO(
+                        new CreateAnimeDTO(
                             $parsed['title'],
                             $parsed['status'],
                             $parsed['rating'],

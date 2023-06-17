@@ -6,7 +6,7 @@ namespace App\Enums\Telegram;
 
 /**
  * Enum ChatMemberStatusEnum
- * @package App\Enums
+ * @package App\Enums\Telegram
  */
 enum ChatMemberStatusEnum : string
 {

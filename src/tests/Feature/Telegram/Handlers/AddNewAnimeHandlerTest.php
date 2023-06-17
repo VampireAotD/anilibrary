@@ -11,7 +11,6 @@ use App\Facades\Telegram\History\UserHistory;
 use App\Jobs\Telegram\AddNewAnimeJob;
 use App\Telegram\Handlers\AddNewAnimeHandler;
 use Closure;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
@@ -22,19 +21,19 @@ use WeStacks\TeleBot\TeleBot;
 class AddNewAnimeHandlerTest extends TestCase
 {
     use CanCreateMocks,
-        CanCreateFakeUpdates,
-        WithFaker;
+        CanCreateFakeUpdates;
 
     private TeleBot $bot;
 
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->bot = $this->createFakeBot();
         $this->bot->addHandler([AddNewAnimeHandler::class]);
 
         UserHistory::shouldReceive('userLastExecutedCommand')
-                   ->withArgs([$this->fakeTelegramId])
+                   ->withArgs([self::FAKE_TELEGRAM_ID])
                    ->andReturn(CommandEnum::ADD_NEW_TITLE->value);
     }
 

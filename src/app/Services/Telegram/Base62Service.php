@@ -12,7 +12,7 @@ use Tuupola\Base62\PhpEncoder;
  * Class Base62Service
  * @package App\Services\Telegram
  */
-class Base62Service
+readonly class Base62Service
 {
     protected GmpEncoder | PhpEncoder $encoder;
 

@@ -23,8 +23,7 @@ class AnimeListMail extends Mailable
      */
     public function __construct()
     {
-        $this->onConnection('redis');
-        $this->onQueue(QueueEnum::MAIL_QUEUE->value);
+        $this->onQueue(QueueEnum::MAIL_QUEUE->value)->onConnection('redis');
     }
 
     /**

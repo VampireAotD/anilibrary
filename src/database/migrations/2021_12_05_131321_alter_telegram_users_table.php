@@ -11,7 +11,7 @@ class AlterTelegramUsersTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table(
             'telegram_users',
@@ -23,9 +23,9 @@ class AlterTelegramUsersTable extends Migration
         Schema::table(
             'telegram_users',
             function (Blueprint $table) {
-                $table->string('first_name')->nullable();
-                $table->string('last_name')->nullable();
-                $table->string('username')->unique()->nullable();
+                $table->string('first_name')->after('telegram_id')->nullable();
+                $table->string('last_name')->after('first_name')->nullable();
+                $table->string('username')->after('last_name')->unique()->nullable();
             }
         );
     }
@@ -35,7 +35,7 @@ class AlterTelegramUsersTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table(
             'telegram_users',

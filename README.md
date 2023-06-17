@@ -18,7 +18,7 @@ Application for scraping anime data from different supported sites
 Before building Anilibrary you need to place anime list in **src/storage/lists** folder
 so that application could parse it.
 
-> **WARNING**: File name must be called `animeList.json` and has a valid JSON
+> **WARNING**: File name must be called `anime-list.json` and has a valid JSON
 
 You can skip this step and build Anilibrary if you don't need scraped data.
 

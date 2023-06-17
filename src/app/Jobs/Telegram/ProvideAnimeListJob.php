@@ -27,8 +27,7 @@ class ProvideAnimeListJob implements ShouldQueue
         private readonly int $telegramId,
         private readonly int $page = 1,
     ) {
-        $this->onQueue(QueueEnum::ANIME_LIST_QUEUE->value);
-        $this->onConnection('redis');
+        $this->onQueue(QueueEnum::ANIME_LIST_QUEUE->value)->onConnection('redis');
     }
 
     /**
