@@ -34,7 +34,6 @@ readonly class CallbackDataService
                 CallbackQueryEnum::PAGINATION->value,
                 $callbackDataDTO->pageNumber
             ),
-            default                              => ''
         };
     }
 }

@@ -58,6 +58,10 @@ test:
 psalm:
 	$(docker_compose_bin) exec app vendor/bin/psalm
 
+.PHONY: phpstan
+phpstan:
+	$(docker_compose_bin) exec app vendor/bin/phpstan analyse --memory-limit=2G
+
 .PHONY: optimize
 optimize:
 	$(docker_compose_bin) exec app ./artisan optimize:clear;

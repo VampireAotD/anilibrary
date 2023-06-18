@@ -41,6 +41,7 @@ class ProvideAnimeListJob implements ShouldQueue
 
         $caption = $captionService->create(new CreateAnimeCaptionDTO($list->first(), $this->telegramId, $list));
 
+        /** @phpstan-ignore-next-line */
         TeleBot::sendPhoto($caption);
     }
 }

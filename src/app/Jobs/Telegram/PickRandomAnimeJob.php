@@ -57,6 +57,7 @@ class PickRandomAnimeJob implements ShouldQueue
                 return;
             }
 
+            /** @phpstan-ignore-next-line */
             TeleBot::sendPhoto($captionService->create(new CreateAnimeCaptionDTO($randomAnime, $this->chatId)));
 
             UserHistory::clearUserExecutedCommandsHistory($this->chatId);

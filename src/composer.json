@@ -11,24 +11,25 @@
         "php": "^8.2",
         "aws/aws-sdk-php": "^3.227.0",
         "cloudinary-labs/cloudinary-laravel": "^2.0.3",
-        "firebase/php-jwt": "^6.4",
-        "guzzlehttp/guzzle": "^7.5",
+        "firebase/php-jwt": "^6.7",
+        "guzzlehttp/guzzle": "^7.7",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "predis/predis": "^2.1",
         "tuupola/base62": "^2.1",
-        "westacks/telebot": "^2.6"
+        "westacks/telebot": "^2.7"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",
-        "fakerphp/faker": "^1.21",
-        "laravel/sail": "^1.21",
-        "mockery/mockery": "^1.5.0",
-        "nunomaduro/collision": "^7.3",
+        "fakerphp/faker": "^1.23",
+        "laravel/sail": "^1.22",
+        "mockery/mockery": "^1.6.2",
+        "nunomaduro/collision": "^7.6",
+        "nunomaduro/larastan": "^2.6",
         "phpunit/phpunit": "^10.0",
         "psalm/plugin-laravel": "^2.8",
-        "spatie/laravel-ignition": "^2.0",
+        "spatie/laravel-ignition": "^2.1",
         "vimeo/psalm": "^5.8"
     },
     "autoload": {

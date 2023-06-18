@@ -30,5 +30,8 @@ jobs:
       - name: Run Psalm
         run: ./vendor/bin/psalm -c psalm.xml
 
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan analyze --memory-limit=2G
+
       - name: Run tests
         run: php artisan test --coverage

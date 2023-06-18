@@ -7,6 +7,7 @@ namespace App\UseCase;
 use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
 use App\DTO\UseCase\CallbackQuery\AddedAnimeDTO;
 use App\DTO\UseCase\CallbackQuery\PaginationDTO;
+use App\Models\Anime;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Services\Telegram\Base62Service;
 use App\Services\Telegram\CaptionService;
@@ -31,7 +32,8 @@ readonly class CallbackQueryUseCase
     public function addedAnimeCaption(AddedAnimeDTO $dto): array
     {
         $decoded = $this->base62Service->decode($dto->encodedId);
-        $anime   = $this->animeRepository->findById($decoded);
+        /** @var Anime|null $anime */
+        $anime = $this->animeRepository->findById($decoded);
 
         if (!$anime) {
             return [];

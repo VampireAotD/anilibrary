@@ -34,6 +34,7 @@ class TagRepository extends BaseRepository implements TagRepositoryInterface
     {
         return match ($telegramId) {
             config('admin.id') => [
+                /** @phpstan-ignore-next-line */
                 $this->findByName(TagEnum::ADMIN_TAG->value)?->id,
             ],
             default            => []
