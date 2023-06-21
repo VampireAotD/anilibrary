@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Handlers;
 
-use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
+use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
 use App\Enums\Validation\SupportedUrlEnum;
 use App\Facades\Telegram\History\UserHistory;
 use App\Jobs\Telegram\AddNewAnimeJob;
@@ -34,7 +34,7 @@ class AddNewAnimeHandlerTest extends TestCase
 
         UserHistory::shouldReceive('userLastExecutedCommand')
                    ->withArgs([self::FAKE_TELEGRAM_ID])
-                   ->andReturn(CommandEnum::ADD_NEW_TITLE->value);
+                   ->andReturn(CommandEnum::ADD_ANIME_BUTTON->value);
     }
 
     /**
@@ -86,7 +86,7 @@ class AddNewAnimeHandlerTest extends TestCase
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Message::class, $response);
-        $this->assertEquals(AnimeHandlerEnum::PARSE_STARTED->value, $response->text);
+        $this->assertEquals(AddAnimeHandlerEnum::PARSE_STARTED->value, $response->text);
         Bus::assertDispatched(AddNewAnimeJob::class);
     }
 }

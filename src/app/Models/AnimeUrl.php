@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,5 +39,16 @@ class AnimeUrl extends Model
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);
+    }
+
+    public function telegramInlineUrl(): Attribute
+    {
+        return Attribute::make(
+            function () {
+                $domain = parse_url($this->url)['host'] ?? '';
+
+                return ['text' => $domain, 'url' => $this->url];
+            }
+        );
     }
 }

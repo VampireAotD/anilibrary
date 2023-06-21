@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Commands;
 
-use App\Enums\Telegram\StartCommandEnum;
+use App\Enums\Telegram\Commands\StartCommandEnum;
 use App\Jobs\Telegram\RegisterUserJob;
 use App\Telegram\Commands\StartCommand;
 use Illuminate\Support\Facades\Bus;

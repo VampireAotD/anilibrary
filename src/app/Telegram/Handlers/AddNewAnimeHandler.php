@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Telegram\Handlers;
 
-use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
+use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
 use App\Enums\Validation\SupportedUrlEnum;
 use App\Facades\Telegram\History\UserHistory;
 use App\Jobs\Telegram\AddNewAnimeJob;
@@ -26,7 +26,7 @@ class AddNewAnimeHandler extends UpdateHandler
      */
     public function trigger(): bool
     {
-        $allowedCommands = [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
+        $allowedCommands = [CommandEnum::ADD_ANIME_BUTTON->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value];
 
         return isset($this->update->message->text)
             && in_array(
@@ -46,7 +46,7 @@ class AddNewAnimeHandler extends UpdateHandler
 
         if (!in_array(
             $message->text,
-            [CommandEnum::ADD_NEW_TITLE->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value],
+            [CommandEnum::ADD_ANIME_BUTTON->value, CommandEnum::ADD_NEW_TITLE_COMMAND->value],
             true
         )) {
             try {
@@ -64,7 +64,7 @@ class AddNewAnimeHandler extends UpdateHandler
 
             return $this->sendMessage(
                 [
-                    'text'    => AnimeHandlerEnum::PARSE_STARTED->value,
+                    'text'    => AddAnimeHandlerEnum::PARSE_STARTED->value,
                     'chat_id' => $chatId,
                 ]
             );

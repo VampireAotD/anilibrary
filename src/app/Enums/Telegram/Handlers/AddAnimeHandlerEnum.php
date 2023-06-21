@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Enums\Telegram;
+namespace App\Enums\Telegram\Handlers;
 
 /**
- * Enum AnimeHandlerEnum
+ * Enum AddAnimeHandlerEnum
  * @package App\Enums\Telegram
  */
-enum AnimeHandlerEnum : string
+enum AddAnimeHandlerEnum : string
 {
     case PROVIDE_URL                = 'Укажите ссылку на тайтл';
     case PARSE_STARTED              = 'Начался парсинг тайтла, это может занять несколько минут';

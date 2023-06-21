@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\UseCase;
+namespace App\UseCase\Telegram;
 
-use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
-use App\DTO\UseCase\CallbackQuery\AddedAnimeDTO;
-use App\DTO\UseCase\CallbackQuery\PaginationDTO;
+use App\DTO\Service\Telegram\Caption\PaginationCaptionDTO;
+use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
+use App\DTO\UseCase\Telegram\CallbackQuery\PaginationDTO;
+use App\DTO\UseCase\Telegram\CallbackQuery\ViewAnimeDTO;
 use App\Models\Anime;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Services\Telegram\Base62Service;
@@ -26,12 +27,13 @@ readonly class CallbackQueryUseCase
     }
 
     /**
-     * @param AddedAnimeDTO $dto
+     * @param ViewAnimeDTO $dto
      * @return array
      */
-    public function addedAnimeCaption(AddedAnimeDTO $dto): array
+    public function createAnimeCaption(ViewAnimeDTO $dto): array
     {
         $decoded = $this->base62Service->decode($dto->encodedId);
+
         /** @var Anime|null $anime */
         $anime = $this->animeRepository->findById($decoded);
 
@@ -39,17 +41,17 @@ readonly class CallbackQueryUseCase
             return [];
         }
 
-        return $this->captionService->create(new CreateAnimeCaptionDTO($anime, $dto->chatId));
+        return $this->captionService->create(new ViewAnimeCaptionDTO($anime, $dto->chatId));
     }
 
     /**
      * @param PaginationDTO $dto
      * @return array
      */
-    public function paginate(PaginationDTO $dto): array
+    public function createPaginationCaption(PaginationDTO $dto): array
     {
         $animeList = $this->animeRepository->paginate(currentPage: $dto->page);
 
-        return $this->captionService->create(new CreateAnimeCaptionDTO($animeList->first(), $dto->chatId, $animeList));
+        return $this->captionService->create(new PaginationCaptionDTO($animeList, $dto->chatId));
     }
 }

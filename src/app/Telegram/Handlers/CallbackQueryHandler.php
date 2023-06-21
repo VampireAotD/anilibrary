@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Telegram\Handlers;
 
-use App\DTO\UseCase\CallbackQuery\AddedAnimeDTO;
-use App\DTO\UseCase\CallbackQuery\PaginationDTO;
-use App\Enums\Telegram\CallbackQueryEnum;
+use App\DTO\UseCase\Telegram\CallbackQuery\PaginationDTO;
+use App\DTO\UseCase\Telegram\CallbackQuery\ViewAnimeDTO;
+use App\Enums\Telegram\CallbackQueryTypeEnum;
 use App\Facades\Telegram\History\UserHistory;
-use App\UseCase\CallbackQueryUseCase;
+use App\UseCase\Telegram\CallbackQueryUseCase;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Exceptions\TeleBotException;
@@ -52,9 +52,9 @@ class CallbackQueryHandler extends UpdateHandler
         parse_str($callbackData, $callbackParameters);
 
         switch ($callbackParameters['command'] ?? '') {
-            case CallbackQueryEnum::CHECK_ADDED_ANIME->value:
-                $caption = $this->callbackQueryUseCase->addedAnimeCaption(
-                    new AddedAnimeDTO($callbackParameters['animeId'], $chatId)
+            case CallbackQueryTypeEnum::VIEW_ANIME->value:
+                $caption = $this->callbackQueryUseCase->createAnimeCaption(
+                    new ViewAnimeDTO($callbackParameters['animeId'], $chatId)
                 );
 
                 if (!$caption) {
@@ -67,13 +67,13 @@ class CallbackQueryHandler extends UpdateHandler
                 }
 
                 return $this->sendPhoto(
-                    $this->callbackQueryUseCase->addedAnimeCaption(
-                        new AddedAnimeDTO($callbackParameters['animeId'], $chatId)
+                    $this->callbackQueryUseCase->createAnimeCaption(
+                        new ViewAnimeDTO($callbackParameters['animeId'], $chatId)
                     )
                 );
-            case CallbackQueryEnum::PAGINATION->value:
+            case CallbackQueryTypeEnum::ANIME_LIST->value:
                 $page    = (int) ($callbackParameters['page'] ?? 1);
-                $caption = $this->callbackQueryUseCase->paginate(new PaginationDTO($chatId, $page));
+                $caption = $this->callbackQueryUseCase->createPaginationCaption(new PaginationDTO($chatId, $page));
 
                 try {
                     return $this->editMessageMedia(

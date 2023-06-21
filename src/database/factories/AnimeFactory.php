@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enums\Telegram\AnimeStatusEnum;
+use App\Enums\AnimeStatusEnum;
 use App\Models\Anime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

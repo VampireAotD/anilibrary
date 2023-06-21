@@ -75,18 +75,18 @@ class UserActivityMiddlewareTest extends TestCase
                    ->once();
 
         UserHistory::shouldReceive('addExecutedCommand')
-                   ->with(self::FAKE_TELEGRAM_ID, CommandEnum::ANIME_LIST->value)
+                   ->with(self::FAKE_TELEGRAM_ID, CommandEnum::ANIME_LIST_BUTTON->value)
                    ->once();
 
         UserHistory::shouldReceive('userLastExecutedCommand')
                    ->with(self::FAKE_TELEGRAM_ID)
-                   ->andReturn(CommandEnum::ANIME_LIST->value);
+                   ->andReturn(CommandEnum::ANIME_LIST_BUTTON->value);
 
-        $update   = $this->createFakeTextMessageUpdate(message: CommandEnum::ANIME_LIST->value);
+        $update   = $this->createFakeTextMessageUpdate(message: CommandEnum::ANIME_LIST_BUTTON->value);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertEquals(
-            CommandEnum::ANIME_LIST->value,
+            CommandEnum::ANIME_LIST_BUTTON->value,
             UserHistory::userLastExecutedCommand(self::FAKE_TELEGRAM_ID)
         );
         $this->assertInstanceOf(Closure::class, $response);

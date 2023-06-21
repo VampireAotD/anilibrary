@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Handlers;
 
-use App\Enums\Telegram\AnimeHandlerEnum;
 use App\Enums\Telegram\CommandEnum;
+use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
 use App\Jobs\Telegram\PickRandomAnimeJob;
 use App\Jobs\Telegram\ProvideAnimeListJob;
 use App\Telegram\Handlers\CommandHandler;
@@ -37,7 +37,7 @@ class CommandHandlerTest extends TestCase
     {
         return [
             [CommandEnum::ADD_NEW_TITLE_COMMAND->value],
-            [CommandEnum::ADD_NEW_TITLE->value],
+            [CommandEnum::ADD_ANIME_BUTTON->value],
         ];
     }
 
@@ -48,7 +48,7 @@ class CommandHandlerTest extends TestCase
     {
         return [
             [CommandEnum::RANDOM_ANIME_COMMAND->value],
-            [CommandEnum::RANDOM_ANIME->value],
+            [CommandEnum::RANDOM_ANIME_BUTTON->value],
         ];
     }
 
@@ -59,7 +59,7 @@ class CommandHandlerTest extends TestCase
     {
         return [
             [CommandEnum::ANIME_LIST_COMMAND->value],
-            [CommandEnum::ANIME_LIST->value],
+            [CommandEnum::ANIME_LIST_BUTTON->value],
         ];
     }
 
@@ -74,7 +74,7 @@ class CommandHandlerTest extends TestCase
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Message::class, $response);
-        $this->assertEquals(AnimeHandlerEnum::PROVIDE_URL->value, $response->text);
+        $this->assertEquals(AddAnimeHandlerEnum::PROVIDE_URL->value, $response->text);
     }
 
     /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Middlewares;
 
-use App\Enums\Telegram\ChatMemberStatusEnum;
+use App\Enums\Telegram\Middlewares\ChatMemberStatusEnum;
 use App\Facades\Telegram\History\UserHistory;
 use App\Telegram\Middlewares\UserStatusMiddleware;
 use Closure;

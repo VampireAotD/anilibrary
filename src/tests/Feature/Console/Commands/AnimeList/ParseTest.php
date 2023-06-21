@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Console\Commands\AnimeList;
 
-use App\Enums\Telegram\AnimeStatusEnum;
+use App\Enums\AnimeStatusEnum;
 use App\Models\Anime;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;

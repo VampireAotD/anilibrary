@@ -6,7 +6,7 @@ namespace App\Telegram\Commands;
 
 use App\DTO\Service\Telegram\CreateUserDTO;
 use App\Enums\Telegram\CommandEnum;
-use App\Enums\Telegram\StartCommandEnum;
+use App\Enums\Telegram\Commands\StartCommandEnum;
 use App\Jobs\Telegram\RegisterUserJob;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Handlers\CommandHandler;
@@ -52,15 +52,15 @@ class StartCommand extends CommandHandler
                     'keyboard'        => [
                         [
                             [
-                                'text' => CommandEnum::ADD_NEW_TITLE->value,
+                                'text' => CommandEnum::ADD_ANIME_BUTTON->value,
                             ],
                             [
-                                'text' => CommandEnum::RANDOM_ANIME->value,
+                                'text' => CommandEnum::RANDOM_ANIME_BUTTON->value,
                             ],
                         ],
                         [
                             [
-                                'text' => CommandEnum::ANIME_LIST->value,
+                                'text' => CommandEnum::ANIME_LIST_BUTTON->value,
                             ],
                         ],
                     ],

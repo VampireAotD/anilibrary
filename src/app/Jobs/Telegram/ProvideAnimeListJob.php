@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
-use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
+use App\DTO\Service\Telegram\Caption\PaginationCaptionDTO;
 use App\Enums\QueueEnum;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Services\Telegram\CaptionService;
@@ -39,7 +39,7 @@ class ProvideAnimeListJob implements ShouldQueue
     {
         $list = $animeRepository->paginate(currentPage: $this->page);
 
-        $caption = $captionService->create(new CreateAnimeCaptionDTO($list->first(), $this->telegramId, $list));
+        $caption = $captionService->create(new PaginationCaptionDTO($list, $this->telegramId));
 
         /** @phpstan-ignore-next-line */
         TeleBot::sendPhoto($caption);

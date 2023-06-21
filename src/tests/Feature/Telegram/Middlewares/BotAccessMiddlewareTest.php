@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Middlewares;
 
-use App\Enums\Telegram\BotAccessEnum;
+use App\Enums\Telegram\Middlewares\BotAccessEnum;
 use App\Telegram\Middlewares\BotAccessMiddleware;
 use Closure;
 use Tests\TestCase;

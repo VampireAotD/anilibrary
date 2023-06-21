@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\Telegram\AnimeStatusEnum;
+use App\Enums\AnimeStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

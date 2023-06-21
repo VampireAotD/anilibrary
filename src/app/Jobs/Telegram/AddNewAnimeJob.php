@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
-use App\DTO\Service\CallbackData\CreateCallbackDataDTO;
+use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
 use App\Enums\QueueEnum;
-use App\Enums\Telegram\AnimeHandlerEnum;
-use App\Enums\Telegram\CallbackQueryEnum;
+use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Facades\Telegram\History\UserHistory;
-use App\Services\Telegram\CallbackDataService;
+use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\UseCase\AnimeUseCase;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -40,10 +39,10 @@ class AddNewAnimeJob implements ShouldQueue
 
     /**
      * @param AnimeUseCase        $animeUseCase
-     * @param CallbackDataService $callbackQueryService
+     * @param CallbackDataFactory $callbackDataFactory
      * @return void
      */
-    public function handle(AnimeUseCase $animeUseCase, CallbackDataService $callbackQueryService): void
+    public function handle(AnimeUseCase $animeUseCase, CallbackDataFactory $callbackDataFactory): void
     {
         $message = $this->message;
         $chatId  = $message->chat->id;
@@ -52,9 +51,7 @@ class AddNewAnimeJob implements ShouldQueue
 
         try {
             if ($anime = $animeUseCase->findByUrl($message->text)) {
-                $callbackData = $callbackQueryService->create(
-                    new CreateCallbackDataDTO(CallbackQueryEnum::CHECK_ADDED_ANIME, $anime->id)
-                );
+                $callbackData = $callbackDataFactory->resolve(new ViewAnimeCallbackDataDTO($anime->id));
 
                 $this->sendScrapedStatusMessage($chatId, $callbackData);
                 return;
@@ -63,9 +60,7 @@ class AddNewAnimeJob implements ShouldQueue
             $dto   = $animeUseCase->sendScrapeRequest($message->text, $chatId);
             $anime = $animeUseCase->createAnime($dto);
 
-            $callbackData = $callbackQueryService->create(
-                new CreateCallbackDataDTO(CallbackQueryEnum::CHECK_ADDED_ANIME, $anime->id)
-            );
+            $callbackData = $callbackDataFactory->resolve(new ViewAnimeCallbackDataDTO($anime->id));
             $this->sendScrapedStatusMessage($chatId, $callbackData);
 
             UserHistory::clearUserExecutedCommandsHistory($chatId);
@@ -73,7 +68,7 @@ class AddNewAnimeJob implements ShouldQueue
             TeleBot::sendMessage(
                 [
                     'chat_id' => $chatId,
-                    'text'    => AnimeHandlerEnum::PARSE_FAILED->value,
+                    'text'    => AddAnimeHandlerEnum::PARSE_FAILED->value,
                 ]
             );
 
@@ -92,13 +87,13 @@ class AddNewAnimeJob implements ShouldQueue
     {
         TeleBot::sendMessage(
             [
-                'text'         => AnimeHandlerEnum::PARSE_HAS_ENDED->value,
+                'text'         => AddAnimeHandlerEnum::PARSE_HAS_ENDED->value,
                 'chat_id'      => $chatId,
                 'reply_markup' => [
                     'inline_keyboard' => [
                         [
                             [
-                                'text'          => AnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
+                                'text'          => AddAnimeHandlerEnum::WATCH_RECENTLY_ADDED_ANIME->value,
                                 'callback_data' => $callbackData,
                             ],
                         ],

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
-use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
+use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
 use App\Enums\QueueEnum;
-use App\Enums\Telegram\RandomAnimeEnum;
+use App\Enums\Telegram\Handlers\RandomAnimeEnum;
 use App\Facades\Telegram\History\UserHistory;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Services\Telegram\CaptionService;
@@ -58,7 +58,7 @@ class PickRandomAnimeJob implements ShouldQueue
             }
 
             /** @phpstan-ignore-next-line */
-            TeleBot::sendPhoto($captionService->create(new CreateAnimeCaptionDTO($randomAnime, $this->chatId)));
+            TeleBot::sendPhoto($captionService->create(new ViewAnimeCaptionDTO($randomAnime, $this->chatId)));
 
             UserHistory::clearUserExecutedCommandsHistory($this->chatId);
         } catch (Exception $exception) {

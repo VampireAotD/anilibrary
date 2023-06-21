@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Traits;
 
-use App\Enums\Telegram\ChatMemberStatusEnum;
+use App\Enums\Telegram\Middlewares\ChatMemberStatusEnum;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
 use WeStacks\TeleBot\Objects\Update;

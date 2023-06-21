@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\UseCase;
 
-use App\DTO\UseCase\CallbackQuery\AddedAnimeDTO;
-use App\DTO\UseCase\CallbackQuery\PaginationDTO;
+use App\DTO\UseCase\Telegram\CallbackQuery\PaginationDTO;
+use App\DTO\UseCase\Telegram\CallbackQuery\ViewAnimeDTO;
 use App\Services\Telegram\Base62Service;
-use App\UseCase\CallbackQueryUseCase;
+use App\UseCase\Telegram\CallbackQueryUseCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
@@ -37,8 +37,8 @@ class CallbackQueryUseCaseTest extends TestCase
     public function testCannotReturnCaptionOfUnknownAnime(): void
     {
         $encoded = $this->base62Service->encode(Str::orderedUuid()->toString());
-        $caption = $this->callbackQueryUseCase->addedAnimeCaption(
-            new AddedAnimeDTO($encoded, $this->faker->randomNumber())
+        $caption = $this->callbackQueryUseCase->createAnimeCaption(
+            new ViewAnimeDTO($encoded, $this->faker->randomNumber())
         );
 
         $this->assertEmpty($caption);
@@ -51,8 +51,8 @@ class CallbackQueryUseCaseTest extends TestCase
     {
         $anime   = $this->createRandomAnimeWithRelations()->first();
         $encoded = $this->base62Service->encode($anime->id);
-        $caption = $this->callbackQueryUseCase->addedAnimeCaption(
-            new AddedAnimeDTO($encoded, $this->faker->randomNumber())
+        $caption = $this->callbackQueryUseCase->createAnimeCaption(
+            new ViewAnimeDTO($encoded, $this->faker->randomNumber())
         );
 
         $this->assertNotNull($caption);
@@ -69,7 +69,9 @@ class CallbackQueryUseCaseTest extends TestCase
     public function testCanCreatePaginationCaption(): void
     {
         $animeList  = $this->createRandomAnimeWithRelations(2);
-        $pagination = $this->callbackQueryUseCase->paginate(new PaginationDTO($this->faker->randomNumber()));
+        $pagination = $this->callbackQueryUseCase->createPaginationCaption(
+            new PaginationDTO($this->faker->randomNumber())
+        );
         $anime      = $animeList->first();
 
         $this->assertNotNull($pagination);
@@ -79,7 +81,9 @@ class CallbackQueryUseCaseTest extends TestCase
         $this->assertCount(1, $pagination['reply_markup']['inline_keyboard'][1]);
         $this->assertEquals('>', $pagination['reply_markup']['inline_keyboard'][1][0]['text']);
 
-        $pagination = $this->callbackQueryUseCase->paginate(new PaginationDTO($this->faker->randomNumber(), 2));
+        $pagination = $this->callbackQueryUseCase->createPaginationCaption(
+            new PaginationDTO($this->faker->randomNumber(), 2)
+        );
 
         $anime = $animeList->last();
 
