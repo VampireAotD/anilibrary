@@ -29,6 +29,7 @@ readonly class CaptionService
                 $caption = $this->createAnimeCaption($dto->anime);
                 break;
             case $dto instanceof PaginationCaptionDTO:
+                /** @psalm-suppress NoValue */
                 $caption = $this->createPaginationCaption($dto);
                 break;
             default:
@@ -63,6 +64,10 @@ readonly class CaptionService
      */
     private function createPaginationCaption(PaginationCaptionDTO $dto): array
     {
+        if ($dto->paginator->isEmpty()) {
+            return [];
+        }
+
         $caption  = $this->createAnimeCaption($dto->paginator->first());
         $controls = [];
 

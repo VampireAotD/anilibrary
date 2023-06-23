@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Telegram\Commands;
 
 use App\DTO\Service\Telegram\CreateUserDTO;
-use App\Enums\Telegram\CommandEnum;
+use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Commands\StartCommandEnum;
 use App\Jobs\Telegram\RegisterUserJob;
 use GuzzleHttp\Promise\PromiseInterface;

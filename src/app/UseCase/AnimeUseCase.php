@@ -38,34 +38,23 @@ readonly class AnimeUseCase
     }
 
     /**
-     * @param string   $url
-     * @param int|null $chatId
-     * @return ScrapedDataDTO
-     * @throws RequestException
+     * @throws RequestException|InvalidScrapedDataException|Throwable
      */
-    public function sendScrapeRequest(string $url, ?int $chatId = null): ScrapedDataDTO
+    public function scrapeAndCreateAnime(string $url, ?int $telegramId = null): Anime
     {
-        $data = array_merge(
-            ['url' => $url, 'telegramId' => $chatId],
-            $this->requestService->sendScrapeRequest($url)->json()
-        );
+        $response = $this->requestService->sendScrapeRequest($url)->json();
+        $response = array_merge(['url' => $url, 'telegramId' => $telegramId], $response);
 
-        return new ScrapedDataDTO(...$data);
+        return $this->createAnime(new ScrapedDataDTO(...$response));
     }
 
-    /**
-     * @param string $url
-     * @return Anime|null
-     */
     public function findByUrl(string $url): ?Anime
     {
         return $this->animeService->findByUrl($url);
     }
 
     /**
-     * @param ScrapedDataDTO $dto
-     * @return Anime
-     * @throws InvalidScrapedDataException|Throwable
+     * @throws InvalidScrapedDataException
      */
     public function createAnime(ScrapedDataDTO $dto): Anime
     {

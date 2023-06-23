@@ -46,7 +46,7 @@ trait CanCreateFakeUpdates
             [
                 'message' => [
                     'from'     => [
-                        'id'         => $this->faker->numberBetween(),
+                        'id'         => $this->faker->randomNumber(),
                         'first_name' => $this->faker->firstName,
                         'last_name'  => $this->faker->lastName,
                         'username'   => $this->faker->userName,

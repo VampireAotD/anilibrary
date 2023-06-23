@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\DTO\UseCase\Telegram\CallbackQuery;
+namespace App\DTO\UseCase\Telegram\Caption;
 
-use App\Enums\Telegram\CallbackQueryTypeEnum;
+use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
 
 /**
- * Class ViewAnimeDTO
- * @package App\DTO\UseCase\CallbackQuery
+ * Class ViewEncodedAnimeDTO
+ * @package App\DTO\UseCase\Telegram\Caption
  */
-final readonly class ViewAnimeDTO extends CallbackQueryDTO
+final readonly class ViewEncodedAnimeDTO extends CallbackQueryDTO
 {
     public function __construct(
         public string         $encodedId,

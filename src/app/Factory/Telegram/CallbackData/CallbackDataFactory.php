@@ -25,7 +25,8 @@ final readonly class CallbackDataFactory
 
         return match (true) {
             $dto instanceof ViewAnimeCallbackDataDTO  => sprintf(
-                '&animeId=%s',
+                '%s&animeId=%s',
+                $callback,
                 $this->base62Service->encode($dto->animeId)
             ),
             $dto instanceof PaginationCallbackDataDTO => sprintf('%s&page=%s', $callback, $dto->page),

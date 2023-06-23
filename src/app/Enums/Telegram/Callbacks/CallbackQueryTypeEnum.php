@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Enums\Telegram;
+namespace App\Enums\Telegram\Callbacks;
 
 /**
  * Enum CallbackQueryTypeEnum

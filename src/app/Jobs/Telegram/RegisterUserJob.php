@@ -22,7 +22,7 @@ class RegisterUserJob implements ShouldQueue
      */
     public function __construct(public readonly CreateUserDTO $dto)
     {
-        $this->onQueue(QueueEnum::REGISTER_USER->value)->onConnection('redis');
+        $this->onQueue(QueueEnum::REGISTER_TELEGRAM_USER_QUEUE->value)->onConnection('redis');
     }
 
     /**

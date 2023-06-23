@@ -2,33 +2,33 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\UseCase;
+namespace Tests\Feature\UseCase\Telegram;
 
-use App\DTO\UseCase\Telegram\CallbackQuery\PaginationDTO;
-use App\DTO\UseCase\Telegram\CallbackQuery\ViewAnimeDTO;
+use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
+use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
 use App\Services\Telegram\Base62Service;
-use App\UseCase\Telegram\CallbackQueryUseCase;
+use App\UseCase\Telegram\CaptionUseCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeData;
 
-class CallbackQueryUseCaseTest extends TestCase
+class CaptionUseCaseTest extends TestCase
 {
     use RefreshDatabase,
         WithFaker,
         CanCreateFakeData;
 
-    private Base62Service        $base62Service;
-    private CallbackQueryUseCase $callbackQueryUseCase;
+    private Base62Service  $base62Service;
+    private CaptionUseCase $callbackQueryUseCase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->base62Service        = $this->app->make(Base62Service::class);
-        $this->callbackQueryUseCase = $this->app->make(CallbackQueryUseCase::class);
+        $this->callbackQueryUseCase = $this->app->make(CaptionUseCase::class);
     }
 
     /**
@@ -37,8 +37,8 @@ class CallbackQueryUseCaseTest extends TestCase
     public function testCannotReturnCaptionOfUnknownAnime(): void
     {
         $encoded = $this->base62Service->encode(Str::orderedUuid()->toString());
-        $caption = $this->callbackQueryUseCase->createAnimeCaption(
-            new ViewAnimeDTO($encoded, $this->faker->randomNumber())
+        $caption = $this->callbackQueryUseCase->createDecodedAnimeCaption(
+            new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
         );
 
         $this->assertEmpty($caption);
@@ -51,8 +51,8 @@ class CallbackQueryUseCaseTest extends TestCase
     {
         $anime   = $this->createRandomAnimeWithRelations()->first();
         $encoded = $this->base62Service->encode($anime->id);
-        $caption = $this->callbackQueryUseCase->createAnimeCaption(
-            new ViewAnimeDTO($encoded, $this->faker->randomNumber())
+        $caption = $this->callbackQueryUseCase->createDecodedAnimeCaption(
+            new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
         );
 
         $this->assertNotNull($caption);

@@ -10,9 +10,6 @@ namespace App\Enums;
  */
 enum QueueEnum : string
 {
-    case ADD_ANIME_QUEUE         = 'add-anime';
-    case PICK_RANDOM_ANIME_QUEUE = 'random-anime';
-    case ANIME_LIST_QUEUE        = 'anime-list';
-    case MAIL_QUEUE              = 'mail';
-    case REGISTER_USER           = 'register';
+    case MAIL_QUEUE                   = 'mail';
+    case REGISTER_TELEGRAM_USER_QUEUE = 'register';
 }

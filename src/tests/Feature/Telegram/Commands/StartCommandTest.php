@@ -11,20 +11,17 @@ use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
-use WeStacks\TeleBot\TeleBot;
 
 class StartCommandTest extends TestCase
 {
     use CanCreateMocks,
         CanCreateFakeUpdates;
 
-    protected TeleBot $bot;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->bot = $this->createFakeBot();
+        $this->setUpFakeBot();
         $this->bot->addHandler([StartCommand::class]);
     }
 

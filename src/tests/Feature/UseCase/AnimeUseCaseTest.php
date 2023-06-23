@@ -14,12 +14,12 @@ use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
 use App\UseCase\AnimeUseCase;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Database\Seeders\TagSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeData;
 use Tests\Traits\CanCreateMocks;
@@ -32,16 +32,15 @@ class AnimeUseCaseTest extends TestCase
         CanCreateFakeData;
 
     private AnimeUseCase $animeUseCase;
-    private MockObject   $cloudinaryMock;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->setUpFakeCloudinary();
         $this->seed(TagSeeder::class);
 
-        $this->cloudinaryMock = $this->createCloudinaryMock();
-        $this->animeUseCase   = $this->app->make(AnimeUseCase::class);
+        $this->animeUseCase = $this->app->make(AnimeUseCase::class);
     }
 
     /**
@@ -119,8 +118,7 @@ class AnimeUseCaseTest extends TestCase
             ]
         );
 
-        $dto        = $this->animeUseCase->sendScrapeRequest($url);
-        $foundAnime = $this->animeUseCase->createAnime($dto);
+        $foundAnime = $this->animeUseCase->scrapeAndCreateAnime($url);
 
         $foundAnime->refresh(); // to load upserted relation
 
@@ -145,8 +143,8 @@ class AnimeUseCaseTest extends TestCase
      */
     public function testCanCreateAnime(): void
     {
-        $this->cloudinaryMock->method('uploadFile')->willReturn($this->cloudinaryMock);
-        $this->cloudinaryMock->method('getSecurePath')->willReturn($this->faker->imageUrl);
+        Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
+        Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
 
         $anime = $this->animeUseCase->createAnime(
             new ScrapedDataDTO(

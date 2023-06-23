@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Telegram\Middlewares;
 
-use App\Enums\Telegram\CommandEnum;
+use App\Enums\Telegram\Commands\CommandEnum;
 use App\Facades\Telegram\History\UserHistory;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Objects\Message;

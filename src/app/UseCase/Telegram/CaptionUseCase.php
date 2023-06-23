@@ -6,18 +6,18 @@ namespace App\UseCase\Telegram;
 
 use App\DTO\Service\Telegram\Caption\PaginationCaptionDTO;
 use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
-use App\DTO\UseCase\Telegram\CallbackQuery\PaginationDTO;
-use App\DTO\UseCase\Telegram\CallbackQuery\ViewAnimeDTO;
+use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
+use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
 use App\Models\Anime;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Services\Telegram\Base62Service;
 use App\Services\Telegram\CaptionService;
 
 /**
- * Class CallbackQueryUseCase
+ * Class CaptionUseCase
  * @package App\UseCase
  */
-readonly class CallbackQueryUseCase
+readonly class CaptionUseCase
 {
     public function __construct(
         private AnimeRepositoryInterface $animeRepository,
@@ -26,11 +26,7 @@ readonly class CallbackQueryUseCase
     ) {
     }
 
-    /**
-     * @param ViewAnimeDTO $dto
-     * @return array
-     */
-    public function createAnimeCaption(ViewAnimeDTO $dto): array
+    public function createDecodedAnimeCaption(ViewEncodedAnimeDTO $dto): array
     {
         $decoded = $this->base62Service->decode($dto->encodedId);
 
@@ -44,10 +40,6 @@ readonly class CallbackQueryUseCase
         return $this->captionService->create(new ViewAnimeCaptionDTO($anime, $dto->chatId));
     }
 
-    /**
-     * @param PaginationDTO $dto
-     * @return array
-     */
     public function createPaginationCaption(PaginationDTO $dto): array
     {
         $animeList = $this->animeRepository->paginate(currentPage: $dto->page);

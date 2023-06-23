@@ -4,27 +4,24 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Middlewares;
 
-use App\Enums\Telegram\CommandEnum;
+use App\Enums\Telegram\Commands\CommandEnum;
 use App\Facades\Telegram\History\UserHistory;
 use App\Telegram\Middlewares\UserActivityMiddleware;
 use Closure;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
-use WeStacks\TeleBot\TeleBot;
 
 class UserActivityMiddlewareTest extends TestCase
 {
     use CanCreateMocks,
         CanCreateFakeUpdates;
 
-    private TeleBot $bot;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->bot = $this->createFakeBot();
+        $this->setUpFakeBot();
         $this->bot->addHandler([(new UserActivityMiddleware())(...)]);
     }
 

@@ -11,20 +11,17 @@ use Closure;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
-use WeStacks\TeleBot\TeleBot;
 
 class UserStatusMiddlewareTest extends TestCase
 {
     use CanCreateMocks,
         CanCreateFakeUpdates;
 
-    private TeleBot $bot;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->bot = $this->createFakeBot();
+        $this->setUpFakeBot();
         $this->bot->addHandler([(new UserStatusMiddleware())(...)]);
     }
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\DTO\UseCase\Telegram\CallbackQuery;
+namespace App\DTO\UseCase\Telegram\Caption;
 
-use App\Enums\Telegram\CallbackQueryTypeEnum;
+use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
 
 /**
  * Class PaginationDTO
- * @package App\DTO\UseCase\CallbackQuery
+ * @package App\DTO\UseCase\Telegram\Caption
  */
 final readonly class PaginationDTO extends CallbackQueryDTO
 {
