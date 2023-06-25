@@ -25,28 +25,47 @@ class MessageHandlerTest extends TestCase
         $this->bot->addHandler([MessageHandler::class]);
     }
 
-    /**
-     * @return array<array<string>>
-     */
-    public static function addNewTitleCommandProvider(): array
+    public static function addAnimeKeywordProvider(): array
     {
         return [
-            [CommandEnum::ADD_NEW_TITLE_COMMAND->value],
+            [CommandEnum::ADD_ANIME_COMMAND->value],
             [CommandEnum::ADD_ANIME_BUTTON->value],
         ];
     }
 
+    public static function animeSearchKeywordProvider(): array
+    {
+        return [
+            [CommandEnum::ANIME_SEARCH_COMMAND->value],
+            [CommandEnum::ANIME_SEARCH_BUTTON->value],
+        ];
+    }
+
     /**
-     * @dataProvider addNewTitleCommandProvider
+     * @dataProvider addAnimeKeywordProvider
      * @param string $command
      * @return void
      */
     public function testBotWillInformHowToAddAnime(string $command): void
     {
-        $update   = $this->createFakeTextMessageUpdate(message: $command);
+        $update   = $this->createFakeTextMessageUpdate($command);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Message::class, $response);
         $this->assertEquals(MessageHandlerEnum::PROVIDE_URL->value, $response->text);
+    }
+
+    /**
+     * @dataProvider animeSearchKeywordProvider
+     * @param string $command
+     * @return void
+     */
+    public function testBotWillGiveAnExampleOnHowToSearchAnime(string $command): void
+    {
+        $update   = $this->createFakeTextMessageUpdate($command);
+        $response = $this->bot->handleUpdate($update);
+
+        $this->assertInstanceOf(Message::class, $response);
+        $this->assertEquals(MessageHandlerEnum::SEARCH_EXAMPLE->value, $response->text);
     }
 }

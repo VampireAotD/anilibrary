@@ -40,7 +40,7 @@ class BotAccessMiddlewareTest extends TestCase
      */
     public function testAdminCanInteractWithBot(): void
     {
-        $update   = $this->createFakeTextMessageUpdate(config('admin.id'));
+        $update   = $this->createFakeTextMessageUpdate(chatId: config('admin.id'));
         $response = $this->bot->handleUpdate($update);
 
         // If user is an admin he can interact with bot commands

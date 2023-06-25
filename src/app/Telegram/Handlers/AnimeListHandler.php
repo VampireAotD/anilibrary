@@ -6,7 +6,7 @@ namespace App\Telegram\Handlers;
 
 use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
 use App\Enums\Telegram\Commands\CommandEnum;
-use App\Facades\Telegram\History\UserHistory;
+use App\Facades\Telegram\State\UserStateFacade;
 use App\UseCase\Telegram\CaptionUseCase;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -43,7 +43,7 @@ final class AnimeListHandler extends TextMessageUpdateHandler
 
             return $this->sendPhoto($caption);
         } catch (Exception $exception) {
-            logger()->warning(
+            logger()->error(
                 'Anime list handler',
                 [
                     'exception_message' => $exception->getMessage(),
@@ -51,7 +51,7 @@ final class AnimeListHandler extends TextMessageUpdateHandler
                 ]
             );
         } finally {
-            UserHistory::clearUserExecutedCommandsHistory($chatId);
+            UserStateFacade::resetExecutedCommandsList($chatId);
         }
     }
 }

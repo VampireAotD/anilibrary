@@ -232,7 +232,7 @@ return [
         'URL'          => Illuminate\Support\Facades\URL::class,
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
-        'UserHistory'  => \App\Facades\Telegram\History\UserHistory::class,
+        'UserState'    => \App\Facades\Telegram\State\UserStateFacade::class,
 
     ],
 

@@ -62,6 +62,9 @@ class StartCommand extends CommandHandler
                             [
                                 'text' => CommandEnum::ANIME_LIST_BUTTON->value,
                             ],
+                            [
+                                'text' => CommandEnum::ANIME_SEARCH_BUTTON->value,
+                            ],
                         ],
                     ],
                     'resize_keyboard' => true,

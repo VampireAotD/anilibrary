@@ -6,5 +6,6 @@ namespace App\Enums\Telegram\Handlers;
 
 enum MessageHandlerEnum : string
 {
-    case PROVIDE_URL = 'Укажите ссылку для парсинга сайта (это может занять несколько минут)';
+    case PROVIDE_URL    = 'Укажите ссылку для парсинга сайта (это может занять несколько минут)';
+    case SEARCH_EXAMPLE = 'search placeholder';
 }

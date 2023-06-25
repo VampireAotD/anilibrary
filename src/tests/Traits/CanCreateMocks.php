@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Tests\Traits;
 
 use CloudinaryLabs\CloudinaryLaravel\CloudinaryEngine;
+use Elastic\Elasticsearch\Client as ElasticsearchClient;
+use Elastic\Elasticsearch\ClientBuilder;
+use Http\Mock\Client;
 use PHPUnit\Framework\MockObject\Exception;
 use WeStacks\TeleBot\Laravel\TeleBot as LaravelWrapper;
 use WeStacks\TeleBot\TeleBot;
@@ -16,6 +19,7 @@ use WeStacks\TeleBot\TeleBot;
 trait CanCreateMocks
 {
     protected TeleBot $bot;
+    protected Client  $mockClient;
 
     protected function setUpFakeBot(): void
     {
@@ -33,5 +37,12 @@ trait CanCreateMocks
         $mock = $this->createMock(CloudinaryEngine::class);
 
         $this->app->instance(CloudinaryEngine::class, $mock);
+    }
+
+    public function setUpFakeElasticsearchClient(): void
+    {
+        $mockClient = new Client();
+        $this->app->instance(ElasticsearchClient::class, ClientBuilder::create()->setHttpClient($mockClient)->build());
+        $this->mockClient = $mockClient;
     }
 }

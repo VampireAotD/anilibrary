@@ -10,6 +10,7 @@ namespace App\Enums\Telegram\Callbacks;
  */
 enum CallbackQueryTypeEnum : string
 {
-    case VIEW_ANIME = 'view-anime';
-    case ANIME_LIST = 'anime-list';
+    case VIEW_ANIME  = 'view-anime';
+    case ANIME_LIST  = 'anime-list';
+    case SEARCH_LIST = 'search-list';
 }

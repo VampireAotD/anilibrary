@@ -11,6 +11,7 @@
         "php": "^8.2",
         "aws/aws-sdk-php": "^3.227.0",
         "cloudinary-labs/cloudinary-laravel": "^2.0.3",
+        "elasticsearch/elasticsearch": "^8.8",
         "firebase/php-jwt": "^6.7",
         "guzzlehttp/guzzle": "^7.7",
         "laravel/framework": "^10.0",
@@ -27,6 +28,7 @@
         "mockery/mockery": "^1.6.2",
         "nunomaduro/collision": "^7.6",
         "nunomaduro/larastan": "^2.6",
+        "php-http/mock-client": "^1.6",
         "phpunit/phpunit": "^10.0",
         "psalm/plugin-laravel": "^2.8",
         "spatie/laravel-ignition": "^2.1",
@@ -67,7 +69,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

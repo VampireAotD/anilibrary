@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Telegram\Handlers;
 
-use App\Facades\Telegram\History\UserHistory;
+use App\Facades\Telegram\State\UserStateFacade;
 use WeStacks\TeleBot\Handlers\UpdateHandler;
 
 /**
@@ -25,7 +25,7 @@ abstract class TextMessageUpdateHandler extends UpdateHandler
     protected function commandsWereExecuted(): bool
     {
         return in_array(
-            UserHistory::userLastExecutedCommand($this->update->chat()->id),
+            UserStateFacade::getLastExecutedCommand($this->update->chat()->id),
             $this->allowedMessages,
             true
         );

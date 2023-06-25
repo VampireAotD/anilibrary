@@ -6,6 +6,8 @@ namespace Tests\Feature\UseCase\Telegram;
 
 use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
 use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
+use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
+use App\Facades\Telegram\State\UserStateFacade;
 use App\Services\Telegram\Base62Service;
 use App\UseCase\Telegram\CaptionUseCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,14 +23,14 @@ class CaptionUseCaseTest extends TestCase
         CanCreateFakeData;
 
     private Base62Service  $base62Service;
-    private CaptionUseCase $callbackQueryUseCase;
+    private CaptionUseCase $captionUseCase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->base62Service        = $this->app->make(Base62Service::class);
-        $this->callbackQueryUseCase = $this->app->make(CaptionUseCase::class);
+        $this->base62Service  = $this->app->make(Base62Service::class);
+        $this->captionUseCase = $this->app->make(CaptionUseCase::class);
     }
 
     /**
@@ -37,7 +39,7 @@ class CaptionUseCaseTest extends TestCase
     public function testCannotReturnCaptionOfUnknownAnime(): void
     {
         $encoded = $this->base62Service->encode(Str::orderedUuid()->toString());
-        $caption = $this->callbackQueryUseCase->createDecodedAnimeCaption(
+        $caption = $this->captionUseCase->createDecodedAnimeCaption(
             new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
         );
 
@@ -51,11 +53,11 @@ class CaptionUseCaseTest extends TestCase
     {
         $anime   = $this->createRandomAnimeWithRelations()->first();
         $encoded = $this->base62Service->encode($anime->id);
-        $caption = $this->callbackQueryUseCase->createDecodedAnimeCaption(
+        $caption = $this->captionUseCase->createDecodedAnimeCaption(
             new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
         );
 
-        $this->assertNotNull($caption);
+        $this->assertNotEmpty($caption);
         $this->assertEquals($anime->id, $this->base62Service->decode($encoded));
         $this->assertEquals($anime->caption, $caption['caption']);
         $this->assertEquals($anime->image->path, $caption['photo']);
@@ -69,29 +71,58 @@ class CaptionUseCaseTest extends TestCase
     public function testCanCreatePaginationCaption(): void
     {
         $animeList  = $this->createRandomAnimeWithRelations(2);
-        $pagination = $this->callbackQueryUseCase->createPaginationCaption(
+        $pagination = $this->captionUseCase->createPaginationCaption(
             new PaginationDTO($this->faker->randomNumber())
         );
-        $anime      = $animeList->first();
 
-        $this->assertNotNull($pagination);
+        $anime = $animeList->first();
+
+        $this->assertNotEmpty($pagination);
         $this->assertEquals($anime->caption, $pagination['caption']);
         $this->assertEquals($anime->image->path, $pagination['photo']);
         $this->assertNotEmpty($pagination['reply_markup']['inline_keyboard'][1]);
         $this->assertCount(1, $pagination['reply_markup']['inline_keyboard'][1]);
         $this->assertEquals('>', $pagination['reply_markup']['inline_keyboard'][1][0]['text']);
 
-        $pagination = $this->callbackQueryUseCase->createPaginationCaption(
+        $pagination = $this->captionUseCase->createPaginationCaption(
             new PaginationDTO($this->faker->randomNumber(), 2)
         );
 
         $anime = $animeList->last();
 
-        $this->assertNotNull($pagination);
+        $this->assertNotEmpty($pagination);
         $this->assertEquals($anime->caption, $pagination['caption']);
         $this->assertEquals($anime->image->path, $pagination['photo']);
         $this->assertNotEmpty($pagination['reply_markup']['inline_keyboard'][1]);
         $this->assertCount(1, $pagination['reply_markup']['inline_keyboard'][1]);
         $this->assertEquals('<', $pagination['reply_markup']['inline_keyboard'][1][0]['text']);
+    }
+
+    public function testWillNotCreateSearchCaptionIfThereIsNoSearchResults(): void
+    {
+        UserStateFacade::shouldReceive('getSearchResult')->once()->andReturn([]);
+
+        $caption = $this->captionUseCase->createSearchPaginationCaption(
+            new PaginationDTO($this->faker->randomNumber(), queryType: CallbackQueryTypeEnum::SEARCH_LIST)
+        );
+
+        $this->assertEmpty($caption);
+    }
+
+    public function testWillCreateSearchCaptionIfThereIsSearchResults(): void
+    {
+        $animeList = $this->createRandomAnimeWithRelations(2);
+
+        UserStateFacade::shouldReceive('getSearchResult')->once()->andReturn($animeList->pluck('id')->toArray());
+
+        $caption = $this->captionUseCase->createSearchPaginationCaption(
+            new PaginationDTO($this->faker->randomNumber(), queryType: CallbackQueryTypeEnum::SEARCH_LIST)
+        );
+
+        $anime = $animeList->first();
+
+        $this->assertNotEmpty($caption);
+        $this->assertEquals($anime->caption, $caption['caption']);
+        $this->assertEquals($anime->image->path, $caption['photo']);
     }
 }

@@ -7,7 +7,7 @@ namespace App\Telegram\Handlers;
 use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\RandomAnimeEnum;
-use App\Facades\Telegram\History\UserHistory;
+use App\Facades\Telegram\State\UserStateFacade;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Services\Telegram\CaptionService;
 use Exception;
@@ -60,7 +60,7 @@ final class RandomAnimeHandler extends TextMessageUpdateHandler
                 $this->captionService->create(new ViewAnimeCaptionDTO($randomAnime, $chatId))
             );
         } catch (Exception $exception) {
-            logger()->warning(
+            logger()->error(
                 'Random anime handler',
                 [
                     'exception_message' => $exception->getMessage(),
@@ -68,7 +68,7 @@ final class RandomAnimeHandler extends TextMessageUpdateHandler
                 ]
             );
         } finally {
-            UserHistory::clearUserExecutedCommandsHistory($chatId);
+            UserStateFacade::resetExecutedCommandsList($chatId);
         }
     }
 }

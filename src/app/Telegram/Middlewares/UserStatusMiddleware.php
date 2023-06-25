@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Telegram\Middlewares;
 
-use App\Facades\Telegram\History\UserHistory;
+use App\Facades\Telegram\State\UserStateFacade;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Objects\ChatMemberBanned;
 use WeStacks\TeleBot\Objects\ChatMemberLeft;
@@ -35,7 +35,7 @@ class UserStatusMiddleware
         switch (true) {
             case $chatMember instanceof ChatMemberLeft:
             case $chatMember instanceof ChatMemberBanned:
-                UserHistory::clearUserExecutedCommandsHistory($update->chat()->id);
+                UserStateFacade::resetExecutedCommandsList($update->chat()->id);
                 return fn() => null;
             default:
                 return $next();

@@ -30,10 +30,17 @@ final class MessageHandler extends UpdateHandler
 
         switch ($message->text) {
             case CommandEnum::ADD_ANIME_BUTTON->value:
-            case CommandEnum::ADD_NEW_TITLE_COMMAND->value:
+            case CommandEnum::ADD_ANIME_COMMAND->value:
                 return $this->sendMessage(
                     [
                         'text' => MessageHandlerEnum::PROVIDE_URL->value,
+                    ]
+                );
+            case CommandEnum::ANIME_SEARCH_BUTTON->value:
+            case CommandEnum::ANIME_SEARCH_COMMAND->value:
+                return $this->sendMessage(
+                    [
+                        'text' => MessageHandlerEnum::SEARCH_EXAMPLE->value,
                     ]
                 );
             default:

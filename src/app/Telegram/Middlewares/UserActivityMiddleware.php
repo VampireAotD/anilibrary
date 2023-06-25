@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Telegram\Middlewares;
 
 use App\Enums\Telegram\Commands\CommandEnum;
-use App\Facades\Telegram\History\UserHistory;
+use App\Facades\Telegram\State\UserStateFacade;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Objects\Message;
 use WeStacks\TeleBot\Objects\Update;
@@ -24,7 +24,7 @@ class UserActivityMiddleware
         $supportedCommands = CommandEnum::values();
         $userId            = $update->chat()->id;
 
-        UserHistory::addLastActiveTime($userId);
+        UserStateFacade::setLastActiveAt($userId);
 
         if (!isset($update->message)) {
             return $next();
@@ -33,7 +33,7 @@ class UserActivityMiddleware
         $message = $update->message;
 
         if (isset($message->text) && in_array($message->text, $supportedCommands, true)) {
-            UserHistory::addExecutedCommand($userId, $message->text);
+            UserStateFacade::addExecutedCommand($userId, $message->text);
         }
 
         return $next();

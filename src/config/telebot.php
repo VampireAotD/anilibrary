@@ -62,12 +62,14 @@ return [
                 // Callbacks
                 \App\Telegram\Callbacks\ViewAnimeCallback::class,
                 \App\Telegram\Callbacks\AnimeListCallback::class,
+                \App\Telegram\Callbacks\AnimeSearchCallback::class,
 
                 // Handlers
                 \App\Telegram\Handlers\MessageHandler::class,
                 \App\Telegram\Handlers\AddAnimeHandler::class,
                 \App\Telegram\Handlers\RandomAnimeHandler::class,
                 \App\Telegram\Handlers\AnimeListHandler::class,
+                \App\Telegram\Handlers\AnimeSearchHandler::class,
             ],
         ],
     ],

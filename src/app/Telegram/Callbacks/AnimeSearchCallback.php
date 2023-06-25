@@ -17,10 +17,10 @@ use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 
 /**
- * Class AnimeListCallback
+ * Class AnimeSearchCallback
  * @package App\Telegram\Callbacks
  */
-final class AnimeListCallback extends CallbackHandler
+final class AnimeSearchCallback extends CallbackHandler
 {
     use CanSafelyReceiveCallbackArgumentsTrait;
 
@@ -30,7 +30,7 @@ final class AnimeListCallback extends CallbackHandler
     {
         parent::__construct($bot, $update);
 
-        $command = CallbackQueryTypeEnum::ANIME_LIST->value;
+        $command = CallbackQueryTypeEnum::SEARCH_LIST->value;
 
         $this->match                = "#command=({$command})&page=(\d+)#m";
         $this->callbackQueryUseCase = app(CaptionUseCase::class);
@@ -53,7 +53,9 @@ final class AnimeListCallback extends CallbackHandler
         $page   = (int) ($page ?? 1);
 
         try {
-            $caption = $this->callbackQueryUseCase->createPaginationCaption(new PaginationDTO($chatId, $page));
+            $caption = $this->callbackQueryUseCase->createSearchPaginationCaption(
+                new PaginationDTO($chatId, $page, CallbackQueryTypeEnum::SEARCH_LIST)
+            );
 
             return $this->editMessageMedia(
                 [

@@ -8,7 +8,7 @@ use App\Enums\AnimeStatusEnum;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
 use App\Enums\Validation\SupportedUrlEnum;
-use App\Facades\Telegram\History\UserHistory;
+use App\Facades\Telegram\State\UserStateFacade;
 use App\Telegram\Handlers\AddAnimeHandler;
 use Closure;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -36,9 +36,9 @@ class AddAnimeHandlerTest extends TestCase
 
         $this->bot->addHandler([AddAnimeHandler::class]);
 
-        UserHistory::shouldReceive('userLastExecutedCommand')
-                   ->with(self::FAKE_TELEGRAM_ID)
-                   ->andReturn(CommandEnum::ADD_ANIME_BUTTON->value);
+        UserStateFacade::shouldReceive('getLastExecutedCommand')
+                       ->with(self::FAKE_TELEGRAM_ID)
+                       ->andReturn(CommandEnum::ADD_ANIME_BUTTON->value);
     }
 
     /**
@@ -69,7 +69,7 @@ class AddAnimeHandlerTest extends TestCase
      */
     public function testBotWillNotScrapeUnsupportedUrl(): void
     {
-        $update   = $this->createFakeTextMessageUpdate(message: $this->faker->url);
+        $update   = $this->createFakeTextMessageUpdate($this->faker->url);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Message::class, $response);
@@ -83,12 +83,12 @@ class AddAnimeHandlerTest extends TestCase
      */
     public function testBotWillCanReturnAnimeWithoutScrapingIfUrlIsAlreadyInDatabase(string $url): void
     {
-        UserHistory::shouldReceive('clearUserExecutedCommandsHistory')->with(self::FAKE_TELEGRAM_ID)->once();
+        UserStateFacade::shouldReceive('resetExecutedCommandsList')->with(self::FAKE_TELEGRAM_ID)->once();
 
         $animeList = $this->createRandomAnimeWithRelations();
         $animeList->first()->urls()->create(['url' => $url]);
 
-        $update   = $this->createFakeTextMessageUpdate(message: $url);
+        $update   = $this->createFakeTextMessageUpdate($url);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Message::class, $response);
@@ -117,9 +117,9 @@ class AddAnimeHandlerTest extends TestCase
         Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
         Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
 
-        UserHistory::shouldReceive('clearUserExecutedCommandsHistory')->with(self::FAKE_TELEGRAM_ID)->once();
+        UserStateFacade::shouldReceive('resetExecutedCommandsList')->with(self::FAKE_TELEGRAM_ID)->once();
 
-        $update   = $this->createFakeTextMessageUpdate(message: $url);
+        $update   = $this->createFakeTextMessageUpdate($url);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Message::class, $response);

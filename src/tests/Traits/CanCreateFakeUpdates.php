@@ -6,7 +6,6 @@ namespace Tests\Traits;
 
 use App\Enums\Telegram\Middlewares\ChatMemberStatusEnum;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Str;
 use WeStacks\TeleBot\Objects\Update;
 
 /**
@@ -19,14 +18,9 @@ trait CanCreateFakeUpdates
 
     private const FAKE_TELEGRAM_ID = -1;
 
-    /**
-     * @param int|null    $chatId
-     * @param string|null $message
-     * @return Update
-     */
-    public function createFakeTextMessageUpdate(?int $chatId = self::FAKE_TELEGRAM_ID, ?string $message = null): Update
+    public function createFakeTextMessageUpdate(?string $message = null, int $chatId = self::FAKE_TELEGRAM_ID): Update
     {
-        $message ??= Str::random();
+        $message ??= $this->faker->sentence;
 
         return Update::create(
             [
@@ -40,7 +34,7 @@ trait CanCreateFakeUpdates
         );
     }
 
-    public function createFakeCommandUpdate(string $commandAlias, ?int $chatId = self::FAKE_TELEGRAM_ID)
+    public function createFakeCommandUpdate(string $commandAlias, int $chatId = self::FAKE_TELEGRAM_ID)
     {
         return Update::create(
             [
@@ -67,11 +61,7 @@ trait CanCreateFakeUpdates
         );
     }
 
-    /**
-     * @param int|null $chatId
-     * @return Update
-     */
-    public function createFakeStickerMessageUpdate(?int $chatId = self::FAKE_TELEGRAM_ID): Update
+    public function createFakeStickerMessageUpdate(int $chatId = self::FAKE_TELEGRAM_ID): Update
     {
         return Update::create(
             [
@@ -87,12 +77,7 @@ trait CanCreateFakeUpdates
         );
     }
 
-    /**
-     * @param int|null $chatId
-     * @param array    $newChatMember
-     * @return Update
-     */
-    public function createFakeChatMemberUpdate(?int $chatId = self::FAKE_TELEGRAM_ID, array $newChatMember = []): Update
+    public function createFakeChatMemberUpdate(array $newChatMember = [], int $chatId = self::FAKE_TELEGRAM_ID): Update
     {
         $newChatMember = array_merge(['user' => [], 'status' => ChatMemberStatusEnum::MEMBER->value], $newChatMember);
 
@@ -111,7 +96,7 @@ trait CanCreateFakeUpdates
         );
     }
 
-    public function createFakeCallbackQueryUpdate(?int $chatId = self::FAKE_TELEGRAM_ID, string $query = ''): Update
+    public function createFakeCallbackQueryUpdate(string $query = '', int $chatId = self::FAKE_TELEGRAM_ID): Update
     {
         return Update::create(
             [

@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Anime $anime
- * @property-read Attribute $telegram_inline_url
  * @method static \Database\Factories\AnimeUrlFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newQuery()
@@ -42,7 +41,7 @@ class AnimeUrl extends Model
         return $this->belongsTo(Anime::class);
     }
 
-    public function getTelegramInlineUrlAttribute(): Attribute
+    public function toTelegramKeyboardButton(): Attribute
     {
         return Attribute::make(
             function () {

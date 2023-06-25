@@ -9,7 +9,7 @@ use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
 use App\Enums\Validation\SupportedUrlEnum;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
-use App\Facades\Telegram\History\UserHistory;
+use App\Facades\Telegram\State\UserStateFacade;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
 use App\UseCase\AnimeUseCase;
@@ -27,10 +27,7 @@ use WeStacks\TeleBot\TeleBot;
  */
 final class AddAnimeHandler extends TextMessageUpdateHandler
 {
-    protected array $allowedMessages = [
-        CommandEnum::ADD_ANIME_BUTTON->value,
-        CommandEnum::ADD_NEW_TITLE_COMMAND->value,
-    ];
+    protected array $allowedMessages = [CommandEnum::ADD_ANIME_COMMAND->value, CommandEnum::ADD_ANIME_BUTTON->value];
 
     private AnimeUseCase        $animeUseCase;
     private CallbackDataFactory $callbackDataFactory;
@@ -63,20 +60,20 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
 
         try {
             if ($anime = $this->animeUseCase->findByUrl($message->text)) {
-                UserHistory::clearUserExecutedCommandsHistory($chatId);
+                UserStateFacade::resetExecutedCommandsList($chatId);
 
                 return $this->sendScrapedMessage($anime);
             }
 
             $anime = $this->animeUseCase->scrapeAndCreateAnime($message->text, $chatId);
 
-            UserHistory::clearUserExecutedCommandsHistory($chatId);
+            UserStateFacade::resetExecutedCommandsList($chatId);
 
             return $this->sendScrapedMessage($anime);
         } catch (RequestException | InvalidScrapedDataException | Throwable $exception) {
             $this->sendMessage(['text' => AddAnimeHandlerEnum::PARSE_FAILED->value]);
 
-            logger()->warning(
+            logger()->error(
                 'Add anime handler',
                 [
                     'url'              => $message->text,

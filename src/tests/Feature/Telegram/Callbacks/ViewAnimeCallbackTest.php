@@ -39,7 +39,7 @@ class ViewAnimeCallbackTest extends TestCase
             new ViewAnimeCallbackDataDTO(Str::uuid()->toString())
         );
 
-        $update   = $this->createFakeCallbackQueryUpdate(query: $callbackData);
+        $update   = $this->createFakeCallbackQueryUpdate($callbackData);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Message::class, $response);
