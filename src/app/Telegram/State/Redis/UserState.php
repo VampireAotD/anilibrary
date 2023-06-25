@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Telegram\State\Redis;
 
+use App\Enums\Telegram\State\Redis\UserStateKeyEnum;
 use Illuminate\Support\Facades\Redis;
 
 /**
@@ -14,11 +15,6 @@ class UserState
 {
     private const MAX_EXECUTED_COMMANDS_STORAGE_TTL = 3000;
 
-    private const WAS_LAST_ACTIVE_AT_KEY          = 'activity:was-last-active-at';
-    private const LAST_EXECUTED_COMMANDS_LIST_KEY = 'activity:executed-commands-list';
-    private const SEARCH_RESULT_KEY               = 'activity:search-result';
-    private const PREVIEW_SEARCH_RESULT_KEY       = 'activity:preview-search-result';
-
     private function state()
     {
         return Redis::connection()->client();
@@ -26,12 +22,7 @@ class UserState
 
     private function stateKeys(int $telegramId): array
     {
-        return [
-            sprintf('%s:%d', self::WAS_LAST_ACTIVE_AT_KEY, $telegramId),
-            sprintf('%s:%d', self::LAST_EXECUTED_COMMANDS_LIST_KEY, $telegramId),
-            sprintf('%s:%d', self::SEARCH_RESULT_KEY, $telegramId),
-            sprintf('%s:%d', self::PREVIEW_SEARCH_RESULT_KEY, $telegramId),
-        ];
+        return array_map(fn(string $key) => sprintf('%s:%d', $key, $telegramId), UserStateKeyEnum::values());
     }
 
     public function setLastActiveAt(int $telegramId): void

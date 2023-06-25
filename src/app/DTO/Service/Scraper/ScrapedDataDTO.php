@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DTO\Service\Scraper;
 
+use App\Rules\Scraper\EncodedImage;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Validator;
 
@@ -42,7 +43,7 @@ readonly class ScrapedDataDTO implements Arrayable
             $this->toArray(),
             [
                 'title' => 'required|string',
-                'image' => 'nullable|string|valid_image',
+                'image' => ['nullable', 'string', new EncodedImage()],
             ]
         )->passes();
     }

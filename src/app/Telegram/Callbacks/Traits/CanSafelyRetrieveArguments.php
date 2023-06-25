@@ -7,10 +7,10 @@ namespace App\Telegram\Callbacks\Traits;
 use Exception;
 
 /**
- * Trait CanSafelyReceiveCallbackArgumentsTrait
+ * Trait CanSafelyRetrieveArguments
  * @package App\Telegram\Callbacks\Traits
  */
-trait CanSafelyReceiveCallbackArgumentsTrait
+trait CanSafelyRetrieveArguments
 {
     protected function safelyRetrieveArguments(): array
     {

@@ -9,10 +9,10 @@ use Tuupola\Base62\GmpEncoder;
 use Tuupola\Base62\PhpEncoder;
 
 /**
- * Class Base62Service
+ * Class HashService
  * @package App\Services\Telegram
  */
-readonly class Base62Service
+readonly class HashService
 {
     protected GmpEncoder | PhpEncoder $encoder;
 
@@ -25,7 +25,7 @@ readonly class Base62Service
      * @param string $id
      * @return string
      */
-    public function encode(string $id): string
+    public function encodeUuid(string $id): string
     {
         $id = Uuid::fromString($id);
 
@@ -36,7 +36,7 @@ readonly class Base62Service
      * @param string $encodedId
      * @return string
      */
-    public function decode(string $encodedId): string
+    public function decodeUuid(string $encodedId): string
     {
         return Uuid::fromBytes($this->encoder->decode($encodedId))->toString();
     }

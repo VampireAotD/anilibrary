@@ -8,7 +8,8 @@ use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
 use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
 use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
 use App\Facades\Telegram\State\UserStateFacade;
-use App\Services\Telegram\Base62Service;
+use App\Models\Anime;
+use App\Services\Telegram\HashService;
 use App\UseCase\Telegram\CaptionUseCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -22,14 +23,14 @@ class CaptionUseCaseTest extends TestCase
         WithFaker,
         CanCreateFakeData;
 
-    private Base62Service  $base62Service;
+    private HashService    $hashService;
     private CaptionUseCase $captionUseCase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->base62Service  = $this->app->make(Base62Service::class);
+        $this->hashService    = $this->app->make(HashService::class);
         $this->captionUseCase = $this->app->make(CaptionUseCase::class);
     }
 
@@ -38,7 +39,7 @@ class CaptionUseCaseTest extends TestCase
      */
     public function testCannotReturnCaptionOfUnknownAnime(): void
     {
-        $encoded = $this->base62Service->encode(Str::orderedUuid()->toString());
+        $encoded = $this->hashService->encodeUuid(Str::orderedUuid()->toString());
         $caption = $this->captionUseCase->createDecodedAnimeCaption(
             new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
         );
@@ -51,51 +52,71 @@ class CaptionUseCaseTest extends TestCase
      */
     public function testCanCreateCaptionForAddedAnime(): void
     {
+        /** @var Anime $anime */
         $anime   = $this->createRandomAnimeWithRelations()->first();
-        $encoded = $this->base62Service->encode($anime->id);
+        $encoded = $this->hashService->encodeUuid($anime->id);
         $caption = $this->captionUseCase->createDecodedAnimeCaption(
             new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
         );
 
         $this->assertNotEmpty($caption);
-        $this->assertEquals($anime->id, $this->base62Service->decode($encoded));
+        $this->assertEquals($anime->id, $this->hashService->decodeUuid($encoded));
         $this->assertEquals($anime->caption, $caption['caption']);
         $this->assertEquals($anime->image->path, $caption['photo']);
         $this->assertNotEmpty($caption['reply_markup']['inline_keyboard']);
         $this->assertCount($anime->urls->count(), reset($caption['reply_markup']['inline_keyboard']));
+        $this->assertEquals(
+            $anime->urls->first()->toTelegramKeyboardButton,
+            reset($caption['reply_markup']['inline_keyboard'][0])
+        );
     }
 
     /**
      * @return void
      */
-    public function testCanCreatePaginationCaption(): void
+    public function testCanCreateAnimeListPaginationCaption(): void
     {
-        $animeList  = $this->createRandomAnimeWithRelations(2);
-        $pagination = $this->captionUseCase->createPaginationCaption(
+        $animeList = $this->createRandomAnimeWithRelations(3);
+        $caption   = $this->captionUseCase->createPaginationCaption(
             new PaginationDTO($this->faker->randomNumber())
         );
 
-        $anime = $animeList->first();
+        $first = $animeList->first();
 
-        $this->assertNotEmpty($pagination);
-        $this->assertEquals($anime->caption, $pagination['caption']);
-        $this->assertEquals($anime->image->path, $pagination['photo']);
-        $this->assertNotEmpty($pagination['reply_markup']['inline_keyboard'][1]);
-        $this->assertCount(1, $pagination['reply_markup']['inline_keyboard'][1]);
-        $this->assertEquals('>', $pagination['reply_markup']['inline_keyboard'][1][0]['text']);
+        $this->assertInstanceOf(Anime::class, $first);
+        $this->assertNotEmpty($caption);
+        $this->assertEquals($first->caption, $caption['caption']);
+        $this->assertEquals($first->image->path, $caption['photo']);
+        $this->assertNotEmpty($caption['reply_markup']['inline_keyboard'][1]);
+        $this->assertCount(1, $caption['reply_markup']['inline_keyboard'][1]);
+        $this->assertEquals('>', $caption['reply_markup']['inline_keyboard'][1][0]['text']);
 
-        $pagination = $this->captionUseCase->createPaginationCaption(
+        $caption = $this->captionUseCase->createPaginationCaption(
             new PaginationDTO($this->faker->randomNumber(), 2)
         );
+        $middle  = $animeList->offsetGet(1);
 
-        $anime = $animeList->last();
+        $this->assertInstanceOf(Anime::class, $middle);
+        $this->assertNotEmpty($caption);
+        $this->assertEquals($middle->caption, $caption['caption']);
+        $this->assertEquals($middle->image->path, $caption['photo']);
+        $this->assertNotEmpty($caption['reply_markup']['inline_keyboard'][1]);
+        $this->assertCount(2, $caption['reply_markup']['inline_keyboard'][1]);
+        $this->assertEquals('<', $caption['reply_markup']['inline_keyboard'][1][0]['text']);
+        $this->assertEquals('>', $caption['reply_markup']['inline_keyboard'][1][1]['text']);
 
-        $this->assertNotEmpty($pagination);
-        $this->assertEquals($anime->caption, $pagination['caption']);
-        $this->assertEquals($anime->image->path, $pagination['photo']);
-        $this->assertNotEmpty($pagination['reply_markup']['inline_keyboard'][1]);
-        $this->assertCount(1, $pagination['reply_markup']['inline_keyboard'][1]);
-        $this->assertEquals('<', $pagination['reply_markup']['inline_keyboard'][1][0]['text']);
+        $caption = $this->captionUseCase->createPaginationCaption(
+            new PaginationDTO($this->faker->randomNumber(), 3)
+        );
+        $last    = $animeList->last();
+
+        $this->assertInstanceOf(Anime::class, $last);
+        $this->assertNotEmpty($caption);
+        $this->assertEquals($last->caption, $caption['caption']);
+        $this->assertEquals($last->image->path, $caption['photo']);
+        $this->assertNotEmpty($caption['reply_markup']['inline_keyboard'][1]);
+        $this->assertCount(1, $caption['reply_markup']['inline_keyboard'][1]);
+        $this->assertEquals('<', $caption['reply_markup']['inline_keyboard'][1][0]['text']);
     }
 
     public function testWillNotCreateSearchCaptionIfThereIsNoSearchResults(): void

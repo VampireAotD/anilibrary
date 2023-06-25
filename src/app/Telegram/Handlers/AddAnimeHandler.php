@@ -12,7 +12,9 @@ use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
-use App\UseCase\AnimeUseCase;
+use App\Rules\Telegram\SupportedUrl;
+use App\Services\AnimeService;
+use App\UseCase\Scraper\AnimeUseCase;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Validator;
@@ -30,6 +32,7 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
     protected array $allowedMessages = [CommandEnum::ADD_ANIME_COMMAND->value, CommandEnum::ADD_ANIME_BUTTON->value];
 
     private AnimeUseCase        $animeUseCase;
+    private AnimeService        $animeService;
     private CallbackDataFactory $callbackDataFactory;
 
     public function __construct(TeleBot $bot, Update $update)
@@ -37,6 +40,7 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
         parent::__construct($bot, $update);
 
         $this->animeUseCase        = app(AnimeUseCase::class);
+        $this->animeService        = app(AnimeService::class);
         $this->callbackDataFactory = app(CallbackDataFactory::class);
     }
 
@@ -52,14 +56,14 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
             return;
         }
 
-        $invalidUrl = Validator::make(['url' => $message->text], ['url' => 'required|supported_url'])->fails();
+        $validUrl = Validator::make(['url' => $message->text], ['url' => ['required', new SupportedUrl()]])->passes();
 
-        if ($invalidUrl) {
+        if (!$validUrl) {
             return $this->sendMessage(['text' => SupportedUrlEnum::UNSUPPORTED_URL->value]);
         }
 
         try {
-            if ($anime = $this->animeUseCase->findByUrl($message->text)) {
+            if ($anime = $this->animeService->findByUrl($message->text)) {
                 UserStateFacade::resetExecutedCommandsList($chatId);
 
                 return $this->sendScrapedMessage($anime);

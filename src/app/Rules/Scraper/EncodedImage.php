@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Rules\Telegram;
+namespace App\Rules\Scraper;
 
-use App\Enums\Validation\SupportedUrlEnum;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
 
 /**
- * Class SupportedUrlNew
- * @package App\Rules\Telegram
+ * Class EncodedImage
+ * @package App\Rules\Scraper
  */
-final class SupportedUrl implements ValidationRule
+final class EncodedImage implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -24,8 +23,11 @@ final class SupportedUrl implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!preg_match('#(animego\.org|animevost\.org)#mi', $value)) {
-            $fail(SupportedUrlEnum::UNSUPPORTED_URL->value);
+        if (
+            $value !== config('cloudinary.default_image')
+            || preg_match('#data:(image/jpeg|image/jpg|image/png|image/gif|image/webp);base64,.#mi', $value)
+        ) {
+            $fail('Image not properly encoded');
         }
     }
 }

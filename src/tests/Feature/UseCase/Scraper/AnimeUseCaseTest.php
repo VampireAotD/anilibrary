@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\UseCase;
+namespace Tests\Feature\UseCase\Scraper;
 
-use App\DTO\Service\Scraper\ScrapedDataDTO;
 use App\Enums\AnimeStatusEnum;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Models\Anime;
@@ -13,7 +12,7 @@ use App\Models\AnimeUrl;
 use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
-use App\UseCase\AnimeUseCase;
+use App\UseCase\Scraper\AnimeUseCase;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Database\Seeders\TagSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -31,6 +30,8 @@ class AnimeUseCaseTest extends TestCase
         CanCreateMocks,
         CanCreateFakeData;
 
+    private const SCRAPER_ENDPOINT = '/api/v1/anime/parse';
+
     private AnimeUseCase $animeUseCase;
 
     protected function setUp(): void
@@ -46,7 +47,7 @@ class AnimeUseCaseTest extends TestCase
     /**
      * @return array<array<string>>
      */
-    public function invalidImageProvider(): array
+    public static function invalidImageProvider(): array
     {
         return [
             [Str::random()],
@@ -54,20 +55,20 @@ class AnimeUseCaseTest extends TestCase
         ];
     }
 
-    /**
-     * @return void
-     */
     public function testCannotCreateAnimeWithoutTitle(): void
     {
-        $this->expectException(InvalidScrapedDataException::class);
-        $this->animeUseCase->createAnime(
-            new ScrapedDataDTO(
-                $this->faker->url,
-                $this->faker->randomElement(AnimeStatusEnum::values()),
-                (string) $this->faker->randomNumber(),
-                $this->faker->randomFloat(),
-            )
+        Http::fake(
+            [
+                self::SCRAPER_ENDPOINT => [
+                    'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
+                    'episodes' => (string) $this->faker->randomNumber(),
+                    'rating'   => $this->faker->randomFloat(),
+                ],
+            ]
         );
+
+        $this->expectException(InvalidScrapedDataException::class);
+        $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 
     /**
@@ -77,16 +78,19 @@ class AnimeUseCaseTest extends TestCase
      */
     public function testCannotCreateAnimeWithInvalidImage(string $invalidImage): void
     {
-        $this->expectException(InvalidScrapedDataException::class);
-        $this->animeUseCase->createAnime(
-            new ScrapedDataDTO(
-                $this->faker->url,
-                $this->faker->randomElement(AnimeStatusEnum::values()),
-                (string) $this->faker->randomNumber(),
-                $this->faker->randomFloat(),
-                image: $invalidImage
-            )
+        Http::fake(
+            [
+                self::SCRAPER_ENDPOINT => [
+                    'image'    => $invalidImage,
+                    'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
+                    'episodes' => (string) $this->faker->randomNumber(),
+                    'rating'   => $this->faker->randomFloat(),
+                ],
+            ]
         );
+
+        $this->expectException(InvalidScrapedDataException::class);
+        $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 
     /**
@@ -104,12 +108,11 @@ class AnimeUseCaseTest extends TestCase
 
         Http::fake(
             [
-                '/api/v1/anime/parse' => [
-                    'url'      => $url = $this->faker->url,
+                self::SCRAPER_ENDPOINT => [
+                    'title'    => $this->faker->sentence,
                     'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
                     'episodes' => $this->faker->randomAscii,
                     'rating'   => $this->faker->randomFloat(),
-                    'title'    => $this->faker->sentence,
                     'synonyms' => array_merge(
                         $anime->synonyms->pluck('synonym')->toArray(),
                         $newSynonyms
@@ -118,6 +121,7 @@ class AnimeUseCaseTest extends TestCase
             ]
         );
 
+        $url        = $this->faker->url;
         $foundAnime = $this->animeUseCase->scrapeAndCreateAnime($url);
 
         $foundAnime->refresh(); // to load upserted relation
@@ -132,7 +136,7 @@ class AnimeUseCaseTest extends TestCase
 
         $this->assertCount(2, $foundAnime->urls);
         $this->assertTrue($foundAnime->urls->intersect($anime->urls)->isNotEmpty());
-        $this->assertTrue($foundAnime->urls->contains('url', $url));
+        $this->assertContainsEquals($url, $foundAnime->urls->pluck('url'));
 
         $this->assertCount(5, $foundAnime->synonyms);
         $this->assertTrue($foundAnime->synonyms->intersect($anime->synonyms)->isNotEmpty());
@@ -146,19 +150,23 @@ class AnimeUseCaseTest extends TestCase
         Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
         Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
 
-        $anime = $this->animeUseCase->createAnime(
-            new ScrapedDataDTO(
-                $this->faker->url,
-                $this->faker->randomElement(AnimeStatusEnum::values()),
-                (string) $this->faker->randomNumber(),
-                $this->faker->randomFloat(),
-                $this->faker->title,
-                Genre::factory(5)->create()->pluck('name')->toArray(),
-                VoiceActing::factory(5)->create()->pluck('name')->toArray(),
-                AnimeSynonym::factory(5)->make()->pluck('synonym')->toArray(),
-                config('cloudinary.default_image')
-            )
+        Http::fake(
+            [
+                self::SCRAPER_ENDPOINT => [
+                    'title'       => $this->faker->sentence,
+                    'image'       => config('cloudinary.default_image'),
+                    'status'      => $this->faker->randomElement(AnimeStatusEnum::values()),
+                    'episodes'    => $this->faker->randomAscii,
+                    'rating'      => $this->faker->randomFloat(),
+                    'genres'      => Genre::factory(5)->make()->pluck('name')->toArray(),
+                    'voiceActing' => VoiceActing::factory(5)->make()->pluck('name')->toArray(),
+                    'synonyms'    => AnimeSynonym::factory(5)->make()->pluck('synonym')->toArray(),
+                ],
+            ]
         );
+
+        $url   = $this->faker->url;
+        $anime = $this->animeUseCase->scrapeAndCreateAnime($url);
 
         $anime->refresh(); // to load upserted relation
 
@@ -183,6 +191,7 @@ class AnimeUseCaseTest extends TestCase
         $this->assertTrue($anime->urls->isNotEmpty());
         $this->assertInstanceOf(AnimeUrl::class, $anime->urls->first());
         $this->assertNotEmpty($anime->urls->first()->url);
+        $this->assertContainsEquals($url, $anime->urls->pluck('url'));
 
         $this->assertTrue($anime->synonyms->isNotEmpty());
         $this->assertInstanceOf(AnimeSynonym::class, $anime->synonyms->first());

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\UseCase;
+namespace App\UseCase\Scraper;
 
 use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\DTO\Service\Scraper\ScrapedDataDTO;
@@ -22,9 +22,9 @@ use Throwable;
 
 /**
  * Class AnimeUseCase
- * @package App\UseCase
+ * @package App\UseCase\Scraper
  */
-readonly class AnimeUseCase
+final readonly class AnimeUseCase
 {
     public function __construct(
         private RequestService         $requestService,
@@ -48,15 +48,10 @@ readonly class AnimeUseCase
         return $this->createAnime(new ScrapedDataDTO(...$response));
     }
 
-    public function findByUrl(string $url): ?Anime
-    {
-        return $this->animeService->findByUrl($url);
-    }
-
     /**
      * @throws InvalidScrapedDataException
      */
-    public function createAnime(ScrapedDataDTO $dto): Anime
+    private function createAnime(ScrapedDataDTO $dto): Anime
     {
         if (!$dto->hasValidData()) {
             throw new InvalidScrapedDataException();

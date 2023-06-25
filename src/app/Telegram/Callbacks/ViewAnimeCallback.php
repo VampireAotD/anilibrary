@@ -7,8 +7,9 @@ namespace App\Telegram\Callbacks;
 use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
 use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
 use App\Enums\Telegram\Callbacks\ViewAnimeCallbackEnum;
-use App\Telegram\Callbacks\Traits\CanSafelyReceiveCallbackArgumentsTrait;
+use App\Telegram\Callbacks\Traits\CanSafelyRetrieveArguments;
 use App\UseCase\Telegram\CaptionUseCase;
+use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Handlers\CallbackHandler;
 use WeStacks\TeleBot\Objects\Message;
@@ -21,7 +22,7 @@ use WeStacks\TeleBot\TeleBot;
  */
 final class ViewAnimeCallback extends CallbackHandler
 {
-    use CanSafelyReceiveCallbackArgumentsTrait;
+    use CanSafelyRetrieveArguments;
 
     private CaptionUseCase $callbackQueryUseCase;
 
@@ -48,17 +49,26 @@ final class ViewAnimeCallback extends CallbackHandler
 
         [, $encodedId] = $arguments;
 
-        $chatId  = $this->update->chat()->id;
-        $caption = $this->callbackQueryUseCase->createDecodedAnimeCaption(new ViewEncodedAnimeDTO($encodedId, $chatId));
+        $chatId = $this->update->chat()->id;
 
-        if (!$caption) {
-            return $this->sendMessage(
+        try {
+            $caption = $this->callbackQueryUseCase->createDecodedAnimeCaption(
+                new ViewEncodedAnimeDTO($encodedId, $chatId)
+            );
+
+            if (!$caption) {
+                return $this->sendMessage(['text' => ViewAnimeCallbackEnum::FAILED_TO_GET_ANIME->value]);
+            }
+
+            return $this->sendPhoto($caption);
+        } catch (Exception $exception) {
+            logger()->error(
+                'View anime callback',
                 [
-                    'text' => ViewAnimeCallbackEnum::FAILED_TO_GET_ANIME->value,
+                    'exception_message' => $exception->getMessage(),
+                    'exception_trace'   => $exception->getTraceAsString(),
                 ]
             );
         }
-
-        return $this->sendPhoto($caption);
     }
 }

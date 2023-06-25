@@ -7,7 +7,7 @@ namespace App\Factory\Telegram\CallbackData;
 use App\DTO\Factory\Telegram\CallbackData\CallbackDataDTO;
 use App\DTO\Factory\Telegram\CallbackData\PaginationCallbackDataDTO;
 use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
-use App\Services\Telegram\Base62Service;
+use App\Services\Telegram\HashService;
 
 /**
  * Class CallbackDataFactory
@@ -15,7 +15,7 @@ use App\Services\Telegram\Base62Service;
  */
 final readonly class CallbackDataFactory
 {
-    public function __construct(private Base62Service $base62Service)
+    public function __construct(private HashService $hashService)
     {
     }
 
@@ -27,7 +27,7 @@ final readonly class CallbackDataFactory
             $dto instanceof ViewAnimeCallbackDataDTO  => sprintf(
                 '%s&animeId=%s',
                 $callback,
-                $this->base62Service->encode($dto->animeId)
+                $this->hashService->encodeUuid($dto->animeId)
             ),
             $dto instanceof PaginationCallbackDataDTO => sprintf('%s&page=%s', $callback, $dto->page),
             default                                   => '',

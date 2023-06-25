@@ -10,6 +10,10 @@ use WeStacks\TeleBot\Objects\Message;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 
+/**
+ * Class BotAccessMiddleware
+ * @package App\Telegram\Middlewares
+ */
 class BotAccessMiddleware
 {
     /**

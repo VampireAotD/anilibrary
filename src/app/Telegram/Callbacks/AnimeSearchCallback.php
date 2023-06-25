@@ -6,7 +6,7 @@ namespace App\Telegram\Callbacks;
 
 use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
 use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
-use App\Telegram\Callbacks\Traits\CanSafelyReceiveCallbackArgumentsTrait;
+use App\Telegram\Callbacks\Traits\CanSafelyRetrieveArguments;
 use App\UseCase\Telegram\CaptionUseCase;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -22,7 +22,7 @@ use WeStacks\TeleBot\TeleBot;
  */
 final class AnimeSearchCallback extends CallbackHandler
 {
-    use CanSafelyReceiveCallbackArgumentsTrait;
+    use CanSafelyRetrieveArguments;
 
     protected CaptionUseCase $callbackQueryUseCase;
 
@@ -50,12 +50,16 @@ final class AnimeSearchCallback extends CallbackHandler
         [, $page] = $arguments;
 
         $chatId = $this->update->chat()->id;
-        $page   = (int) ($page ?? 1);
 
         try {
+            $page    = (int) ($page ?? 1);
             $caption = $this->callbackQueryUseCase->createSearchPaginationCaption(
                 new PaginationDTO($chatId, $page, CallbackQueryTypeEnum::SEARCH_LIST)
             );
+
+            if (!$caption) {
+                return;
+            }
 
             return $this->editMessageMedia(
                 [
@@ -71,10 +75,10 @@ final class AnimeSearchCallback extends CallbackHandler
             // Prevent bot from breaking because of next or prev page spam
         } catch (Exception $exception) {
             logger()->error(
-                'Edit message media',
+                'Anime search callback',
                 [
-                    'exceptionMessage' => $exception->getMessage(),
-                    'exceptionTrace'   => $exception->getTraceAsString(),
+                    'exception_message' => $exception->getMessage(),
+                    'exception_trace'   => $exception->getTraceAsString(),
                 ]
             );
         }
