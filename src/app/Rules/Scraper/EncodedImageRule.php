@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Rules\Scraper;
 
+use App\Enums\Validation\Scraper\EncodedImageRuleEnum;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
 
 /**
- * Class EncodedImage
+ * Class EncodedImageRule
  * @package App\Rules\Scraper
  */
-final class EncodedImage implements ValidationRule
+final class EncodedImageRule implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -27,7 +28,7 @@ final class EncodedImage implements ValidationRule
             $value !== config('cloudinary.default_image')
             || preg_match('#data:(image/jpeg|image/jpg|image/png|image/gif|image/webp);base64,.#mi', $value)
         ) {
-            $fail('Image not properly encoded');
+            $fail(EncodedImageRuleEnum::INVALID_ENCODING->value);
         }
     }
 }

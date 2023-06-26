@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Rules\Telegram;
 
-use App\Enums\Validation\SupportedUrlEnum;
+use App\Enums\Validation\Telegram\SupportedUrlRuleEnum;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
 
 /**
- * Class SupportedUrlNew
+ * Class SupportedUrlRule
  * @package App\Rules\Telegram
  */
-final class SupportedUrl implements ValidationRule
+final class SupportedUrlRule implements ValidationRule
 {
     /**
      * Run the validation rule.
@@ -25,7 +25,7 @@ final class SupportedUrl implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!preg_match('#(animego\.org|animevost\.org)#mi', $value)) {
-            $fail(SupportedUrlEnum::UNSUPPORTED_URL->value);
+            $fail(SupportedUrlRuleEnum::UNSUPPORTED_URL->value);
         }
     }
 }

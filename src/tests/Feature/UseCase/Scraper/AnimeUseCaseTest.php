@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\UseCase\Scraper;
 
 use App\Enums\AnimeStatusEnum;
-use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
+use App\Enums\Validation\Scraper\EncodedImageRuleEnum;
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Models\Anime;
 use App\Models\AnimeSynonym;
@@ -21,6 +21,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeData;
 use Tests\Traits\CanCreateMocks;
@@ -69,7 +70,7 @@ class AnimeUseCaseTest extends TestCase
             ]
         );
 
-        $this->expectException(InvalidScrapedDataException::class);
+        $this->expectException(ValidationException::class);
         $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 
@@ -83,6 +84,7 @@ class AnimeUseCaseTest extends TestCase
         Http::fake(
             [
                 self::SCRAPER_ENDPOINT => [
+                    'title'    => $this->faker->sentence,
                     'image'    => $invalidImage,
                     'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
                     'episodes' => (string) $this->faker->randomNumber(),
@@ -91,7 +93,8 @@ class AnimeUseCaseTest extends TestCase
             ]
         );
 
-        $this->expectException(InvalidScrapedDataException::class);
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage(EncodedImageRuleEnum::INVALID_ENCODING->value);
         $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 

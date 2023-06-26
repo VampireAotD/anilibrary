@@ -7,6 +7,7 @@ namespace Tests\Traits;
 use CloudinaryLabs\CloudinaryLaravel\CloudinaryEngine;
 use Elastic\Elasticsearch\Client as ElasticsearchClient;
 use Elastic\Elasticsearch\ClientBuilder;
+use Elastic\Elasticsearch\Exception\AuthenticationException;
 use Http\Mock\Client;
 use PHPUnit\Framework\MockObject\Exception;
 use WeStacks\TeleBot\Laravel\TeleBot as LaravelWrapper;
@@ -39,9 +40,13 @@ trait CanCreateMocks
         $this->app->instance(CloudinaryEngine::class, $mock);
     }
 
+    /**
+     * @throws AuthenticationException
+     */
     public function setUpFakeElasticsearchClient(): void
     {
         $mockClient = new Client();
+
         $this->app->instance(ElasticsearchClient::class, ClientBuilder::create()->setHttpClient($mockClient)->build());
         $this->mockClient = $mockClient;
     }

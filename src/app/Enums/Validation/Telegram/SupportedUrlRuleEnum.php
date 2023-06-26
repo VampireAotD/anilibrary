@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Enums\Validation;
+namespace App\Enums\Validation\Telegram;
 
 /**
- * Enum SupportedUrlEnum
- * @package App\Enums\Validation
+ * Class SupportedUrlRuleEnum
+ * @package App\Enums\Validation\Telegram
  */
-enum SupportedUrlEnum : string
+enum SupportedUrlRuleEnum : string
 {
     case UNSUPPORTED_URL = 'Бот не поддерживает парсинг данного сайта';
 }

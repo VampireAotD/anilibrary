@@ -7,7 +7,7 @@ namespace Tests\Feature\Telegram\Handlers;
 use App\Enums\AnimeStatusEnum;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
-use App\Enums\Validation\SupportedUrlEnum;
+use App\Enums\Validation\Telegram\SupportedUrlRuleEnum;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Telegram\Handlers\AddAnimeHandler;
@@ -54,9 +54,6 @@ class AddAnimeHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @return void
-     */
     public function testBotWillNotScrapeInvalidMessage(): void
     {
         $update   = $this->createFakeStickerMessageUpdate();
@@ -66,22 +63,17 @@ class AddAnimeHandlerTest extends TestCase
         $this->assertNull($response());
     }
 
-    /**
-     * @return void
-     */
     public function testBotWillNotScrapeUnsupportedUrl(): void
     {
         $update   = $this->createFakeTextMessageUpdate($this->faker->url);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Message::class, $response);
-        $this->assertEquals(SupportedUrlEnum::UNSUPPORTED_URL->value, $response->text);
+        $this->assertEquals(SupportedUrlRuleEnum::UNSUPPORTED_URL->value, $response->text);
     }
 
     /**
      * @dataProvider supportedUrlsProvider
-     * @param string $url
-     * @return void
      */
     public function testBotWillReturnAnimeWithoutScrapingIfUrlIsAlreadyInDatabase(string $url): void
     {
@@ -99,15 +91,37 @@ class AddAnimeHandlerTest extends TestCase
 
     /**
      * @dataProvider supportedUrlsProvider
-     * @param string $url
-     * @return void
+     */
+    public function testBotWillRespondWithFailureMessageIfScrapedDataWereInvalid(string $url): void
+    {
+        Http::fake(
+            [
+                '*' => [
+                    'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
+                    'episodes' => $this->faker->randomAscii,
+                    'rating'   => $this->faker->randomFloat(),
+                ],
+            ]
+        );
+
+        Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
+        Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
+
+        $update   = $this->createFakeTextMessageUpdate($url);
+        $response = $this->bot->handleUpdate($update);
+
+        $this->assertInstanceOf(Message::class, $response);
+        $this->assertEquals(AddAnimeHandlerEnum::PARSE_FAILED->value, $response->text);
+    }
+
+    /**
+     * @dataProvider supportedUrlsProvider
      */
     public function testBotCanScrapeSupportedUrls(string $url): void
     {
         Http::fake(
             [
                 '*' => [
-                    'url'      => $url,
                     'title'    => $this->faker->sentence,
                     'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
                     'episodes' => $this->faker->randomAscii,

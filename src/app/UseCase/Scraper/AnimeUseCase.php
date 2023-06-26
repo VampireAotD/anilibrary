@@ -6,10 +6,10 @@ namespace App\UseCase\Scraper;
 
 use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\DTO\Service\Scraper\ScrapedDataDTO;
-use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
 use App\Models\Anime;
 use App\Models\AnimeUrl;
 use App\Repositories\Contracts\TagRepositoryInterface;
+use App\Rules\Scraper\EncodedImageRule;
 use App\Services\AnimeService;
 use App\Services\AnimeSynonymService;
 use App\Services\GenreService;
@@ -18,6 +18,8 @@ use App\Services\Scraper\RequestService;
 use App\Services\VoiceActingService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 /**
@@ -38,25 +40,23 @@ final readonly class AnimeUseCase
     }
 
     /**
-     * @throws RequestException|InvalidScrapedDataException|Throwable
+     * @throws RequestException|ValidationException|Throwable
      */
     public function scrapeAndCreateAnime(string $url, ?int $telegramId = null): Anime
     {
         $response = $this->requestService->sendScrapeRequest($url)->json();
         $response = array_merge(['url' => $url, 'telegramId' => $telegramId], $response);
 
+        Validator::make(
+            $response,
+            ['title' => 'required|string', 'image' => ['nullable', 'string', new EncodedImageRule()]]
+        )->validate();
+
         return $this->createAnime(new ScrapedDataDTO(...$response));
     }
 
-    /**
-     * @throws InvalidScrapedDataException
-     */
     private function createAnime(ScrapedDataDTO $dto): Anime
     {
-        if (!$dto->hasValidData()) {
-            throw new InvalidScrapedDataException();
-        }
-
         $anime = $this->animeService->findByTitleAndSynonyms(array_merge($dto->synonyms, [$dto->title]));
 
         // Some anime have similar synonyms, this prevents updating wrong anime

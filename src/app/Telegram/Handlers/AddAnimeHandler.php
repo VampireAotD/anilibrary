@@ -7,17 +7,17 @@ namespace App\Telegram\Handlers;
 use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
-use App\Enums\Validation\SupportedUrlEnum;
-use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
+use App\Enums\Validation\Telegram\SupportedUrlRuleEnum;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
-use App\Rules\Telegram\SupportedUrl;
+use App\Rules\Telegram\SupportedUrlRule;
 use App\Services\AnimeService;
 use App\UseCase\Scraper\AnimeUseCase;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 use WeStacks\TeleBot\Objects\Message;
 use WeStacks\TeleBot\Objects\Update;
@@ -56,10 +56,11 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
             return;
         }
 
-        $validUrl = Validator::make(['url' => $message->text], ['url' => ['required', new SupportedUrl()]])->passes();
+        $validUrl = Validator::make(['url' => $message->text], ['url' => ['required', new SupportedUrlRule()]])->passes(
+        );
 
         if (!$validUrl) {
-            return $this->sendMessage(['text' => SupportedUrlEnum::UNSUPPORTED_URL->value]);
+            return $this->sendMessage(['text' => SupportedUrlRuleEnum::UNSUPPORTED_URL->value]);
         }
 
         try {
@@ -69,14 +70,13 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
                 return $this->sendScrapedMessage($anime);
             }
 
-            $anime = $this->animeUseCase->scrapeAndCreateAnime($message->text, $chatId);
+            $anime   = $this->animeUseCase->scrapeAndCreateAnime($message->text, $chatId);
+            $message = $this->sendScrapedMessage($anime);
 
             UserStateFacade::resetExecutedCommandsList($chatId);
 
-            return $this->sendScrapedMessage($anime);
-        } catch (RequestException | InvalidScrapedDataException | Throwable $exception) {
-            $this->sendMessage(['text' => AddAnimeHandlerEnum::PARSE_FAILED->value]);
-
+            return $message;
+        } catch (RequestException | ValidationException | Throwable $exception) {
             logger()->error(
                 'Add anime handler',
                 [
@@ -85,6 +85,8 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
                     'exceptionTrace'   => $exception->getTraceAsString(),
                 ]
             );
+
+            return $this->sendMessage(['text' => AddAnimeHandlerEnum::PARSE_FAILED->value]);
         }
     }
 
