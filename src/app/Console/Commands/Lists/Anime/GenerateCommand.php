@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands\AnimeList;
+namespace App\Console\Commands\Lists\Anime;
 
 use App\Mail\AnimeListMail;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class Generate
- * @package App\Console\Commands\AnimeList
+ * Class GenerateCommand
+ * @package App\Console\Commands\Lists\Anime
  */
-class Generate extends Command
+class GenerateCommand extends Command
 {
     /**
      * The name and signature of the console command.

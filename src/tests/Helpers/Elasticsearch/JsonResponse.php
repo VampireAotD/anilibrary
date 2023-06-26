@@ -9,12 +9,12 @@ use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Symfony\Component\HttpFoundation\Response as ResponseStatus;
 
 /**
- * Class Response
+ * Class JsonResponse
  * @package Tests\Helpers\Elascticsearch
  */
-final class Response extends GuzzleResponse
+final class JsonResponse extends GuzzleResponse
 {
-    public const ES_HEADERS = [Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME];
+    private const ES_HEADERS = [Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME];
 
     public function __construct(
         $body = null,
@@ -23,7 +23,7 @@ final class Response extends GuzzleResponse
         string $version = '1.1',
         string $reason = null
     ) {
-        $headers = array_merge(self::ES_HEADERS, $headers);
+        $headers = array_merge(self::ES_HEADERS, ['Content-Type' => 'application/json'], $headers);
 
         parent::__construct($status, $headers, $body, $version, $reason);
     }

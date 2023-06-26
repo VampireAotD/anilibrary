@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Console\Commands\AnimeList;
+namespace Tests\Feature\Console\Commands\Lists\Anime;
 
 use App\Mail\AnimeListMail;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeData;
 
-class GenerateTest extends TestCase
+class GenerateCommandTest extends TestCase
 {
     use RefreshDatabase,
         CanCreateFakeData;

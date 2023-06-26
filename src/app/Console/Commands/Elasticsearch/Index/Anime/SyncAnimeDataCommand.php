@@ -70,6 +70,7 @@ class SyncAnimeDataCommand extends Command
             }
         );
 
+        $bar->finish();
         $this->newLine()->info('All anime data has been synced');
 
         return Command::SUCCESS;

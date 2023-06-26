@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Traits;
 
+use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Models\Anime;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
@@ -11,6 +12,7 @@ use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Bus;
 
 /**
  * Trait CanCreateFakeData
@@ -24,7 +26,9 @@ trait CanCreateFakeData
      */
     public function createRandomAnimeWithRelations(int $count = 1): Collection
     {
-        return Anime::factory($count)->create()->each(
+        Bus::fake();
+
+        $anime = Anime::factory($count)->create()->each(
             function (Anime $anime) {
                 $anime->image()->save(Image::factory()->make());
                 $anime->genres()->save(Genre::factory()->make());
@@ -33,5 +37,9 @@ trait CanCreateFakeData
                 $anime->synonyms()->save(AnimeSynonym::factory()->make());
             }
         )->toBase();
+
+        Bus::assertDispatched(UpsertAnimeJob::class);
+
+        return $anime;
     }
 }

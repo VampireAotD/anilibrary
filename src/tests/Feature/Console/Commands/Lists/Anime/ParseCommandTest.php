@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Console\Commands\AnimeList;
+namespace Tests\Feature\Console\Commands\Lists\Anime;
 
 use App\Enums\AnimeStatusEnum;
 use App\Models\Anime;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeData;
 
-class ParseTest extends TestCase
+class ParseCommandTest extends TestCase
 {
     use RefreshDatabase,
         CanCreateFakeData;

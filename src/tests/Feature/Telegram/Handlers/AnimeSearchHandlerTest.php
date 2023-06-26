@@ -9,7 +9,7 @@ use App\Enums\Telegram\Handlers\AnimeSearchHandlerEnum;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Telegram\Handlers\AnimeSearchHandler;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Helpers\Elasticsearch\Response;
+use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeData;
 use Tests\Traits\CanCreateFakeUpdates;
@@ -39,9 +39,7 @@ class AnimeSearchHandlerTest extends TestCase
 
     public function testBotWillRespondThatNoSearchResultsWereFound(): void
     {
-        $this->mockClient->addResponse(
-            new Response(json_encode(['hits' => ['hits' => []]]), headers: ['Content-type' => 'application/json'])
-        );
+        $this->mockClient->addResponse(new JsonResponse(json_encode(['hits' => ['hits' => []]])));
 
         $update   = $this->createFakeTextMessageUpdate($this->faker->sentence);
         $response = $this->bot->handleUpdate($update);

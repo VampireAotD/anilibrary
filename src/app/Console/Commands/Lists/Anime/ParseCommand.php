@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands\AnimeList;
+namespace App\Console\Commands\Lists\Anime;
 
 use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\Models\AnimeSynonym;
@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class Parse
- * @package App\Console\Commands\AnimeList
+ * Class ParseCommand
+ * @package App\Console\Commands\Lists\Anime
  */
-class Parse extends Command
+class ParseCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -33,7 +33,7 @@ class Parse extends Command
      *
      * @var string
      */
-    protected $description = 'Parse all titles from list';
+    protected $description = 'Parse all anime data from list';
 
     /**
      * Create a new command instance.

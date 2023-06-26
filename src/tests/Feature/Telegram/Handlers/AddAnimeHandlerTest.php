@@ -9,10 +9,12 @@ use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
 use App\Enums\Validation\SupportedUrlEnum;
 use App\Facades\Telegram\State\UserStateFacade;
+use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Telegram\Handlers\AddAnimeHandler;
 use Closure;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeData;
@@ -81,7 +83,7 @@ class AddAnimeHandlerTest extends TestCase
      * @param string $url
      * @return void
      */
-    public function testBotWillCanReturnAnimeWithoutScrapingIfUrlIsAlreadyInDatabase(string $url): void
+    public function testBotWillReturnAnimeWithoutScrapingIfUrlIsAlreadyInDatabase(string $url): void
     {
         UserStateFacade::shouldReceive('resetExecutedCommandsList')->with(self::FAKE_TELEGRAM_ID)->once();
 
@@ -114,6 +116,8 @@ class AddAnimeHandlerTest extends TestCase
             ]
         );
 
+        Bus::fake();
+
         Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
         Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
 
@@ -122,6 +126,7 @@ class AddAnimeHandlerTest extends TestCase
         $update   = $this->createFakeTextMessageUpdate($url);
         $response = $this->bot->handleUpdate($update);
 
+        Bus::assertDispatched(UpsertAnimeJob::class);
         $this->assertInstanceOf(Message::class, $response);
         $this->assertEquals(AddAnimeHandlerEnum::PARSE_HAS_ENDED->value, $response->text);
     }

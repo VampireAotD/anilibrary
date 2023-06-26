@@ -6,6 +6,7 @@ namespace Tests\Feature\UseCase\Scraper;
 
 use App\Enums\AnimeStatusEnum;
 use App\Exceptions\UseCase\Anime\InvalidScrapedDataException;
+use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Models\Anime;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
@@ -17,6 +18,7 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Database\Seeders\TagSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -165,6 +167,8 @@ class AnimeUseCaseTest extends TestCase
             ]
         );
 
+        Bus::fake();
+
         $url   = $this->faker->url;
         $anime = $this->animeUseCase->scrapeAndCreateAnime($url);
 
@@ -196,5 +200,7 @@ class AnimeUseCaseTest extends TestCase
         $this->assertTrue($anime->synonyms->isNotEmpty());
         $this->assertInstanceOf(AnimeSynonym::class, $anime->synonyms->first());
         $this->assertNotEmpty($anime->synonyms->first()->synonym);
+
+        Bus::assertDispatched(UpsertAnimeJob::class);
     }
 }
