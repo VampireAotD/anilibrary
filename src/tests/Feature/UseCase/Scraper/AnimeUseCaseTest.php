@@ -15,7 +15,6 @@ use App\Models\Image;
 use App\Models\VoiceActing;
 use App\UseCase\Scraper\AnimeUseCase;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Database\Seeders\TagSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
@@ -42,7 +41,6 @@ class AnimeUseCaseTest extends TestCase
         parent::setUp();
 
         $this->setUpFakeCloudinary();
-        $this->seed(TagSeeder::class);
 
         $this->animeUseCase = $this->app->make(AnimeUseCase::class);
     }

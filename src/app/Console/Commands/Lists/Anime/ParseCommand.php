@@ -8,7 +8,6 @@ use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
 use App\Models\Genre;
-use App\Models\Tag;
 use App\Models\VoiceActing;
 use App\Services\AnimeService;
 use Illuminate\Console\Command;
@@ -79,9 +78,6 @@ class ParseCommand extends Command
                     $anime->urls()->saveMany($urls);
 
                     $anime->image()->create($parsed['image']);
-
-                    Tag::upsert($parsed['tags'], 'name');
-                    $anime->tags()->sync(collect($parsed['tags'])->pluck('id')->toArray());
 
                     Genre::upsert($parsed['genres'], 'name');
                     $anime->genres()->sync(collect($parsed['genres'])->pluck('id')->toArray());

@@ -39,11 +39,61 @@ trait CanCreateFakeUpdates
         return Update::create(
             [
                 'message' => [
+                    'chat'     => [
+                        'id' => $chatId,
+                    ],
+                    'text'     => $commandAlias,
+                    'entities' => [
+                        [
+                            'offset' => 0,
+                            'length' => strlen($commandAlias),
+                            'type'   => 'bot_command',
+                        ],
+                    ],
+                ],
+            ]
+        );
+    }
+
+    public function createFakeCommandUpdateWithUser(string $commandAlias, int $chatId = self::FAKE_TELEGRAM_ID)
+    {
+        return Update::create(
+            [
+                'message' => [
                     'from'     => [
                         'id'         => $this->faker->randomNumber(),
                         'first_name' => $this->faker->firstName,
                         'last_name'  => $this->faker->lastName,
                         'username'   => $this->faker->userName,
+                        'is_bot'     => false,
+                    ],
+                    'chat'     => [
+                        'id' => $chatId,
+                    ],
+                    'text'     => $commandAlias,
+                    'entities' => [
+                        [
+                            'offset' => 0,
+                            'length' => strlen($commandAlias),
+                            'type'   => 'bot_command',
+                        ],
+                    ],
+                ],
+            ]
+        );
+    }
+
+    public function createFakeCommandUpdateWithBot(string $commandAlias, int $chatId = self::FAKE_TELEGRAM_ID)
+    {
+        return Update::create(
+            [
+                'message' => [
+                    'from'     => [
+                        'id'         => $this->faker->randomNumber(),
+                        'first_name' => $this->faker->firstName,
+                        'last_name'  => $this->faker->lastName,
+                        'username'   => $this->faker->userName,
+                        'is_bot'     => true,
                     ],
                     'chat'     => [
                         'id' => $chatId,

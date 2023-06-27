@@ -39,8 +39,9 @@ class StartCommand extends CommandHandler
     {
         $user = $this->update->user();
 
-        if ($user) {
-            $dto = new CreateUserDTO($user->id, $user->first_name, $user->last_name ?? 'not set', $user->username);
+        if ($user && !$user->is_bot) {
+            /** @phpstan-ignore-next-line */
+            $dto = new CreateUserDTO($user->id, $user?->first_name, $user?->last_name ?? 'not set', $user?->username);
 
             RegisterUserJob::dispatch($dto);
         }

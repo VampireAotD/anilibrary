@@ -25,11 +25,35 @@ class StartCommandTest extends TestCase
         $this->bot->addHandler([StartCommand::class]);
     }
 
-    public function testCommandWillShowMenuAndRegisterNewUser(): void
+    public function testCommandWillNotRegisterUserIfThereIsNoInfoAboutHim(): void
     {
         Bus::fake();
 
         $update   = $this->createFakeCommandUpdate('/start');
+        $response = $this->bot->handleUpdate($update);
+
+        Bus::assertNotDispatched(RegisterUserJob::class);
+
+        $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
+    }
+
+    public function testCommandWillNotRegisterUserIfHeIsBot(): void
+    {
+        Bus::fake();
+
+        $update   = $this->createFakeCommandUpdateWithBot('/start');
+        $response = $this->bot->handleUpdate($update);
+
+        Bus::assertNotDispatched(RegisterUserJob::class);
+
+        $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
+    }
+
+    public function testCommandWillShowMenuAndRegisterNewUserIfHeIsNotBot(): void
+    {
+        Bus::fake();
+
+        $update   = $this->createFakeCommandUpdateWithUser('/start');
         $response = $this->bot->handleUpdate($update);
 
         Bus::assertDispatched(RegisterUserJob::class);

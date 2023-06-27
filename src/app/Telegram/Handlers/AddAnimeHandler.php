@@ -70,7 +70,7 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
                 return $this->sendScrapedMessage($anime);
             }
 
-            $anime   = $this->animeUseCase->scrapeAndCreateAnime($message->text, $chatId);
+            $anime   = $this->animeUseCase->scrapeAndCreateAnime($message->text);
             $message = $this->sendScrapedMessage($anime);
 
             UserStateFacade::resetExecutedCommandsList($chatId);

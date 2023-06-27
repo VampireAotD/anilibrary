@@ -8,7 +8,6 @@ use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\DTO\Service\Scraper\ScrapedDataDTO;
 use App\Models\Anime;
 use App\Models\AnimeUrl;
-use App\Repositories\Contracts\TagRepositoryInterface;
 use App\Rules\Scraper\EncodedImageRule;
 use App\Services\AnimeService;
 use App\Services\AnimeSynonymService;
@@ -29,23 +28,22 @@ use Throwable;
 final readonly class AnimeUseCase
 {
     public function __construct(
-        private RequestService         $requestService,
-        private AnimeService           $animeService,
-        private AnimeSynonymService    $animeSynonymService,
-        private ImageService           $imageService,
-        private VoiceActingService     $voiceActingService,
-        private GenreService           $genreService,
-        private TagRepositoryInterface $tagRepository
+        private RequestService      $requestService,
+        private AnimeService        $animeService,
+        private AnimeSynonymService $animeSynonymService,
+        private ImageService        $imageService,
+        private VoiceActingService  $voiceActingService,
+        private GenreService        $genreService,
     ) {
     }
 
     /**
      * @throws RequestException|ValidationException|Throwable
      */
-    public function scrapeAndCreateAnime(string $url, ?int $telegramId = null): Anime
+    public function scrapeAndCreateAnime(string $url): Anime
     {
         $response = $this->requestService->sendScrapeRequest($url)->json();
-        $response = array_merge(['url' => $url, 'telegramId' => $telegramId], $response);
+        $response = array_merge(['url' => $url], $response);
 
         Validator::make(
             $response,
@@ -102,10 +100,6 @@ final readonly class AnimeUseCase
 
                 if ($dto->genres) {
                     $anime->genres()->sync($this->genreService->sync($dto->genres), false);
-                }
-
-                if ($dto->telegramId) {
-                    $anime->tags()->sync($this->tagRepository->findByTelegramId($dto->telegramId), false);
                 }
 
                 return $anime;

@@ -57,7 +57,6 @@ class GenerateCommand extends Command
                 'urls:anime_id,url',
                 'synonyms:anime_id,synonym',
                 'image:id,model_id,path,alias',
-                'tags:id,name',
                 'genres:id,name',
                 'voiceActing:id,name',
             ]
@@ -65,7 +64,7 @@ class GenerateCommand extends Command
 
         Storage::disk('lists')->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
 
-        Mail::to(config('admin.email'))->queue(new AnimeListMail());
+        Mail::to(config('mail.owner.address'))->queue(new AnimeListMail());
 
         $this->info('Anime list successfully generated');
 

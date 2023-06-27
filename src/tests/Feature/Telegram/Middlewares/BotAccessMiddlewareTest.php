@@ -27,7 +27,7 @@ class BotAccessMiddlewareTest extends TestCase
     /**
      * @return void
      */
-    public function testUserCannotInteractWithBotIfHeIsNotAdmin(): void
+    public function testUserCannotInteractWithBotIfHeIsNotInWhitelist(): void
     {
         $update   = $this->createFakeTextMessageUpdate();
         $response = $this->bot->handleUpdate($update);
@@ -35,17 +35,20 @@ class BotAccessMiddlewareTest extends TestCase
         $this->assertEquals(BotAccessEnum::ACCESS_DENIED_MESSAGE->value, $response->text);
     }
 
-    /**
-     * @return void
-     */
-    public function testAdminCanInteractWithBot(): void
+    public function testUserCanInteractWithBotIfHeIsWhitelist(): void
     {
-        $update   = $this->createFakeTextMessageUpdate(chatId: config('admin.id'));
-        $response = $this->bot->handleUpdate($update);
+        $whitelist = explode(',', config('telebot.whitelist', ''));
 
-        // If user is an admin he can interact with bot commands
-        // There is no other handler except middleware so response will return closure
-        $this->assertInstanceOf(Closure::class, $response);
-        $this->assertNull($response());
+        // Using loop here instead of dataProvider because it seems that if config() is used
+        // inside dataProvider, test that uses it cannot be find
+        foreach ($whitelist as $id) {
+            $update   = $this->createFakeTextMessageUpdate(chatId: (int) $id);
+            $response = $this->bot->handleUpdate($update);
+
+            // If user is an admin he can interact with bot commands
+            // There is no other handler except middleware so response will return closure
+            $this->assertInstanceOf(Closure::class, $response);
+            $this->assertNull($response());
+        }
     }
 }

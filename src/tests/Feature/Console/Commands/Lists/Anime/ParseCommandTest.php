@@ -60,7 +60,6 @@ class ParseCommandTest extends TestCase
                            'urls:anime_id,url',
                            'synonyms:anime_id,synonym',
                            'image:id,model_id,path,alias',
-                           'tags:id,name',
                            'genres:id,name',
                            'voiceActing:id,name',
                        ]

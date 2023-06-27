@@ -61,7 +61,7 @@ class CaptionUseCaseTest extends TestCase
 
         $this->assertNotEmpty($caption);
         $this->assertEquals($anime->id, $this->hashService->decodeUuid($encoded));
-        $this->assertEquals($anime->caption, $caption['caption']);
+        $this->assertEquals($anime->toTelegramCaption, $caption['caption']);
         $this->assertEquals($anime->image->path, $caption['photo']);
         $this->assertNotEmpty($caption['reply_markup']['inline_keyboard']);
         $this->assertCount($anime->urls->count(), reset($caption['reply_markup']['inline_keyboard']));
@@ -85,7 +85,7 @@ class CaptionUseCaseTest extends TestCase
 
         $this->assertInstanceOf(Anime::class, $first);
         $this->assertNotEmpty($caption);
-        $this->assertEquals($first->caption, $caption['caption']);
+        $this->assertEquals($first->toTelegramCaption, $caption['caption']);
         $this->assertEquals($first->image->path, $caption['photo']);
         $this->assertNotEmpty($caption['reply_markup']['inline_keyboard'][1]);
         $this->assertCount(1, $caption['reply_markup']['inline_keyboard'][1]);
@@ -98,7 +98,7 @@ class CaptionUseCaseTest extends TestCase
 
         $this->assertInstanceOf(Anime::class, $middle);
         $this->assertNotEmpty($caption);
-        $this->assertEquals($middle->caption, $caption['caption']);
+        $this->assertEquals($middle->toTelegramCaption, $caption['caption']);
         $this->assertEquals($middle->image->path, $caption['photo']);
         $this->assertNotEmpty($caption['reply_markup']['inline_keyboard'][1]);
         $this->assertCount(2, $caption['reply_markup']['inline_keyboard'][1]);
@@ -112,7 +112,7 @@ class CaptionUseCaseTest extends TestCase
 
         $this->assertInstanceOf(Anime::class, $last);
         $this->assertNotEmpty($caption);
-        $this->assertEquals($last->caption, $caption['caption']);
+        $this->assertEquals($last->toTelegramCaption, $caption['caption']);
         $this->assertEquals($last->image->path, $caption['photo']);
         $this->assertNotEmpty($caption['reply_markup']['inline_keyboard'][1]);
         $this->assertCount(1, $caption['reply_markup']['inline_keyboard'][1]);
@@ -142,8 +142,9 @@ class CaptionUseCaseTest extends TestCase
 
         $anime = $animeList->first();
 
+        $this->assertInstanceOf(Anime::class, $anime);
         $this->assertNotEmpty($caption);
-        $this->assertEquals($anime->caption, $caption['caption']);
+        $this->assertEquals($anime->toTelegramCaption, $caption['caption']);
         $this->assertEquals($anime->image->path, $caption['photo']);
     }
 }

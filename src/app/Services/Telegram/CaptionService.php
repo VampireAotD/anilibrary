@@ -46,12 +46,11 @@ readonly class CaptionService
     private function createAnimeCaption(Anime $anime): array
     {
         $keyboard = $anime->urls->map(
-        /** @phpstan-ignore-next-line */
             fn(AnimeUrl $animeUrl) => $animeUrl->toTelegramKeyboardButton
         )->toArray();
 
         return [
-            'caption'      => $anime->caption,
+            'caption'      => $anime->toTelegramCaption,
             'photo'        => $anime->image->path,
             'reply_markup' => [
                 'inline_keyboard' => [$keyboard],

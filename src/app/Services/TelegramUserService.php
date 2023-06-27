@@ -20,6 +20,10 @@ readonly class TelegramUserService
 
     public function register(CreateUserDTO $dto): TelegramUser
     {
+        if ($user = $this->telegramUserRepository->findByTelegramId($dto->telegramId)) {
+            return $user;
+        }
+
         return $this->telegramUserRepository->upsert($dto->toArray());
     }
 }

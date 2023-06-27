@@ -38,7 +38,6 @@ class SyncAnimeDataCommand extends Command
             ['id', 'title', 'status', 'rating', 'episodes'],
             [
                 'synonyms:anime_id,synonym',
-                'tags:id,name',
                 'genres:id,name',
                 'voiceActing:id,name',
             ]

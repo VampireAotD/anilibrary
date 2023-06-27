@@ -19,6 +19,16 @@ return [
     'default' => 'anilibrary',
 
     /*-------------------------------------------------------------------------
+    | Whitelist
+    |--------------------------------------------------------------------------
+    |
+    | A list of telegram ids that have access to bot, separated by coma
+    |
+    */
+
+    'whitelist' => env('TELEGRAM_WHITELIST', ''),
+
+    /*-------------------------------------------------------------------------
     | Your Telegram Bots
     |--------------------------------------------------------------------------
     | You may use multiple bots. Each bot that you own should be configured here.

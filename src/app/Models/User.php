@@ -21,6 +21,9 @@ use Laravel\Sanctum\PersonalAccessToken;
  *
  * @property string                                                         $id
  * @property string                                                         $telegram_user_id
+ * @property string                                                         $email
+ * @property string|null                                                    $name
+ * @property Carbon|null                                                    $email_verified_at
  * @property string                                                         $password
  * @property string|null                                                    $remember_token
  * @property Carbon|null                                                    $created_at
@@ -35,7 +38,10 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTelegramUserId($value)
@@ -53,6 +59,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'telegram_user_id',
+        'name',
+        'email',
         'password',
     ];
 

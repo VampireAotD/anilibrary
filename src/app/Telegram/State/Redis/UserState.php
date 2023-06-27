@@ -86,7 +86,7 @@ class UserState
         $this->state()->set($searchResultPreviewKey, $previewId);
     }
 
-    public function getSearchResultPreview(int $telegramId): string
+    public function getSearchResultPreview(int $telegramId): ?string
     {
         [, , , $searchResultPreviewKey] = $this->stateKeys($telegramId);
 

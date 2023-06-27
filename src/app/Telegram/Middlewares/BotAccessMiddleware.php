@@ -26,7 +26,9 @@ class BotAccessMiddleware
     {
         $userId = $update->chat()->id;
 
-        if ($userId !== config('admin.id')) {
+        $whitelist = explode(',', config('telebot.whitelist', ''));
+
+        if (!in_array($userId, $whitelist)) {
             return $bot->sendMessage(
                 [
                     'chat_id' => $userId,

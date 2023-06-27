@@ -48,8 +48,8 @@ class GenerateCommandTest extends TestCase
             function (AnimeListMail $mail) use ($listFile) {
                 $mail->build();
 
-                return $mail->hasFrom(config('admin.email')) &&
-                    $mail->hasTo(config('admin.email')) &&
+                return $mail->hasFrom(config('mail.from.address')) &&
+                    $mail->hasTo(config('mail.owner.address')) &&
                     $mail->hasAttachmentFromStorageDisk('lists', $listFile);
             }
         );
@@ -64,7 +64,6 @@ class GenerateCommandTest extends TestCase
                     'urls:anime_id,url',
                     'synonyms:anime_id,synonym',
                     'image:id,model_id,path,alias',
-                    'tags:id,name',
                     'genres:id,name',
                     'voiceActing:id,name',
                 ]

@@ -14,10 +14,10 @@ use Illuminate\Contracts\Support\Arrayable;
 readonly class CreateUserDTO implements Arrayable
 {
     public function __construct(
-        public int    $telegramId,
-        public string $firstName,
-        public string $lastName,
-        public string $userName
+        public int     $telegramId,
+        public ?string $firstName = null,
+        public ?string $lastName = null,
+        public ?string $userName = null
     ) {
     }
 

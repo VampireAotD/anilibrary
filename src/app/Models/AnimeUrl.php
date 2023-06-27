@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * App\Models\AnimeUrl
  *
- * @property string $anime_id
- * @property string $url
+ * @property string                          $anime_id
+ * @property string                          $url
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Anime $anime
+ * @property-read \App\Models\Anime          $anime
+ * @property-read Attribute                  $toTelegramKeyboardButton
  * @method static \Database\Factories\AnimeUrlFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newQuery()

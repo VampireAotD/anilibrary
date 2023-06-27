@@ -29,6 +29,7 @@ class TelegramUserRepository extends BaseRepository implements TelegramUserRepos
                 if (!$telegramUser->user) {
                     $telegramUser->user()->create(
                         [
+                            'email'            => sprintf('email.%d@change.me', $telegramUser->telegram_id),
                             'telegram_user_id' => $telegramUser->id,
                             'password'         => bcrypt(Str::random()),
                         ]
