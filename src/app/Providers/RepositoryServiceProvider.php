@@ -7,11 +7,9 @@ namespace App\Providers;
 use App\Repositories\AnimeRepository;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Repositories\Contracts\GenreRepositoryInterface;
-use App\Repositories\Contracts\TagRepositoryInterface;
 use App\Repositories\Contracts\TelegramUserRepositoryInterface;
 use App\Repositories\Contracts\VoiceActingRepositoryInterface;
 use App\Repositories\GenreRepository;
-use App\Repositories\TagRepository;
 use App\Repositories\TelegramUserRepository;
 use App\Repositories\VoiceActingRepository;
 use Illuminate\Support\ServiceProvider;
@@ -25,7 +23,6 @@ class RepositoryServiceProvider extends ServiceProvider
     public array $bindings = [
         TelegramUserRepositoryInterface::class => TelegramUserRepository::class,
         AnimeRepositoryInterface::class        => AnimeRepository::class,
-        TagRepositoryInterface::class          => TagRepository::class,
         VoiceActingRepositoryInterface::class  => VoiceActingRepository::class,
         GenreRepositoryInterface::class        => GenreRepository::class,
     ];

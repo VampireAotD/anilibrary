@@ -4,80 +4,93 @@ declare(strict_types=1);
 
 namespace App\Services\Telegram;
 
-use App\DTO\Service\CallbackData\CreateCallbackDataDTO;
-use App\DTO\Service\Telegram\CreateAnimeCaptionDTO;
-use App\Enums\Telegram\AnimeCaptionEnum;
-use App\Enums\Telegram\CallbackQueryEnum;
+use App\DTO\Factory\Telegram\CallbackData\PaginationCallbackDataDTO;
+use App\DTO\Service\Telegram\Caption\CaptionDTO;
+use App\DTO\Service\Telegram\Caption\PaginationCaptionDTO;
+use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
+use App\Factory\Telegram\CallbackData\CallbackDataFactory;
+use App\Models\Anime;
 use App\Models\AnimeUrl;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Class CaptionService
  * @package App\Services\Telegram
  */
-class CaptionService
+readonly class CaptionService
 {
-    public function __construct(private readonly CallbackDataService $callbackQueryService)
+    public function __construct(private CallbackDataFactory $callbackDataFactory)
     {
     }
 
+    public function create(CaptionDTO $dto): array
+    {
+        switch ($dto) {
+            case $dto instanceof ViewAnimeCaptionDTO:
+                $caption = $this->createAnimeCaption($dto->anime);
+                break;
+            case $dto instanceof PaginationCaptionDTO:
+                /** @psalm-suppress NoValue */
+                $caption = $this->createPaginationCaption($dto);
+                break;
+            default:
+                return [];
+        }
+
+        return $caption + ['chat_id' => $dto->chatId];
+    }
+
     /**
-     * @param CreateAnimeCaptionDTO $dto
+     * @param Anime $anime
      * @return array
      */
-    public function create(CreateAnimeCaptionDTO $dto): array
+    private function createAnimeCaption(Anime $anime): array
     {
-        $anime = $dto->anime;
-
         $keyboard = $anime->urls->map(
-            fn(AnimeUrl $animeUrl) => [
-                'text' => AnimeCaptionEnum::LINK->value,
-                'url'  => $animeUrl->url,
-            ]
+            fn(AnimeUrl $animeUrl) => $animeUrl->toTelegramKeyboardButton
         )->toArray();
 
-        $response = [
-            'caption'      => $anime->caption,
+        return [
+            'caption'      => $anime->toTelegramCaption,
             'photo'        => $anime->image->path,
             'reply_markup' => [
                 'inline_keyboard' => [$keyboard],
             ],
-            'chat_id'      => $dto->chatId,
         ];
-
-        if ($dto->paginator) {
-            $response['reply_markup']['inline_keyboard'][] = $this->generatePaginationMarkup($dto->paginator);
-        }
-
-        return $response;
     }
 
     /**
-     * @param LengthAwarePaginator $paginator
+     * @param PaginationCaptionDTO $dto
      * @return array
      */
-    private function generatePaginationMarkup(LengthAwarePaginator $paginator): array
+    private function createPaginationCaption(PaginationCaptionDTO $dto): array
     {
-        $pages = [];
+        if ($dto->paginator->isEmpty()) {
+            return [];
+        }
 
-        if ($paginator->previousPageUrl()) {
-            $pages[] = [
+        $caption  = $this->createAnimeCaption($dto->paginator->first());
+        $controls = [];
+
+        if ($dto->paginator->previousPageUrl()) {
+            $controls[] = [
                 'text'          => '<',
-                'callback_data' => $this->callbackQueryService->create(
-                    new CreateCallbackDataDTO(CallbackQueryEnum::PAGINATION, pageNumber: $paginator->currentPage() - 1),
+                'callback_data' => $this->callbackDataFactory->resolve(
+                    new PaginationCallbackDataDTO($dto->paginator->currentPage() - 1, $dto->queryType)
                 ),
             ];
         }
 
-        if ($paginator->hasMorePages()) {
-            $pages[] = [
+        if ($dto->paginator->hasMorePages()) {
+            $controls[] = [
                 'text'          => '>',
-                'callback_data' => $this->callbackQueryService->create(
-                    new CreateCallbackDataDTO(CallbackQueryEnum::PAGINATION, pageNumber: $paginator->currentPage() + 1)
+                'callback_data' => $this->callbackDataFactory->resolve(
+                    new PaginationCallbackDataDTO($dto->paginator->currentPage() + 1, $dto->queryType)
                 ),
             ];
         }
 
-        return $pages;
+        $caption['reply_markup']['inline_keyboard'][] = $controls;
+
+        return $caption;
     }
 }

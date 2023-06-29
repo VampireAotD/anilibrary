@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Tests\Traits;
 
 use CloudinaryLabs\CloudinaryLaravel\CloudinaryEngine;
-use PHPUnit\Framework\MockObject\MockObject;
+use Elastic\Elasticsearch\Client as ElasticsearchClient;
+use Elastic\Elasticsearch\ClientBuilder;
+use Elastic\Elasticsearch\Exception\AuthenticationException;
+use Http\Mock\Client;
+use PHPUnit\Framework\MockObject\Exception;
 use WeStacks\TeleBot\Laravel\TeleBot as LaravelWrapper;
 use WeStacks\TeleBot\TeleBot;
 
@@ -15,25 +19,35 @@ use WeStacks\TeleBot\TeleBot;
  */
 trait CanCreateMocks
 {
-    /**
-     * @return TeleBot
-     */
-    public function createFakeBot(): TeleBot
+    protected TeleBot $bot;
+    protected Client  $mockClient;
+
+    protected function setUpFakeBot(): void
     {
         $bot = LaravelWrapper::bot()->fake();
         $bot->clearHandlers();
 
-        return $bot;
+        $this->bot = $bot;
     }
 
     /**
-     * @return MockObject
+     * @throws Exception
      */
-    public function createCloudinaryMock(): MockObject
+    public function setUpFakeCloudinary(): void
     {
         $mock = $this->createMock(CloudinaryEngine::class);
-        $this->app->instance(CloudinaryEngine::class, $mock);
 
-        return $mock;
+        $this->app->instance(CloudinaryEngine::class, $mock);
+    }
+
+    /**
+     * @throws AuthenticationException
+     */
+    public function setUpFakeElasticsearchClient(): void
+    {
+        $mockClient = new Client();
+
+        $this->app->instance(ElasticsearchClient::class, ClientBuilder::create()->setHttpClient($mockClient)->build());
+        $this->mockClient = $mockClient;
     }
 }

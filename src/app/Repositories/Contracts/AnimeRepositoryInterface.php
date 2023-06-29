@@ -37,6 +37,6 @@ interface AnimeRepositoryInterface extends FindById, Paginate
      */
     public function getAll(
         array $columns = ['*'],
-        array $relations = ['image', 'genres', 'tags', 'voiceActing', 'urls', 'synonyms']
+        array $relations = ['image', 'genres', 'voiceActing', 'urls', 'synonyms']
     ): Collection;
 }

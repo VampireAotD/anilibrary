@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Telegram\Commands;
 
-use App\Enums\Telegram\CommandEnum;
+use App\DTO\Service\Telegram\CreateUserDTO;
+use App\Enums\Telegram\Commands\CommandEnum;
+use App\Enums\Telegram\Commands\StartCommandEnum;
+use App\Jobs\Telegram\RegisterUserJob;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Handlers\CommandHandler;
 use WeStacks\TeleBot\Objects\Message;
@@ -15,8 +18,6 @@ use WeStacks\TeleBot\Objects\Message;
  */
 class StartCommand extends CommandHandler
 {
-    private const WELCOME_MESSAGE = "Вас приветствует AniLibrary Bot!\xF0\x9F\x91\x8B\nПожалуйста, выберете интересующее Вас действие:";
-
     /**
      * The name and signature of the console command.
      *
@@ -36,22 +37,34 @@ class StartCommand extends CommandHandler
      */
     public function handle(): Message | PromiseInterface
     {
+        $user = $this->update->user();
+
+        if ($user && !$user->is_bot) {
+            /** @phpstan-ignore-next-line */
+            $dto = new CreateUserDTO($user->id, $user?->first_name, $user?->last_name ?? 'not set', $user?->username);
+
+            RegisterUserJob::dispatch($dto);
+        }
+
         return $this->sendMessage(
             [
-                'text'         => self::WELCOME_MESSAGE,
+                'text'         => StartCommandEnum::WELCOME_MESSAGE->value,
                 'reply_markup' => [
                     'keyboard'        => [
                         [
                             [
-                                'text' => CommandEnum::ADD_NEW_TITLE->value,
+                                'text' => CommandEnum::ADD_ANIME_BUTTON->value,
                             ],
                             [
-                                'text' => CommandEnum::RANDOM_ANIME->value,
+                                'text' => CommandEnum::RANDOM_ANIME_BUTTON->value,
                             ],
                         ],
                         [
                             [
-                                'text' => CommandEnum::ANIME_LIST->value,
+                                'text' => CommandEnum::ANIME_LIST_BUTTON->value,
+                            ],
+                            [
+                                'text' => CommandEnum::ANIME_SEARCH_BUTTON->value,
                             ],
                         ],
                     ],

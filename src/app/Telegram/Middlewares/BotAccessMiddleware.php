@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Telegram\Middlewares;
 
-use App\Enums\Telegram\BotAccessEnum;
+use App\Enums\Telegram\Middlewares\BotAccessEnum;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Objects\Message;
 use WeStacks\TeleBot\Objects\Update;
 use WeStacks\TeleBot\TeleBot;
 
+/**
+ * Class BotAccessMiddleware
+ * @package App\Telegram\Middlewares
+ */
 class BotAccessMiddleware
 {
     /**
@@ -22,7 +26,9 @@ class BotAccessMiddleware
     {
         $userId = $update->chat()->id;
 
-        if ($userId !== config('admin.id')) {
+        $whitelist = explode(',', config('telebot.whitelist', ''));
+
+        if (!in_array($userId, $whitelist)) {
             return $bot->sendMessage(
                 [
                     'chat_id' => $userId,

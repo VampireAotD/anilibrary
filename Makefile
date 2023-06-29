@@ -1,5 +1,5 @@
 docker_compose_bin := $(shell command -v docker-compose 2> /dev/null)
-queue_list         := add-anime,random-anime,anime-list,mail
+queue_list         := mail,register
 
 .PHONY: supervisor
 supervisor:
@@ -57,6 +57,10 @@ test:
 .PHONY: psalm
 psalm:
 	$(docker_compose_bin) exec app vendor/bin/psalm
+
+.PHONY: phpstan
+phpstan:
+	$(docker_compose_bin) exec app vendor/bin/phpstan analyse --memory-limit=2G
 
 .PHONY: optimize
 optimize:

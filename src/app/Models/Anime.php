@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Pivots\AnimeGenre;
-use App\Models\Pivots\AnimeTag;
 use App\Models\Pivots\AnimeVoiceActing;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -18,27 +17,25 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 /**
  * App\Models\Anime
  *
- * @property string                                                                   $id
- * @property string                                                                   $title
- * @property \Illuminate\Support\Carbon|null                                          $created_at
- * @property \Illuminate\Support\Carbon|null                                          $updated_at
- * @property string|null                                                              $deleted_at
- * @property string                                                                   $status
- * @property float                                                                    $rating
- * @property string|null                                                              $episodes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Genre[]        $genres
- * @property-read int|null                                                            $genres_count
- * @property-read string                                                              $caption
- * @property-read \App\Models\Image|null                                              $image
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AnimeSynonym[] $synonyms
- * @property-read int|null                                                            $synonyms_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[]          $tags
- * @property-read int|null                                                            $tags_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AnimeUrl[]     $urls
- * @property-read int|null                                                            $urls_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\VoiceActing[]  $voiceActing
- * @property-read int|null                                                            $voice_acting_count
- * @method static \Database\Factories\AnimeFactory factory(...$parameters)
+ * @property string                                                                       $id
+ * @property string                                                                       $title
+ * @property \Illuminate\Support\Carbon|null                                              $created_at
+ * @property \Illuminate\Support\Carbon|null                                              $updated_at
+ * @property string|null                                                                  $deleted_at
+ * @property string                                                                       $status
+ * @property float                                                                        $rating
+ * @property string|null                                                                  $episodes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Genre>        $genres
+ * @property-read int|null                                                                $genres_count
+ * @property-read \App\Models\Image|null                                                  $image
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AnimeSynonym> $synonyms
+ * @property-read int|null                                                                $synonyms_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AnimeUrl>     $urls
+ * @property-read int|null                                                                $urls_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VoiceActing>  $voiceActing
+ * @property-read int|null                                                                $voice_acting_count
+ * @property-read Attribute                                                               $toTelegramCaption
+ * @method static \Database\Factories\AnimeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime query()
@@ -94,15 +91,6 @@ class Anime extends Model
     }
 
     /**
-     * @return BelongsToMany
-     */
-    public function tags(): BelongsToMany
-    {
-        return $this->belongsToMany(Tag::class, AnimeTag::getTableName())
-                    ->using(AnimeTag::class);
-    }
-
-    /**
      * @return HasMany
      */
     public function synonyms(): HasMany
@@ -121,18 +109,17 @@ class Anime extends Model
     /**
      * @return Attribute
      */
-    public function caption(): Attribute
+    public function toTelegramCaption(): Attribute
     {
-        return new Attribute(
-            get: fn() => sprintf(
-                "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s\nТеги: %s",
+        return Attribute::make(
+            fn() => sprintf(
+                "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s",
                 $this->title,
                 $this->status,
                 $this->episodes,
                 $this->rating,
                 $this->voiceActing->implode('name', ', '),
                 $this->genres->implode('name', ', '),
-                $this->tags->implode('name', ', '),
             )
         );
     }

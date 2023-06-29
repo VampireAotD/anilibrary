@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Facades\Telegram\History\UserHistory as UserHistoryFacade;
-use App\Telegram\History\UserHistory;
+use App\Facades\Telegram\State\UserStateFacade;
+use App\Telegram\State\Redis\UserState;
 use Illuminate\Support\ServiceProvider;
 
 class FacadeServiceProvider extends ServiceProvider
@@ -27,6 +27,6 @@ class FacadeServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->bind(UserHistoryFacade::getFacadeAccessor(), fn() => $this->app->make(UserHistory::class));
+        $this->app->bind(UserStateFacade::getFacadeAccessor(), fn() => $this->app->make(UserState::class));
     }
 }

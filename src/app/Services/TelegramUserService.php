@@ -4,25 +4,26 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\DTO\Service\Telegram\CreateUserDTO;
 use App\Models\TelegramUser;
-use App\Models\User;
-use Illuminate\Support\Str;
+use App\Repositories\Contracts\TelegramUserRepositoryInterface;
 
 /**
  * Class TelegramUserService
  * @package App\Services
  */
-class TelegramUserService
+readonly class TelegramUserService
 {
-    public function register(array $data): bool
+    public function __construct(private TelegramUserRepositoryInterface $telegramUserRepository)
     {
-        $telegramUser = TelegramUser::create($data);
+    }
 
-        return User::create(
-            [
-                'telegram_user_id' => $telegramUser->id,
-                'password'         => Str::random(),
-            ]
-        )->save();
+    public function register(CreateUserDTO $dto): TelegramUser
+    {
+        if ($user = $this->telegramUserRepository->findByTelegramId($dto->telegramId)) {
+            return $user;
+        }
+
+        return $this->telegramUserRepository->upsert($dto->toArray());
     }
 }

@@ -23,8 +23,7 @@ class AnimeListMail extends Mailable
      */
     public function __construct()
     {
-        $this->onConnection('redis');
-        $this->onQueue(QueueEnum::MAIL_QUEUE->value);
+        $this->onQueue(QueueEnum::MAIL_QUEUE->value)->onConnection('redis');
     }
 
     /**
@@ -34,7 +33,7 @@ class AnimeListMail extends Mailable
      */
     public function build(): self
     {
-        return $this->from(config('admin.email'))
+        return $this->from(config('mail.from.address'))
                     ->attachFromStorageDisk('lists', config('lists.anime.file'))
                     ->markdown('emails.lists.anime-list');
     }

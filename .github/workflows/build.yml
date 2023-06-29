@@ -1,10 +1,6 @@
 name: Build
 
-on:
-  push:
-    branches: [ 'master', 'dev' ]
-  pull_request:
-    branches: [ 'master', 'dev' ]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -29,6 +25,9 @@ jobs:
 
       - name: Run Psalm
         run: ./vendor/bin/psalm -c psalm.xml
+
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan analyze --memory-limit=2G
 
       - name: Run tests
         run: php artisan test --coverage

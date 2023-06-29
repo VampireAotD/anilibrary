@@ -15,9 +15,8 @@ class GenreService
 {
     use CanGenerateNamesArray;
 
-    public function __construct(
-        private readonly GenreRepositoryInterface $genreRepository
-    ) {
+    public function __construct(private readonly GenreRepositoryInterface $genreRepository)
+    {
     }
 
     /**

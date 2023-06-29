@@ -1,6 +1,6 @@
 # Anilibrary
 
-Application for scraping anime data from different supported sites
+Telegram bot for scraping anime data from different supported sites
 
 [![Build](https://github.com/VampireAotD/anilibrary/actions/workflows/build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/build.yml)
 
@@ -9,18 +9,19 @@ Application for scraping anime data from different supported sites
 ## Services:
 
 - [`scraper`](https://github.com/VampireAotD/anilibrary-scraper)
+- [`elk`](https://github.com/VampireAotD/anilibrary-elk)
 - [`monitoring`](https://github.com/VampireAotD/anilibrary-monitoring)
 
 --- 
 
 ## Build
 
-Before building Anilibrary you need to place anime list in **src/storage/lists** folder
+Before building Anilibrary you may want to place anime list in **src/storage/lists** folder
 so that application could parse it.
 
-> **WARNING**: File name must be called `animeList.json` and has a valid JSON
+> **WARNING**: File name must be called `anime-list.json` and has a valid JSON
 
-You can skip this step and build Anilibrary if you don't need scraped data.
+You can skip this step and build Anilibrary if you don't need scraped data to fill database.
 
 To build Anilibrary you can use Makefile command `install` :
 
@@ -32,10 +33,10 @@ it will ensure that all images were built correctly, launch Supervisor,
 scheduler and queues worker. Queue list can be found in Makefile,
 it is called **queue_list**.
 
-Example of queue_list :
+Example of **queue_list** :
 
 ```
-queue_list := add-anime,random-anime,anime-list,mail
+queue_list := register-user,mail
 ```
 
 ---
@@ -46,14 +47,7 @@ Project is using [`Telebot`](https://github.com/westacks/telebot) library
 so all bots configs can be found in `src/config/telebot.php`.
 
 Also, some tests can require additional call of `fake()`
-method, more info in this [`issue`](https://github.com/westacks/telebot/issues/58).
-
----
-
-## TODO:
-
-1. <del>Move parsers logic to Go microservice</del>
-2. Add Elasticsearch and Logstash
-3. Write more tests
+method, or cannot be made because of `mock()` method, more info in
+this [`issue`](https://github.com/westacks/telebot/issues/58).
 
 ---

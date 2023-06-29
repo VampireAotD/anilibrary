@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Middlewares;
 
-use App\Enums\Telegram\CommandEnum;
-use App\Facades\Telegram\History\UserHistory;
+use App\Enums\Telegram\Commands\CommandEnum;
+use App\Facades\Telegram\State\UserStateFacade;
 use App\Telegram\Middlewares\UserActivityMiddleware;
 use Closure;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
-use WeStacks\TeleBot\TeleBot;
 
 class UserActivityMiddlewareTest extends TestCase
 {
     use CanCreateMocks,
         CanCreateFakeUpdates;
 
-    private TeleBot $bot;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->bot = $this->createFakeBot();
-        $this->bot->addHandler([new UserActivityMiddleware()]);
+        $this->setUpFakeBot();
+        $this->bot->addHandler([(new UserActivityMiddleware())(...)]);
     }
 
     /**
@@ -33,9 +30,9 @@ class UserActivityMiddlewareTest extends TestCase
      */
     public function testBotWillOnlyTrackUpdatesWithMessage(): void
     {
-        UserHistory::shouldReceive('addLastActiveTime')
-                   ->with($this->fakeTelegramId)
-                   ->once();
+        UserStateFacade::shouldReceive('setLastActiveAt')
+                       ->with(self::FAKE_TELEGRAM_ID)
+                       ->once();
 
         $update   = $this->createFakeChatMemberUpdate();
         $response = $this->bot->handleUpdate($update);
@@ -49,18 +46,18 @@ class UserActivityMiddlewareTest extends TestCase
      */
     public function testBotWillNotTrackRandomMessages(): void
     {
-        UserHistory::shouldReceive('addLastActiveTime')
-                   ->with($this->fakeTelegramId)
-                   ->once();
+        UserStateFacade::shouldReceive('setLastActiveAt')
+                       ->with(self::FAKE_TELEGRAM_ID)
+                       ->once();
 
-        UserHistory::shouldReceive('userLastExecutedCommand')
-                   ->with($this->fakeTelegramId)
-                   ->andReturnFalse();
+        UserStateFacade::shouldReceive('getLastExecutedCommand')
+                       ->with(self::FAKE_TELEGRAM_ID)
+                       ->andReturn('');
 
         $update   = $this->createFakeStickerMessageUpdate();
         $response = $this->bot->handleUpdate($update);
 
-        $this->assertFalse(UserHistory::userLastExecutedCommand($this->fakeTelegramId));
+        $this->assertEmpty(UserStateFacade::getLastExecutedCommand(self::FAKE_TELEGRAM_ID));
         $this->assertInstanceOf(Closure::class, $response);
         $this->assertNull($response());
     }
@@ -70,24 +67,24 @@ class UserActivityMiddlewareTest extends TestCase
      */
     public function testBotWillTrackOnlyAvailableCommands(): void
     {
-        UserHistory::shouldReceive('addLastActiveTime')
-                   ->with($this->fakeTelegramId)
-                   ->once();
+        UserStateFacade::shouldReceive('setLastActiveAt')
+                       ->with(self::FAKE_TELEGRAM_ID)
+                       ->once();
 
-        UserHistory::shouldReceive('addExecutedCommand')
-                   ->with($this->fakeTelegramId, CommandEnum::ANIME_LIST->value)
-                   ->once();
+        UserStateFacade::shouldReceive('addExecutedCommand')
+                       ->with(self::FAKE_TELEGRAM_ID, CommandEnum::ANIME_LIST_BUTTON->value)
+                       ->once();
 
-        UserHistory::shouldReceive('userLastExecutedCommand')
-                   ->with($this->fakeTelegramId)
-                   ->andReturn(CommandEnum::ANIME_LIST->value);
+        UserStateFacade::shouldReceive('getLastExecutedCommand')
+                       ->with(self::FAKE_TELEGRAM_ID)
+                       ->andReturn(CommandEnum::ANIME_LIST_BUTTON->value);
 
-        $update   = $this->createFakeTextMessageUpdate(message: CommandEnum::ANIME_LIST->value);
+        $update   = $this->createFakeTextMessageUpdate(CommandEnum::ANIME_LIST_BUTTON->value);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertEquals(
-            CommandEnum::ANIME_LIST->value,
-            UserHistory::userLastExecutedCommand($this->fakeTelegramId)
+            CommandEnum::ANIME_LIST_BUTTON->value,
+            UserStateFacade::getLastExecutedCommand(self::FAKE_TELEGRAM_ID)
         );
         $this->assertInstanceOf(Closure::class, $response);
         $this->assertNull($response());

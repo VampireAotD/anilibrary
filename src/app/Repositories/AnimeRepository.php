@@ -53,6 +53,7 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
      */
     public function findByUrl(string $url): ?Anime
     {
+        /** @phpstan-ignore-next-line */
         return $this->model()->withWhereHas(
             'urls',
             fn(Builder | HasMany $query) => $query->where('url', $url)
@@ -74,7 +75,7 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
      */
     public function getAll(
         array $columns = ['*'],
-        array $relations = ['image', 'genres', 'tags', 'voiceActing']
+        array $relations = ['image', 'genres', 'voiceActing', 'urls', 'synonyms']
     ): Collection {
         return $this->model()->select($columns)->with($relations)->get();
     }

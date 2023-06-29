@@ -1,9 +1,7 @@
 <?php
 
-use App\Telegram\Commands\StartCommand;
-use App\Telegram\Handlers\AddNewAnimeHandler;
-use App\Telegram\Handlers\CallbackQueryHandler;
-use App\Telegram\Handlers\CommandHandler;
+declare(strict_types=1);
+
 use App\Telegram\Middlewares\BotAccessMiddleware;
 use App\Telegram\Middlewares\UserActivityMiddleware;
 use App\Telegram\Middlewares\UserStatusMiddleware;
@@ -19,6 +17,16 @@ return [
     */
 
     'default' => 'anilibrary',
+
+    /*-------------------------------------------------------------------------
+    | Whitelist
+    |--------------------------------------------------------------------------
+    |
+    | A list of telegram ids that have access to bot, separated by coma
+    |
+    */
+
+    'whitelist' => env('TELEGRAM_WHITELIST', ''),
 
     /*-------------------------------------------------------------------------
     | Your Telegram Bots
@@ -43,28 +51,35 @@ return [
                 // 'certificate'       => env('TELEGRAM_BOT_CERT_PATH', storage_path('app/ssl/public.pem')),
                 // 'ip_address'        => '8.8.8.8',
                 // 'max_connections'   => 40,
-                // 'allowed_updates'   => ["message", "edited_channel_post", "callback_query"]
+                'allowed_updates' => ['message', 'callback_query', 'my_chat_member'],
             ],
 
             'poll' => [
                 // 'limit'             => 100,
                 // 'timeout'           => 0,
-                // 'allowed_updates'   => ["message", "edited_channel_post", "callback_query"]
+                'allowed_updates' => ['message', 'callback_query', 'my_chat_member'],
             ],
 
             'handlers' => [
                 // Middlewares
-                new UserStatusMiddleware(),
-                new BotAccessMiddleware(),
-                new UserActivityMiddleware(),
+                (new UserStatusMiddleware())(...),
+                (new BotAccessMiddleware())(...),
+                (new UserActivityMiddleware())(...),
 
                 // Commands
-                StartCommand::class,
+                \App\Telegram\Commands\StartCommand::class,
 
-                // Handlers,
-                CommandHandler::class,
-                CallbackQueryHandler::class,
-                AddNewAnimeHandler::class,
+                // Callbacks
+                \App\Telegram\Callbacks\ViewAnimeCallback::class,
+                \App\Telegram\Callbacks\AnimeListCallback::class,
+                \App\Telegram\Callbacks\AnimeSearchCallback::class,
+
+                // Handlers
+                \App\Telegram\Handlers\MessageHandler::class,
+                \App\Telegram\Handlers\AddAnimeHandler::class,
+                \App\Telegram\Handlers\RandomAnimeHandler::class,
+                \App\Telegram\Handlers\AnimeListHandler::class,
+                \App\Telegram\Handlers\AnimeSearchHandler::class,
             ],
         ],
     ],

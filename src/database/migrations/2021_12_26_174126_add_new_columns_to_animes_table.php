@@ -1,12 +1,13 @@
 <?php
 
-use App\Enums\Telegram\AnimeStatusEnum;
+declare(strict_types=1);
+
+use App\Enums\AnimeStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNewColumnsToAnimesTable extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -38,4 +39,4 @@ class AddNewColumnsToAnimesTable extends Migration
             }
         );
     }
-}
+};

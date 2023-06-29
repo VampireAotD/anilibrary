@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Anime          $anime
- * @method static \Database\Factories\AnimeUrlFactory factory(...$parameters)
+ * @property-read Attribute                  $toTelegramKeyboardButton
+ * @method static \Database\Factories\AnimeUrlFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl query()
@@ -38,5 +40,16 @@ class AnimeUrl extends Model
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);
+    }
+
+    public function toTelegramKeyboardButton(): Attribute
+    {
+        return Attribute::make(
+            function () {
+                $domain = parse_url($this->url)['host'] ?? '';
+
+                return ['text' => $domain, 'url' => $this->url];
+            }
+        );
     }
 }

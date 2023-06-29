@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class AlterUsersTable extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -18,7 +19,7 @@ class AlterUsersTable extends Migration
             Schema::table(
                 'users',
                 function (Blueprint $table) {
-                    $table->dropColumn(['id', 'email', 'name', 'email_verified_at']);
+                    $table->dropColumn(['id', 'name']);
                 }
             );
 
@@ -26,7 +27,8 @@ class AlterUsersTable extends Migration
                 'users',
                 function (Blueprint $table) {
                     $table->uuid('id')->first()->primary();
-                    $table->foreignUuid('telegram_user_id')->after('id')->constrained();
+                    $table->foreignUuid('telegram_user_id')->after('id')->constrained()->cascadeOnDelete();
+                    $table->string('name')->after('email')->nullable();
                 }
             );
 
@@ -34,12 +36,15 @@ class AlterUsersTable extends Migration
         }
 
         Schema::dropIfExists('users');
-        
+
         Schema::create(
             'users',
             function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->foreignUuid('telegram_user_id')->constrained();
+                $table->foreignUuid('telegram_user_id')->constrained()->cascadeOnDelete();
+                $table->string('name')->nullable();
+                $table->string('email')->unique();
+                $table->timestamp('email_verified_at')->nullable();
                 $table->string('password');
                 $table->rememberToken();
                 $table->timestamps();
@@ -59,9 +64,7 @@ class AlterUsersTable extends Migration
             function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
-                $table->string('email')->unique();
-                $table->timestamp('email_verified_at')->nullable();
             }
         );
     }
-}
+};

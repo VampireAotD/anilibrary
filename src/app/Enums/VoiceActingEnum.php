@@ -7,16 +7,16 @@ namespace App\Enums;
 use App\Enums\Traits\CanProvideCasesValues;
 
 /**
- * enum VoiceActingEnum
+ * Enum VoiceActingEnum
  * @package App\Enums
  */
-enum VoiceActingEnum: string
+enum VoiceActingEnum : string
 {
     use CanProvideCasesValues;
 
-    case ANIDUB = 'AniDUB';
-    case ANILIBRIA = 'AniLibria';
+    case ANIDUB      = 'AniDUB';
+    case ANILIBRIA   = 'AniLibria';
     case STUDIO_BAND = 'Студийная Банда';
-    case ANIMEVOST = 'AnimeVost';
-    case DREAM_CAST = 'Dream Cast';
+    case ANIMEVOST   = 'AnimeVost';
+    case DREAM_CAST  = 'Dream Cast';
 }
