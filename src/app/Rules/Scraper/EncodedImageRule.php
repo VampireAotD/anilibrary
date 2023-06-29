@@ -25,10 +25,12 @@ final class EncodedImageRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (
-            $value !== config('cloudinary.default_image')
+            $value === config('cloudinary.default_image')
             || preg_match('#data:(image/jpeg|image/jpg|image/png|image/gif|image/webp);base64,.#mi', $value)
         ) {
-            $fail(EncodedImageRuleEnum::INVALID_ENCODING->value);
+            return;
         }
+
+        $fail(EncodedImageRuleEnum::INVALID_ENCODING->value);
     }
 }

@@ -145,10 +145,22 @@ class AnimeUseCaseTest extends TestCase
         $this->assertTrue($foundAnime->synonyms->intersect($anime->synonyms)->isNotEmpty());
     }
 
+    public static function validEncodedImageProvider(): array
+    {
+        return [
+            [sprintf('data:image/jpeg;base64,%s', Str::random())],
+            [sprintf('data:image/jpg;base64,%s', Str::random())],
+            [sprintf('data:image/png;base64,%s', Str::random())],
+            [sprintf('data:image/gif;base64,%s', Str::random())],
+            [sprintf('data:image/webp;base64,%s', Str::random())],
+        ];
+    }
+
     /**
+     * @dataProvider validEncodedImageProvider
      * @return void
      */
-    public function testCanCreateAnime(): void
+    public function testCanCreateAnime(string $image): void
     {
         Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
         Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
@@ -157,7 +169,7 @@ class AnimeUseCaseTest extends TestCase
             [
                 self::SCRAPER_ENDPOINT => [
                     'title'       => $this->faker->sentence,
-                    'image'       => config('cloudinary.default_image'),
+                    'image'       => $image,
                     'status'      => $this->faker->randomElement(AnimeStatusEnum::values()),
                     'episodes'    => $this->faker->randomAscii,
                     'rating'      => $this->faker->randomFloat(),
