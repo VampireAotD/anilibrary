@@ -7,8 +7,6 @@ namespace App\Repositories;
 use App\Models\TelegramUser;
 use App\Repositories\Contracts\TelegramUserRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 /**
  * Class TelegramUserRepository
@@ -17,36 +15,16 @@ use Illuminate\Support\Str;
 class TelegramUserRepository extends BaseRepository implements TelegramUserRepositoryInterface
 {
     /**
-     * @param array $data
-     * @return TelegramUser
-     */
-    public function upsert(array $data): TelegramUser
-    {
-        return DB::transaction(
-            function () use ($data) {
-                $telegramUser = $this->model()->with('user')->updateOrCreate(['username' => $data['username']], $data);
-
-                if (!$telegramUser->user) {
-                    $telegramUser->user()->create(
-                        [
-                            'email'            => sprintf('email.%d@change.me', $telegramUser->telegram_id),
-                            'telegram_user_id' => $telegramUser->id,
-                            'password'         => bcrypt(Str::random()),
-                        ]
-                    );
-                }
-
-                return $telegramUser;
-            }
-        );
-    }
-
-    /**
      * @return Builder|TelegramUser
      */
     protected function model(): Builder | TelegramUser
     {
         return TelegramUser::query();
+    }
+
+    public function upsert(array $data): TelegramUser
+    {
+        return $this->model()->with('user')->updateOrCreate(['telegram_id' => $data['telegram_id']], $data);
     }
 
     /**

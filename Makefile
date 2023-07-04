@@ -41,14 +41,7 @@ app:
 
 .PHONY: install
 install:
-	$(info Initialising app...)
-	@cp .env.example .env;
-	@make build;
-	$(docker_compose_bin) exec app cp .env.example .env;
-	$(docker_compose_bin) exec app composer install;
-	$(docker_compose_bin) exec app ./artisan key:generate;
-	$(docker_compose_bin) exec app ./artisan migrate --seed;
-	$(docker_compose_bin) exec app ./artisan anime-list:parse;
+	./bin/install.sh
 
 .PHONY: test
 test:
@@ -72,3 +65,11 @@ ide-helper:
 	$(docker_compose_bin) exec app ./artisan ide-helper:generate;
 	$(docker_compose_bin) exec app ./artisan ide-helper:model --reset -W;
 	$(docker_compose_bin) exec app ./artisan ide-helper:meta;
+
+.PHONY: yarn-watch
+yarn-watch:
+	$(docker_compose_bin) run --service-ports --rm node run dev
+
+.PHONY: yarn-build
+yarn-build:
+	$(docker_compose_bin) run --service-ports --rm node run build

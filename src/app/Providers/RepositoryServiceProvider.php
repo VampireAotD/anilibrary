@@ -8,9 +8,11 @@ use App\Repositories\AnimeRepository;
 use App\Repositories\Contracts\AnimeRepositoryInterface;
 use App\Repositories\Contracts\GenreRepositoryInterface;
 use App\Repositories\Contracts\TelegramUserRepositoryInterface;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\Contracts\VoiceActingRepositoryInterface;
 use App\Repositories\GenreRepository;
 use App\Repositories\TelegramUserRepository;
+use App\Repositories\UserRepository;
 use App\Repositories\VoiceActingRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,6 +27,7 @@ class RepositoryServiceProvider extends ServiceProvider
         AnimeRepositoryInterface::class        => AnimeRepository::class,
         VoiceActingRepositoryInterface::class  => VoiceActingRepository::class,
         GenreRepositoryInterface::class        => GenreRepository::class,
+        UserRepositoryInterface::class         => UserRepository::class,
     ];
 
     /**

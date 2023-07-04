@@ -26,7 +26,7 @@ class UpsertAnimeJob implements ShouldQueue
      */
     public function __construct(public readonly Anime $anime)
     {
-        $this->onQueue(QueueEnum::UPSERT_ANIME_IN_ELASTICSEARCH_QUEUE->value)->onConnection('redis');
+        $this->afterCommit()->onQueue(QueueEnum::UPSERT_ANIME_IN_ELASTICSEARCH_QUEUE->value)->onConnection('redis');
     }
 
     /**

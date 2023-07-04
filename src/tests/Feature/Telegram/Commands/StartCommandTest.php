@@ -7,6 +7,7 @@ namespace Tests\Feature\Telegram\Commands;
 use App\Enums\Telegram\Commands\StartCommandEnum;
 use App\Jobs\Telegram\RegisterUserJob;
 use App\Telegram\Commands\StartCommand;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
@@ -14,7 +15,8 @@ use Tests\Traits\CanCreateMocks;
 
 class StartCommandTest extends TestCase
 {
-    use CanCreateMocks,
+    use RefreshDatabase,
+        CanCreateMocks,
         CanCreateFakeUpdates;
 
     protected function setUp(): void
@@ -56,7 +58,10 @@ class StartCommandTest extends TestCase
         $update   = $this->createFakeCommandUpdateWithUser('/start');
         $response = $this->bot->handleUpdate($update);
 
-        Bus::assertDispatched(RegisterUserJob::class);
+        Bus::assertDispatched(
+            RegisterUserJob::class,
+            fn(RegisterUserJob $job) => $job->dto->telegramId === self::FAKE_TELEGRAM_ID
+        );
 
         $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
     }

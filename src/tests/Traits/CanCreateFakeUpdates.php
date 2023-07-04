@@ -61,14 +61,11 @@ trait CanCreateFakeUpdates
             [
                 'message' => [
                     'from'     => [
-                        'id'         => $this->faker->randomNumber(),
+                        'id'         => $chatId,
                         'first_name' => $this->faker->firstName,
                         'last_name'  => $this->faker->lastName,
                         'username'   => $this->faker->userName,
                         'is_bot'     => false,
-                    ],
-                    'chat'     => [
-                        'id' => $chatId,
                     ],
                     'text'     => $commandAlias,
                     'entities' => [

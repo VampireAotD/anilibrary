@@ -26,7 +26,7 @@ return new class extends Migration {
             function (Blueprint $table) {
                 $table->string('first_name')->after('telegram_id')->nullable();
                 $table->string('last_name')->after('first_name')->nullable();
-                $table->string('username')->after('last_name')->unique()->nullable();
+                $table->string('username')->after('last_name')->nullable();
             }
         );
     }
@@ -42,7 +42,7 @@ return new class extends Migration {
             'telegram_users',
             function (Blueprint $table) {
                 $table->addColumn('string', 'nickname');
-                $table->addColumn('string', 'username')->unique();
+                $table->addColumn('string', 'username');
             }
         );
     }

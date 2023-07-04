@@ -1,9 +1,14 @@
 .idea
-/docker
+.github
+bin
 /src/storage
+/src/node_modules
+/src/vendor
 .env
+.env.*
 .gitignore
 docker-compose.yml
+LICENSE
 Makefile
 README.md
 /src/.phpstorm.meta.php

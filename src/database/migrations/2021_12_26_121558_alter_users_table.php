@@ -19,7 +19,7 @@ return new class extends Migration {
             Schema::table(
                 'users',
                 function (Blueprint $table) {
-                    $table->dropColumn(['id', 'name']);
+                    $table->dropColumn(['id']);
                 }
             );
 
@@ -27,8 +27,11 @@ return new class extends Migration {
                 'users',
                 function (Blueprint $table) {
                     $table->uuid('id')->first()->primary();
-                    $table->foreignUuid('telegram_user_id')->after('id')->constrained()->cascadeOnDelete();
-                    $table->string('name')->after('email')->nullable();
+                    $table->foreignUuid('telegram_user_id')
+                          ->nullable()
+                          ->after('id')
+                          ->constrained()
+                          ->cascadeOnDelete();
                 }
             );
 
@@ -41,8 +44,8 @@ return new class extends Migration {
             'users',
             function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->foreignUuid('telegram_user_id')->constrained()->cascadeOnDelete();
-                $table->string('name')->nullable();
+                $table->foreignUuid('telegram_user_id')->nullable()->constrained()->cascadeOnDelete();
+                $table->string('name');
                 $table->string('email')->unique();
                 $table->timestamp('email_verified_at')->nullable();
                 $table->string('password');
@@ -62,8 +65,7 @@ return new class extends Migration {
         Schema::table(
             'users',
             function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
+                $table->id()->first();
             }
         );
     }

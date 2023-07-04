@@ -18,9 +18,9 @@ return new class extends Migration {
             'telegram_users',
             function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->bigInteger('telegram_id')->index();
+                $table->bigInteger('telegram_id')->unique();
                 $table->string('nickname');
-                $table->string('username')->unique();
+                $table->string('username');
                 $table->timestamps();
             }
         );
