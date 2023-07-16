@@ -10,5 +10,7 @@ interface UserRepositoryInterface
 {
     public function upsert(array $data): User;
 
+    public function findOwner(): ?User;
+
     public function findByEmail(string $email): ?User;
 }

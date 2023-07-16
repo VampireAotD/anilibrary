@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,6 +27,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function upsert(array $data): User
     {
         return $this->model()->updateOrCreate(['email' => $data['email']], $data);
+    }
+
+    public function findOwner(): ?User
+    {
+        return $this->model()->role(RoleEnum::OWNER->value)->first();
     }
 
     public function findByEmail(string $email): ?User

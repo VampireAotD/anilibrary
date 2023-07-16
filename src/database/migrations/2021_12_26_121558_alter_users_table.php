@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -15,42 +14,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        if (DB::connection()->getDriverName() !== 'sqlite') {
-            Schema::table(
-                'users',
-                function (Blueprint $table) {
-                    $table->dropColumn(['id']);
-                }
-            );
-
-            Schema::table(
-                'users',
-                function (Blueprint $table) {
-                    $table->uuid('id')->first()->primary();
-                    $table->foreignUuid('telegram_user_id')
-                          ->nullable()
-                          ->after('id')
-                          ->constrained()
-                          ->cascadeOnDelete();
-                }
-            );
-
-            return;
-        }
-
-        Schema::dropIfExists('users');
-
-        Schema::create(
+        Schema::table(
             'users',
             function (Blueprint $table) {
-                $table->uuid('id')->primary();
-                $table->foreignUuid('telegram_user_id')->nullable()->constrained()->cascadeOnDelete();
-                $table->string('name');
-                $table->string('email')->unique();
-                $table->timestamp('email_verified_at')->nullable();
-                $table->string('password');
-                $table->rememberToken();
-                $table->timestamps();
+                $table->dropPrimary('id');
+                $table->uuid('id')->first()->primary()->change();
             }
         );
     }
@@ -65,7 +33,7 @@ return new class extends Migration {
         Schema::table(
             'users',
             function (Blueprint $table) {
-                $table->id()->first();
+                $table->id()->first()->change();
             }
         );
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * App\Models\User
@@ -48,9 +50,13 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuids;
+    use HasApiTokens;
+    use HasFactory;
+    use HasRoles;
+    use HasUuids;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -58,7 +64,6 @@ class User extends Authenticatable
      * @var array<string>
      */
     protected $fillable = [
-        'telegram_user_id',
         'name',
         'email',
         'password',
@@ -88,6 +93,6 @@ class User extends Authenticatable
      */
     public function telegramUser(): HasOne
     {
-        return $this->hasOne(TelegramUser::class, 'id', 'telegram_user_id');
+        return $this->hasOne(TelegramUser::class);
     }
 }

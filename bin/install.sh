@@ -58,6 +58,6 @@ if ! $compose exec app ./artisan anime-list:parse >/dev/null 2>&1; then
 fi
 
 log 'Resolving owner'
-$compose exec app ./artisan setup:resolve-owner
+$compose exec app ./artisan setup:create-owner
 
 echo '⠿ Anilibrary has been successfully installed!'

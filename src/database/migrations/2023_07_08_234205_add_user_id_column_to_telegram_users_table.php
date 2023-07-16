@@ -9,30 +9,26 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
         Schema::table(
-            'images',
+            'telegram_users',
             function (Blueprint $table) {
-                $table->string('alias')->after('path');
+                $table->foreignUuid('user_id')->after('id')->nullable()->constrained()->cascadeOnDelete();
             }
         );
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {
         Schema::table(
-            'images',
+            'telegram_users',
             function (Blueprint $table) {
-                $table->dropColumn(['alias']);
+                $table->dropConstrainedForeignId('user_id');
             }
         );
     }

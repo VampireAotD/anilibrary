@@ -6,10 +6,10 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Telegram\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(
@@ -23,36 +23,64 @@ Route::middleware('guest')->group(
 
 Route::middleware('auth')->group(
     function () {
-        Route::get('verify-email', EmailVerificationPromptController::class)
-             ->name('verification.notice');
+        Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-        Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-             ->middleware(['signed', 'throttle:6,1'])
-             ->name('verification.verify');
+        Route::group(
+            ['name' => 'telegram', 'as' => 'telegram.', 'prefix' => 'telegram'],
+            function () {
+                Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
+                     ->middleware(['auth', 'signed', 'throttle:6,1'])
+                     ->name('verification.verify');
 
-        Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-             ->middleware('throttle:6,1')
-             ->name('verification.send');
+                Route::post(
+                    '/email/verification-notification',
+                    [EmailVerificationNotificationController::class, 'store']
+                )
+                     ->middleware(['auth', 'throttle:6,1'])
+                     ->name('verification.send');
+                Route::middleware('telegram.validate-response')
+                     ->get('login', [LoginController::class, 'store'])
+                     ->name('login');
+            }
+        );
 
-        Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-             ->name('password.confirm');
+        Route::group(
+            ['name' => 'email-verification', 'as' => 'verification.'],
+            function () {
+                Route::get('verify-email', EmailVerificationPromptController::class)->name('notice');
 
-        Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+                Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+                     ->middleware(['signed', 'throttle:6,1'])
+                     ->name('verify');
 
-        Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+                Route::post(
+                    'email/verification-notification',
+                    [EmailVerificationNotificationController::class, 'store']
+                )
+                     ->middleware('throttle:6,1')
+                     ->name('send');
+            }
+        );
 
-        Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-             ->name('password.reset');
+        Route::group(
+            ['name' => 'password', 'as' => 'password.'],
+            function () {
+                Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+                     ->name('confirm');
 
-        Route::post('reset-password', [NewPasswordController::class, 'store'])
-             ->name('password.store');
+                Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
-        Route::get('register', [RegisteredUserController::class, 'create'])
-             ->name('register');
+                Route::put('password', [PasswordController::class, 'update'])->name('update');
+            }
+        );
 
-        Route::post('register', [RegisteredUserController::class, 'store']);
+        Route::middleware('role:owner')->group(
+            function () {
+                Route::get('register', [RegisteredUserController::class, 'create'])
+                     ->name('register');
 
-        Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-             ->name('logout');
+                Route::post('register', [RegisteredUserController::class, 'store']);
+            }
+        );
     }
 );

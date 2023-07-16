@@ -38,6 +38,7 @@ class TelegramUser extends Model
 
     protected $fillable = [
         'telegram_id',
+        'user_id',
         'first_name',
         'last_name',
         'username',
@@ -48,6 +49,6 @@ class TelegramUser extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'telegram_user_id');
+        return $this->belongsTo(User::class);
     }
 }

@@ -4,41 +4,56 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Setup;
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class ResolveOwnerCommand extends Command
+class CreateOwnerCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'setup:resolve-owner';
+    protected $signature = 'setup:create-owner';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Resolve Anilibrary owner';
+    protected $description = 'Create Anilibrary owner if none exists';
+
+    /**
+     * Max attempts to provide email or password
+     *
+     * @var int
+     */
+    protected int $maxAttempts = 3;
 
     /**
      * Execute the console command.
      */
     public function handle(UserRepositoryInterface $userRepository): int
     {
-        if (config('app.env') === 'production') {
-            return Command::SUCCESS;
+        if (config('app.env') === 'production' || $userRepository->findOwner()) {
+            return Command::INVALID;
         }
 
-        $email    = $this->askEmail();
-        $password = $this->askPassword();
+        $email = $this->askEmail();
+
+        if (!$email) {
+            $this->error('Exceeded maximum tries to provide valid email address');
+
+            return Command::FAILURE;
+        }
+
+        $password = Str::random();
 
         $user = $userRepository->upsert(
             [
@@ -48,17 +63,23 @@ class ResolveOwnerCommand extends Command
             ]
         );
 
+        $user->assignRole(RoleEnum::OWNER->value);
         $user->markEmailAsVerified();
 
-        $this->info('Owner has been added');
+        $this->info('Owner has been created');
+        $this->newLine()->info(sprintf('Credentials - email: %s, password: %s', $email, $password));
 
         return Command::SUCCESS;
     }
 
-    private function askEmail(): string
+    private function askEmail(int $attempts = 1): string
     {
+        if ($attempts > $this->maxAttempts) {
+            return '';
+        }
+
         try {
-            $email = $this->ask('Provide email');
+            $email = $this->ask('Provide valid email address');
 
             $validated = Validator::make(
                 ['email' => $email],
@@ -68,24 +89,8 @@ class ResolveOwnerCommand extends Command
             return $validated['email'];
         } catch (ValidationException $exception) {
             $this->warn($exception->getMessage());
-            return $this->askEmail();
-        }
-    }
 
-    private function askPassword(): string
-    {
-        try {
-            $password = $this->ask('Provide password');
-
-            $validated = Validator::make(
-                ['password' => $password],
-                ['password' => Password::required()]
-            )->validated();
-
-            return $validated['password'];
-        } catch (ValidationException $exception) {
-            $this->warn($exception->getMessage());
-            return $this->askPassword();
+            return $this->askEmail(++$attempts);
         }
     }
 }
