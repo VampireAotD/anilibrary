@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Anime\IndexRequest;
 use App\Http\Requests\Anime\UpdateRequest;
 use App\Models\Anime;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use App\Repositories\Filters\PaginationFilter;
 use App\Services\AnimeService;
 use Illuminate\Http\Request;

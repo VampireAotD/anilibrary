@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Contracts;
+namespace App\Repositories\Genre;
 
-use App\Repositories\Contracts\Common\FindByName;
-use App\Repositories\Contracts\Common\UpsertMany;
+use App\Repositories\Contracts\FindByName;
+use App\Repositories\Contracts\UpsertMany;
 
 /**
  * Interface GenreRepositoryInterface

@@ -7,7 +7,7 @@ namespace App\Services;
 use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\DTO\Service\Anime\UpdateAnimeDTO;
 use App\Models\Anime;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use App\Traits\CanTransformArray;
 use Illuminate\Support\Facades\DB;
 

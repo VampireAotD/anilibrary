@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories;
+namespace App\Repositories\VoiceActing;
 
-use App\Models\Genre;
-use App\Repositories\Contracts\GenreRepositoryInterface;
+use App\Models\VoiceActing;
+use App\Repositories\BaseRepository;
 use App\Repositories\Traits\CanSearchByName;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class GenreRepository
+ * Class VoiceActingRepository
  * @package App\Repositories
  */
-class GenreRepository extends BaseRepository implements GenreRepositoryInterface
+class VoiceActingRepository extends BaseRepository implements VoiceActingRepositoryInterface
 {
     use CanSearchByName;
 
     /**
-     * @return Builder|Genre
+     * @return Builder|VoiceActing
      */
-    protected function model(): Builder | Genre
+    protected function model(): Builder | VoiceActing
     {
-        return Genre::query();
+        return VoiceActing::query();
     }
 
     /**

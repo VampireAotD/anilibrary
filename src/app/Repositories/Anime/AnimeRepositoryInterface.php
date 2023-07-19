@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories\Contracts;
+namespace App\Repositories\Anime;
 
 use App\Models\Anime;
-use App\Repositories\Contracts\Common\FindById;
-use App\Repositories\Contracts\Common\Paginate;
+use App\Repositories\Contracts\FindById;
+use App\Repositories\Contracts\Paginate;
 use Illuminate\Database\Eloquent\Collection;
 
 /**

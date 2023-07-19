@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories;
+namespace App\Repositories\TelegramUser;
 
 use App\Models\TelegramUser;
-use App\Repositories\Contracts\TelegramUserRepositoryInterface;
+use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
 
 /**

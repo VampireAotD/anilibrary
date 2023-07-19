@@ -11,7 +11,7 @@ use App\Models\AnimeUrl;
 use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Setup;
 
 use App\Enums\RoleEnum;
-use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

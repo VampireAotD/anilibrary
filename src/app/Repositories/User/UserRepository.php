@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories;
+namespace App\Repositories\User;
 
 use App\Enums\RoleEnum;
 use App\Models\User;
-use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
 
 /**

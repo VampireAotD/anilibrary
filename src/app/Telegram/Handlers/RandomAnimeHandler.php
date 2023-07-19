@@ -8,7 +8,7 @@ use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\RandomAnimeEnum;
 use App\Facades\Telegram\State\UserStateFacade;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use App\Services\Telegram\CaptionService;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Repositories\Contracts\VoiceActingRepositoryInterface;
+use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
 use App\Traits\CanTransformArray;
 
 /**

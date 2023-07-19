@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories;
+namespace App\Repositories\Anime;
 
 use App\Models\Anime;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\BaseRepository;
 use App\Repositories\Filters\PaginationFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

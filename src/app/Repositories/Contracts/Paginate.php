@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Contracts\Common;
+namespace App\Repositories\Contracts;
 
 use App\Repositories\Filters\PaginationFilter;
 use Illuminate\Pagination\LengthAwarePaginator;

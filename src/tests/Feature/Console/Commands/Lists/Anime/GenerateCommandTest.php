@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Lists\Anime;
 
 use App\Mail\AnimeListMail;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;

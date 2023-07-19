@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Contracts\Common;
+namespace App\Repositories\Contracts;
 
 /**
  * Interface UpsertMany

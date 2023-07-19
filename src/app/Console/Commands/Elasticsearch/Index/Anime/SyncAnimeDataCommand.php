@@ -6,7 +6,7 @@ namespace App\Console\Commands\Elasticsearch\Index\Anime;
 
 use App\Enums\Elasticsearch\IndexEnum;
 use App\Models\Anime;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;

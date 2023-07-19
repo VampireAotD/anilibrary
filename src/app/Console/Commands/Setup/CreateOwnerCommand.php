@@ -6,7 +6,7 @@ namespace App\Console\Commands\Setup;
 
 use App\Enums\RoleEnum;
 use App\Models\User;
-use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;

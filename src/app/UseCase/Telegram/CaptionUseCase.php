@@ -10,7 +10,7 @@ use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
 use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Models\Anime;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use App\Repositories\Filters\PaginationFilter;
 use App\Services\Telegram\CaptionService;
 use App\Services\Telegram\HashService;
