@@ -10,12 +10,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeData;
+use Tests\Traits\Fake\CanCreateFakeAnime;
 
 class GenerateCommandTest extends TestCase
 {
-    use RefreshDatabase,
-        CanCreateFakeData;
+    use RefreshDatabase;
+    use CanCreateFakeAnime;
 
     private AnimeRepositoryInterface $animeRepository;
 
@@ -31,7 +31,7 @@ class GenerateCommandTest extends TestCase
      */
     public function testCommandCanGenerateAnimeList(): void
     {
-        $this->createRandomAnimeWithRelations(10);
+        $this->createAnimeCollectionWithRelations(10);
 
         Mail::fake();
         Storage::fake('lists');

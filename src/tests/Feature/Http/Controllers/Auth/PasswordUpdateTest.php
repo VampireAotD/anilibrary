@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class PasswordUpdateTest extends TestCase
 {
     use RefreshDatabase;
+    use CanCreateFakeUsers;
 
     public function testPasswordCanBeUpdated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
@@ -38,7 +39,7 @@ class PasswordUpdateTest extends TestCase
 
     public function testCorrectPasswordMustBeProvidedToUpdatePassword(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)

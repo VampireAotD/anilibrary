@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class AuthenticationControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use CanCreateFakeUsers;
 
     public function testLoginScreenCanBeRendered(): void
     {
@@ -22,7 +23,7 @@ class AuthenticationControllerTest extends TestCase
 
     public function testUsersCanAuthenticateUsingTheLoginScreen(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this->post(
             '/login',
@@ -38,7 +39,7 @@ class AuthenticationControllerTest extends TestCase
 
     public function testUsersCannotAuthenticateWithInvalidPassword(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $this->post(
             '/login',

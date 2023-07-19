@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\Contracts\Common;
 
+use App\Repositories\Filters\PaginationFilter;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -10,17 +13,5 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 interface Paginate
 {
-    /**
-     * @param int    $perPage
-     * @param array  $columns
-     * @param string $pageName
-     * @param int    $currentPage
-     * @return LengthAwarePaginator
-     */
-    public function paginate(
-        int    $perPage = 1,
-        array  $columns = ['*'],
-        string $pageName = 'page',
-        int    $currentPage = 1
-    ): LengthAwarePaginator;
+    public function paginate(PaginationFilter $filter): LengthAwarePaginator;
 }

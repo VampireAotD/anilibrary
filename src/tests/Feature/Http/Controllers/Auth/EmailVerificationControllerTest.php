@@ -4,25 +4,22 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
+use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class EmailVerificationControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use CanCreateFakeUsers;
 
     public function testEmailVerificationScreenCanBeRendered(): void
     {
-        $user = User::factory()->create(
-            [
-                'email_verified_at' => null,
-            ]
-        );
+        $user = $this->createUser(['email_verified_at' => null]);
 
         $response = $this->actingAs($user)->get('/verify-email');
 
@@ -31,11 +28,7 @@ class EmailVerificationControllerTest extends TestCase
 
     public function testEmailCanBeVerified(): void
     {
-        $user = User::factory()->create(
-            [
-                'email_verified_at' => null,
-            ]
-        );
+        $user = $this->createUser(['email_verified_at' => null]);
 
         Event::fake();
 
@@ -54,11 +47,7 @@ class EmailVerificationControllerTest extends TestCase
 
     public function testEmailIsNotVerifiedWithInvalidHash(): void
     {
-        $user = User::factory()->create(
-            [
-                'email_verified_at' => null,
-            ]
-        );
+        $user = $this->createUser(['email_verified_at' => null]);
 
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',

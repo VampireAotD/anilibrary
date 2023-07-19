@@ -4,51 +4,63 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Enums\RoleEnum;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use App\Services\SignedUrlService;
+use Carbon\Carbon;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase,
+        WithFaker;
+
+    private SignedUrlService $signedUrlService;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->seed(RoleSeeder::class);
+        $this->signedUrlService = $this->app->make(SignedUrlService::class);
     }
 
-    public function testRegistrationScreenCannotBeRenderedIfUserIsNotLoggedIn(): void
+    public function testRegisterScreenCannotBeRenderedIfThereIsNoSignature(): void
     {
-        $response = $this->get('/register');
-
-        $response->assertRedirectToRoute('login');
+        $this->get(route('register'))->assertForbidden();
     }
 
-    public function testRegistrationScreenCannotBeRenderedIfUserIsNotOwner(): void
+    public function testRegistrationScreenCannotBeRenderedIfSignatureIsInvalid(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->get('/register');
-
-        $response->assertForbidden();
+        $this->get(
+            route(
+                'register',
+                [
+                    'expires'   => now()->unix(),
+                    'signature' => $this->faker->name,
+                ]
+            )
+        )->assertForbidden();
     }
 
-    public function testOwnerCanRegisterNewUsers(): void
+    public function testRegistrationScreenCannotBeRenderedIfUrlIsExpired(): void
     {
-        $user = User::factory()->create();
+        $url = $this->signedUrlService->createRegistrationUrl();
 
-        $user->assignRole(RoleEnum::OWNER->value);
+        Carbon::setTestNow(now()->addMinutes(config('auth.registration_link_timeout') + 1));
 
-        $response = $this->actingAs($user)->post(
+        $this->get($url)->assertForbidden();
+    }
+
+    public function testUserCanRegister(): void
+    {
+        $response = $this->post(
             '/register',
             [
-                'name'                  => 'Test User',
-                'email'                 => 'test@example.com',
+                'name'                  => $this->faker->name,
+                'email'                 => $this->faker->unique()->email,
                 'password'              => 'password',
                 'password_confirmation' => 'password',
             ]

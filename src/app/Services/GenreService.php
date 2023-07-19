@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Repositories\Contracts\GenreRepositoryInterface;
-use App\Traits\CanGenerateNamesArray;
+use App\Traits\CanTransformArray;
 
 /**
  * Class GenreService
@@ -13,7 +13,7 @@ use App\Traits\CanGenerateNamesArray;
  */
 class GenreService
 {
-    use CanGenerateNamesArray;
+    use CanTransformArray;
 
     public function __construct(private readonly GenreRepositoryInterface $genreRepository)
     {
@@ -32,7 +32,7 @@ class GenreService
             return $stored->pluck('id')->toArray();
         }
 
-        $newGenres = $this->generateNamesArray($newGenres);
+        $newGenres = $this->toAssociativeArrayWithUuid('name', $newGenres);
 
         $this->genreRepository->upsertMany($newGenres, ['name']);
 

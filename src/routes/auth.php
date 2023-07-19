@@ -21,6 +21,17 @@ Route::middleware('guest')->group(
     }
 );
 
+Route::group(
+    ['name' => 'register'],
+    function () {
+        Route::get('register', [RegisteredUserController::class, 'create'])
+             ->middleware('signed')
+             ->name('register');
+
+        Route::post('register', [RegisteredUserController::class, 'store']);
+    }
+);
+
 Route::middleware('auth')->group(
     function () {
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -71,15 +82,6 @@ Route::middleware('auth')->group(
                 Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
                 Route::put('password', [PasswordController::class, 'update'])->name('update');
-            }
-        );
-
-        Route::middleware('role:owner')->group(
-            function () {
-                Route::get('register', [RegisteredUserController::class, 'create'])
-                     ->name('register');
-
-                Route::post('register', [RegisteredUserController::class, 'store']);
             }
         );
     }

@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class PasswordConfirmationTest extends TestCase
 {
     use RefreshDatabase;
+    use CanCreateFakeUsers;
 
     public function testConfirmPasswordScreenCanBeRendered(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->get('/confirm-password');
-
-        $response->assertStatus(200);
+        $this->actingAs($this->createUser())->get('/confirm-password')->assertOk();
     }
 
     public function testPasswordCanBeConfirmed(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->post(
+        $response = $this->actingAs($this->createUser())->post(
             '/confirm-password',
             [
                 'password' => 'password',
@@ -38,9 +33,7 @@ class PasswordConfirmationTest extends TestCase
 
     public function testPasswordIsNotConfirmedWithInvalidPassword(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->post(
+        $response = $this->actingAs($this->createUser())->post(
             '/confirm-password',
             [
                 'password' => 'wrong-password',

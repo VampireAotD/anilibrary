@@ -35,14 +35,15 @@ const showingNavigationDropdown = ref(false);
                             </div>
 
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex" v-if="hasRole('owner')">
-                                <NavLink :href="route('register')" :active="route().current('register')">
-                                    Register new user
+                                <NavLink :href="route('invitation.create')"
+                                         :active="route().current('invitation.create')">
+                                    Send invitation to Anilibrary
                                 </NavLink>
                             </div>
 
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('register')" :active="route().current('register')">
-                                    Register new user
+                                <NavLink :href="route('anime.index')" :active="route().current('anime.index')">
+                                    Anime
                                 </NavLink>
                             </div>
                         </div>

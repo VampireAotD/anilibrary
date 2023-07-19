@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Profile;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class ProfileTest extends TestCase
 {
     use RefreshDatabase;
+    use CanCreateFakeUsers;
 
     public function testProfilePageIsDisplayed(): void
     {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->get('/profile');
-
-        $response->assertOk();
+        $this->actingAs($this->createUser())->get('/profile')->assertOk();
     }
 
     public function testProfileInformationCanBeUpdated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
@@ -50,7 +45,7 @@ class ProfileTest extends TestCase
 
     public function testEmailVerificationStatusIsUnchangedWhenTheEmailAddressIsUnchanged(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
@@ -71,7 +66,7 @@ class ProfileTest extends TestCase
 
     public function testUserCanDeleteTheirAccount(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
@@ -92,7 +87,7 @@ class ProfileTest extends TestCase
 
     public function testCorrectPasswordMustBeProvidedToDeleteAccount(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)

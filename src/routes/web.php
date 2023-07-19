@@ -38,3 +38,5 @@ Route::middleware(['auth', 'verified'])->group(
 );
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/anime.php';
+require __DIR__ . '/invitation.php';

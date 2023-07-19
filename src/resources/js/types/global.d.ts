@@ -9,9 +9,9 @@ declare global {
         axios: AxiosInstance;
     }
 
-    let route: typeof ziggyRoute;
-    let Ziggy: ZiggyConfig;
-    let hasRole: typeof hasRoleChecker;
+    var route: typeof ziggyRoute;
+    var Ziggy: ZiggyConfig;
+    var hasRole: typeof hasRoleChecker;
 }
 
 declare module 'vue' {

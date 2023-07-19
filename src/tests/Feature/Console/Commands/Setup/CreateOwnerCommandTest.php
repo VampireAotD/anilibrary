@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Setup;
 
 use App\Enums\RoleEnum;
-use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class CreateOwnerCommandTest extends TestCase
 {
-    use RefreshDatabase,
-        WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
+    use CanCreateFakeUsers;
 
     private UserRepositoryInterface $userRepository;
 
@@ -31,26 +32,22 @@ class CreateOwnerCommandTest extends TestCase
     {
         config(['app.env' => 'production']);
 
-        $this->artisan('setup:create-owner')
-             ->assertFailed();
+        $this->artisan('setup:create-owner')->assertFailed();
     }
 
     public function testCommandWillFailIfOwnerAlreadyExists(): void
     {
-        User::factory()->create()->assignRole(RoleEnum::OWNER->value);
+        $this->createOwner();
 
-        $this->artisan('setup:create-owner')
-             ->assertFailed();
+        $this->artisan('setup:create-owner')->assertFailed();
     }
 
     public function testCommandWillFailIfUserWillExceedMaximumAttemptsToProvideValidEmailAddress(): void
     {
-        $user = User::factory()->create();
-
         $this->artisan('setup:create-owner')
              ->expectsQuestion('Provide valid email address', null)
              ->expectsQuestion('Provide valid email address', $this->faker->word)
-             ->expectsQuestion('Provide valid email address', $user->email)
+             ->expectsQuestion('Provide valid email address', $this->faker->randomAscii)
              ->expectsOutput('Exceeded maximum tries to provide valid email address')
              ->assertFailed();
     }

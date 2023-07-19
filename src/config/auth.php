@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -108,4 +110,17 @@ return [
 
     'password_timeout' => 10800,
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Registration Link Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Anilibrary is private app, so users can register only if they receive
+    | an invitation link. Here you can set how much time will invitation link
+    | will be active in minutes.
+    |
+    */
+
+    'registration_link_timeout' => 30,
 ];

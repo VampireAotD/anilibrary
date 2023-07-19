@@ -6,7 +6,7 @@ namespace Database\Seeders;
 
 use App\Enums\VoiceActingEnum;
 use App\Models\VoiceActing;
-use App\Traits\CanGenerateNamesArray;
+use App\Traits\CanTransformArray;
 use Illuminate\Database\Seeder;
 
 /**
@@ -15,7 +15,7 @@ use Illuminate\Database\Seeder;
  */
 class VoiceActingSeeder extends Seeder
 {
-    use CanGenerateNamesArray;
+    use CanTransformArray;
 
     /**
      * Run the database seeds.
@@ -24,6 +24,6 @@ class VoiceActingSeeder extends Seeder
      */
     public function run(): void
     {
-        VoiceActing::query()->upsert($this->generateNamesArray(VoiceActingEnum::values()), 'name');
+        VoiceActing::query()->upsert($this->toAssociativeArrayWithUuid('name', VoiceActingEnum::values()), 'name');
     }
 }

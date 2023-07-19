@@ -8,7 +8,6 @@ use App\Enums\RoleEnum;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class UserRepository
@@ -17,9 +16,9 @@ use Illuminate\Database\Eloquent\Model;
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
     /**
-     * @return Builder|Model
+     * @return Builder|User
      */
-    protected function model(): Builder | Model
+    protected function model(): Builder | User
     {
         return User::query();
     }
