@@ -6,7 +6,9 @@ namespace App\Services;
 
 use App\DTO\Service\Telegram\CreateUserDTO;
 use App\Models\TelegramUser;
-use App\Repositories\Contracts\TelegramUserRepositoryInterface;
+use App\Models\User;
+use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class TelegramUserService
@@ -18,12 +20,21 @@ readonly class TelegramUserService
     {
     }
 
-    public function register(CreateUserDTO $dto): TelegramUser
+    public function upsert(CreateUserDTO $dto): TelegramUser
     {
-        if ($user = $this->telegramUserRepository->findByTelegramId($dto->telegramId)) {
-            return $user;
-        }
-
         return $this->telegramUserRepository->upsert($dto->toArray());
+    }
+
+    public function createAndAttach(CreateUserDTO $dto, User $user): TelegramUser
+    {
+        return DB::transaction(
+            function () use ($dto, $user) {
+                $telegramUser = $this->upsert($dto);
+                
+                $telegramUser->user()->associate($user)->save();
+
+                return $telegramUser;
+            }
+        );
     }
 }

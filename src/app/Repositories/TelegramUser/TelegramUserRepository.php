@@ -24,7 +24,7 @@ class TelegramUserRepository extends BaseRepository implements TelegramUserRepos
 
     public function upsert(array $data): TelegramUser
     {
-        return $this->model()->with('user')->updateOrCreate(['telegram_id' => $data['telegram_id']], $data);
+        return $this->model()->updateOrCreate(['telegram_id' => $data['telegram_id']], $data);
     }
 
     /**
@@ -34,15 +34,6 @@ class TelegramUserRepository extends BaseRepository implements TelegramUserRepos
     public function findByTelegramId(int $telegramId): ?TelegramUser
     {
         return $this->model()->where('telegram_id', $telegramId)->first();
-    }
-
-    /**
-     * @param string $nickname
-     * @return TelegramUser|null
-     */
-    public function findByNickname(string $nickname): ?TelegramUser
-    {
-        return $this->model()->where('nickname', $nickname)->first();
     }
 
     /**

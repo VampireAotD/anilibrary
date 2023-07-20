@@ -3,10 +3,12 @@ import { AxiosInstance } from 'axios';
 import ziggyRoute, { Config as ZiggyConfig } from 'ziggy-js';
 import { PageProps as AppPageProps } from './';
 import { hasRole as hasRoleChecker } from "@/plugins/user/authorize";
+import { onTelegramAuth } from "@/types/telegram/types";
 
 declare global {
     interface Window {
         axios: AxiosInstance;
+        onTelegramAuth: typeof onTelegramAuth
     }
 
     var route: typeof ziggyRoute;

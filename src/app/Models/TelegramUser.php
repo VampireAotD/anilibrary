@@ -13,13 +13,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\TelegramUser
  *
  * @property string                          $id
+ * @property string|null                     $user_id
  * @property int                             $telegram_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null                     $first_name
  * @property string|null                     $last_name
  * @property string|null                     $username
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\User|null      $user
+ * @method static \Database\Factories\TelegramUserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser query()
@@ -29,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereTelegramId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUsername($value)
  * @mixin \Eloquent
  */

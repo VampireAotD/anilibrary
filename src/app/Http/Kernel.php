@@ -71,5 +71,7 @@ class Kernel extends HttpKernel
         'role'               => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission'         => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+        'telegram.signed'    => \App\Http\Middleware\Telegram\ValidateSignatureMiddleware::class,
+        'telegram.assigned'  => \App\Http\Middleware\Telegram\RedirectIfHasAssignedUserMiddleware::class,
     ];
 }

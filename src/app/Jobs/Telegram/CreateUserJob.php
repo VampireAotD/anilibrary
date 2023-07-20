@@ -13,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class RegisterUserJob implements ShouldQueue
+class CreateUserJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -30,6 +30,6 @@ class RegisterUserJob implements ShouldQueue
      */
     public function handle(TelegramUserService $telegramUserService): void
     {
-        $telegramUserService->register($this->dto);
+        $telegramUserService->upsert($this->dto);
     }
 }

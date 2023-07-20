@@ -9,7 +9,7 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\Telegram\LoginController;
+use App\Http\Controllers\Telegram\TelegramController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(
@@ -34,19 +34,12 @@ Route::middleware('auth')->group(
         Route::group(
             ['name' => 'telegram', 'as' => 'telegram.', 'prefix' => 'telegram'],
             function () {
-                Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
-                     ->middleware(['auth', 'signed', 'throttle:6,1'])
-                     ->name('verification.verify');
+                Route::middleware(['telegram.signed', 'telegram.assigned'])
+                     ->post('assign', [TelegramController::class, 'assign'])
+                     ->name('assign');
 
-                Route::post(
-                    '/email/verification-notification',
-                    [EmailVerificationNotificationController::class, 'store']
-                )
-                     ->middleware(['auth', 'throttle:6,1'])
-                     ->name('verification.send');
-                Route::middleware('telegram.validate-response')
-                     ->get('login', [LoginController::class, 'store'])
-                     ->name('login');
+                Route::delete('detach', [TelegramController::class, 'detach'])
+                     ->name('detach');
             }
         );
 
