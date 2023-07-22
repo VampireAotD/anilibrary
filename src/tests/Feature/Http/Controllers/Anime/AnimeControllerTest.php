@@ -19,13 +19,6 @@ class AnimeControllerTest extends TestCase
     use CanCreateFakeAnime;
     use CanCreateFakeUsers;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->withoutVite();
-    }
-
     public function testCannotInteractWithAnimeIfUserIsNotLoggedIn(): void
     {
         $this->get(route('anime.index'))->assertRedirect('/login');
