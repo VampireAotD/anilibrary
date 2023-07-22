@@ -34,7 +34,10 @@ class AnimeController extends Controller
         $perPage = (int) $request->get('per_page', 20);
 
         $filter     = new PaginationFilter($page, $perPage);
-        $pagination = $this->animeRepository->paginate($filter->withRelations('urls', 'image'));
+        $pagination = $this->animeRepository->paginate(
+            $filter->withColumns('id', 'title', 'episodes', 'rating', 'status')
+                   ->withRelations('image:model_id,path')
+        );
 
         return Inertia::render('Anime/Index', compact('pagination'));
     }
@@ -58,9 +61,19 @@ class AnimeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Anime $anime)
+    public function show(Anime $anime): Response
     {
-        //
+        $anime->load(
+            [
+                'image:model_id,path',
+                'urls:anime_id,url',
+                'synonyms:anime_id,synonym',
+                'voiceActing:name',
+                'genres:name',
+            ]
+        );
+
+        return Inertia::render('Anime/Show', compact('anime'));
     }
 
     /**

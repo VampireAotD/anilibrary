@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Anime\AnimeController;
 use App\Http\Controllers\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,9 +35,10 @@ Route::middleware(['auth', 'verified'])->group(
                 Route::delete('/profile', [ProfileController::class, 'destroy'])->name('destroy');
             }
         );
+
+        Route::resource('anime', AnimeController::class);
     }
 );
 
 require __DIR__ . '/auth.php';
-require __DIR__ . '/anime.php';
 require __DIR__ . '/invitation.php';

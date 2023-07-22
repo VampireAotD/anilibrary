@@ -6,6 +6,7 @@ namespace Tests\Feature\Http\Controllers\Anime;
 
 use App\Enums\AnimeStatusEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 use Tests\Traits\Fake\CanCreateFakeAnime;
@@ -14,6 +15,7 @@ use Tests\Traits\Fake\CanCreateFakeUsers;
 class AnimeControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
     use CanCreateFakeAnime;
     use CanCreateFakeUsers;
 
@@ -29,6 +31,12 @@ class AnimeControllerTest extends TestCase
         $this->get(route('anime.index'))->assertRedirect('/login');
     }
 
+    public function testCannotInteractWithAnimeIfUserIsNotVerified(): void
+    {
+        $user = $this->createUnverifiedUser();
+        $this->actingAs($user)->get(route('anime.index'))->assertRedirect('/verify-email');
+    }
+
     public function testCanViewIndexPageWithPagination(): void
     {
         $user = $this->createUser();
@@ -41,9 +49,7 @@ class AnimeControllerTest extends TestCase
                                      ->has('pagination.data', 20)
                                      ->has(
                                          'pagination.data.0',
-                                         fn(Assert $page) => $page->has('image')
-                                                                  ->has('urls')
-                                                                  ->etc()
+                                         fn(Assert $page) => $page->has('image')->etc()
                                      )
         );
     }
@@ -73,20 +79,45 @@ class AnimeControllerTest extends TestCase
         );
     }
 
+    public function testUserCanViewAnimeDetails(): void
+    {
+        $user  = $this->createUser();
+        $anime = $this->createAnimeWithRelations();
+
+        $this->actingAs($user)->get(route('anime.show', ['anime' => $anime->id]))->assertInertia(
+            fn(Assert $page) => $page->component('Anime/Show')
+                                     ->has('anime')
+                                     ->has('anime.image')
+                                     ->has('anime.urls')
+                                     ->has('anime.synonyms')
+                                     ->has('anime.voice_acting')
+                                     ->has('anime.genres')
+        );
+    }
+
     public function testCanUpdateAnime(): void
     {
-        $user     = $this->createUser();
-        $anime    = $this->createAnimeWithRelations();
-        $urls     = array_merge($anime->urls->pluck('url')->toArray(), [$url = fake()->url, $url]);
-        $synonyms = array_merge($anime->synonyms->pluck('synonym')->toArray(), [fake()->name]);
+        $user  = $this->createUser();
+        $anime = $this->createAnimeWithRelations();
 
-        $response = $this->actingAs($user)->put(
+        $this->assertEquals(1, $anime->urls->count());
+        $this->assertEquals(1, $anime->synonyms->count());
+
+        // For updating anime upsertRelated is used, so even if the same data will be sent multiple times
+        // they will be created only one time, other times they will be just updated
+        $urls     = array_merge($anime->urls->pluck('url')->toArray(), [$url = fake()->url, $url, $url]);
+        $synonyms = array_merge(
+            $anime->synonyms->pluck('synonym')->toArray(),
+            [$synonym = fake()->name, $synonym, $synonym]
+        );
+
+        $this->actingAs($user)->put(
             route('anime.update', [$anime->id]),
             [
-                'title'        => $anime->title . '11111111',
-                'status'       => AnimeStatusEnum::ANNOUNCE->value,
+                'title'        => $anime->title,
+                'status'       => $this->faker->randomElement(AnimeStatusEnum::values()),
                 'episodes'     => $anime->episodes,
-                'rating'       => $anime->rating,
+                'rating'       => $this->faker->randomNumber(),
                 'urls'         => $urls,
                 'synonyms'     => $synonyms,
                 'voice_acting' => $anime->voiceActing->pluck('id')->toArray(),
@@ -95,5 +126,8 @@ class AnimeControllerTest extends TestCase
         )->assertOk();
 
         $anime->refresh();
+
+        $this->assertEquals(2, $anime->urls->count());
+        $this->assertEquals(2, $anime->synonyms->count());
     }
 }

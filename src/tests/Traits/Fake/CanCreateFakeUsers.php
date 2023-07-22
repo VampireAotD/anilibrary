@@ -14,6 +14,11 @@ trait CanCreateFakeUsers
         return User::factory()->create($data);
     }
 
+    protected function createUnverifiedUser(array $data = []): User
+    {
+        return User::factory()->unverified()->create($data);
+    }
+
     protected function createOwner(array $data = []): User
     {
         return $this->createUser($data)->assignRole(RoleEnum::OWNER->value);
