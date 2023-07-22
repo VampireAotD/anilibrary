@@ -1,6 +1,8 @@
 # Anilibrary
 
-Telegram bot for scraping anime data from different supported sites
+Application for scraping anime data from different supported sites
+
+:warning: **This branch is under development and isn't suitable for production use!**
 
 [![Build](https://github.com/VampireAotD/anilibrary/actions/workflows/build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/build.yml)
 
