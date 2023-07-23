@@ -6,7 +6,7 @@ namespace App\Enums\Telegram\State\Redis;
 
 use App\Enums\Traits\CanProvideCasesValues;
 
-enum UserStateKeyEnum : string
+enum UserStateKeyEnum: string
 {
     use CanProvideCasesValues;
 

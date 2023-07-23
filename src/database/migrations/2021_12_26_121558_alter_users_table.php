@@ -14,13 +14,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table(
-            'users',
-            function (Blueprint $table) {
-                $table->dropPrimary('id');
-                $table->uuid('id')->first()->primary()->change();
-            }
-        );
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropPrimary('id');
+            $table->uuid('id')->first()->primary()->change();
+        });
     }
 
     /**
@@ -30,11 +27,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table(
-            'users',
-            function (Blueprint $table) {
-                $table->id()->first()->change();
-            }
-        );
+        Schema::table('users', function (Blueprint $table) {
+            $table->id()->first()->change();
+        });
     }
 };

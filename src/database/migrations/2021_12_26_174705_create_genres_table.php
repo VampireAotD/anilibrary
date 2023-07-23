@@ -14,15 +14,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create(
-            'genres',
-            function (Blueprint $table) {
-                $table->uuid('id')->primary();
-                $table->string('name')->unique();
-                $table->timestamps();
-                $table->softDeletes();
-            }
-        );
+        Schema::create('genres', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name')->unique();
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**

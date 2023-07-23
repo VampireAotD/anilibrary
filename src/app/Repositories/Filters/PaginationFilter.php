@@ -47,13 +47,10 @@ class PaginationFilter
 
         return $builder->select($this->columns)
                        ->when($this->relations, fn(Builder $builder) => $builder->with($this->relations))
-                       ->when(
-                           $this->whereIn,
-                           function (Builder $builder) {
-                               foreach ($this->whereIn as $key => $values) {
-                                   $builder->whereIn($key, $values);
-                               }
+                       ->when($this->whereIn, function (Builder $builder) {
+                           foreach ($this->whereIn as $key => $values) {
+                               $builder->whereIn($key, $values);
                            }
-                       );
+                       });
     }
 }

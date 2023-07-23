@@ -55,13 +55,11 @@ class CreateOwnerCommand extends Command
 
         $password = Str::random();
 
-        $user = $userRepository->upsert(
-            [
-                'name'     => 'owner',
-                'email'    => $email,
-                'password' => Hash::make($password),
-            ]
-        );
+        $user = $userRepository->upsert([
+            'name'     => 'owner',
+            'email'    => $email,
+            'password' => Hash::make($password),
+        ]);
 
         $user->assignRole(RoleEnum::OWNER->value);
         $user->markEmailAsVerified();

@@ -57,15 +57,13 @@ trait CanCreateFakeAnime
     {
         $collection = $this->createAnimeCollection($quantity);
 
-        $collection->each(
-            function (Anime $anime) {
-                $anime->image()->save(Image::factory()->make());
-                $anime->genres()->save(Genre::factory()->make());
-                $anime->voiceActing()->save(VoiceActing::factory()->make());
-                $anime->urls()->save(AnimeUrl::factory()->make());
-                $anime->synonyms()->save(AnimeSynonym::factory()->make());
-            }
-        );
+        $collection->each(function (Anime $anime) {
+            $anime->image()->save(Image::factory()->make());
+            $anime->genres()->save(Genre::factory()->make());
+            $anime->voiceActing()->save(VoiceActing::factory()->make());
+            $anime->urls()->save(AnimeUrl::factory()->make());
+            $anime->synonyms()->save(AnimeSynonym::factory()->make());
+        });
 
         return $collection;
     }

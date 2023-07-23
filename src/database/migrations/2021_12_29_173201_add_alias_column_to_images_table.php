@@ -14,12 +14,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table(
-            'images',
-            function (Blueprint $table) {
-                $table->string('alias')->after('path');
-            }
-        );
+        Schema::table('images', function (Blueprint $table) {
+            $table->string('alias')->after('path');
+        });
     }
 
     /**
@@ -29,11 +26,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table(
-            'images',
-            function (Blueprint $table) {
-                $table->dropColumn(['alias']);
-            }
-        );
+        Schema::table('images', function (Blueprint $table) {
+            $table->dropColumn(['alias']);
+        });
     }
 };

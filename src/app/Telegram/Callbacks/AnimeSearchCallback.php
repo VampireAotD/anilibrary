@@ -61,26 +61,21 @@ final class AnimeSearchCallback extends CallbackHandler
                 return;
             }
 
-            return $this->editMessageMedia(
-                [
-                    'media'        => [
-                        'media'   => $caption['photo'],
-                        'type'    => 'photo',
-                        'caption' => $caption['caption'],
-                    ],
-                    'reply_markup' => $caption['reply_markup'],
-                ]
-            );
+            return $this->editMessageMedia([
+                'media'        => [
+                    'media'   => $caption['photo'],
+                    'type'    => 'photo',
+                    'caption' => $caption['caption'],
+                ],
+                'reply_markup' => $caption['reply_markup'],
+            ]);
         } catch (TeleBotException) {
             // Prevent bot from breaking because of next or prev page spam
         } catch (Exception $exception) {
-            logger()->error(
-                'Anime search callback',
-                [
-                    'exception_message' => $exception->getMessage(),
-                    'exception_trace'   => $exception->getTraceAsString(),
-                ]
-            );
+            logger()->error('Anime search callback', [
+                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $exception->getTraceAsString(),
+            ]);
         }
     }
 }

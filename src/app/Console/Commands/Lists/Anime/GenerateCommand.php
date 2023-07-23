@@ -45,22 +45,19 @@ class GenerateCommand extends Command
      */
     public function handle(): int
     {
-        $animeList = $this->animeRepository->getAll(
-            [
-                'id',
-                'title',
-                'status',
-                'rating',
-                'episodes',
-            ],
-            [
-                'urls:anime_id,url',
-                'synonyms:anime_id,synonym',
-                'image:id,model_id,path,alias',
-                'genres:id,name',
-                'voiceActing:id,name',
-            ]
-        );
+        $animeList = $this->animeRepository->getAll([
+            'id',
+            'title',
+            'status',
+            'rating',
+            'episodes',
+        ], [
+            'urls:anime_id,url',
+            'synonyms:anime_id,synonym',
+            'image:id,model_id,path,alias',
+            'genres:id,name',
+            'voiceActing:id,name',
+        ]);
 
         Storage::disk('lists')->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
 

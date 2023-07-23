@@ -49,24 +49,17 @@ final class RandomAnimeHandler extends TextMessageUpdateHandler
             $randomAnime = $this->animeRepository->findRandomAnime();
 
             if (!$randomAnime) {
-                return $this->sendMessage(
-                    [
-                        'text' => RandomAnimeEnum::UNABLE_TO_FIND_ANIME->value,
-                    ]
-                );
+                return $this->sendMessage([
+                    'text' => RandomAnimeEnum::UNABLE_TO_FIND_ANIME->value,
+                ]);
             }
 
-            return $this->sendPhoto(
-                $this->captionService->create(new ViewAnimeCaptionDTO($randomAnime, $chatId))
-            );
+            return $this->sendPhoto($this->captionService->create(new ViewAnimeCaptionDTO($randomAnime, $chatId)));
         } catch (Exception $exception) {
-            logger()->error(
-                'Random anime handler',
-                [
-                    'exception_message' => $exception->getMessage(),
-                    'exception_trace'   => $exception->getTraceAsString(),
-                ]
-            );
+            logger()->error('Random anime handler', [
+                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $exception->getTraceAsString(),
+            ]);
         } finally {
             UserStateFacade::resetExecutedCommandsList($chatId);
         }

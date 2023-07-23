@@ -28,12 +28,12 @@ use Throwable;
 final readonly class AnimeUseCase
 {
     public function __construct(
+        private AnimeSynonymService $animeSynonymService,
         private RequestService      $requestService,
         private AnimeService        $animeService,
-        private AnimeSynonymService $animeSynonymService,
         private ImageService        $imageService,
         private VoiceActingService  $voiceActingService,
-        private GenreService        $genreService,
+        private GenreService        $genreService
     ) {
     }
 
@@ -75,35 +75,33 @@ final readonly class AnimeUseCase
             return $anime;
         }
 
-        return DB::transaction(
-            function () use ($dto): Anime {
-                $anime = $this->animeService->create(
-                    new CreateAnimeDTO($dto->title, $dto->status, $dto->rating, $dto->episodes)
+        return DB::transaction(function () use ($dto): Anime {
+            $anime = $this->animeService->create(
+                new CreateAnimeDTO($dto->title, $dto->status, $dto->rating, $dto->episodes)
+            );
+
+            $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
+
+            if ($dto->synonyms) {
+                $anime->synonyms()->upsertRelated(
+                    $this->animeSynonymService->mapIntoSynonymsArray($dto->synonyms),
+                    ['synonym']
                 );
-
-                $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
-
-                if ($dto->synonyms) {
-                    $anime->synonyms()->upsertRelated(
-                        $this->animeSynonymService->mapIntoSynonymsArray($dto->synonyms),
-                        ['synonym']
-                    );
-                }
-
-                if ($dto->image) {
-                    $this->imageService->upsert($dto->image, $anime);
-                }
-
-                if ($dto->voiceActing) {
-                    $anime->voiceActing()->sync($this->voiceActingService->sync($dto->voiceActing), false);
-                }
-
-                if ($dto->genres) {
-                    $anime->genres()->sync($this->genreService->sync($dto->genres), false);
-                }
-
-                return $anime;
             }
-        );
+
+            if ($dto->image) {
+                $this->imageService->upsert($dto->image, $anime);
+            }
+
+            if ($dto->voiceActing) {
+                $anime->voiceActing()->sync($this->voiceActingService->sync($dto->voiceActing), false);
+            }
+
+            if ($dto->genres) {
+                $anime->genres()->sync($this->genreService->sync($dto->genres), false);
+            }
+
+            return $anime;
+        });
     }
 }

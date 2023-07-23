@@ -8,7 +8,7 @@ namespace App\Enums\Telegram\Commands;
  * Enum StartCommandEnum
  * @package App\Enums\Telegram
  */
-enum StartCommandEnum : string
+enum StartCommandEnum: string
 {
     case WELCOME_MESSAGE = "Вас приветствует AniLibrary Bot!\nПожалуйста, выберите интересующее Вас действие:";
 }

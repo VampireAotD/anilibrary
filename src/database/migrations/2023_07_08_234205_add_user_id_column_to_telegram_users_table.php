@@ -12,12 +12,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table(
-            'telegram_users',
-            function (Blueprint $table) {
-                $table->foreignUuid('user_id')->after('id')->nullable()->constrained()->cascadeOnDelete();
-            }
-        );
+        Schema::table('telegram_users', function (Blueprint $table) {
+            $table->foreignUuid('user_id')->after('id')->nullable()->constrained()->cascadeOnDelete();
+        });
     }
 
     /**
@@ -25,11 +22,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table(
-            'telegram_users',
-            function (Blueprint $table) {
-                $table->dropConstrainedForeignId('user_id');
-            }
-        );
+        Schema::table('telegram_users', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('user_id');
+        });
     }
 };

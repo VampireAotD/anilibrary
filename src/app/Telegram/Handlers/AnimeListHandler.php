@@ -43,13 +43,10 @@ final class AnimeListHandler extends TextMessageUpdateHandler
 
             return $this->sendPhoto($caption);
         } catch (Exception $exception) {
-            logger()->error(
-                'Anime list handler',
-                [
-                    'exception_message' => $exception->getMessage(),
-                    'exception_trace'   => $exception->getTraceAsString(),
-                ]
-            );
+            logger()->error('Anime list handler', [
+                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $exception->getTraceAsString(),
+            ]);
         } finally {
             UserStateFacade::resetExecutedCommandsList($chatId);
         }

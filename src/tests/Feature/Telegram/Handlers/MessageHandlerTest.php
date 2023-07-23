@@ -14,8 +14,8 @@ use WeStacks\TeleBot\Objects\Message;
 
 class MessageHandlerTest extends TestCase
 {
-    use CanCreateMocks,
-        CanCreateFakeUpdates;
+    use CanCreateMocks;
+    use CanCreateFakeUpdates;
 
     protected function setUp(): void
     {

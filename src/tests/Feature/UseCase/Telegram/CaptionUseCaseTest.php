@@ -76,9 +76,7 @@ class CaptionUseCaseTest extends TestCase
     public function testCanCreateAnimeListPaginationCaption(): void
     {
         $animeList = $this->createAnimeCollectionWithRelations(3);
-        $caption   = $this->captionUseCase->createPaginationCaption(
-            new PaginationDTO($this->faker->randomNumber())
-        );
+        $caption   = $this->captionUseCase->createPaginationCaption(new PaginationDTO($this->faker->randomNumber()));
 
         $first = $animeList->first();
 
@@ -90,9 +88,7 @@ class CaptionUseCaseTest extends TestCase
         $this->assertCount(1, $caption['reply_markup']['inline_keyboard'][1]);
         $this->assertEquals('>', $caption['reply_markup']['inline_keyboard'][1][0]['text']);
 
-        $caption = $this->captionUseCase->createPaginationCaption(
-            new PaginationDTO($this->faker->randomNumber(), 2)
-        );
+        $caption = $this->captionUseCase->createPaginationCaption(new PaginationDTO($this->faker->randomNumber(), 2));
         $middle  = $animeList->offsetGet(1);
 
         $this->assertInstanceOf(Anime::class, $middle);
@@ -104,9 +100,7 @@ class CaptionUseCaseTest extends TestCase
         $this->assertEquals('<', $caption['reply_markup']['inline_keyboard'][1][0]['text']);
         $this->assertEquals('>', $caption['reply_markup']['inline_keyboard'][1][1]['text']);
 
-        $caption = $this->captionUseCase->createPaginationCaption(
-            new PaginationDTO($this->faker->randomNumber(), 3)
-        );
+        $caption = $this->captionUseCase->createPaginationCaption(new PaginationDTO($this->faker->randomNumber(), 3));
         $last    = $animeList->last();
 
         $this->assertInstanceOf(Anime::class, $last);

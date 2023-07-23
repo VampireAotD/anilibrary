@@ -29,6 +29,7 @@
         "barryvdh/laravel-ide-helper": "^2.13",
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^1.21",
+        "laravel/pint": "^1.10",
         "laravel/sail": "^1.22",
         "mockery/mockery": "^1.6.2",
         "nunomaduro/collision": "^7.6",

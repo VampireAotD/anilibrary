@@ -27,20 +27,12 @@ class ImageService
             cloudinary()->destroy($anime->image->alias);
         }
 
-        return Image::query()->updateOrCreate(
-            [
-                'model_id'   => $anime->id,
-                'model_type' => $anime::class,
-            ],
-            [
-                'alias' => $alias = sprintf(
-                    '%s/%s/%s',
-                    self::BASE_FOLDER,
-                    $anime->id,
-                    Str::random()
-                ),
-                'path'  => cloudinary()->uploadFile($image, ['public_id' => $alias])->getSecurePath(),
-            ]
-        );
+        return Image::query()->updateOrCreate([
+            'model_id'   => $anime->id,
+            'model_type' => $anime::class,
+        ], [
+            'alias' => $alias = sprintf('%s/%s/%s', self::BASE_FOLDER, $anime->id, Str::random()),
+            'path'  => cloudinary()->uploadFile($image, ['public_id' => $alias])->getSecurePath(),
+        ]);
     }
 }

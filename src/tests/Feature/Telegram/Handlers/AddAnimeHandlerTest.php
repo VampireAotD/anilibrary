@@ -94,15 +94,13 @@ class AddAnimeHandlerTest extends TestCase
      */
     public function testBotWillRespondWithFailureMessageIfScrapedDataWereInvalid(string $url): void
     {
-        Http::fake(
-            [
-                '*' => [
-                    'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                    'episodes' => $this->faker->randomAscii,
-                    'rating'   => $this->faker->randomFloat(),
-                ],
-            ]
-        );
+        Http::fake([
+            '*' => [
+                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
+                'episodes' => $this->faker->randomAscii,
+                'rating'   => $this->faker->randomFloat(),
+            ],
+        ]);
 
         Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
         Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
@@ -119,16 +117,14 @@ class AddAnimeHandlerTest extends TestCase
      */
     public function testBotCanScrapeSupportedUrls(string $url): void
     {
-        Http::fake(
-            [
-                '*' => [
-                    'title'    => $this->faker->sentence,
-                    'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                    'episodes' => $this->faker->randomAscii,
-                    'rating'   => $this->faker->randomFloat(),
-                ],
-            ]
-        );
+        Http::fake([
+            '*' => [
+                'title'    => $this->faker->sentence,
+                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
+                'episodes' => $this->faker->randomAscii,
+                'rating'   => $this->faker->randomFloat(),
+            ],
+        ]);
 
         Bus::fake();
 

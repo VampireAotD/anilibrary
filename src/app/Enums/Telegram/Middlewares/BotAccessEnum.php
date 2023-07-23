@@ -8,7 +8,7 @@ namespace App\Enums\Telegram\Middlewares;
  * Enum BotAccessEnum
  * @package App\Enums\Telegram\Middlewares
  */
-enum BotAccessEnum : string
+enum BotAccessEnum: string
 {
     case ACCESS_DENIED_MESSAGE = 'У Вас нет полномочий пользоваться данным ботом';
 }

@@ -8,7 +8,7 @@ namespace App\Enums\Telegram\Middlewares;
  * Enum ChatMemberStatusEnum
  * @package App\Enums\Telegram
  */
-enum ChatMemberStatusEnum : string
+enum ChatMemberStatusEnum: string
 {
     case MEMBER = 'member';
     case LEFT   = 'left';

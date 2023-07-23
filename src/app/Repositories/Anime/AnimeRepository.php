@@ -55,10 +55,8 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     public function findByUrl(string $url): ?Anime
     {
         /** @phpstan-ignore-next-line */
-        return $this->model()->withWhereHas(
-            'urls',
-            fn(Builder | HasMany $query) => $query->where('url', $url)
-        )->first();
+        return $this->model()
+                    ->withWhereHas('urls', fn(Builder | HasMany $query) => $query->where('url', $url))->first();
     }
 
     /**

@@ -19,7 +19,10 @@ use Illuminate\Queue\SerializesModels;
 
 class UpsertAnimeJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new job instance.
@@ -35,22 +38,17 @@ class UpsertAnimeJob implements ShouldQueue
     public function handle(Client $client): void
     {
         try {
-            $client->index(
-                [
-                    'index' => IndexEnum::ANIME_INDEX->value,
-                    'id'    => $this->anime->id,
-                    'body'  => $this->anime->toJson(),
-                ]
-            );
+            $client->index([
+                'index' => IndexEnum::ANIME_INDEX->value,
+                'id'    => $this->anime->id,
+                'body'  => $this->anime->toJson(),
+            ]);
         } catch (ClientResponseException | MissingParameterException | ServerResponseException $exception) {
-            logger()->error(
-                'Upsert anime job',
-                [
-                    'anime_id'          => $this->anime->id,
-                    'exception_trace'   => $exception->getTraceAsString(),
-                    'exception_message' => $exception->getMessage(),
-                ]
-            );
+            logger()->error('Upsert anime job', [
+                'anime_id'          => $this->anime->id,
+                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $exception->getMessage(),
+            ]);
         }
     }
 }

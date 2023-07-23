@@ -34,29 +34,27 @@ readonly class AnimeService
 
     public function update(Anime $anime, UpdateAnimeDTO $dto): Anime
     {
-        return DB::transaction(
-            function () use ($anime, $dto) {
-                $anime->update($dto->toArray());
+        return DB::transaction(function () use ($anime, $dto) {
+            $anime->update($dto->toArray());
 
-                if ($dto->urls) {
-                    $anime->urls()->upsertRelated($this->toAssociativeArray('url', $dto->urls), 'url');
-                }
-
-                if ($dto->synonyms) {
-                    $anime->synonyms()->upsertRelated($this->toAssociativeArray('synonym', $dto->synonyms), 'synonym');
-                }
-
-                if ($dto->voiceActing) {
-                    $anime->voiceActing()->sync($dto->voiceActing);
-                }
-
-                if ($dto->genres) {
-                    $anime->genres()->sync($dto->genres);
-                }
-
-                return $anime;
+            if ($dto->urls) {
+                $anime->urls()->upsertRelated($this->toAssociativeArray('url', $dto->urls), 'url');
             }
-        );
+
+            if ($dto->synonyms) {
+                $anime->synonyms()->upsertRelated($this->toAssociativeArray('synonym', $dto->synonyms), 'synonym');
+            }
+
+            if ($dto->voiceActing) {
+                $anime->voiceActing()->sync($dto->voiceActing);
+            }
+
+            if ($dto->genres) {
+                $anime->genres()->sync($dto->genres);
+            }
+
+            return $anime;
+        });
     }
 
     public function findByUrl(string $url): ?Anime

@@ -25,13 +25,10 @@ class AuthenticationControllerTest extends TestCase
     {
         $user = $this->createUser();
 
-        $response = $this->post(
-            '/login',
-            [
-                'email'    => $user->email,
-                'password' => 'password',
-            ]
-        );
+        $response = $this->post('/login', [
+            'email'    => $user->email,
+            'password' => 'password',
+        ]);
 
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
@@ -41,13 +38,10 @@ class AuthenticationControllerTest extends TestCase
     {
         $user = $this->createUser();
 
-        $this->post(
-            '/login',
-            [
-                'email'    => $user->email,
-                'password' => 'wrong-password',
-            ]
-        );
+        $this->post('/login', [
+            'email'    => $user->email,
+            'password' => 'wrong-password',
+        ]);
 
         $this->assertGuest();
     }

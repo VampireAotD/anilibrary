@@ -14,8 +14,8 @@ use Tests\Traits\CanCreateMocks;
 
 class UserStatusMiddlewareTest extends TestCase
 {
-    use CanCreateMocks,
-        CanCreateFakeUpdates;
+    use CanCreateMocks;
+    use CanCreateFakeUpdates;
 
     protected function setUp(): void
     {
@@ -43,12 +43,10 @@ class UserStatusMiddlewareTest extends TestCase
     public function testMiddlewareWillDeleteUserActivityIfHeDeletedOrLeftChatWithBot(): void
     {
         UserStateFacade::shouldReceive('resetExecutedCommandsList')->once();
-        $update   = $this->createFakeChatMemberUpdate(
-            [
-                'status'     => ChatMemberStatusEnum::KICKED->value,
-                'until_date' => 0,
-            ]
-        );
+        $update   = $this->createFakeChatMemberUpdate([
+            'status'     => ChatMemberStatusEnum::KICKED->value,
+            'until_date' => 0,
+        ]);
         $response = $this->bot->handleUpdate($update);
 
         $this->assertInstanceOf(Closure::class, $response);

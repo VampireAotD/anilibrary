@@ -60,32 +60,25 @@ class ParseCommand extends Command
         $bar       = $this->output->createProgressBar(count($animeList));
 
         foreach ($animeList as $parsed) {
-            DB::transaction(
-                function () use ($parsed) {
-                    $anime = $this->animeService->create(
-                        new CreateAnimeDTO(
-                            $parsed['title'],
-                            $parsed['status'],
-                            $parsed['rating'],
-                            $parsed['episodes']
-                        )
-                    );
+            DB::transaction(function () use ($parsed) {
+                $anime = $this->animeService->create(
+                    new CreateAnimeDTO($parsed['title'], $parsed['status'], $parsed['rating'], $parsed['episodes'])
+                );
 
-                    $synonyms = collect($parsed['synonyms'])->mapInto(AnimeSynonym::class);
-                    $anime->synonyms()->saveMany($synonyms);
+                $synonyms = collect($parsed['synonyms'])->mapInto(AnimeSynonym::class);
+                $anime->synonyms()->saveMany($synonyms);
 
-                    $urls = collect($parsed['urls'])->mapInto(AnimeUrl::class);
-                    $anime->urls()->saveMany($urls);
+                $urls = collect($parsed['urls'])->mapInto(AnimeUrl::class);
+                $anime->urls()->saveMany($urls);
 
-                    $anime->image()->create($parsed['image']);
+                $anime->image()->create($parsed['image']);
 
-                    Genre::upsert($parsed['genres'], 'name');
-                    $anime->genres()->sync(collect($parsed['genres'])->pluck('id')->toArray());
+                Genre::upsert($parsed['genres'], 'name');
+                $anime->genres()->sync(collect($parsed['genres'])->pluck('id')->toArray());
 
-                    VoiceActing::upsert($parsed['voice_acting'], 'name');
-                    $anime->voiceActing()->sync(collect($parsed['voice_acting'])->pluck('id')->toArray());
-                }
-            );
+                VoiceActing::upsert($parsed['voice_acting'], 'name');
+                $anime->voiceActing()->sync(collect($parsed['voice_acting'])->pluck('id')->toArray());
+            });
 
             $bar->advance(1);
         }

@@ -46,31 +46,29 @@ class StartCommand extends CommandHandler
             CreateUserJob::dispatch($dto);
         }
 
-        return $this->sendMessage(
-            [
-                'text'         => StartCommandEnum::WELCOME_MESSAGE->value,
-                'reply_markup' => [
-                    'keyboard'        => [
+        return $this->sendMessage([
+            'text'         => StartCommandEnum::WELCOME_MESSAGE->value,
+            'reply_markup' => [
+                'keyboard'        => [
+                    [
                         [
-                            [
-                                'text' => CommandEnum::ADD_ANIME_BUTTON->value,
-                            ],
-                            [
-                                'text' => CommandEnum::RANDOM_ANIME_BUTTON->value,
-                            ],
+                            'text' => CommandEnum::ADD_ANIME_BUTTON->value,
                         ],
                         [
-                            [
-                                'text' => CommandEnum::ANIME_LIST_BUTTON->value,
-                            ],
-                            [
-                                'text' => CommandEnum::ANIME_SEARCH_BUTTON->value,
-                            ],
+                            'text' => CommandEnum::RANDOM_ANIME_BUTTON->value,
                         ],
                     ],
-                    'resize_keyboard' => true,
+                    [
+                        [
+                            'text' => CommandEnum::ANIME_LIST_BUTTON->value,
+                        ],
+                        [
+                            'text' => CommandEnum::ANIME_SEARCH_BUTTON->value,
+                        ],
+                    ],
                 ],
-            ]
-        );
+                'resize_keyboard' => true,
+            ],
+        ]);
     }
 }

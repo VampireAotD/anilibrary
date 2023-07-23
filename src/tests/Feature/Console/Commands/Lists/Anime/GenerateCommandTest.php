@@ -43,31 +43,25 @@ class GenerateCommandTest extends TestCase
         $listFile = config('lists.anime.file');
 
         Storage::disk('lists')->assertExists($listFile);
-        Mail::assertQueued(
-            AnimeListMail::class,
-            function (AnimeListMail $mail) use ($listFile) {
-                $mail->build();
+        Mail::assertQueued(AnimeListMail::class, function (AnimeListMail $mail) use ($listFile) {
+            $mail->build();
 
-                return $mail->hasFrom(config('mail.from.address')) &&
-                    $mail->hasTo(config('mail.owner.address')) &&
-                    $mail->hasAttachmentFromStorageDisk('lists', $listFile);
-            }
-        );
+            return $mail->hasFrom(config('mail.from.address')) &&
+                $mail->hasTo(config('mail.owner.address')) &&
+                $mail->hasAttachmentFromStorageDisk('lists', $listFile);
+        });
 
         $json = Storage::disk('lists')->get($listFile);
 
         $this->assertJson($json);
         $this->assertJsonStringEqualsJsonString(
-            $this->animeRepository->getAll(
-                ['id', 'title', 'status', 'rating', 'episodes',],
-                [
-                    'urls:anime_id,url',
-                    'synonyms:anime_id,synonym',
-                    'image:id,model_id,path,alias',
-                    'genres:id,name',
-                    'voiceActing:id,name',
-                ]
-            )->toJson(JSON_PRETTY_PRINT),
+            $this->animeRepository->getAll(['id', 'title', 'status', 'rating', 'episodes',], [
+                'urls:anime_id,url',
+                'synonyms:anime_id,synonym',
+                'image:id,model_id,path,alias',
+                'genres:id,name',
+                'voiceActing:id,name',
+            ])->toJson(JSON_PRETTY_PRINT),
             $json
         );
 

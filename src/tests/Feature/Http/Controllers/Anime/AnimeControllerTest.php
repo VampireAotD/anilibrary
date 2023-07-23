@@ -40,10 +40,7 @@ class AnimeControllerTest extends TestCase
                                      ->has('pagination')
                                      ->has('pagination.next_page_url')
                                      ->has('pagination.data', 20)
-                                     ->has(
-                                         'pagination.data.0',
-                                         fn(Assert $page) => $page->has('image')->etc()
-                                     )
+                                     ->has('pagination.data.0', fn(Assert $page) => $page->has('image')->etc())
         );
     }
 
@@ -104,19 +101,16 @@ class AnimeControllerTest extends TestCase
             [$synonym = fake()->name, $synonym, $synonym]
         );
 
-        $this->actingAs($user)->put(
-            route('anime.update', [$anime->id]),
-            [
-                'title'        => $anime->title,
-                'status'       => $this->faker->randomElement(AnimeStatusEnum::values()),
-                'episodes'     => $anime->episodes,
-                'rating'       => $this->faker->randomNumber(),
-                'urls'         => $urls,
-                'synonyms'     => $synonyms,
-                'voice_acting' => $anime->voiceActing->pluck('id')->toArray(),
-                'genres'       => $anime->genres->pluck('id')->toArray(),
-            ]
-        )->assertOk();
+        $this->actingAs($user)->put(route('anime.update', [$anime->id]), [
+            'title'        => $anime->title,
+            'status'       => $this->faker->randomElement(AnimeStatusEnum::values()),
+            'episodes'     => $anime->episodes,
+            'rating'       => $this->faker->randomNumber(),
+            'urls'         => $urls,
+            'synonyms'     => $synonyms,
+            'voice_acting' => $anime->voiceActing->pluck('id')->toArray(),
+            'genres'       => $anime->genres->pluck('id')->toArray(),
+        ])->assertOk();
 
         $anime->refresh();
 

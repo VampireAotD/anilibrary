@@ -14,8 +14,8 @@ use Tests\TestCase;
 
 class RegistrationTest extends TestCase
 {
-    use RefreshDatabase,
-        WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     private SignedUrlService $signedUrlService;
 
@@ -35,13 +35,10 @@ class RegistrationTest extends TestCase
     public function testRegistrationScreenCannotBeRenderedIfSignatureIsInvalid(): void
     {
         $this->get(
-            route(
-                'register',
-                [
-                    'expires'   => now()->unix(),
-                    'signature' => $this->faker->name,
-                ]
-            )
+            route('register', [
+                'expires'   => now()->unix(),
+                'signature' => $this->faker->name,
+            ])
         )->assertForbidden();
     }
 
@@ -56,15 +53,12 @@ class RegistrationTest extends TestCase
 
     public function testUserCanRegister(): void
     {
-        $response = $this->post(
-            '/register',
-            [
-                'name'                  => $this->faker->name,
-                'email'                 => $this->faker->unique()->email,
-                'password'              => 'password',
-                'password_confirmation' => 'password',
-            ]
-        );
+        $response = $this->post('/register', [
+            'name'                  => $this->faker->name,
+            'email'                 => $this->faker->unique()->email,
+            'password'              => 'password',
+            'password_confirmation' => 'password',
+        ]);
 
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);

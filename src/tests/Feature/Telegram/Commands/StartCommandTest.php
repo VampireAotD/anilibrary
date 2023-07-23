@@ -15,9 +15,9 @@ use Tests\Traits\CanCreateMocks;
 
 class StartCommandTest extends TestCase
 {
-    use RefreshDatabase,
-        CanCreateMocks,
-        CanCreateFakeUpdates;
+    use RefreshDatabase;
+    use CanCreateMocks;
+    use CanCreateFakeUpdates;
 
     protected function setUp(): void
     {

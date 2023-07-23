@@ -27,14 +27,12 @@ readonly class TelegramUserService
 
     public function createAndAttach(CreateUserDTO $dto, User $user): TelegramUser
     {
-        return DB::transaction(
-            function () use ($dto, $user) {
-                $telegramUser = $this->upsert($dto);
-                
-                $telegramUser->user()->associate($user)->save();
+        return DB::transaction(function () use ($dto, $user) {
+            $telegramUser = $this->upsert($dto);
 
-                return $telegramUser;
-            }
-        );
+            $telegramUser->user()->associate($user)->save();
+
+            return $telegramUser;
+        });
     }
 }

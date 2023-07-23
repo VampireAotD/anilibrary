@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Laravel Cloudinary package.
  *
@@ -8,7 +10,6 @@
  */
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Cloudinary Configuration
@@ -20,7 +21,6 @@ return [
     |
     */
     'notification_url' => env('CLOUDINARY_NOTIFICATION_URL'),
-
 
     /*
     |--------------------------------------------------------------------------

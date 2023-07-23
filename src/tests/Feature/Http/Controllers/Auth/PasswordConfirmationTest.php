@@ -20,12 +20,9 @@ class PasswordConfirmationTest extends TestCase
 
     public function testPasswordCanBeConfirmed(): void
     {
-        $response = $this->actingAs($this->createUser())->post(
-            '/confirm-password',
-            [
-                'password' => 'password',
-            ]
-        );
+        $response = $this->actingAs($this->createUser())->post('/confirm-password', [
+            'password' => 'password',
+        ]);
 
         $response->assertRedirect();
         $response->assertSessionHasNoErrors();
@@ -33,12 +30,9 @@ class PasswordConfirmationTest extends TestCase
 
     public function testPasswordIsNotConfirmedWithInvalidPassword(): void
     {
-        $response = $this->actingAs($this->createUser())->post(
-            '/confirm-password',
-            [
-                'password' => 'wrong-password',
-            ]
-        );
+        $response = $this->actingAs($this->createUser())->post('/confirm-password', [
+            'password' => 'wrong-password',
+        ]);
 
         $response->assertSessionHasErrors();
     }

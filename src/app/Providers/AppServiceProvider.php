@@ -33,28 +33,25 @@ class AppServiceProvider extends ServiceProvider
 
     private function setUpElasticsearchClient(): void
     {
-        $this->app->singleton(
-            Client::class,
-            function () {
-                $rawHosts = config('elasticsearch.hosts');
-                $hosts    = [];
+        $this->app->singleton(Client::class, function () {
+            $rawHosts = config('elasticsearch.hosts');
+            $hosts    = [];
 
-                foreach ($rawHosts as $rawHost) {
-                    $hosts[] = sprintf(
-                        '%s://%s:%d',
-                        Arr::get($rawHost, 'scheme'),
-                        Arr::get($rawHost, 'host'),
-                        Arr::get($rawHost, 'port')
-                    );
-                }
-
-                return ClientBuilder::create()
-                                    ->setHosts($hosts)
-                                    ->setBasicAuthentication(
-                                        config('elasticsearch.auth.username'),
-                                        config('elasticsearch.auth.password')
-                                    )->build();
+            foreach ($rawHosts as $rawHost) {
+                $hosts[] = sprintf(
+                    '%s://%s:%d',
+                    Arr::get($rawHost, 'scheme'),
+                    Arr::get($rawHost, 'host'),
+                    Arr::get($rawHost, 'port')
+                );
             }
-        );
+
+            return ClientBuilder::create()
+                                ->setHosts($hosts)
+                                ->setBasicAuthentication(
+                                    config('elasticsearch.auth.username'),
+                                    config('elasticsearch.auth.password')
+                                )->build();
+        });
     }
 }

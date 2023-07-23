@@ -63,15 +63,13 @@ class AnimeController extends Controller
      */
     public function show(Anime $anime): Response
     {
-        $anime->load(
-            [
-                'image:model_id,path',
-                'urls:anime_id,url',
-                'synonyms:anime_id,synonym',
-                'voiceActing:name',
-                'genres:name',
-            ]
-        );
+        $anime->load([
+            'image:model_id,path',
+            'urls:anime_id,url',
+            'synonyms:anime_id,synonym',
+            'voiceActing:name',
+            'genres:name',
+        ]);
 
         return Inertia::render('Anime/Show', compact('anime'));
     }
@@ -96,13 +94,10 @@ class AnimeController extends Controller
 
             return Inertia::render('', compact('anime'));
         } catch (Throwable $exception) {
-            logger()->error(
-                'Updating anime',
-                [
-                    'exception_trace'   => $exception->getTraceAsString(),
-                    'exception_message' => $exception->getMessage(),
-                ]
-            );
+            logger()->error('Updating anime', [
+                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $exception->getMessage(),
+            ]);
 
             $errors = [$exception->getMessage()];
 

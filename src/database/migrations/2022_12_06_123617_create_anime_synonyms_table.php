@@ -14,14 +14,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create(
-            'anime_synonyms',
-            function (Blueprint $table) {
-                $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-                $table->string('synonym')->unique();
-                $table->timestamps();
-            }
-        );
+        Schema::create('anime_synonyms', function (Blueprint $table) {
+            $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('synonym')->unique();
+            $table->timestamps();
+        });
     }
 
     /**

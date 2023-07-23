@@ -54,16 +54,13 @@ class ParseCommandTest extends TestCase
         Storage::shouldReceive('disk->get')
                ->with(config('lists.anime.file'))
                ->andReturn(
-                   $this->animeRepository->getAll(
-                       ['id', 'title', 'status', 'rating', 'episodes'],
-                       [
-                           'urls:anime_id,url',
-                           'synonyms:anime_id,synonym',
-                           'image:id,model_id,path,alias',
-                           'genres:id,name',
-                           'voiceActing:id,name',
-                       ]
-                   )->toJson(JSON_PRETTY_PRINT)
+                   $this->animeRepository->getAll(['id', 'title', 'status', 'rating', 'episodes'], [
+                       'urls:anime_id,url',
+                       'synonyms:anime_id,synonym',
+                       'image:id,model_id,path,alias',
+                       'genres:id,name',
+                       'voiceActing:id,name',
+                   ])->toJson(JSON_PRETTY_PRINT)
                );
 
         $this->refreshTestDatabase();

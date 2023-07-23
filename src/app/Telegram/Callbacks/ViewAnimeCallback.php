@@ -62,13 +62,10 @@ final class ViewAnimeCallback extends CallbackHandler
 
             return $this->sendPhoto($caption);
         } catch (Exception $exception) {
-            logger()->error(
-                'View anime callback',
-                [
-                    'exception_message' => $exception->getMessage(),
-                    'exception_trace'   => $exception->getTraceAsString(),
-                ]
-            );
+            logger()->error('View anime callback', [
+                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $exception->getTraceAsString(),
+            ]);
         }
     }
 }

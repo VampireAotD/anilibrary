@@ -8,7 +8,7 @@ namespace App\Enums\Telegram\Callbacks;
  * Enum CallbackQueryTypeEnum
  * @package App\Enums\Telegram
  */
-enum CallbackQueryTypeEnum : string
+enum CallbackQueryTypeEnum: string
 {
     case VIEW_ANIME  = 'view-anime';
     case ANIME_LIST  = 'anime-list';

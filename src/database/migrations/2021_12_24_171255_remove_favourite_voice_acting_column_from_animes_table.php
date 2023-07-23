@@ -16,22 +16,16 @@ return new class extends Migration {
     public function up(): void
     {
         if (DB::getDriverName() !== 'sqlite') {
-            Schema::table(
-                'animes',
-                function (Blueprint $table) {
-                    $table->dropConstrainedForeignId('favourite_voice_acting');
-                }
-            );
+            Schema::table('animes', function (Blueprint $table) {
+                $table->dropConstrainedForeignId('favourite_voice_acting');
+            });
 
             return;
         }
 
-        Schema::table(
-            'animes',
-            function (Blueprint $table) {
-                $table->dropColumn('favourite_voice_acting');
-            }
-        );
+        Schema::table('animes', function (Blueprint $table) {
+            $table->dropColumn('favourite_voice_acting');
+        });
     }
 
     /**
@@ -41,14 +35,11 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table(
-            'animes',
-            function (Blueprint $table) {
-                $table->foreignUuid('favourite_voice_acting')
-                      ->nullable()
-                      ->constrained('voice_acting')
-                      ->nullOnDelete();
-            }
-        );
+        Schema::table('animes', function (Blueprint $table) {
+            $table->foreignUuid('favourite_voice_acting')
+                  ->nullable()
+                  ->constrained('voice_acting')
+                  ->nullOnDelete();
+        });
     }
 };

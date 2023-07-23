@@ -49,33 +49,31 @@ final class AnimeSearchHandler extends TextMessageUpdateHandler
         $chatId = $this->update->chat()->id;
 
         try {
-            $response = $this->elastcisearchClient->search(
-                [
-                    'index' => IndexEnum::ANIME_INDEX->value,
-                    'body'  => [
-                        'query' => [
-                            'multi_match' => [
-                                'query'                => $this->update->message->text,
-                                'fields'               => [
-                                    'title^8',
-                                    'status',
-                                    'rating',
-                                    'episodes',
-                                    'synonyms.synonym^5',
-                                    'genres.name^4',
-                                    'voice_acting.name',
-                                ],
-                                'type'                 => 'most_fields',
-                                'analyzer'             => 'anime_analyzer',
-                                'operator'             => 'AND',
-                                'minimum_should_match' => '75%',
-                                'fuzziness'            => 'AUTO',
-                                'tie_breaker'          => 0.3,
+            $response = $this->elastcisearchClient->search([
+                'index' => IndexEnum::ANIME_INDEX->value,
+                'body'  => [
+                    'query' => [
+                        'multi_match' => [
+                            'query'                => $this->update->message->text,
+                            'fields'               => [
+                                'title^8',
+                                'status',
+                                'rating',
+                                'episodes',
+                                'synonyms.synonym^5',
+                                'genres.name^4',
+                                'voice_acting.name',
                             ],
+                            'type'                 => 'most_fields',
+                            'analyzer'             => 'anime_analyzer',
+                            'operator'             => 'AND',
+                            'minimum_should_match' => '75%',
+                            'fuzziness'            => 'AUTO',
+                            'tie_breaker'          => 0.3,
                         ],
                     ],
-                ]
-            )->asArray();
+                ],
+            ])->asArray();
 
             $animeList = Arr::get($response, 'hits.hits');
 
@@ -106,13 +104,10 @@ final class AnimeSearchHandler extends TextMessageUpdateHandler
 
             return $message;
         } catch (Exception $exception) {
-            logger()->error(
-                'Anime list handler',
-                [
-                    'exception_message' => $exception->getMessage(),
-                    'exception_trace'   => $exception->getTraceAsString(),
-                ]
-            );
+            logger()->error('Anime list handler', [
+                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $exception->getTraceAsString(),
+            ]);
 
             UserStateFacade::resetExecutedCommandsList($chatId);
         }
