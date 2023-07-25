@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
@@ -61,12 +62,40 @@ class RegistrationTest extends TestCase
         $this->post(route('register'), ['email' => $this->faker->unique()->email])->assertForbidden();
     }
 
+    public function testUserCannotRegisterTwoTimesWithSameLink(): void
+    {
+        Redis::shouldReceive('setex')->once()->andReturnTrue();
+        Redis::shouldReceive('exists')->twice()->andReturnTrue();
+
+        $email = $this->faker->unique()->email;
+        $url   = $this->signedUrlService->createRegistrationLink($email);
+
+        $this->get($url)->assertOk();
+
+        Redis::shouldReceive('del')->once()->andReturnTrue();
+
+        $response = $this->post(route('register'), [
+            'name'                  => $this->faker->name,
+            'email'                 => $this->faker->unique()->email,
+            'password'              => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(RouteServiceProvider::HOME);
+
+        Auth::logout();
+
+        Redis::shouldReceive('exists')->once()->andReturnFalse();
+        $this->get($url)->assertForbidden();
+    }
+
     public function testUserCanRegister(): void
     {
         Redis::shouldReceive('exists')->andReturnTrue();
         Redis::shouldReceive('del')->andReturnTrue();
 
-        $response = $this->post('/register', [
+        $response = $this->post(route('register'), [
             'name'                  => $this->faker->name,
             'email'                 => $this->faker->unique()->email,
             'password'              => 'password',

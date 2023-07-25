@@ -19,7 +19,7 @@ Route::withoutMiddleware(['auth', 'verified'])->middleware('guest')->group(funct
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
     Route::get('register', [RegisteredUserController::class, 'create'])
-         ->middleware(['signed', 'throttle:6,1'])
+         ->middleware(['signed', 'registration.expired', 'throttle:6,1'])
          ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store'])
