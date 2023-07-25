@@ -6,13 +6,15 @@ namespace App\Http\Controllers\Anime;
 
 use App\DTO\Service\Anime\UpdateAnimeDTO;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Anime\CreateRequest;
 use App\Http\Requests\Anime\IndexRequest;
 use App\Http\Requests\Anime\UpdateRequest;
+use App\Jobs\Scraper\ScrapeAnimeJob;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
 use App\Repositories\Filters\PaginationFilter;
 use App\Services\AnimeService;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
@@ -21,7 +23,7 @@ class AnimeController extends Controller
 {
     public function __construct(
         private readonly AnimeRepositoryInterface $animeRepository,
-        private readonly AnimeService             $animeService
+        private readonly AnimeService             $animeService,
     ) {
     }
 
@@ -53,9 +55,12 @@ class AnimeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request): RedirectResponse
     {
-        //
+        // For now, you can only add new anime with scraper
+        ScrapeAnimeJob::dispatch($request->user()->id, $request->get('url', ''));
+
+        return back()->with(['message' => __('Send request to scraper, you will receive notification about result')]);
     }
 
     /**

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Anime;
 
 use App\Enums\AnimeStatusEnum;
+use App\Jobs\Scraper\ScrapeAnimeJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Bus;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 use Tests\Traits\Fake\CanCreateFakeAnime;
@@ -69,6 +71,20 @@ class AnimeControllerTest extends TestCase
         );
     }
 
+    public function testUserCanCreateAnimeBySendingScrapeRequest(): void
+    {
+        Bus::fake();
+
+        $this->actingAs($this->createUser())
+             ->post(
+                 route('anime.store'),
+                 ['url' => 'https://animego.org/anime/blich-tysyacheletnyaya-krovavaya-voyna-2129']
+             )
+             ->assertRedirect();
+
+        Bus::assertDispatched(ScrapeAnimeJob::class);
+    }
+
     public function testUserCanViewAnimeDetails(): void
     {
         $user  = $this->createUser();
@@ -85,7 +101,7 @@ class AnimeControllerTest extends TestCase
         );
     }
 
-    public function testCanUpdateAnime(): void
+    public function testUserCanUpdateAnime(): void
     {
         $user  = $this->createUser();
         $anime = $this->createAnimeWithRelations();

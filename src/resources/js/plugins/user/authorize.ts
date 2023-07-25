@@ -1,13 +1,15 @@
-import { App, Plugin } from 'vue';
+import { Plugin } from 'vue';
 import { Role } from "@/types";
 
-export function hasRole(name: string): boolean {
+function useHasRole(name: string) {
     return this.$page.props.auth?.user?.roles?.find((role: Role) => role.name === name)
 }
 
-export const HasRolePlugin: Plugin = {
-    install(app: App) {
-        app.config.globalProperties.hasRole = hasRole
-        app.provide('hasRole', hasRole)
+const HasRolePlugin: Plugin = {
+    install(app) {
+        app.config.globalProperties.hasRole = useHasRole
+        app.provide('hasRole', useHasRole)
     }
 }
+
+export { HasRolePlugin, useHasRole }

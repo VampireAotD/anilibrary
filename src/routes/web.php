@@ -29,7 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('destroy');
     });
 
-    Route::resource('anime', AnimeController::class);
+    Route::resource('anime', AnimeController::class)->only(['index', 'show', 'store', 'update']);
 });
 
 require __DIR__ . '/auth.php';

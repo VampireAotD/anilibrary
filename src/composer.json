@@ -19,6 +19,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "predis/predis": "^2.1",
+        "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-permission": "^5.10",
         "tightenco/ziggy": "^1.6",
         "tuupola/base62": "^2.1",

@@ -6,6 +6,10 @@ import { IndexProps } from "@/types/anime/props";
 import { Header, ServerOptions } from 'vue3-easy-data-table';
 import EasyTableWrapper from "@/Components/DataTable/EasyTableWrapper.vue";
 import { AnimeWithRelations } from "@/types/anime/models";
+import Modal from "@/Components/Modal.vue";
+import AddAnimeForm from "@/Pages/Anime/Partials/AddAnimeForm.vue";
+import { ref } from "vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 defineProps<{
   pagination: IndexProps
@@ -21,6 +25,7 @@ const renderPerPage: number[] = [5, 10, 20, 50, 100]
 const handleUpdate = (options: ServerOptions) => {
   router.get(route('anime.index'), {page: options.page, per_page: options.rowsPerPage}, {preserveScroll: true})
 }
+const showAddModal = ref<boolean>(false)
 </script>
 
 <template>
@@ -33,6 +38,10 @@ const handleUpdate = (options: ServerOptions) => {
 
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="mb-2">
+          <PrimaryButton @click="showAddModal=true">Add new anime</PrimaryButton>
+        </div>
+
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
           <EasyTableWrapper
               :columns="headers"
@@ -57,6 +66,10 @@ const handleUpdate = (options: ServerOptions) => {
               </div>
             </template>
           </EasyTableWrapper>
+
+          <Modal :show="showAddModal" @close="showAddModal=false">
+            <AddAnimeForm @added="showAddModal=false"/>
+          </Modal>
         </div>
       </div>
     </div>

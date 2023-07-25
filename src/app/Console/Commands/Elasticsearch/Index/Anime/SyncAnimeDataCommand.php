@@ -47,7 +47,7 @@ class SyncAnimeDataCommand extends Command
             $batch = ['body' => []];
 
             $collection->each(
-            /** @phpstan-ignore-next-line */
+                /** @phpstan-ignore-next-line */
                 function (Anime $anime) use (&$batch, $bar) {
                     $batch['body'][] = [
                         'index' => [

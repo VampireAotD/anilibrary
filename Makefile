@@ -1,5 +1,5 @@
 compose      := $(shell command -v docker-compose || command -v "docker compose")
-queue_list   := mail,register
+queue_list   := mail,register,upsert-anime,scrape-anime,pusher-scrape-response
 yarn         := $(compose) run --service-ports --rm node
 
 .PHONY: supervisor
@@ -15,7 +15,7 @@ scheduler:
 .PHONY: queues
 queues:
 	$(info Launching queue worker...)
-	$(compose) exec -d app ./artisan queue:work --queue=$(queue_list)
+	$(compose) exec -d app ./artisan queue:work --queue=$(queue_list) --daemon
 
 .PHONY: build
 build:
