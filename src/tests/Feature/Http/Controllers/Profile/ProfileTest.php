@@ -13,6 +13,11 @@ class ProfileTest extends TestCase
     use RefreshDatabase;
     use CanCreateFakeUsers;
 
+    public function testCannotInteractWithProfileIfUserIsNotVerified(): void
+    {
+        $this->actingAs($this->createUnverifiedUser())->get('/profile')->assertRedirectToRoute('verification.notice');
+    }
+
     public function testProfilePageIsDisplayed(): void
     {
         $this->actingAs($this->createUser())->get('/profile')->assertOk();

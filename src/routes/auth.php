@@ -12,7 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Telegram\TelegramController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+Route::withoutMiddleware(['auth', 'verified'])->middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
          ->name('login');
 
@@ -22,22 +22,30 @@ Route::middleware('guest')->group(function () {
          ->middleware(['signed', 'throttle:6,1'])
          ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
+    Route::post('register', [RegisteredUserController::class, 'store'])
+         ->middleware(['registration.exact', 'throttle:6,1']);
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+     ->name('logout')
+     ->withoutMiddleware('verified');
 
-    Route::group(['name' => 'telegram', 'as' => 'telegram.', 'prefix' => 'telegram'], function () {
-        Route::middleware(['telegram.signed', 'telegram.assigned'])
-             ->post('assign', [TelegramController::class, 'assign'])
-             ->name('assign');
+Route::group(['name' => 'telegram', 'as' => 'telegram.', 'prefix' => 'telegram'], function () {
+    Route::middleware(['telegram.signed', 'telegram.assigned'])
+         ->post('assign', [TelegramController::class, 'assign'])
+         ->name('assign');
 
-        Route::delete('detach', [TelegramController::class, 'detach'])
-             ->name('detach');
-    });
+    Route::delete('detach', [TelegramController::class, 'detach'])
+         ->name('detach');
+});
 
-    Route::group(['name' => 'email-verification', 'as' => 'verification.'], function () {
+Route::group(
+    [
+        'as'                  => 'verification.',
+        'name'                => 'email-verification',
+        'excluded_middleware' => 'verified',
+    ],
+    function () {
         Route::get('verify-email', EmailVerificationPromptController::class)->name('notice');
 
         Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
@@ -47,14 +55,14 @@ Route::middleware('auth')->group(function () {
         Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
              ->middleware('throttle:6,1')
              ->name('send');
-    });
+    }
+);
 
-    Route::group(['name' => 'password', 'as' => 'password.'], function () {
-        Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-             ->name('confirm');
+Route::group(['name' => 'password', 'as' => 'password.'], function () {
+    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+         ->name('confirm');
 
-        Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
-        Route::put('password', [PasswordController::class, 'update'])->name('update');
-    });
+    Route::put('password', [PasswordController::class, 'update'])->name('update');
 });

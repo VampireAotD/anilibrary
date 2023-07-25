@@ -40,6 +40,8 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            \App\Http\Middleware\Authenticate::class,
+            \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ],
 
         'api' => [
@@ -73,5 +75,6 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'telegram.signed'    => \App\Http\Middleware\Telegram\ValidateSignatureMiddleware::class,
         'telegram.assigned'  => \App\Http\Middleware\Telegram\RedirectIfHasAssignedUserMiddleware::class,
+        'registration.exact' => \App\Http\Middleware\Registration\ExactEmailMiddleware::class,
     ];
 }

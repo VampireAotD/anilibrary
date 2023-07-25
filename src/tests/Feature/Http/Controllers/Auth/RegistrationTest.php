@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -44,15 +45,27 @@ class RegistrationTest extends TestCase
 
     public function testRegistrationScreenCannotBeRenderedIfUrlIsExpired(): void
     {
-        $url = $this->signedUrlService->createRegistrationUrl();
+        Redis::shouldReceive('setex')->andReturnTrue();
+
+        $url = $this->signedUrlService->createRegistrationLink($this->faker->email);
 
         Carbon::setTestNow(now()->addMinutes(config('auth.registration_link_timeout') + 1));
 
         $this->get($url)->assertForbidden();
     }
 
+    public function testUserCannotRegisterWithUnknownEmail(): void
+    {
+        Redis::shouldReceive('exists')->andReturnFalse();
+
+        $this->post(route('register'), ['email' => $this->faker->unique()->email])->assertForbidden();
+    }
+
     public function testUserCanRegister(): void
     {
+        Redis::shouldReceive('exists')->andReturnTrue();
+        Redis::shouldReceive('del')->andReturnTrue();
+
         $response = $this->post('/register', [
             'name'                  => $this->faker->name,
             'email'                 => $this->faker->unique()->email,

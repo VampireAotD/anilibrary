@@ -26,10 +26,12 @@ class InvitationController extends Controller
 
     public function send(SendInvitationRequest $request): RedirectResponse
     {
-        $url = $this->signedUrlService->createRegistrationUrl();
+        $email = $request->post('email', '');
+
+        $url = $this->signedUrlService->createRegistrationLink($email);
 
         Mail::to($request->get('email'))->queue(new InvitationMail($url));
 
-        return redirect()->route('invitation.create')->with(['message' => 'Invitation mail send']);
+        return to_route('invitation.create')->with(['message' => 'Invitation mail send']);
     }
 }

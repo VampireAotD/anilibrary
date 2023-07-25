@@ -18,19 +18,17 @@ use Inertia\Inertia;
 |
 */
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+Route::get('/', function () {
+    return Inertia::render('Dashboard');
+})->name('dashboard');
 
-    Route::group(['as' => 'profile.'], function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('destroy');
-    });
-
-    Route::resource('anime', AnimeController::class)->only(['index', 'show', 'store', 'update']);
+Route::group(['as' => 'profile.'], function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('destroy');
 });
+
+Route::resource('anime', AnimeController::class)->only(['index', 'show', 'store', 'update']);
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/invitation.php';

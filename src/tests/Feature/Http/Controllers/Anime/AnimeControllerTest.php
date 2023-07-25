@@ -29,7 +29,7 @@ class AnimeControllerTest extends TestCase
     public function testCannotInteractWithAnimeIfUserIsNotVerified(): void
     {
         $user = $this->createUnverifiedUser();
-        $this->actingAs($user)->get(route('anime.index'))->assertRedirect('/verify-email');
+        $this->actingAs($user)->get(route('anime.index'))->assertRedirectToRoute('verification.notice');
     }
 
     public function testCanViewIndexPageWithPagination(): void

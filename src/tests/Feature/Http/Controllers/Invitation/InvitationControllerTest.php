@@ -9,6 +9,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 use Tests\Traits\Fake\CanCreateFakeUsers;
 
@@ -23,6 +24,13 @@ class InvitationControllerTest extends TestCase
         parent::setUp();
 
         $this->seed(RoleSeeder::class);
+    }
+
+    public function testCannotInteractWithInvitationScreenIfUserIsNotVerified(): void
+    {
+        $this->actingAs($this->createUnverifiedUser())
+             ->get(route('invitation.create'))
+             ->assertRedirectToRoute('verification.notice');
     }
 
     public function testInvitationScreenCannotBeRenderedIfUserIsNotOwner(): void
@@ -45,6 +53,7 @@ class InvitationControllerTest extends TestCase
     public function testOwnerCanSendInviteNewUsers(): void
     {
         Mail::fake();
+        Redis::shouldReceive('setex')->once()->andReturnTrue();
 
         $this->actingAs($this->createOwner())
              ->post(route('invitation.send', ['email' => $this->faker->email]))
