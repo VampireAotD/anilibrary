@@ -8,7 +8,6 @@ use App\Enums\RoleEnum;
 use App\Models\User;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -58,7 +57,7 @@ class CreateOwnerCommand extends Command
         $user = $userRepository->upsert([
             'name'     => 'owner',
             'email'    => $email,
-            'password' => Hash::make($password),
+            'password' => $password,
         ]);
 
         $user->assignRole(RoleEnum::OWNER->value);
