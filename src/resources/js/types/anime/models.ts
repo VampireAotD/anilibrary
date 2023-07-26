@@ -1,35 +1,35 @@
 export interface Image {
-    path: string
+    path: string;
 }
 
 export interface URL {
-    url: string
+    url: string;
 }
 
 export interface Synonym {
-    synonym: string
+    synonym: string;
 }
 
 export interface Genre {
-    name: string
+    name: string;
 }
 
 export interface VoiceActing {
-    name: string
+    name: string;
 }
 
 export interface Anime {
-    id: string
-    title: string
-    status: string
-    episodes: string
-    rating: number
+    id: string;
+    title: string;
+    status: string;
+    episodes: string;
+    rating: number;
 }
 
 export interface AnimeWithRelations extends Anime {
-    image: Image
-    urls: URL[]
-    synonyms: Synonym[],
-    voice_acting: VoiceActing[],
-    genres: Genre[],
+    image: Image;
+    urls: URL[];
+    synonyms: Synonym[];
+    voice_acting: VoiceActing[];
+    genres: Genre[];
 }

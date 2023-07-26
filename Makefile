@@ -78,3 +78,19 @@ yarn-watch:
 .PHONY: yarn-build
 yarn-build:
 	$(yarn) run build
+
+.PHONY: prettier-check
+prettier-check:
+	$(yarn) prettier-check
+
+.PHONY: prettier-write
+prettier-write:
+	$(yarn) prettier-write
+
+.PHONY: eslint-lint
+eslint-lint:
+	$(yarn) lint
+
+.PHONY: eslint-fix
+eslint-fix:
+	$(yarn) lint-fix

@@ -1,0 +1,7 @@
+# Ignore everything
+*
+
+# Except for subfolders like resources/js and certain files or files with certain extension
+!*/
+!*.vue
+!*.ts

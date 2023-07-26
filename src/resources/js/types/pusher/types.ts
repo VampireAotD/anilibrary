@@ -1,6 +1,6 @@
-export type ResultType = 'success' | 'error'
+export type ResultType = 'success' | 'error';
 
 export interface ScrapeResult {
-    type: ResultType,
-    message: string
+    type: ResultType;
+    message: string;
 }

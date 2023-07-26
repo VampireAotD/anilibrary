@@ -1,15 +1,17 @@
 import { Plugin } from 'vue';
-import { Role } from "@/types";
+import { Role } from '@/types';
+import { usePage } from '@inertiajs/vue3';
 
-function useHasRole(name: string) {
-    return this.$page.props.auth?.user?.roles?.find((role: Role) => role.name === name)
-}
+const useHasRole = (name: string) => {
+    const page = usePage();
+    return page.props.auth?.user?.roles?.find((role: Role) => role.name === name);
+};
 
 const HasRolePlugin: Plugin = {
     install(app) {
-        app.config.globalProperties.hasRole = useHasRole
-        app.provide('hasRole', useHasRole)
-    }
-}
+        app.config.globalProperties.hasRole = useHasRole;
+        app.provide('hasRole', useHasRole);
+    },
+};
 
-export { HasRolePlugin, useHasRole }
+export { HasRolePlugin, useHasRole };

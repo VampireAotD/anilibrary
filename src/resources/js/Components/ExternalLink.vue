@@ -1,14 +1,12 @@
 <script setup lang="ts">
 defineProps<{
-  url: string,
-  text: string,
-}>()
+    url: string;
+    text: string;
+}>();
 </script>
 
 <template>
-  <a :href="url" target="_blank">{{ text }}</a>
+    <a :href="url" target="_blank">{{ text }}</a>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
