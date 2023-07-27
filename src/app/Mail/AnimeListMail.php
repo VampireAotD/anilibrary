@@ -35,6 +35,6 @@ class AnimeListMail extends Mailable
     {
         return $this->from(config('mail.from.address'))
                     ->attachFromStorageDisk('lists', config('lists.anime.file'))
-                    ->markdown('emails.lists.anime-list');
+                    ->markdown('mail.list.anime-list-mail');
     }
 }
