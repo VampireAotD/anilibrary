@@ -42,20 +42,25 @@ class CreateOwnerCommandTest extends TestCase
         $this->artisan('setup:create-owner')->assertFailed();
     }
 
-    public function testCommandWillFailIfUserWillExceedMaximumAttemptsToProvideValidEmailAddress(): void
+    public function testCommandWillUseDefaultEmailToCreateOwnerIfProvidedEmailWasInvalid(): void
     {
+        $owner = $this->userRepository->findOwner();
+        $this->assertNull($owner);
+
         $this->artisan('setup:create-owner')
-             ->expectsQuestion('Provide valid email address', null)
-             ->expectsQuestion('Provide valid email address', $this->faker->word)
-             ->expectsQuestion('Provide valid email address', $this->faker->randomAscii)
-             ->expectsOutput('Exceeded maximum tries to provide valid email address')
-             ->assertFailed();
+             ->expectsQuestion('Provide valid email address or default will be used', $this->faker->randomAscii)
+             ->assertOk();
+
+        $owner = $this->userRepository->findOwner();
+        $this->assertNotNull($owner);
+        $this->assertTrue($owner->hasRole(RoleEnum::OWNER->value));
+        $this->assertTrue($owner->hasVerifiedEmail());
     }
 
     public function testCommandWillSuccessfullyCreateOwner(): void
     {
         $this->artisan('setup:create-owner')
-             ->expectsQuestion('Provide valid email address', $email = $this->faker->email)
+             ->expectsQuestion('Provide valid email address or default will be used', $email = $this->faker->email)
              ->assertOk();
 
         $user = $this->userRepository->findByEmail($email);

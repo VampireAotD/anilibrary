@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
+use App\Notifications\Auth\VerifyEmailNotification;
 use App\Providers\RouteServiceProvider;
 use App\Services\SignedUrlService;
 use Carbon\Carbon;
@@ -11,6 +12,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
@@ -64,10 +66,11 @@ class RegistrationTest extends TestCase
 
     public function testUserCannotRegisterTwoTimesWithSameLink(): void
     {
+        Notification::fake();
         Redis::shouldReceive('setex')->once()->andReturnTrue();
         Redis::shouldReceive('exists')->twice()->andReturnTrue();
 
-        $email = $this->faker->unique()->email;
+        $email = $this->faker->unique()->safeEmail();
         $url   = $this->signedUrlService->createRegistrationLink($email);
 
         $this->get($url)->assertOk();
@@ -76,15 +79,19 @@ class RegistrationTest extends TestCase
 
         $response = $this->post(route('register'), [
             'name'                  => $this->faker->name,
-            'email'                 => $this->faker->unique()->email,
+            'email'                 => $email,
             'password'              => 'password',
             'password_confirmation' => 'password',
         ]);
+
+        Notification::assertCount(1);
+        Notification::assertSentTo(auth()->user(), VerifyEmailNotification::class);
 
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
 
         Auth::logout();
+        $this->assertFalse(Auth::check());
 
         Redis::shouldReceive('exists')->once()->andReturnFalse();
         $this->get($url)->assertForbidden();
@@ -92,6 +99,7 @@ class RegistrationTest extends TestCase
 
     public function testUserCanRegister(): void
     {
+        Notification::fake();
         Redis::shouldReceive('exists')->andReturnTrue();
         Redis::shouldReceive('del')->andReturnTrue();
 
@@ -101,6 +109,9 @@ class RegistrationTest extends TestCase
             'password'              => 'password',
             'password_confirmation' => 'password',
         ]);
+
+        Notification::assertCount(1);
+        Notification::assertSentTo(auth()->user(), VerifyEmailNotification::class);
 
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);

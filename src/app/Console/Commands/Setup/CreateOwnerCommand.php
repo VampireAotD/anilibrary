@@ -29,11 +29,11 @@ class CreateOwnerCommand extends Command
     protected $description = 'Create Anilibrary owner if none exists';
 
     /**
-     * Max attempts to provide email or password
+     * Default owner email.
      *
-     * @var int
+     * @var string
      */
-    protected int $maxAttempts = 3;
+    protected string $defaultEmail = 'admin@gmail.com';
 
     /**
      * Execute the console command.
@@ -44,14 +44,7 @@ class CreateOwnerCommand extends Command
             return Command::INVALID;
         }
 
-        $email = $this->askEmail();
-
-        if (!$email) {
-            $this->error('Exceeded maximum tries to provide valid email address');
-
-            return Command::FAILURE;
-        }
-
+        $email    = $this->askEmail();
         $password = Str::random();
 
         $user = $userRepository->upsert([
@@ -69,25 +62,21 @@ class CreateOwnerCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function askEmail(int $attempts = 1): string
+    private function askEmail(): string
     {
-        if ($attempts > $this->maxAttempts) {
-            return '';
-        }
-
         try {
-            $email = $this->ask('Provide valid email address');
+            $email = $this->ask('Provide valid email address or default will be used', $this->defaultEmail);
 
             $validated = Validator::make(
                 ['email' => $email],
-                ['email' => 'required|email|string|unique:' . User::class]
+                ['email' => 'required|string|email|unique:' . User::class]
             )->validated();
 
             return $validated['email'];
         } catch (ValidationException $exception) {
             $this->warn($exception->getMessage());
 
-            return $this->askEmail(++$attempts);
+            return '';
         }
     }
 }

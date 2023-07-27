@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Telegram\Handlers;
 
 use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
-use App\Enums\Elasticsearch\IndexEnum;
 use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\AnimeSearchHandlerEnum;
 use App\Facades\Telegram\State\UserStateFacade;
+use App\Services\Elasticsearch\Index\AnimeIndexService;
 use App\UseCase\Telegram\CaptionUseCase;
-use Elastic\Elasticsearch\Client;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Support\Arr;
@@ -30,14 +29,14 @@ final class AnimeSearchHandler extends TextMessageUpdateHandler
         CommandEnum::ANIME_SEARCH_BUTTON->value,
     ];
 
-    private Client         $elastcisearchClient;
-    private CaptionUseCase $callbackQueryUseCase;
+    private AnimeIndexService $animeIndexService;
+    private CaptionUseCase    $callbackQueryUseCase;
 
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
 
-        $this->elastcisearchClient  = app(Client::class);
+        $this->animeIndexService    = app(AnimeIndexService::class);
         $this->callbackQueryUseCase = app(CaptionUseCase::class);
     }
 
@@ -49,32 +48,7 @@ final class AnimeSearchHandler extends TextMessageUpdateHandler
         $chatId = $this->update->chat()->id;
 
         try {
-            $response = $this->elastcisearchClient->search([
-                'index' => IndexEnum::ANIME_INDEX->value,
-                'body'  => [
-                    'query' => [
-                        'multi_match' => [
-                            'query'                => $this->update->message->text,
-                            'fields'               => [
-                                'title^8',
-                                'status',
-                                'rating',
-                                'episodes',
-                                'synonyms.synonym^5',
-                                'genres.name^4',
-                                'voice_acting.name',
-                            ],
-                            'type'                 => 'most_fields',
-                            'analyzer'             => 'anime_analyzer',
-                            'operator'             => 'AND',
-                            'minimum_should_match' => '75%',
-                            'fuzziness'            => 'AUTO',
-                            'tie_breaker'          => 0.3,
-                        ],
-                    ],
-                ],
-            ])->asArray();
-
+            $response  = $this->animeIndexService->multiMatchSearch($this->update->message->text);
             $animeList = Arr::get($response, 'hits.hits');
 
             if (!$animeList) {
