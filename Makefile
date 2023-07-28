@@ -42,7 +42,7 @@ app:
 
 .PHONY: install
 install:
-	./bin/install.sh
+	./scripts/install.sh
 
 .PHONY: test
 test:
@@ -94,3 +94,7 @@ eslint-lint:
 .PHONY: eslint-fix
 eslint-fix:
 	$(yarn) lint-fix
+
+.PHONY: yarn-test
+yarn-test:
+	$(yarn) test
