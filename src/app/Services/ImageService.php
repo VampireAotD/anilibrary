@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
  * Class ImageService
  * @package App\Services
  */
-class ImageService
+final class ImageService
 {
     private const BASE_FOLDER = 'anime';
 

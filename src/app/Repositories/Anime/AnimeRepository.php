@@ -26,6 +26,11 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
         return Anime::query();
     }
 
+    public function create(array $data): Anime
+    {
+        return $this->model()->updateOrCreate(['title' => $data['title']], $data);
+    }
+
     /**
      * @param string $id
      * @return Anime|null

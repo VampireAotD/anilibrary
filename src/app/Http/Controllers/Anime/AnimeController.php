@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Anime;
 
-use App\DTO\Service\Anime\UpdateAnimeDTO;
+use App\DTO\Service\Anime\UpsertAnimeDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Anime\CreateRequest;
 use App\Http\Requests\Anime\IndexRequest;
@@ -90,23 +90,19 @@ class AnimeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Anime $anime): Response
+    public function update(UpdateRequest $request, Anime $anime): RedirectResponse
     {
-        $dto = UpdateAnimeDTO::fromArray($request->validated());
-
         try {
-            $anime = $this->animeService->update($anime, $dto);
+            $this->animeService->update($anime, UpsertAnimeDTO::fromArray($request->validated()));
 
-            return Inertia::render('', compact('anime'));
+            return to_route('anime.show', $anime->id);
         } catch (Throwable $exception) {
             logger()->error('Updating anime', [
                 'exception_trace'   => $exception->getTraceAsString(),
                 'exception_message' => $exception->getMessage(),
             ]);
 
-            $errors = [$exception->getMessage()];
-
-            return Inertia::render('', compact('anime', 'errors'));
+            return back()->withErrors(['message' => $exception->getMessage()]);
         }
     }
 

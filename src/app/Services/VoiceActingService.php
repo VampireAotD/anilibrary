@@ -11,7 +11,7 @@ use App\Traits\CanTransformArray;
  * Class VoiceActingService
  * @package App\Services
  */
-class VoiceActingService
+final class VoiceActingService
 {
     use CanTransformArray;
 

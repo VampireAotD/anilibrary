@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace App\UseCase\Scraper;
 
-use App\DTO\Service\Anime\CreateAnimeDTO;
+use App\DTO\Service\Anime\UpsertAnimeDTO;
 use App\DTO\Service\Scraper\ScrapedDataDTO;
+use App\Enums\AnimeStatusEnum;
 use App\Models\Anime;
 use App\Models\AnimeUrl;
 use App\Rules\Scraper\EncodedImageRule;
 use App\Services\AnimeService;
-use App\Services\AnimeSynonymService;
 use App\Services\GenreService;
 use App\Services\ImageService;
 use App\Services\Scraper\RequestService;
 use App\Services\VoiceActingService;
+use App\Traits\CanTransformArray;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
@@ -27,13 +29,14 @@ use Throwable;
  */
 final readonly class AnimeUseCase
 {
+    use CanTransformArray;
+
     public function __construct(
-        private AnimeSynonymService $animeSynonymService,
-        private RequestService      $requestService,
-        private AnimeService        $animeService,
-        private ImageService        $imageService,
-        private VoiceActingService  $voiceActingService,
-        private GenreService        $genreService
+        private RequestService     $requestService,
+        private AnimeService       $animeService,
+        private ImageService       $imageService,
+        private VoiceActingService $voiceActingService,
+        private GenreService       $genreService
     ) {
     }
 
@@ -47,7 +50,11 @@ final readonly class AnimeUseCase
 
         Validator::make(
             $response,
-            ['title' => 'required|string', 'image' => ['nullable', 'string', new EncodedImageRule()]]
+            [
+                'title'  => 'required|string',
+                'image'  => ['nullable', 'string', new EncodedImageRule()],
+                'status' => ['required', new Enum(AnimeStatusEnum::class)],
+            ]
         )->validate();
 
         return $this->createAnime(new ScrapedDataDTO(...$response));
@@ -65,11 +72,7 @@ final readonly class AnimeUseCase
             $anime
             && $anime->urls->filter(fn(AnimeUrl $animeUrl) => str_contains($animeUrl->url, $parsed['host']))->isEmpty()
         ) {
-            $anime->synonyms()->upsertRelated(
-                $this->animeSynonymService->mapIntoSynonymsArray($dto->synonyms),
-                ['synonym']
-            );
-
+            $anime->synonyms()->upsertRelated($this->toAssociativeArray('synonym', $dto->synonyms), ['synonym']);
             $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
 
             return $anime;
@@ -77,16 +80,13 @@ final readonly class AnimeUseCase
 
         return DB::transaction(function () use ($dto): Anime {
             $anime = $this->animeService->create(
-                new CreateAnimeDTO($dto->title, $dto->status, $dto->rating, $dto->episodes)
+                new UpsertAnimeDTO($dto->title, AnimeStatusEnum::from($dto->status), $dto->rating, $dto->episodes)
             );
 
             $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
 
             if ($dto->synonyms) {
-                $anime->synonyms()->upsertRelated(
-                    $this->animeSynonymService->mapIntoSynonymsArray($dto->synonyms),
-                    ['synonym']
-                );
+                $anime->synonyms()->upsertRelated($this->toAssociativeArray('synonym', $dto->synonyms), ['synonym']);
             }
 
             if ($dto->image) {

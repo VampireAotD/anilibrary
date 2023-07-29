@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
  * Class TelegramUserService
  * @package App\Services
  */
-readonly class TelegramUserService
+final readonly class TelegramUserService
 {
     public function __construct(private TelegramUserRepositoryInterface $telegramUserRepository)
     {

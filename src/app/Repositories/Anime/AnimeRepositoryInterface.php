@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Collection;
  */
 interface AnimeRepositoryInterface extends FindById, Paginate
 {
+    public function create(array $data): Anime;
+
     /**
      * @param array<string> $data
      * @return Anime|null

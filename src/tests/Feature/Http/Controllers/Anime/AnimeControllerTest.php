@@ -126,7 +126,7 @@ class AnimeControllerTest extends TestCase
             'synonyms'     => $synonyms,
             'voice_acting' => $anime->voiceActing->pluck('id')->toArray(),
             'genres'       => $anime->genres->pluck('id')->toArray(),
-        ])->assertOk();
+        ])->assertRedirectToRoute('anime.show', $anime->id);
 
         $anime->refresh();
 

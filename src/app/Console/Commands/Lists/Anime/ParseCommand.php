@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Lists\Anime;
 
-use App\DTO\Service\Anime\CreateAnimeDTO;
+use App\DTO\Service\Anime\UpsertAnimeDTO;
+use App\Enums\AnimeStatusEnum;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
 use App\Models\Genre;
@@ -62,7 +63,12 @@ class ParseCommand extends Command
         foreach ($animeList as $parsed) {
             DB::transaction(function () use ($parsed) {
                 $anime = $this->animeService->create(
-                    new CreateAnimeDTO($parsed['title'], $parsed['status'], $parsed['rating'], $parsed['episodes'])
+                    new UpsertAnimeDTO(
+                        $parsed['title'],
+                        AnimeStatusEnum::from($parsed['status']),
+                        $parsed['rating'],
+                        $parsed['episodes']
+                    )
                 );
 
                 $synonyms = collect($parsed['synonyms'])->mapInto(AnimeSynonym::class);
@@ -73,10 +79,10 @@ class ParseCommand extends Command
 
                 $anime->image()->create($parsed['image']);
 
-                Genre::upsert($parsed['genres'], 'name');
+                Genre::query()->upsert($parsed['genres'], 'name');
                 $anime->genres()->sync(collect($parsed['genres'])->pluck('id')->toArray());
 
-                VoiceActing::upsert($parsed['voice_acting'], 'name');
+                VoiceActing::query()->upsert($parsed['voice_acting'], 'name');
                 $anime->voiceActing()->sync(collect($parsed['voice_acting'])->pluck('id')->toArray());
             });
 

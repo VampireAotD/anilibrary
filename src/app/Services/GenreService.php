@@ -11,7 +11,7 @@ use App\Traits\CanTransformArray;
  * Class GenreService
  * @package App\Services
  */
-class GenreService
+final class GenreService
 {
     use CanTransformArray;
 
