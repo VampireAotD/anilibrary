@@ -84,8 +84,7 @@ services:
 
   nginx:
     build:
-      context: docker
-      dockerfile: nginx/Dockerfile
+      context: docker/nginx
     container_name: anilibrary-nginx
     depends_on:
       - app
@@ -95,6 +94,7 @@ services:
       - ./src/public:/anilibrary/public
     networks:
       - local
+      - anilibrary
 
 networks:
   local:

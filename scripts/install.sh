@@ -51,6 +51,9 @@ $compose exec app ./artisan key:generate
 log 'Creating database'
 $compose exec app ./artisan migrate --seed
 
+log 'Installing node packages'
+$compose run --service-ports --rm node install --frozen-lockfile
+
 log 'Parsing anime list'
 
 if ! $compose exec app ./artisan anime-list:parse >/dev/null 2>&1; then

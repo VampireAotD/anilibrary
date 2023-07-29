@@ -2,6 +2,24 @@ compose      := $(shell command -v docker-compose || command -v "docker compose"
 queue_list   := mail,register,upsert-anime,scrape-anime,pusher-scrape-response
 yarn         := $(compose) run --service-ports --rm node
 
+.PHONY: up
+up:
+	$(info Launching app containers...)
+	$(compose) up -d;
+	@make supervisor
+	@make scheduler
+	@make queues
+
+.PHONY: build
+build:
+	$(info Building app containers...)
+	$(compose) up -d --build
+
+.PHONY: down
+down:
+	$(info Shutting down app containers...)
+	$(compose) down --remove-orphans
+
 .PHONY: supervisor
 supervisor:
 	$(info Launching supervisor...)
@@ -16,24 +34,6 @@ scheduler:
 queues:
 	$(info Launching queue worker...)
 	$(compose) exec -d app ./artisan queue:work --queue=$(queue_list) --daemon
-
-.PHONY: build
-build:
-	$(info Building app containers...)
-	$(compose) up -d --build
-
-.PHONY: up
-up:
-	$(info Launching app containers...)
-	$(compose) up -d;
-	@make supervisor
-	@make scheduler
-	@make queues
-
-.PHONY: down
-down:
-	$(info Shutting down app containers...)
-	$(compose) down --remove-orphans
 
 .PHONY: app
 app:
