@@ -1,4 +1,6 @@
-# Anilibrary
+<p align="center">
+  <img src="art/logo.svg" alt="Anilibrary logo" style="width: 75%">
+</p>
 
 Application for scraping anime data from different supported sites
 

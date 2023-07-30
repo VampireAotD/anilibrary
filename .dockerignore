@@ -1,6 +1,8 @@
 .idea
 .github
-bin
+.hooks
+art
+scripts
 /src/storage
 /src/node_modules
 /src/vendor
@@ -11,6 +13,9 @@ docker-compose.yml
 LICENSE
 Makefile
 README.md
+/src/.editorconfig
+/src/.styleci.yml
 /src/.phpstorm.meta.php
 /src/.phpunit.result.cache
 /src/_ide_helper.php
+/src/yarn-error.log

@@ -23,6 +23,11 @@ jobs:
       - name: Install composer dependencies
         run: composer install -qn --no-ansi --no-progress --no-scripts --prefer-dist
 
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          ignore_names: backup.sh
+
       - name: Run Psalm
         run: ./vendor/bin/psalm -c psalm.xml
 
