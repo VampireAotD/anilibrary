@@ -123,17 +123,4 @@ return [
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Owner email address
-    |--------------------------------------------------------------------------
-    |
-    | Specify owner email to receive mails and notifications.
-    |
-    */
-
-    'owner' => [
-        'address' => env('OWNER_EMAIL', ''),
-    ],
-
 ];

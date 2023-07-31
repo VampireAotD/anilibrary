@@ -8,6 +8,7 @@ use App\Models\Anime;
 use App\Repositories\Contracts\FindById;
 use App\Repositories\Contracts\Paginate;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\LazyCollection;
 
 /**
  * Interface AnimeRepositoryInterface
@@ -43,4 +44,9 @@ interface AnimeRepositoryInterface extends FindById, Paginate
         array $columns = ['*'],
         array $relations = ['image', 'genres', 'voiceActing', 'urls', 'synonyms']
     ): Collection;
+
+    /**
+     * @return LazyCollection<int, Anime>
+     */
+    public function getUnreleased(): LazyCollection;
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Anime;
 
+use App\Enums\AnimeStatusEnum;
 use App\Models\Anime;
 use App\Repositories\BaseRepository;
 use App\Repositories\Filters\PaginationFilter;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\LazyCollection;
 
 /**
  * Class AnimeRepository
@@ -87,5 +89,13 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     public function paginate(PaginationFilter $filter): LengthAwarePaginator
     {
         return $filter->apply($this->model())->paginate($filter->perPage, page: $filter->page);
+    }
+
+    /**
+     * @return LazyCollection<int, Anime>
+     */
+    public function getUnreleased(): LazyCollection
+    {
+        return $this->model()->with('urls')->whereNot('status', AnimeStatusEnum::READY->value)->lazy();
     }
 }
