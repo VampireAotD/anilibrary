@@ -87,12 +87,12 @@ prettier-check:
 prettier-write:
 	$(yarn) prettier-write
 
-.PHONY: eslint-lint
-eslint-lint:
+.PHONY: yarn-lint
+yarn-lint:
 	$(yarn) lint
 
-.PHONY: eslint-fix
-eslint-fix:
+.PHONY: yarn-lint-fix
+yarn-lint-fix:
 	$(yarn) lint-fix
 
 .PHONY: yarn-test

@@ -49,7 +49,8 @@ Before you start to work with Anilibrary, you need to fill all required environm
 
 3. **Application:**
 
-   Anilibrary is written using Laravel, which also relies on some required environment variables:
+   Anilibrary is written using Laravel, which also relies on some required environment variables which are located in
+   **src/.env**:
 
     - `DB_HOST` - Hostname of MySQL, you can specify it in **docker-compose.yml** using **container_name** or **name of
       the service** which is **database**.

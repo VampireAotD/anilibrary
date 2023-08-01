@@ -27,5 +27,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Run ESLint
+        run: yarn lint
+
       - name: Run Vitest
         run: LARAVEL_BYPASS_ENV_CHECK=1 yarn test
