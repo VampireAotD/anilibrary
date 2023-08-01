@@ -1,4 +1,4 @@
-name: Build
+name: Backend build
 
 on: [ push, pull_request ]
 
@@ -13,6 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+
       - name: Install PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
@@ -20,7 +26,7 @@ jobs:
           extensions: xdebug
           coverage: xdebug
 
-      - name: Install composer dependencies
+      - name: Install Composer dependencies
         run: composer install -qn --no-ansi --no-progress --no-scripts --prefer-dist
 
       - name: Run Psalm

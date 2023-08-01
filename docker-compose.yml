@@ -2,8 +2,9 @@ version: '3.9'
 
 services:
   database:
-    image: mysql:8.0
-    container_name: database
+    build:
+      context: docker/mysql
+    container_name: anilibrary-database
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -17,8 +18,6 @@ services:
       retries: 5
     volumes:
       - mysql-data:/var/lib/mysql:rw
-      - ./docker/mysql/conf.d:/etc/mysql/conf.d
-      - ./docker/mysql/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
     ports:
       - ${MYSQL_PORT:-3306}:3306
     networks:

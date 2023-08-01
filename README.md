@@ -49,12 +49,19 @@ Before you start to work with Anilibrary, you need to fill all required environm
 
 3. **Application:**
 
-   Anilibrary is written using Laravel, which also relies on some required environment variables. The crucial ones are
-   located in **REDIS** and **DB** blocks:
+   Anilibrary is written using Laravel, which also relies on some required environment variables:
 
-    - `DB_HOST` - Hostname of MySQL, you can specify it in **docker-compose.yml** or use service name which is
-      **database**.
-    - `REDIS_HOST` - Same as **DB_HOST**, specify it in **docker-compose.yml** or use service name which is **redis**.
+    - `DB_HOST` - Hostname of MySQL, you can specify it in **docker-compose.yml** using **container_name** or **name of
+      the service** which is **database**.
+    - `DB_PORT` - Value of `MYSQL_PORT` from **.env** in the project root.
+    - `DB_DATABASE` - Value of `MYSQL_DATABASE` from **.env** in the project root.
+    - `DB_USERNAME` - Value of `MYSQL_USER` from **.env** in the project
+      root.
+    - `DB_PASSWORD` - Value of `MYSQL_PASSWORD` from **.env** in the project root.
+    - `REDIS_HOST` - Hostname of Redis, you can specify it in **docker-compose.yml** using **container_name** or **name
+      of the service** which is **redis**.
+    - `REDIS_PORT` - Value of `REDIS_PORT` from **.env** in the project root.
+    - `REDIS_PASSWORD` - Value of `REDIS_PASSWORD` from **.env** in the project root.
 
 ### Optional:
 
@@ -79,11 +86,11 @@ Before you start to work with Anilibrary, you need to fill all required environm
    with Anilibrary:
 
     - `XDEBUG_MODE` - If you want to enable **Xdebug** you can set this variable to **on**.
-    - `PUSHER_*` - If you want to use real-time notifications, specify your Pusher credentials.
-    - `TELEGRAM_*` - If you also want to have Anilibrary bot, specify your Telegram credentials.
+    - `PUSHER_*` - If you want to use real-time notifications, specify your [Pusher](https://pusher.com) credentials.
+    - `TELEGRAM_*` - If you also want to have Anilibrary bot, specify your Telegram bot credentials.
     - `TELEGRAM_WHITELIST` - Specify Telegram IDs who can work with bot.
     - `CLOUDINARY_*` - All images are stored in **Cloudinary**, so if you want to use this storage, specify your
-      Cloudinary credentials.
+      [Cloudinary](https://cloudinary.com) credentials.
     - `JWT_SECRET` - If you want to use **Scraper**, you need to specify this variable here and in **Scraper** as well.
     - `SCRAPER_URL` - Also, you need to specify it url if you want to use it.
     - `LOGSTASH_ADDRESS` - If you want to send visualize your logs in Kibana, send them to **ELK** service using
