@@ -28,18 +28,18 @@ const mockedData = {
 };
 
 afterEach(() => {
-    mockedData.props.auth.user.roles = []
-})
+    mockedData.props.auth.user.roles = [];
+});
 
 afterAll(() => {
-    vi.clearAllMocks()
-})
+    vi.clearAllMocks();
+});
 
 describe('AuthenticatedLayout test', () => {
     config.global.plugins = [[ZiggyVue, Ziggy], [HasRolePlugin]];
 
     it('Invitation link must not be rendered if user is not owner', function () {
-        mockedData.props.auth.user.roles.push({name: 'admin'});
+        mockedData.props.auth.user.roles.push({ name: 'admin' });
         mockedUsePage.mockReturnValue(mockedData);
 
         const layoutWrapper = mount(AuthenticatedLayout, {
@@ -55,7 +55,7 @@ describe('AuthenticatedLayout test', () => {
     });
 
     it('Owner must see rendered invitation link', function () {
-        mockedData.props.auth.user.roles.push({name: 'owner'});
+        mockedData.props.auth.user.roles.push({ name: 'owner' });
         mockedUsePage.mockReturnValue(mockedData);
 
         const layoutWrapper = mount(AuthenticatedLayout, {
