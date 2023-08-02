@@ -35,9 +35,7 @@ afterAll(() => {
     vi.clearAllMocks();
 });
 
-// Skipped cause locally works fine, but in CI failing due to all Ziggy is in vendor folder
-// and Vue doesn't know about it
-describe.skip('AuthenticatedLayout test', () => {
+describe('AuthenticatedLayout test', () => {
     config.global.plugins = [[ZiggyVue, Ziggy], [HasRolePlugin]];
 
     it('Invitation link must not be rendered if user is not owner', () => {
