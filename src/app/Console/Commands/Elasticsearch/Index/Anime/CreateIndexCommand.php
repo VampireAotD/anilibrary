@@ -38,15 +38,13 @@ class CreateIndexCommand extends Command
             return Command::FAILURE;
         }
 
-        $client->indices()->create(
-            [
-                'index' => IndexEnum::ANIME_INDEX->value,
-                'body'  => [
-                    'settings' => $this->getIndexSettings(),
-                    'mappings' => $this->getIndexMappings(),
-                ],
-            ]
-        );
+        $client->indices()->create([
+            'index' => IndexEnum::ANIME_INDEX->value,
+            'body'  => [
+                'settings' => $this->getIndexSettings(),
+                'mappings' => $this->getIndexMappings(),
+            ],
+        ]);
 
         $this->info('Successfully created index');
 

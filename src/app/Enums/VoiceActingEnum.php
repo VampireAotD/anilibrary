@@ -10,7 +10,7 @@ use App\Enums\Traits\CanProvideCasesValues;
  * Enum VoiceActingEnum
  * @package App\Enums
  */
-enum VoiceActingEnum : string
+enum VoiceActingEnum: string
 {
     use CanProvideCasesValues;
 

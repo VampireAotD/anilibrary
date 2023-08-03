@@ -11,16 +11,16 @@ use App\Models\AnimeUrl;
 use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeData;
+use Tests\Traits\Fake\CanCreateFakeAnime;
 
 class ParseCommandTest extends TestCase
 {
-    use RefreshDatabase,
-        CanCreateFakeData;
+    use RefreshDatabase;
+    use CanCreateFakeAnime;
 
     private AnimeRepositoryInterface $animeRepository;
 
@@ -48,22 +48,19 @@ class ParseCommandTest extends TestCase
      */
     public function testCommandCanParseAnimeList(): void
     {
-        $this->createRandomAnimeWithRelations(10);
+        $this->createAnimeCollectionWithRelations(10);
 
         Storage::shouldReceive('disk->exists')->with(config('lists.anime.file'))->andReturnTrue();
         Storage::shouldReceive('disk->get')
                ->with(config('lists.anime.file'))
                ->andReturn(
-                   $this->animeRepository->getAll(
-                       ['id', 'title', 'status', 'rating', 'episodes'],
-                       [
-                           'urls:anime_id,url',
-                           'synonyms:anime_id,synonym',
-                           'image:id,model_id,path,alias',
-                           'genres:id,name',
-                           'voiceActing:id,name',
-                       ]
-                   )->toJson(JSON_PRETTY_PRINT)
+                   $this->animeRepository->getAll(['id', 'title', 'status', 'rating', 'episodes'], [
+                       'urls:anime_id,url',
+                       'synonyms:anime_id,synonym',
+                       'image:id,model_id,path,alias',
+                       'genres:id,name',
+                       'voiceActing:id,name',
+                   ])->toJson(JSON_PRETTY_PRINT)
                );
 
         $this->refreshTestDatabase();

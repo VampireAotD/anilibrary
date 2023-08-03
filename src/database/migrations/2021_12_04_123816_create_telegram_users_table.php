@@ -14,16 +14,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create(
-            'telegram_users',
-            function (Blueprint $table) {
-                $table->uuid('id')->primary();
-                $table->bigInteger('telegram_id')->index();
-                $table->string('nickname');
-                $table->string('username')->unique();
-                $table->timestamps();
-            }
-        );
+        Schema::create('telegram_users', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->bigInteger('telegram_id')->unique();
+            $table->string('nickname');
+            $table->string('username');
+            $table->timestamps();
+        });
     }
 
     /**

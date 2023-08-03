@@ -35,14 +35,10 @@ class RequestService
      */
     private function createJWTToken(): string
     {
-        return JWT::encode(
-            [
-                'iss' => 'anilibrary',
-                'iat' => now()->unix(),
-                'exp' => now()->addDays(14)->unix(),
-            ],
-            config('jwt.secret', ''),
-            'HS512'
-        );
+        return JWT::encode([
+            'iss' => 'anilibrary',
+            'iat' => now()->unix(),
+            'exp' => now()->addDays(14)->unix(),
+        ], config('jwt.secret', ''), 'HS512');
     }
 }

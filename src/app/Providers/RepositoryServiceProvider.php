@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Repositories\AnimeRepository;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
-use App\Repositories\Contracts\GenreRepositoryInterface;
-use App\Repositories\Contracts\TelegramUserRepositoryInterface;
-use App\Repositories\Contracts\VoiceActingRepositoryInterface;
-use App\Repositories\GenreRepository;
-use App\Repositories\TelegramUserRepository;
-use App\Repositories\VoiceActingRepository;
+use App\Repositories\Anime\AnimeRepository;
+use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Repositories\Genre\GenreRepository;
+use App\Repositories\Genre\GenreRepositoryInterface;
+use App\Repositories\TelegramUser\TelegramUserRepository;
+use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;
+use App\Repositories\User\UserRepository;
+use App\Repositories\User\UserRepositoryInterface;
+use App\Repositories\VoiceActing\VoiceActingRepository;
+use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -25,6 +27,7 @@ class RepositoryServiceProvider extends ServiceProvider
         AnimeRepositoryInterface::class        => AnimeRepository::class,
         VoiceActingRepositoryInterface::class  => VoiceActingRepository::class,
         GenreRepositoryInterface::class        => GenreRepository::class,
+        UserRepositoryInterface::class         => UserRepository::class,
     ];
 
     /**

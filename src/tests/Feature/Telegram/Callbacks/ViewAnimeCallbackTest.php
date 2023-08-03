@@ -17,9 +17,9 @@ use WeStacks\TeleBot\Objects\Message;
 
 class ViewAnimeCallbackTest extends TestCase
 {
-    use RefreshDatabase,
-        CanCreateMocks,
-        CanCreateFakeUpdates;
+    use RefreshDatabase;
+    use CanCreateMocks;
+    use CanCreateFakeUpdates;
 
     private CallbackDataFactory $callbackDataFactory;
 
@@ -35,9 +35,7 @@ class ViewAnimeCallbackTest extends TestCase
 
     public function testCallbackWillRespondWithFailureMessageItCouldNotMakeCaptionForEncodedId(): void
     {
-        $callbackData = $this->callbackDataFactory->resolve(
-            new ViewAnimeCallbackDataDTO(Str::uuid()->toString())
-        );
+        $callbackData = $this->callbackDataFactory->resolve(new ViewAnimeCallbackDataDTO(Str::uuid()->toString()));
 
         $update   = $this->createFakeCallbackQueryUpdate($callbackData);
         $response = $this->bot->handleUpdate($update);

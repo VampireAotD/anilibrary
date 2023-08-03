@@ -11,17 +11,15 @@ use App\Telegram\Handlers\AnimeSearchHandler;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeData;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
 use WeStacks\TeleBot\Objects\Message;
 
 class AnimeSearchHandlerTest extends TestCase
 {
-    use RefreshDatabase,
-        CanCreateMocks,
-        CanCreateFakeUpdates,
-        CanCreateFakeData;
+    use RefreshDatabase;
+    use CanCreateFakeUpdates;
+    use CanCreateMocks;
 
     protected function setUp(): void
     {

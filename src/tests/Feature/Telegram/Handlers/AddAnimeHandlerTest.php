@@ -17,17 +17,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeData;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
+use Tests\Traits\Fake\CanCreateFakeAnime;
 use WeStacks\TeleBot\Objects\Message;
 
 class AddAnimeHandlerTest extends TestCase
 {
-    use RefreshDatabase,
-        CanCreateMocks,
-        CanCreateFakeUpdates,
-        CanCreateFakeData;
+    use RefreshDatabase;
+    use CanCreateFakeAnime;
+    use CanCreateFakeUpdates;
+    use CanCreateMocks;
 
     protected function setUp(): void
     {
@@ -79,8 +79,8 @@ class AddAnimeHandlerTest extends TestCase
     {
         UserStateFacade::shouldReceive('resetExecutedCommandsList')->with(self::FAKE_TELEGRAM_ID)->once();
 
-        $animeList = $this->createRandomAnimeWithRelations();
-        $animeList->first()->urls()->create(['url' => $url]);
+        $animeList = $this->createAnimeWithRelations();
+        $animeList->urls()->create(['url' => $url]);
 
         $update   = $this->createFakeTextMessageUpdate($url);
         $response = $this->bot->handleUpdate($update);
@@ -94,15 +94,13 @@ class AddAnimeHandlerTest extends TestCase
      */
     public function testBotWillRespondWithFailureMessageIfScrapedDataWereInvalid(string $url): void
     {
-        Http::fake(
-            [
-                '*' => [
-                    'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                    'episodes' => $this->faker->randomAscii,
-                    'rating'   => $this->faker->randomFloat(),
-                ],
-            ]
-        );
+        Http::fake([
+            '*' => [
+                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
+                'episodes' => $this->faker->randomAscii,
+                'rating'   => $this->faker->randomFloat(),
+            ],
+        ]);
 
         Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
         Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
@@ -119,16 +117,14 @@ class AddAnimeHandlerTest extends TestCase
      */
     public function testBotCanScrapeSupportedUrls(string $url): void
     {
-        Http::fake(
-            [
-                '*' => [
-                    'title'    => $this->faker->sentence,
-                    'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                    'episodes' => $this->faker->randomAscii,
-                    'rating'   => $this->faker->randomFloat(),
-                ],
-            ]
-        );
+        Http::fake([
+            '*' => [
+                'title'    => $this->faker->sentence,
+                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
+                'episodes' => $this->faker->randomAscii,
+                'rating'   => $this->faker->randomFloat(),
+            ],
+        ]);
 
         Bus::fake();
 

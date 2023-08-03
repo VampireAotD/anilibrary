@@ -38,6 +38,10 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\HandleInertiaRequests::class,
+            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            \App\Http\Middleware\Authenticate::class,
+            \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ],
 
         'api' => [
@@ -55,16 +59,23 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
-        'auth'             => \App\Http\Middleware\Authenticate::class,
-        'auth.basic'       => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.session'     => \Illuminate\Session\Middleware\AuthenticateSession::class,
-        'cache.headers'    => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can'              => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'            => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-        'precognitive'     => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
-        'signed'           => \App\Http\Middleware\ValidateSignature::class,
-        'throttle'         => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified'         => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth'                 => \App\Http\Middleware\Authenticate::class,
+        'auth.basic'           => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.session'         => \Illuminate\Session\Middleware\AuthenticateSession::class,
+        'cache.headers'        => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can'                  => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'                => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm'     => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'precognitive'         => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+        'signed'               => \App\Http\Middleware\ValidateSignature::class,
+        'throttle'             => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified'             => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'role'                 => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission'           => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'role_or_permission'   => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+        'telegram.signed'      => \App\Http\Middleware\Telegram\ValidateSignatureMiddleware::class,
+        'telegram.assigned'    => \App\Http\Middleware\Telegram\RedirectIfHasAssignedUserMiddleware::class,
+        'registration.exact'   => \App\Http\Middleware\Registration\ExactEmailMiddleware::class,
+        'registration.expired' => \App\Http\Middleware\Registration\ExpiredLinkMiddleware::class,
     ];
 }

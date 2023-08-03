@@ -77,14 +77,11 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
 
             return $message;
         } catch (RequestException | ValidationException | Throwable $exception) {
-            logger()->error(
-                'Add anime handler',
-                [
-                    'url'              => $message->text,
-                    'exceptionMessage' => $exception->getMessage(),
-                    'exceptionTrace'   => $exception->getTraceAsString(),
-                ]
-            );
+            logger()->error('Add anime handler', [
+                'url'              => $message->text,
+                'exceptionMessage' => $exception->getMessage(),
+                'exceptionTrace'   => $exception->getTraceAsString(),
+            ]);
 
             return $this->sendMessage(['text' => AddAnimeHandlerEnum::PARSE_FAILED->value]);
         }
@@ -94,20 +91,18 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
     {
         $callbackData = $this->callbackDataFactory->resolve(new ViewAnimeCallbackDataDTO($anime->id));
 
-        return $this->sendMessage(
-            [
-                'text'         => AddAnimeHandlerEnum::PARSE_HAS_ENDED->value,
-                'reply_markup' => [
-                    'inline_keyboard' => [
+        return $this->sendMessage([
+            'text'         => AddAnimeHandlerEnum::PARSE_HAS_ENDED->value,
+            'reply_markup' => [
+                'inline_keyboard' => [
+                    [
                         [
-                            [
-                                'text'          => AddAnimeHandlerEnum::VIEW_ANIME->value,
-                                'callback_data' => $callbackData,
-                            ],
+                            'text'          => AddAnimeHandlerEnum::VIEW_ANIME->value,
+                            'callback_data' => $callbackData,
                         ],
                     ],
                 ],
-            ]
-        );
+            ],
+        ]);
     }
 }

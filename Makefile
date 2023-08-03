@@ -1,74 +1,100 @@
-docker_compose_bin := $(shell command -v docker-compose 2> /dev/null)
-queue_list         := mail,register
-
-.PHONY: supervisor
-supervisor:
-	$(info Launching supervisor...)
-	$(docker_compose_bin) exec -d app supervisord
-
-.PHONY: scheduler
-scheduler:
-	$(info Launching Laravel scheduler...)
-	$(docker_compose_bin) exec -d app ./artisan schedule:work
-
-.PHONY: queues
-queues:
-	$(info Launching queue worker...)
-	$(docker_compose_bin) exec -d app ./artisan queue:work --queue=$(queue_list)
-
-.PHONY: build
-build:
-	$(info Building app containers...)
-	$(docker_compose_bin) up -d --build
+compose      := $(shell command -v docker-compose || command -v "docker compose")
+queue_list   := mail,register,upsert-anime,scrape-anime,pusher-scrape-response
+yarn         := $(compose) run --service-ports --rm node
 
 .PHONY: up
 up:
 	$(info Launching app containers...)
-	$(docker_compose_bin) up -d;
+	$(compose) up -d;
 	@make supervisor
 	@make scheduler
 	@make queues
 
+.PHONY: build
+build:
+	$(info Building app containers...)
+	$(compose) up -d --build
+
 .PHONY: down
 down:
 	$(info Shutting down app containers...)
-	$(docker_compose_bin) down --remove-orphans
+	$(compose) down --remove-orphans
+
+.PHONY: supervisor
+supervisor:
+	$(info Launching supervisor...)
+	$(compose) exec -d app supervisord
+
+.PHONY: scheduler
+scheduler:
+	$(info Launching Laravel scheduler...)
+	$(compose) exec -d app ./artisan schedule:work
+
+.PHONY: queues
+queues:
+	$(info Launching queue worker...)
+	$(compose) exec -d app ./artisan queue:work --queue=$(queue_list) --daemon
 
 .PHONY: app
 app:
 	$(info Entering app container...)
-	$(docker_compose_bin) exec app bash
+	$(compose) exec app bash
 
 .PHONY: install
 install:
-	$(info Initialising app...)
-	@cp .env.example .env;
-	@make build;
-	$(docker_compose_bin) exec app cp .env.example .env;
-	$(docker_compose_bin) exec app composer install;
-	$(docker_compose_bin) exec app ./artisan key:generate;
-	$(docker_compose_bin) exec app ./artisan migrate --seed;
-	$(docker_compose_bin) exec app ./artisan anime-list:parse;
+	./scripts/install.sh
 
 .PHONY: test
 test:
-	$(docker_compose_bin) exec app ./artisan test
+	$(compose) exec app ./artisan test
 
 .PHONY: psalm
 psalm:
-	$(docker_compose_bin) exec app vendor/bin/psalm
+	$(compose) exec app vendor/bin/psalm
 
 .PHONY: phpstan
 phpstan:
-	$(docker_compose_bin) exec app vendor/bin/phpstan analyse --memory-limit=2G
+	$(compose) exec app vendor/bin/phpstan analyse --memory-limit=2G
+
+.PHONY: pint
+pint:
+	$(compose) exec app vendor/bin/pint --config pint.json
 
 .PHONY: optimize
 optimize:
-	$(docker_compose_bin) exec app ./artisan optimize:clear;
-	$(docker_compose_bin) exec app ./artisan optimize;
+	$(compose) exec app ./artisan optimize:clear;
+	$(compose) exec app ./artisan optimize;
 
 .PHONY: ide-helper
 ide-helper:
-	$(docker_compose_bin) exec app ./artisan ide-helper:generate;
-	$(docker_compose_bin) exec app ./artisan ide-helper:model --reset -W;
-	$(docker_compose_bin) exec app ./artisan ide-helper:meta;
+	$(compose) exec app ./artisan ide-helper:generate;
+	$(compose) exec app ./artisan ide-helper:model --reset -W;
+	$(compose) exec app ./artisan ide-helper:meta;
+
+.PHONY: yarn-watch
+yarn-watch:
+	$(yarn) run dev
+
+.PHONY: yarn-build
+yarn-build:
+	$(yarn) run build
+
+.PHONY: prettier-check
+prettier-check:
+	$(yarn) prettier-check
+
+.PHONY: prettier-write
+prettier-write:
+	$(yarn) prettier-write
+
+.PHONY: yarn-lint
+yarn-lint:
+	$(yarn) lint
+
+.PHONY: yarn-lint-fix
+yarn-lint-fix:
+	$(yarn) lint-fix
+
+.PHONY: yarn-test
+yarn-test:
+	$(yarn) test

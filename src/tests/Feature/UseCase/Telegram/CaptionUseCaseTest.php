@@ -15,13 +15,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeData;
+use Tests\Traits\Fake\CanCreateFakeAnime;
 
 class CaptionUseCaseTest extends TestCase
 {
-    use RefreshDatabase,
-        WithFaker,
-        CanCreateFakeData;
+    use RefreshDatabase;
+    use WithFaker;
+    use CanCreateFakeAnime;
 
     private HashService    $hashService;
     private CaptionUseCase $captionUseCase;
@@ -52,8 +52,7 @@ class CaptionUseCaseTest extends TestCase
      */
     public function testCanCreateCaptionForAddedAnime(): void
     {
-        /** @var Anime $anime */
-        $anime   = $this->createRandomAnimeWithRelations()->first();
+        $anime   = $this->createAnimeWithRelations();
         $encoded = $this->hashService->encodeUuid($anime->id);
         $caption = $this->captionUseCase->createDecodedAnimeCaption(
             new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
@@ -76,10 +75,8 @@ class CaptionUseCaseTest extends TestCase
      */
     public function testCanCreateAnimeListPaginationCaption(): void
     {
-        $animeList = $this->createRandomAnimeWithRelations(3);
-        $caption   = $this->captionUseCase->createPaginationCaption(
-            new PaginationDTO($this->faker->randomNumber())
-        );
+        $animeList = $this->createAnimeCollectionWithRelations(3);
+        $caption   = $this->captionUseCase->createPaginationCaption(new PaginationDTO($this->faker->randomNumber()));
 
         $first = $animeList->first();
 
@@ -91,9 +88,7 @@ class CaptionUseCaseTest extends TestCase
         $this->assertCount(1, $caption['reply_markup']['inline_keyboard'][1]);
         $this->assertEquals('>', $caption['reply_markup']['inline_keyboard'][1][0]['text']);
 
-        $caption = $this->captionUseCase->createPaginationCaption(
-            new PaginationDTO($this->faker->randomNumber(), 2)
-        );
+        $caption = $this->captionUseCase->createPaginationCaption(new PaginationDTO($this->faker->randomNumber(), 2));
         $middle  = $animeList->offsetGet(1);
 
         $this->assertInstanceOf(Anime::class, $middle);
@@ -105,9 +100,7 @@ class CaptionUseCaseTest extends TestCase
         $this->assertEquals('<', $caption['reply_markup']['inline_keyboard'][1][0]['text']);
         $this->assertEquals('>', $caption['reply_markup']['inline_keyboard'][1][1]['text']);
 
-        $caption = $this->captionUseCase->createPaginationCaption(
-            new PaginationDTO($this->faker->randomNumber(), 3)
-        );
+        $caption = $this->captionUseCase->createPaginationCaption(new PaginationDTO($this->faker->randomNumber(), 3));
         $last    = $animeList->last();
 
         $this->assertInstanceOf(Anime::class, $last);
@@ -132,7 +125,7 @@ class CaptionUseCaseTest extends TestCase
 
     public function testWillCreateSearchCaptionIfThereIsSearchResults(): void
     {
-        $animeList = $this->createRandomAnimeWithRelations(2);
+        $animeList = $this->createAnimeCollectionWithRelations(2);
 
         UserStateFacade::shouldReceive('getSearchResult')->once()->andReturn($animeList->pluck('id')->toArray());
 

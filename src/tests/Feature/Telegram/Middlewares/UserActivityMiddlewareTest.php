@@ -14,8 +14,8 @@ use Tests\Traits\CanCreateMocks;
 
 class UserActivityMiddlewareTest extends TestCase
 {
-    use CanCreateMocks,
-        CanCreateFakeUpdates;
+    use CanCreateMocks;
+    use CanCreateFakeUpdates;
 
     protected function setUp(): void
     {

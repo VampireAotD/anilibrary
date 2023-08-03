@@ -10,7 +10,8 @@ use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
 use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Models\Anime;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Repositories\Filters\PaginationFilter;
 use App\Services\Telegram\CaptionService;
 use App\Services\Telegram\HashService;
 
@@ -43,7 +44,7 @@ readonly class CaptionUseCase
 
     public function createPaginationCaption(PaginationDTO $dto): array
     {
-        $animeList = $this->animeRepository->paginate(currentPage: $dto->page);
+        $animeList = $this->animeRepository->paginate((new PaginationFilter($dto->page)));
 
         return $this->captionService->create(new PaginationCaptionDTO($animeList, $dto->chatId));
     }
@@ -56,7 +57,8 @@ readonly class CaptionUseCase
             return [];
         }
 
-        $animeList = Anime::query()->whereIn('id', $ids)->paginate(1, page: $dto->page);
+        $filter    = new PaginationFilter($dto->page);
+        $animeList = $this->animeRepository->paginate($filter->withWhereIn('id', $ids));
 
         return $this->captionService->create(
             new PaginationCaptionDTO($animeList, $dto->chatId, $dto->page, $dto->queryType)

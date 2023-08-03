@@ -8,7 +8,7 @@ namespace App\Enums\Telegram\Callbacks;
  * Enum ViewAnimeCallbackEnum
  * @package App\Enums\Telegram\Callbacks
  */
-enum ViewAnimeCallbackEnum : string
+enum ViewAnimeCallbackEnum: string
 {
     case FAILED_TO_GET_ANIME = 'Не удалось найти аниме';
 }

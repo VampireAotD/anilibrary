@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(VoiceActingSeeder::class);
+        $this->call(RoleSeeder::class);
     }
 }

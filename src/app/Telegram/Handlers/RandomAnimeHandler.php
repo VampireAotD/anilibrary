@@ -8,7 +8,7 @@ use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\RandomAnimeEnum;
 use App\Facades\Telegram\State\UserStateFacade;
-use App\Repositories\Contracts\AnimeRepositoryInterface;
+use App\Repositories\Anime\AnimeRepositoryInterface;
 use App\Services\Telegram\CaptionService;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -49,24 +49,17 @@ final class RandomAnimeHandler extends TextMessageUpdateHandler
             $randomAnime = $this->animeRepository->findRandomAnime();
 
             if (!$randomAnime) {
-                return $this->sendMessage(
-                    [
-                        'text' => RandomAnimeEnum::UNABLE_TO_FIND_ANIME->value,
-                    ]
-                );
+                return $this->sendMessage([
+                    'text' => RandomAnimeEnum::UNABLE_TO_FIND_ANIME->value,
+                ]);
             }
 
-            return $this->sendPhoto(
-                $this->captionService->create(new ViewAnimeCaptionDTO($randomAnime, $chatId))
-            );
+            return $this->sendPhoto($this->captionService->create(new ViewAnimeCaptionDTO($randomAnime, $chatId)));
         } catch (Exception $exception) {
-            logger()->error(
-                'Random anime handler',
-                [
-                    'exception_message' => $exception->getMessage(),
-                    'exception_trace'   => $exception->getTraceAsString(),
-                ]
-            );
+            logger()->error('Random anime handler', [
+                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $exception->getTraceAsString(),
+            ]);
         } finally {
             UserStateFacade::resetExecutedCommandsList($chatId);
         }

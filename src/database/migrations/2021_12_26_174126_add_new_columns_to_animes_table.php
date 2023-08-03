@@ -15,14 +15,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table(
-            'animes',
-            function (Blueprint $table) {
-                $table->enum('status', AnimeStatusEnum::values())->default(AnimeStatusEnum::ANNOUNCE->value);
-                $table->float('rating')->default(1);
-                $table->string('episodes')->nullable();
-            }
-        );
+        Schema::table('animes', function (Blueprint $table) {
+            $table->enum('status', AnimeStatusEnum::values())->after('title')->default(AnimeStatusEnum::ANNOUNCE->value);
+            $table->float('rating')->after('status')->default(1);
+            $table->string('episodes')->after('rating')->nullable();
+        });
     }
 
     /**
@@ -32,11 +29,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table(
-            'animes',
-            function (Blueprint $table) {
-                $table->dropColumn(['status', 'rating', 'episodes']);
-            }
-        );
+        Schema::table('animes', function (Blueprint $table) {
+            $table->dropColumn(['status', 'rating', 'episodes']);
+        });
     }
 };

@@ -9,14 +9,14 @@ use App\Models\Anime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeData;
 use Tests\Traits\CanCreateMocks;
+use Tests\Traits\Fake\CanCreateFakeAnime;
 
 class SyncAnimeDataCommandTest extends TestCase
 {
-    use RefreshDatabase,
-        CanCreateMocks,
-        CanCreateFakeData;
+    use RefreshDatabase;
+    use CanCreateFakeAnime;
+    use CanCreateMocks;
 
     protected function setUp(): void
     {
@@ -30,7 +30,7 @@ class SyncAnimeDataCommandTest extends TestCase
      */
     public function testCommandWillSyncAnimeDataToElasticsearch(): void
     {
-        $animeList = $this->createRandomAnimeWithRelations();
+        $animeList = $this->createAnimeCollectionWithRelations(2);
 
         $items = $animeList->map(fn(Anime $anime) => ['index' => IndexEnum::ANIME_INDEX->value, 'id' => $anime->id]);
 

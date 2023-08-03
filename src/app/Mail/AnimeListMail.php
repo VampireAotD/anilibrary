@@ -15,8 +15,8 @@ use Illuminate\Queue\SerializesModels;
  */
 class AnimeListMail extends Mailable
 {
-    use Queueable,
-        SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new message instance.
@@ -35,6 +35,6 @@ class AnimeListMail extends Mailable
     {
         return $this->from(config('mail.from.address'))
                     ->attachFromStorageDisk('lists', config('lists.anime.file'))
-                    ->markdown('emails.lists.anime-list');
+                    ->markdown('mail.list.anime-list-mail');
     }
 }

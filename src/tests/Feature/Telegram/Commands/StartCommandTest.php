@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Telegram\Commands;
 
 use App\Enums\Telegram\Commands\StartCommandEnum;
-use App\Jobs\Telegram\RegisterUserJob;
+use App\Jobs\Telegram\CreateUserJob;
 use App\Telegram\Commands\StartCommand;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
@@ -14,8 +15,9 @@ use Tests\Traits\CanCreateMocks;
 
 class StartCommandTest extends TestCase
 {
-    use CanCreateMocks,
-        CanCreateFakeUpdates;
+    use RefreshDatabase;
+    use CanCreateMocks;
+    use CanCreateFakeUpdates;
 
     protected function setUp(): void
     {
@@ -32,7 +34,7 @@ class StartCommandTest extends TestCase
         $update   = $this->createFakeCommandUpdate('/start');
         $response = $this->bot->handleUpdate($update);
 
-        Bus::assertNotDispatched(RegisterUserJob::class);
+        Bus::assertNotDispatched(CreateUserJob::class);
 
         $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
     }
@@ -44,7 +46,7 @@ class StartCommandTest extends TestCase
         $update   = $this->createFakeCommandUpdateWithBot('/start');
         $response = $this->bot->handleUpdate($update);
 
-        Bus::assertNotDispatched(RegisterUserJob::class);
+        Bus::assertNotDispatched(CreateUserJob::class);
 
         $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
     }
@@ -56,7 +58,10 @@ class StartCommandTest extends TestCase
         $update   = $this->createFakeCommandUpdateWithUser('/start');
         $response = $this->bot->handleUpdate($update);
 
-        Bus::assertDispatched(RegisterUserJob::class);
+        Bus::assertDispatched(
+            CreateUserJob::class,
+            fn(CreateUserJob $job) => $job->dto->telegramId === self::FAKE_TELEGRAM_ID
+        );
 
         $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
     }

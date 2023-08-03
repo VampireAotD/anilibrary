@@ -35,7 +35,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VoiceActing>  $voiceActing
  * @property-read int|null                                                                $voice_acting_count
  * @property-read Attribute                                                               $toTelegramCaption
- * @method static \Database\Factories\AnimeFactory factory($count = null, $state = [])
+ * @method static \Database\Factories\AnimeFactory            factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime query()
@@ -51,7 +51,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class Anime extends Model
 {
-    use HasUuids, HasFactory;
+    use HasUuids;
+    use HasFactory;
 
     protected $fillable = [
         'title',

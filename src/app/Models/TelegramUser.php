@@ -13,13 +13,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * App\Models\TelegramUser
  *
  * @property string                          $id
+ * @property string|null                     $user_id
  * @property int                             $telegram_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null                     $first_name
  * @property string|null                     $last_name
  * @property string|null                     $username
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\User|null      $user
+ * @method static \Database\Factories\TelegramUserFactory            factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser query()
@@ -29,15 +31,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereTelegramId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUsername($value)
  * @mixin \Eloquent
  */
 class TelegramUser extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
     protected $fillable = [
         'telegram_id',
+        'user_id',
         'first_name',
         'last_name',
         'username',
@@ -48,6 +53,6 @@ class TelegramUser extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'telegram_user_id');
+        return $this->belongsTo(User::class);
     }
 }

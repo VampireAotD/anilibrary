@@ -7,7 +7,7 @@ namespace App\Telegram\Commands;
 use App\DTO\Service\Telegram\CreateUserDTO;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Commands\StartCommandEnum;
-use App\Jobs\Telegram\RegisterUserJob;
+use App\Jobs\Telegram\CreateUserJob;
 use GuzzleHttp\Promise\PromiseInterface;
 use WeStacks\TeleBot\Handlers\CommandHandler;
 use WeStacks\TeleBot\Objects\Message;
@@ -43,34 +43,32 @@ class StartCommand extends CommandHandler
             /** @phpstan-ignore-next-line */
             $dto = new CreateUserDTO($user->id, $user?->first_name, $user?->last_name ?? 'not set', $user?->username);
 
-            RegisterUserJob::dispatch($dto);
+            CreateUserJob::dispatch($dto);
         }
 
-        return $this->sendMessage(
-            [
-                'text'         => StartCommandEnum::WELCOME_MESSAGE->value,
-                'reply_markup' => [
-                    'keyboard'        => [
+        return $this->sendMessage([
+            'text'         => StartCommandEnum::WELCOME_MESSAGE->value,
+            'reply_markup' => [
+                'keyboard'        => [
+                    [
                         [
-                            [
-                                'text' => CommandEnum::ADD_ANIME_BUTTON->value,
-                            ],
-                            [
-                                'text' => CommandEnum::RANDOM_ANIME_BUTTON->value,
-                            ],
+                            'text' => CommandEnum::ADD_ANIME_BUTTON->value,
                         ],
                         [
-                            [
-                                'text' => CommandEnum::ANIME_LIST_BUTTON->value,
-                            ],
-                            [
-                                'text' => CommandEnum::ANIME_SEARCH_BUTTON->value,
-                            ],
+                            'text' => CommandEnum::RANDOM_ANIME_BUTTON->value,
                         ],
                     ],
-                    'resize_keyboard' => true,
+                    [
+                        [
+                            'text' => CommandEnum::ANIME_LIST_BUTTON->value,
+                        ],
+                        [
+                            'text' => CommandEnum::ANIME_SEARCH_BUTTON->value,
+                        ],
+                    ],
                 ],
-            ]
-        );
+                'resize_keyboard' => true,
+            ],
+        ]);
     }
 }

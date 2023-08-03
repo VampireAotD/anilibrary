@@ -11,18 +11,16 @@ use App\Telegram\Handlers\RandomAnimeHandler;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeData;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
 use WeStacks\TeleBot\Objects\Message;
 
 class RandomAnimeHandlerTest extends TestCase
 {
-    use RefreshDatabase,
-        WithFaker,
-        CanCreateFakeData,
-        CanCreateMocks,
-        CanCreateFakeUpdates;
+    use RefreshDatabase;
+    use WithFaker;
+    use CanCreateFakeUpdates;
+    use CanCreateMocks;
 
     protected function setUp(): void
     {

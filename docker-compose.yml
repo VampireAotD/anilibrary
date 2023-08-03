@@ -2,14 +2,15 @@ version: '3.9'
 
 services:
   database:
-    image: mysql:8.0
-    container_name: database
+    build:
+      context: docker/mysql
+    container_name: anilibrary-database
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+      MYSQL_AUTHENTICATION_PLUGIN: caching_sha2_password
     healthcheck:
       test: [ "CMD", "mysqladmin", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD",  "ping", "-h", "localhost" ]
       interval: 2s
@@ -17,7 +18,6 @@ services:
       retries: 5
     volumes:
       - mysql-data:/var/lib/mysql:rw
-      - ./docker/mysql/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
     ports:
       - ${MYSQL_PORT:-3306}:3306
     networks:
@@ -25,8 +25,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: redis
-    hostname: ${REDIS_HOSTNAME:-localhost}
+    container_name: anilibrary-redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli -a $REDIS_PASSWORD ping | grep PONG" ]
@@ -41,17 +40,17 @@ services:
       - local
 
   app:
-    depends_on:
-      database:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
     build:
       args:
         GROUP_ID: ${GROUP_ID:-1000}
         USER_ID: ${USER_ID:-1000}
       context: docker
       dockerfile: php/Dockerfile
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     container_name: php
     tty: true
     environment:
@@ -67,10 +66,24 @@ services:
       - anilibrary
       - local
 
+  node:
+    image: node
+    depends_on:
+      - app
+    container_name: anilibrary-node
+    working_dir: /app
+    volumes:
+      - ./src:/app
+    ports:
+      - "5173:5173"
+    entrypoint: [ 'yarn' ]
+    networks:
+      - local
+
   nginx:
     build:
-      context: docker
-      dockerfile: nginx/Dockerfile
+      context: docker/nginx
+    container_name: anilibrary-nginx
     depends_on:
       - app
     ports:
@@ -79,6 +92,7 @@ services:
       - ./src/public:/anilibrary/public
     networks:
       - local
+      - anilibrary
 
 networks:
   local:

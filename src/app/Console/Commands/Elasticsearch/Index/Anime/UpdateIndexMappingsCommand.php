@@ -32,12 +32,10 @@ class UpdateIndexMappingsCommand extends Command
      */
     public function handle(Client $manager): int
     {
-        $manager->indices()->putMapping(
-            [
-                'index' => IndexEnum::ANIME_INDEX->value,
-                'body'  => $this->getIndexMappings(),
-            ]
-        );
+        $manager->indices()->putMapping([
+            'index' => IndexEnum::ANIME_INDEX->value,
+            'body'  => $this->getIndexMappings(),
+        ]);
 
         $this->info(sprintf('Mappings for %s index were updated', IndexEnum::ANIME_INDEX->value));
 

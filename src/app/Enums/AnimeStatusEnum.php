@@ -10,7 +10,7 @@ use App\Enums\Traits\CanProvideCasesValues;
  * Enum AnimeStatusEnum
  * @package App\Enums\Telegram
  */
-enum AnimeStatusEnum : string
+enum AnimeStatusEnum: string
 {
     use CanProvideCasesValues;
 

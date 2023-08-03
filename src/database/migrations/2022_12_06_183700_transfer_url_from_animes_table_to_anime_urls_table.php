@@ -16,19 +16,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Anime::query()->select(['id', 'url'])->each(
-            function (Anime $anime) {
-                $anime->urls()->save(new AnimeUrl(['anime_id' => $anime->id, 'url' => $anime->url]));
-            }
-        );
+        Anime::query()->select(['id', 'url'])->each(function (Anime $anime) {
+            $anime->urls()->save(new AnimeUrl(['anime_id' => $anime->id, 'url' => $anime->url]));
+        });
 
-
-        Schema::table(
-            'animes',
-            function (Blueprint $table) {
-                $table->dropColumn('url');
-            }
-        );
+        Schema::table('animes', function (Blueprint $table) {
+            $table->dropColumn('url');
+        });
     }
 
     /**
@@ -38,19 +32,13 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table(
-            'animes',
-            function (Blueprint $table) {
-                $table->string('url')->after('title');
-            }
-        );
+        Schema::table('animes', function (Blueprint $table) {
+            $table->string('url')->after('title');
+        });
 
-        AnimeUrl::query()->select(['anime_id', 'url'])->eachById(
-            function (AnimeUrl $animeUrl) {
-                Anime::query()->where('id', $animeUrl->anime_id)->update(['url' => $animeUrl->url]);
-            },
-            column: 'anime_id'
-        );
+        AnimeUrl::query()->select(['anime_id', 'url'])->eachById(function (AnimeUrl $animeUrl) {
+            Anime::query()->where('id', $animeUrl->anime_id)->update(['url' => $animeUrl->url]);
+        }, column: 'anime_id');
 
         AnimeUrl::truncate();
     }

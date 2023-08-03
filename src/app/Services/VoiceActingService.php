@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Repositories\Contracts\VoiceActingRepositoryInterface;
-use App\Traits\CanGenerateNamesArray;
+use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
+use App\Traits\CanTransformArray;
 
 /**
  * Class VoiceActingService
  * @package App\Services
  */
-class VoiceActingService
+final class VoiceActingService
 {
-    use CanGenerateNamesArray;
+    use CanTransformArray;
 
     public function __construct(private readonly VoiceActingRepositoryInterface $voiceActingRepository)
     {
@@ -32,7 +32,7 @@ class VoiceActingService
             return $stored->pluck('id')->toArray();
         }
 
-        $newVoiceActing = $this->generateNamesArray($newVoiceActing);
+        $newVoiceActing = $this->toAssociativeArrayWithUuid('name', $newVoiceActing);
 
         $this->voiceActingRepository->upsertMany($newVoiceActing, ['name']);
 

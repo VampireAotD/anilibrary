@@ -29,12 +29,10 @@ class BotAccessMiddleware
         $whitelist = explode(',', config('telebot.whitelist', ''));
 
         if (!in_array($userId, $whitelist)) {
-            return $bot->sendMessage(
-                [
-                    'chat_id' => $userId,
-                    'text'    => BotAccessEnum::ACCESS_DENIED_MESSAGE->value,
-                ]
-            );
+            return $bot->sendMessage([
+                'chat_id' => $userId,
+                'text'    => BotAccessEnum::ACCESS_DENIED_MESSAGE->value,
+            ]);
         }
 
         return $next();

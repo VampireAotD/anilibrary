@@ -45,9 +45,7 @@ readonly class CaptionService
      */
     private function createAnimeCaption(Anime $anime): array
     {
-        $keyboard = $anime->urls->map(
-            fn(AnimeUrl $animeUrl) => $animeUrl->toTelegramKeyboardButton
-        )->toArray();
+        $keyboard = $anime->urls->map(fn(AnimeUrl $animeUrl) => $animeUrl->toTelegramKeyboardButton)->toArray();
 
         return [
             'caption'      => $anime->toTelegramCaption,

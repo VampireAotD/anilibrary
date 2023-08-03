@@ -60,7 +60,6 @@ class UserState
     {
         [, $executedCommandsKey] = $this->stateKeys($telegramId);
 
-
         $this->state()->del($executedCommandsKey);
     }
 
