@@ -4,7 +4,8 @@
 
 Application for scraping anime data from different supported sites
 
-[![Build](https://github.com/VampireAotD/anilibrary/actions/workflows/build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/build.yml)
+[![Frontend build](https://github.com/VampireAotD/anilibrary/actions/workflows/frontend-build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/frontend-build.yml)
+[![Backend build](https://github.com/VampireAotD/anilibrary/actions/workflows/backend-build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/backend-build.yml)
 
 :warning: This project has a lot more to improve, for example: code base, working with other services, frontend part,
 and, in time, it all **will be improved**, but for now, **Anilibrary is not considered stable, breaking changes will
