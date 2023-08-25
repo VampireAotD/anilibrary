@@ -29,6 +29,7 @@ class UpdateIndexMappingsCommand extends Command
 
     /**
      * Execute the console command.
+     * @psalm-suppress InvalidArgument
      */
     public function handle(Client $manager): int
     {

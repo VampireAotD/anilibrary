@@ -29,6 +29,7 @@ class SyncAnimeDataCommand extends Command
 
     /**
      * Execute the console command.
+     * @psalm-suppress InvalidArgument
      */
     public function handle(AnimeRepositoryInterface $animeRepository, Client $client): int
     {
@@ -46,20 +47,18 @@ class SyncAnimeDataCommand extends Command
         $animeList->chunk(100)->each(function (Collection $collection) use ($client, $bar) {
             $batch = ['body' => []];
 
-            $collection->each(
-                /** @phpstan-ignore-next-line */
-                function (Anime $anime) use (&$batch, $bar) {
-                    $batch['body'][] = [
-                        'index' => [
-                            '_index' => IndexEnum::ANIME_INDEX->value,
-                            '_id'    => $anime->id,
-                        ],
-                        'body'  => $anime->toJson(),
-                    ];
+            /** @phpstan-ignore-next-line */
+            $collection->each(function (Anime $anime) use (&$batch, $bar) {
+                $batch['body'][] = [
+                    'index' => [
+                        '_index' => IndexEnum::ANIME_INDEX->value,
+                    ],
+                ];
 
-                    $bar->advance();
-                }
-            );
+                $batch['body'][] = $anime->toArray();
+
+                $bar->advance();
+            });
 
             $client->bulk($batch);
         });

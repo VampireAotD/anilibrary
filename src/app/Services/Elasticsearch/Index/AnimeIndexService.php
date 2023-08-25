@@ -19,6 +19,9 @@ final readonly class AnimeIndexService
     {
     }
 
+    /**
+     * @psalm-suppress InvalidArgument
+     */
     public function multiMatchSearch(string $term): array
     {
         try {

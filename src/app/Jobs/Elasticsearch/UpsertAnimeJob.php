@@ -34,6 +34,7 @@ class UpsertAnimeJob implements ShouldQueue
 
     /**
      * Execute the job.
+     * @psalm-suppress InvalidArgument
      */
     public function handle(Client $client): void
     {

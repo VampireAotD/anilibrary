@@ -29,6 +29,7 @@ class CreateIndexCommand extends Command
 
     /**
      * Execute the console command.
+     * @psalm-suppress InvalidArgument
      */
     public function handle(Client $client): int
     {
