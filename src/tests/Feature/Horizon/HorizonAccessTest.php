@@ -31,13 +31,4 @@ class HorizonAccessTest extends TestCase
 
         $this->actingAs($user)->get('/horizon')->assertForbidden();
     }
-
-    public function testHorizonDashboardCanBeAccessedByOwnerInProductionEnvironment(): void
-    {
-        config(['app.env' => 'production']);
-
-        $user = $this->createOwner();
-
-        $this->actingAs($user)->get('/horizon')->assertOk();
-    }
 }

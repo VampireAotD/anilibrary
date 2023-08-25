@@ -16,6 +16,7 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
@@ -72,9 +73,7 @@ class AddAnimeHandlerTest extends TestCase
         $this->assertEquals(SupportedUrlRuleEnum::UNSUPPORTED_URL->value, $response->text);
     }
 
-    /**
-     * @dataProvider supportedUrlsProvider
-     */
+    #[DataProvider('supportedUrlsProvider')]
     public function testBotWillReturnAnimeWithoutScrapingIfUrlIsAlreadyInDatabase(string $url): void
     {
         UserStateFacade::shouldReceive('resetExecutedCommandsList')->with(self::FAKE_TELEGRAM_ID)->once();
@@ -89,9 +88,7 @@ class AddAnimeHandlerTest extends TestCase
         $this->assertEquals(AddAnimeHandlerEnum::PARSE_HAS_ENDED->value, $response->text);
     }
 
-    /**
-     * @dataProvider supportedUrlsProvider
-     */
+    #[DataProvider('supportedUrlsProvider')]
     public function testBotWillRespondWithFailureMessageIfScrapedDataWereInvalid(string $url): void
     {
         Http::fake([
@@ -112,9 +109,7 @@ class AddAnimeHandlerTest extends TestCase
         $this->assertEquals(AddAnimeHandlerEnum::PARSE_FAILED->value, $response->text);
     }
 
-    /**
-     * @dataProvider supportedUrlsProvider
-     */
+    #[DataProvider('supportedUrlsProvider')]
     public function testBotCanScrapeSupportedUrls(string $url): void
     {
         Http::fake([

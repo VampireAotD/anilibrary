@@ -6,7 +6,6 @@ use App\Enums\QueueEnum;
 use Illuminate\Support\Str;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Horizon Domain

@@ -7,6 +7,7 @@ namespace Tests\Feature\Telegram\Handlers;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\MessageHandlerEnum;
 use App\Telegram\Handlers\MessageHandler;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\CanCreateFakeUpdates;
 use Tests\Traits\CanCreateMocks;
@@ -41,11 +42,7 @@ class MessageHandlerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider addAnimeKeywordProvider
-     * @param string $command
-     * @return void
-     */
+    #[DataProvider('addAnimeKeywordProvider')]
     public function testBotWillInformHowToAddAnime(string $command): void
     {
         $update   = $this->createFakeTextMessageUpdate($command);
@@ -55,11 +52,7 @@ class MessageHandlerTest extends TestCase
         $this->assertEquals(MessageHandlerEnum::PROVIDE_URL->value, $response->text);
     }
 
-    /**
-     * @dataProvider animeSearchKeywordProvider
-     * @param string $command
-     * @return void
-     */
+    #[DataProvider('animeSearchKeywordProvider')]
     public function testBotWillGiveAnExampleOnHowToSearchAnime(string $command): void
     {
         $update   = $this->createFakeTextMessageUpdate($command);
