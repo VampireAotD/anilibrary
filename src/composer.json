@@ -23,7 +23,7 @@
         "spatie/laravel-permission": "^5.10",
         "tightenco/ziggy": "^1.6",
         "tuupola/base62": "^2.1",
-        "westacks/telebot": "^2.7"
+        "westacks/telebot-laravel": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",
