@@ -1,5 +1,4 @@
 compose      := $(shell command -v docker-compose || command -v "docker compose")
-queue_list   := mail,register,upsert-anime,scrape-anime,pusher-scrape-response
 yarn         := $(compose) run --service-ports --rm node
 
 .PHONY: up
@@ -8,7 +7,6 @@ up:
 	$(compose) up -d;
 	@make supervisor
 	@make scheduler
-	@make queues
 
 .PHONY: build
 build:
@@ -30,10 +28,30 @@ scheduler:
 	$(info Launching Laravel scheduler...)
 	$(compose) exec -d app ./artisan schedule:work
 
-.PHONY: queues
-queues:
-	$(info Launching queue worker...)
-	$(compose) exec -d app ./artisan queue:work --queue=$(queue_list) --daemon
+.PHONY: horizon
+horizon:
+	$(info Launching Laravel Horizon...)
+	$(compose) exec -d app ./artisan horizon
+
+.PHONY: horizon-pause
+horizon-pause:
+	$(info Pausing Laravel Horizon...)
+	$(compose) exec -d app ./artisan horizon:pause
+
+.PHONY: horizon-continue
+horizon-continue:
+	$(info Re-enabling Laravel Horizon...)
+	$(compose) exec -d app ./artisan horizon:continue
+
+.PHONY: horizon-status
+horizon-status:
+	$(info Checking Laravel Horizon status...)
+	$(compose) exec app ./artisan horizon:status
+
+.PHONY: horizon-terminate
+horizon-terminate:
+	$(info Terminating Laravel Horizon...)
+	$(compose) exec -d app ./artisan horizon:terminate
 
 .PHONY: app
 app:
