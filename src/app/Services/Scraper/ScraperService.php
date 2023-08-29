@@ -10,10 +10,10 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Class RequestService
+ * Class ScraperService
  * @package App\Services\Scraper
  */
-class RequestService
+class ScraperService
 {
     /**
      * @param string $url

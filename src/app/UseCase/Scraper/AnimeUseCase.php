@@ -13,7 +13,7 @@ use App\Rules\Scraper\EncodedImageRule;
 use App\Services\AnimeService;
 use App\Services\GenreService;
 use App\Services\ImageService;
-use App\Services\Scraper\RequestService;
+use App\Services\Scraper\ScraperService;
 use App\Services\VoiceActingService;
 use App\Traits\CanTransformArray;
 use Illuminate\Http\Client\RequestException;
@@ -32,7 +32,7 @@ final readonly class AnimeUseCase
     use CanTransformArray;
 
     public function __construct(
-        private RequestService     $requestService,
+        private ScraperService     $scraperService,
         private AnimeService       $animeService,
         private ImageService       $imageService,
         private VoiceActingService $voiceActingService,
@@ -45,7 +45,7 @@ final readonly class AnimeUseCase
      */
     public function scrapeAndCreateAnime(string $url): Anime
     {
-        $response = $this->requestService->sendScrapeRequest($url)->json();
+        $response = $this->scraperService->sendScrapeRequest($url)->json();
         $response = array_merge(['url' => $url], $response);
 
         Validator::make(
