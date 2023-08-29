@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\Traits\CanCreateMocks;
 use Tests\Traits\Fake\CanCreateFakeAnime;
@@ -69,11 +70,7 @@ class AnimeUseCaseTest extends TestCase
         $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 
-    /**
-     * @dataProvider invalidImageProvider
-     * @param string $invalidImage
-     * @return void
-     */
+    #[DataProvider('invalidImageProvider')]
     public function testCannotCreateAnimeWithInvalidImage(string $invalidImage): void
     {
         Http::fake([
@@ -91,9 +88,6 @@ class AnimeUseCaseTest extends TestCase
         $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 
-    /**
-     * @return void
-     */
     public function testCanFindAnimeByTitleAndSynonymsAfterScrapeRequest(): void
     {
         $anime = $this->createAnimeWithRelations();
@@ -145,10 +139,7 @@ class AnimeUseCaseTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider validEncodedImageProvider
-     * @return void
-     */
+    #[DataProvider('validEncodedImageProvider')]
     public function testCanCreateAnime(string $image): void
     {
         Cloudinary::shouldReceive('uploadFile')->andReturnSelf();

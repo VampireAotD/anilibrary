@@ -44,8 +44,7 @@ services:
       args:
         GROUP_ID: ${GROUP_ID:-1000}
         USER_ID: ${USER_ID:-1000}
-      context: docker
-      dockerfile: php/Dockerfile
+      context: docker/php
     depends_on:
       database:
         condition: service_healthy
@@ -55,11 +54,11 @@ services:
     tty: true
     environment:
       XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
     ports:
       - "9000:9000"
     volumes:
       - ./src:/anilibrary
-      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
       - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
       - ./docker/supervisor/conf.d/:/etc/supervisor/conf.d/
     networks:
