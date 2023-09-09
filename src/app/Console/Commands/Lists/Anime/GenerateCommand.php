@@ -6,6 +6,8 @@ namespace App\Console\Commands\Lists\Anime;
 
 use App\Mail\AnimeListMail;
 use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Repositories\Filters\ColumnFilter;
+use App\Repositories\Filters\RelationFilter;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -41,19 +43,16 @@ class GenerateCommand extends Command
             return Command::FAILURE;
         }
 
-        $animeList = $animeRepository->getAll([
-            'id',
-            'title',
-            'status',
-            'rating',
-            'episodes',
-        ], [
-            'urls:anime_id,url',
-            'synonyms:anime_id,synonym',
-            'image:id,model_id,path,alias',
-            'genres:id,name',
-            'voiceActing:id,name',
-        ]);
+        $animeList = $animeRepository->withFilters([
+            new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+            new RelationFilter([
+                'urls:anime_id,url',
+                'synonyms:anime_id,synonym',
+                'image:id,model_id,path,alias',
+                'genres:id,name',
+                'voiceActing:id,name',
+            ]),
+        ])->getAll();
 
         Storage::disk('lists')->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
 

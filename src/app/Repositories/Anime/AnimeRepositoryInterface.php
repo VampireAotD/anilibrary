@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Anime;
 
 use App\Models\Anime;
+use App\Repositories\Contracts\FilterQuery;
 use App\Repositories\Contracts\FindById;
 use App\Repositories\Contracts\Paginate;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,7 +15,7 @@ use Illuminate\Support\LazyCollection;
  * Interface AnimeRepositoryInterface
  * @package App\Repositories\Contracts\Anime
  */
-interface AnimeRepositoryInterface extends FindById, Paginate
+interface AnimeRepositoryInterface extends FindById, Paginate, FilterQuery
 {
     public function create(array $data): Anime;
 
@@ -35,15 +36,7 @@ interface AnimeRepositoryInterface extends FindById, Paginate
      */
     public function findRandomAnime(): ?Anime;
 
-    /**
-     * @param array $columns
-     * @param array $relations
-     * @return Collection
-     */
-    public function getAll(
-        array $columns = ['*'],
-        array $relations = ['image', 'genres', 'voiceActing', 'urls', 'synonyms']
-    ): Collection;
+    public function getAll(): Collection;
 
     /**
      * @return LazyCollection<int, Anime>

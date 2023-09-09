@@ -5,26 +5,27 @@ declare(strict_types=1);
 namespace App\Repositories\TelegramUser;
 
 use App\Models\TelegramUser;
-use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class TelegramUserRepository
  * @package App\Repositories
  */
-class TelegramUserRepository extends BaseRepository implements TelegramUserRepositoryInterface
+class TelegramUserRepository implements TelegramUserRepositoryInterface
 {
     /**
-     * @return Builder|TelegramUser
+     * @var Builder|TelegramUser
      */
-    protected function model(): Builder | TelegramUser
+    protected Builder | TelegramUser $query;
+
+    public function __construct()
     {
-        return TelegramUser::query();
+        $this->query = TelegramUser::query();
     }
 
     public function upsert(array $data): TelegramUser
     {
-        return $this->model()->updateOrCreate(['telegram_id' => $data['telegram_id']], $data);
+        return $this->query->updateOrCreate(['telegram_id' => $data['telegram_id']], $data);
     }
 
     /**
@@ -33,7 +34,7 @@ class TelegramUserRepository extends BaseRepository implements TelegramUserRepos
      */
     public function findByTelegramId(int $telegramId): ?TelegramUser
     {
-        return $this->model()->where('telegram_id', $telegramId)->first();
+        return $this->query->where('telegram_id', $telegramId)->first();
     }
 
     /**
@@ -42,6 +43,6 @@ class TelegramUserRepository extends BaseRepository implements TelegramUserRepos
      */
     public function findByUsername(string $username): ?TelegramUser
     {
-        return $this->model()->where('username', $username)->first();
+        return $this->query->where('username', $username)->first();
     }
 }

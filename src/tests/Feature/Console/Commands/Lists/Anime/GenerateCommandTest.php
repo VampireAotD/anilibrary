@@ -7,6 +7,8 @@ namespace Tests\Feature\Console\Commands\Lists\Anime;
 use App\Console\Commands\Lists\Anime\GenerateCommand;
 use App\Mail\AnimeListMail;
 use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Repositories\Filters\ColumnFilter;
+use App\Repositories\Filters\RelationFilter;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -63,13 +65,16 @@ class GenerateCommandTest extends TestCase
 
         $this->assertJson($json);
         $this->assertJsonStringEqualsJsonString(
-            $this->animeRepository->getAll(['id', 'title', 'status', 'rating', 'episodes',], [
-                'urls:anime_id,url',
-                'synonyms:anime_id,synonym',
-                'image:id,model_id,path,alias',
-                'genres:id,name',
-                'voiceActing:id,name',
-            ])->toJson(JSON_PRETTY_PRINT),
+            $this->animeRepository->withFilters([
+                new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+                new RelationFilter([
+                    'urls:anime_id,url',
+                    'synonyms:anime_id,synonym',
+                    'image:id,model_id,path,alias',
+                    'genres:id,name',
+                    'voiceActing:id,name',
+                ]),
+            ])->getAll()->toJson(JSON_PRETTY_PRINT),
             $json
         );
 

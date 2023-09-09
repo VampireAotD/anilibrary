@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Contracts;
 
-use App\Repositories\Filters\PaginationFilter;
+use App\Repositories\Params\PaginationParams;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -13,5 +13,5 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 interface Paginate
 {
-    public function paginate(PaginationFilter $filter): LengthAwarePaginator;
+    public function paginate(PaginationParams $filter): LengthAwarePaginator;
 }
