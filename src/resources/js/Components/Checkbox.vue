@@ -5,7 +5,7 @@ const emit = defineEmits(['update:checked']);
 
 const props = defineProps<{
     checked: boolean;
-  value?: any; //eslint-disable-line
+    value?: any; //eslint-disable-line
 }>();
 
 const proxyChecked = computed({

@@ -12,7 +12,9 @@ use App\Http\Requests\Anime\UpdateRequest;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\PaginationFilter;
+use App\Repositories\Filters\ColumnFilter;
+use App\Repositories\Filters\RelationFilter;
+use App\Repositories\Params\PaginationParams;
 use App\Services\AnimeService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -35,11 +37,11 @@ class AnimeController extends Controller
         $page    = (int) $request->get('page', 1);
         $perPage = (int) $request->get('per_page', 20);
 
-        $filter     = new PaginationFilter($page, $perPage);
-        $pagination = $this->animeRepository->paginate(
-            $filter->withColumns('id', 'title', 'episodes', 'rating', 'status')
-                   ->withRelations('image:model_id,path')
-        );
+        $filter     = new PaginationParams($page, $perPage);
+        $pagination = $this->animeRepository->withFilters([
+            new ColumnFilter(['id', 'title', 'episodes', 'rating', 'status']),
+            new RelationFilter(['image:model_id,path']),
+        ])->paginate($filter);
 
         return Inertia::render('Anime/Index', compact('pagination'));
     }

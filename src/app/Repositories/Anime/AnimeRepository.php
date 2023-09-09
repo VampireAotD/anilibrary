@@ -6,8 +6,8 @@ namespace App\Repositories\Anime;
 
 use App\Enums\AnimeStatusEnum;
 use App\Models\Anime;
-use App\Repositories\BaseRepository;
-use App\Repositories\Filters\PaginationFilter;
+use App\Repositories\Filters\QueryFilterInterface;
+use App\Repositories\Params\PaginationParams;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,19 +18,31 @@ use Illuminate\Support\LazyCollection;
  * Class AnimeRepository
  * @package App\Repositories
  */
-class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
+class AnimeRepository implements AnimeRepositoryInterface
 {
     /**
-     * @return Builder|Anime
+     * @var Builder|Anime
      */
-    protected function model(): Builder | Anime
+    protected Builder | Anime $query;
+
+    public function __construct()
     {
-        return Anime::query();
+        $this->query = Anime::query();
+    }
+
+    /**
+     * @param array<QueryFilterInterface> $filters
+     */
+    public function withFilters(array $filters): static
+    {
+        $this->query = Anime::filter($filters);
+
+        return $this;
     }
 
     public function create(array $data): Anime
     {
-        return $this->model()->updateOrCreate(['title' => $data['title']], $data);
+        return $this->query->updateOrCreate(['title' => $data['title']], $data);
     }
 
     /**
@@ -39,7 +51,7 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
      */
     public function findById(string $id): ?Anime
     {
-        return $this->model()->find($id);
+        return $this->query->find($id);
     }
 
     /**
@@ -48,11 +60,11 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
      */
     public function findByTitleAndSynonyms(array $data): ?Anime
     {
-        return $this->model()
-                    ->whereIn('title', $data)
-                    ->with('synonyms')
-                    ->orWhereHas('synonyms', fn(Builder $query) => $query->whereIn('synonym', $data))
-                    ->first();
+        return $this->query
+            ->whereIn('title', $data)
+            ->with('synonyms')
+            ->orWhereHas('synonyms', fn(Builder $query) => $query->whereIn('synonym', $data))
+            ->first();
     }
 
     /**
@@ -62,8 +74,10 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
     public function findByUrl(string $url): ?Anime
     {
         /** @phpstan-ignore-next-line */
-        return $this->model()
-                    ->withWhereHas('urls', fn(Builder | HasMany $query) => $query->where('url', $url))->first();
+        return $this->query->withWhereHas(
+            'urls',
+            fn(Builder | HasMany $query) => $query->where('url', $url)
+        )->first();
     }
 
     /**
@@ -71,24 +85,17 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
      */
     public function findRandomAnime(): ?Anime
     {
-        return $this->model()->inRandomOrder()->limit(1)->first();
+        return $this->query->inRandomOrder()->limit(1)->first();
     }
 
-    /**
-     * @param array $columns
-     * @param array $relations
-     * @return Collection
-     */
-    public function getAll(
-        array $columns = ['*'],
-        array $relations = ['image', 'genres', 'voiceActing', 'urls', 'synonyms']
-    ): Collection {
-        return $this->model()->select($columns)->with($relations)->get();
-    }
-
-    public function paginate(PaginationFilter $filter): LengthAwarePaginator
+    public function getAll(): Collection
     {
-        return $filter->apply($this->model())->paginate($filter->perPage, page: $filter->page);
+        return $this->query->get();
+    }
+
+    public function paginate(PaginationParams $filter): LengthAwarePaginator
+    {
+        return $this->query->paginate($filter->perPage, page: $filter->page);
     }
 
     /**
@@ -96,6 +103,6 @@ class AnimeRepository extends BaseRepository implements AnimeRepositoryInterface
      */
     public function getUnreleased(): LazyCollection
     {
-        return $this->model()->with('urls')->whereNot('status', AnimeStatusEnum::READY->value)->lazy();
+        return $this->query->with('urls')->whereNot('status', AnimeStatusEnum::READY->value)->lazy();
     }
 }

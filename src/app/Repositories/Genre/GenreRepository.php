@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repositories\Genre;
 
 use App\Models\Genre;
-use App\Repositories\BaseRepository;
 use App\Repositories\Traits\CanSearchByName;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -13,16 +12,15 @@ use Illuminate\Database\Eloquent\Builder;
  * Class GenreRepository
  * @package App\Repositories
  */
-class GenreRepository extends BaseRepository implements GenreRepositoryInterface
+class GenreRepository implements GenreRepositoryInterface
 {
     use CanSearchByName;
 
-    /**
-     * @return Builder|Genre
-     */
-    protected function model(): Builder | Genre
+    protected Builder | Genre $query;
+
+    public function __construct()
     {
-        return Genre::query();
+        $this->query = Genre::query();
     }
 
     /**
@@ -32,6 +30,6 @@ class GenreRepository extends BaseRepository implements GenreRepositoryInterface
      */
     public function upsertMany(array $data, array | string $uniqueBy): int
     {
-        return $this->model()->upsert($data, $uniqueBy);
+        return $this->query->upsert($data, $uniqueBy);
     }
 }

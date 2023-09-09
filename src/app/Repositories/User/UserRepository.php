@@ -6,35 +6,36 @@ namespace App\Repositories\User;
 
 use App\Enums\RoleEnum;
 use App\Models\User;
-use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class UserRepository
  * @package App\Repositories
  */
-class UserRepository extends BaseRepository implements UserRepositoryInterface
+class UserRepository implements UserRepositoryInterface
 {
     /**
-     * @return Builder|User
+     * @var Builder|User
      */
-    protected function model(): Builder | User
+    protected Builder | User $query;
+
+    public function __construct()
     {
-        return User::query();
+        $this->query = User::query();
     }
 
     public function upsert(array $data): User
     {
-        return $this->model()->updateOrCreate(['email' => $data['email']], $data);
+        return $this->query->updateOrCreate(['email' => $data['email']], $data);
     }
 
     public function findOwner(): ?User
     {
-        return $this->model()->role(RoleEnum::OWNER->value)->first();
+        return $this->query->role(RoleEnum::OWNER->value)->first();
     }
 
     public function findByEmail(string $email): ?User
     {
-        return $this->model()->where('email', $email)->first();
+        return $this->query->where('email', $email)->first();
     }
 }

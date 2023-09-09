@@ -45,4 +45,14 @@ class AuthenticationControllerTest extends TestCase
 
         $this->assertGuest();
     }
+
+    public function testUsersCanLogout(): void
+    {
+        $user = $this->createUser();
+
+        $response = $this->actingAs($user)->post('/logout');
+
+        $this->assertGuest();
+        $response->assertRedirect('/');
+    }
 }

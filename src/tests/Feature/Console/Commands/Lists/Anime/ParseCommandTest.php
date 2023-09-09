@@ -12,6 +12,8 @@ use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
 use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Repositories\Filters\ColumnFilter;
+use App\Repositories\Filters\RelationFilter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -54,13 +56,16 @@ class ParseCommandTest extends TestCase
         Storage::shouldReceive('disk->get')
                ->with(config('lists.anime.file'))
                ->andReturn(
-                   $this->animeRepository->getAll(['id', 'title', 'status', 'rating', 'episodes'], [
-                       'urls:anime_id,url',
-                       'synonyms:anime_id,synonym',
-                       'image:id,model_id,path,alias',
-                       'genres:id,name',
-                       'voiceActing:id,name',
-                   ])->toJson(JSON_PRETTY_PRINT)
+                   $this->animeRepository->withFilters([
+                       new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+                       new RelationFilter([
+                           'urls:anime_id,url',
+                           'synonyms:anime_id,synonym',
+                           'image:id,model_id,path,alias',
+                           'genres:id,name',
+                           'voiceActing:id,name',
+                       ]),
+                   ])->getAll()->toJson(JSON_PRETTY_PRINT)
                );
 
         $this->refreshTestDatabase();

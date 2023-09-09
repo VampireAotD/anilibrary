@@ -7,6 +7,8 @@ namespace App\Console\Commands\Elasticsearch\Index\Anime;
 use App\Enums\Elasticsearch\IndexEnum;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Repositories\Filters\ColumnFilter;
+use App\Repositories\Filters\RelationFilter;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
@@ -35,11 +37,10 @@ class SyncAnimeDataCommand extends Command
     {
         $this->info('Trying to sync all anime into Elasticsearch index...');
 
-        $animeList = $animeRepository->getAll(['id', 'title', 'status', 'rating', 'episodes'], [
-            'synonyms:anime_id,synonym',
-            'genres:id,name',
-            'voiceActing:id,name',
-        ]);
+        $animeList = $animeRepository->withFilters([
+            new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+            new RelationFilter(['synonyms:anime_id,synonym', 'genres:id,name', 'voiceActing:id,name']),
+        ])->getAll();
 
         $bar = $this->output->createProgressBar($animeList->count());
 

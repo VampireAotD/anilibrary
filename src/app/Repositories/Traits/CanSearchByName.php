@@ -14,22 +14,20 @@ use Illuminate\Database\Eloquent\Model;
 trait CanSearchByName
 {
     /**
-     * @param array $similarNames
-     * @param array $columns
+     * @param array<string> $similarNames
      * @return Collection
      */
-    public function findSimilarByNames(array $similarNames, array $columns = ['*']): Collection
+    public function findSimilarByNames(array $similarNames): Collection
     {
-        return $this->model()->select($columns)->whereIn('name', $similarNames)->get();
+        return $this->query->whereIn('name', $similarNames)->get();
     }
 
     /**
      * @param string $name
-     * @param array  $columns
      * @return Model|null
      */
-    public function findByName(string $name, array $columns = ['*']): ?Model
+    public function findByName(string $name): ?Model
     {
-        return $this->model()->select($columns)->where('name', $name)->first();
+        return $this->query->where('name', $name)->first();
     }
 }

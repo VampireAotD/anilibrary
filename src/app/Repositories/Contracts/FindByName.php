@@ -14,16 +14,14 @@ use Illuminate\Database\Eloquent\Model;
 interface FindByName
 {
     /**
-     * @param string   $name
-     * @param string[] $columns
+     * @param string $name
      * @return Model|null
      */
-    public function findByName(string $name, array $columns = ['*']): ?Model;
+    public function findByName(string $name): ?Model;
 
     /**
-     * @param string[] $similarNames
-     * @param string[] $columns
+     * @param array<string> $similarNames
      * @return Collection
      */
-    public function findSimilarByNames(array $similarNames, array $columns = ['*']): Collection;
+    public function findSimilarByNames(array $similarNames): Collection;
 }

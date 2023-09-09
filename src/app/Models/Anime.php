@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeVoiceActing;
+use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,12 +48,14 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Anime filter(array $filters)
  * @mixin \Eloquent
  */
 class Anime extends Model
 {
     use HasUuids;
     use HasFactory;
+    use Filterable;
 
     protected $fillable = [
         'title',
