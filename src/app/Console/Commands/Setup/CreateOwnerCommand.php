@@ -53,7 +53,7 @@ class CreateOwnerCommand extends Command
             'password' => $password,
         ]);
 
-        $user->assignRole(RoleEnum::OWNER->value);
+        $user->assignRole(RoleEnum::OWNER);
         $user->markEmailAsVerified();
 
         $this->info('Owner has been created');

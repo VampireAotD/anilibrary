@@ -31,7 +31,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function findOwner(): ?User
     {
-        return $this->query->role(RoleEnum::OWNER->value)->first();
+        return $this->query->role(RoleEnum::OWNER)->first();
     }
 
     public function findByEmail(string $email): ?User

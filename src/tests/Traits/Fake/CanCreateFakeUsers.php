@@ -21,11 +21,11 @@ trait CanCreateFakeUsers
 
     protected function createOwner(array $data = []): User
     {
-        return $this->createUser($data)->assignRole(RoleEnum::OWNER->value);
+        return $this->createUser($data)->assignRole(RoleEnum::OWNER);
     }
 
     protected function createAdmin(array $data = []): User
     {
-        return $this->createUser($data)->assignRole(RoleEnum::ADMIN->value);
+        return $this->createUser($data)->assignRole(RoleEnum::ADMIN);
     }
 }

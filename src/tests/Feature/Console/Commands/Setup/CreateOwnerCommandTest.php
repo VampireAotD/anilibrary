@@ -53,7 +53,7 @@ class CreateOwnerCommandTest extends TestCase
 
         $owner = $this->userRepository->findOwner();
         $this->assertNotNull($owner);
-        $this->assertTrue($owner->hasRole(RoleEnum::OWNER->value));
+        $this->assertTrue($owner->hasRole(RoleEnum::OWNER));
         $this->assertTrue($owner->hasVerifiedEmail());
     }
 
@@ -66,7 +66,7 @@ class CreateOwnerCommandTest extends TestCase
         $user = $this->userRepository->findByEmail($email);
 
         $this->assertNotNull($user);
-        $this->assertTrue($user->hasRole(RoleEnum::OWNER->value));
+        $this->assertTrue($user->hasRole(RoleEnum::OWNER));
         $this->assertTrue($user->hasVerifiedEmail());
     }
 }
