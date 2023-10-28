@@ -1,5 +1,5 @@
 compose      := $(shell command -v docker-compose || command -v "docker compose")
-yarn         := $(compose) run --service-ports --rm node
+yarn         := $(compose) run --service-ports --rm node yarn
 
 .PHONY: up
 up:

@@ -6,6 +6,7 @@
 /public/vendor
 /storage/*.key
 /vendor
+.yarn/*
 .phpstorm.meta.php
 _ide_helper.php
 .env
