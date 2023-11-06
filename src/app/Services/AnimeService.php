@@ -7,7 +7,9 @@ namespace App\Services;
 use App\DTO\Service\Anime\UpsertAnimeDTO;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Repositories\Filters\RelationFilter;
 use App\Traits\CanTransformArray;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -69,5 +71,24 @@ final readonly class AnimeService
         if ($dto->genres) {
             $anime->genres()->sync($dto->genres);
         }
+    }
+
+    public function getParsedAnimePerMonth(): array
+    {
+        $initial = array_fill(0, 12, 0);
+
+        $perMonth = $this->animeRepository->getAddedAnimePerMonth();
+
+        return array_replace($initial, $perMonth);
+    }
+
+    public function getTenLatestAnime(): Collection
+    {
+        return $this->animeRepository->withFilters([new RelationFilter(['image:model_id,path'])])->getLatestAnime();
+    }
+
+    public function countAnime(): int
+    {
+        return $this->animeRepository->count();
     }
 }

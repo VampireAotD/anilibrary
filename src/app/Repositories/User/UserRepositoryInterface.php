@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Repositories\User;
 
 use App\Models\User;
+use App\Repositories\Contracts\Quantity;
 
-interface UserRepositoryInterface
+interface UserRepositoryInterface extends Quantity
 {
     public function upsert(array $data): User;
 

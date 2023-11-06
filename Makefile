@@ -89,12 +89,12 @@ ide-helper:
 	$(compose) exec app ./artisan ide-helper:model --reset -W;
 	$(compose) exec app ./artisan ide-helper:meta;
 
-.PHONY: yarn-watch
-yarn-watch:
+.PHONY: frontend-watch
+frontend-watch:
 	$(yarn) run dev
 
-.PHONY: yarn-build
-yarn-build:
+.PHONY: frontend-build
+frontend-build:
 	$(yarn) run build
 
 .PHONY: prettier-check
@@ -105,14 +105,14 @@ prettier-check:
 prettier-write:
 	$(yarn) prettier-write
 
-.PHONY: yarn-lint
-yarn-lint:
+.PHONY: eslint-check
+eslint-check:
 	$(yarn) lint
 
-.PHONY: yarn-lint-fix
-yarn-lint-fix:
+.PHONY: eslint-fix
+eslint-fix:
 	$(yarn) lint-fix
 
-.PHONY: yarn-test
-yarn-test:
+.PHONY: frontend-test
+frontend-test:
 	$(yarn) test

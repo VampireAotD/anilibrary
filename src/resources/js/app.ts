@@ -6,6 +6,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { HasRolePlugin } from '@/plugins/user/authorize';
+import PrimeVue from 'primevue/config';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Anilibrary';
 
@@ -21,6 +22,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(HasRolePlugin)
+            .use(PrimeVue)
             .mount(el);
     },
     progress: {

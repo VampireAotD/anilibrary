@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Anime\AnimeController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +18,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::group(['as' => 'profile.'], function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('edit');

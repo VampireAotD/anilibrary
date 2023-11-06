@@ -88,6 +88,9 @@ class AnimeRepository implements AnimeRepositoryInterface
         return $this->query->inRandomOrder()->limit(1)->first();
     }
 
+    /**
+     * @return Collection<int, Anime>
+     */
     public function getAll(): Collection
     {
         return $this->query->get();
@@ -104,5 +107,30 @@ class AnimeRepository implements AnimeRepositoryInterface
     public function getUnreleased(): LazyCollection
     {
         return $this->query->with('urls')->whereNot('status', AnimeStatusEnum::READY->value)->lazy();
+    }
+
+    /**
+     * @param int $limit
+     * @return Collection<int, Anime>
+     */
+    public function getLatestAnime(int $limit = 10): Collection
+    {
+        return $this->query->limit($limit)->latest()->get();
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public function getAddedAnimePerMonth(): array
+    {
+        return $this->query->selectRaw('COUNT(id) as per_month, MONTH(created_at) as month_number')
+                           ->groupBy('month_number')
+                           ->pluck('per_month', 'month_number')
+                           ->toArray();
+    }
+
+    public function count(): int
+    {
+        return $this->query->count('id');
     }
 }

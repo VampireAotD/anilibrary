@@ -6,6 +6,8 @@ namespace App\Providers;
 
 use App\Repositories\Anime\AnimeRepository;
 use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Repositories\AnimeUrl\AnimeUrlRepository;
+use App\Repositories\AnimeUrl\AnimeUrlRepositoryInterface;
 use App\Repositories\Genre\GenreRepository;
 use App\Repositories\Genre\GenreRepositoryInterface;
 use App\Repositories\TelegramUser\TelegramUserRepository;
@@ -28,6 +30,7 @@ class RepositoryServiceProvider extends ServiceProvider
         VoiceActingRepositoryInterface::class  => VoiceActingRepository::class,
         GenreRepositoryInterface::class        => GenreRepository::class,
         UserRepositoryInterface::class         => UserRepository::class,
+        AnimeUrlRepositoryInterface::class     => AnimeUrlRepository::class,
     ];
 
     /**

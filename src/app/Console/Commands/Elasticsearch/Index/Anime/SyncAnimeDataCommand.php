@@ -48,7 +48,6 @@ class SyncAnimeDataCommand extends Command
         $animeList->chunk(100)->each(function (Collection $collection) use ($client, $bar) {
             $batch = ['body' => []];
 
-            /** @phpstan-ignore-next-line */
             $collection->each(function (Anime $anime) use (&$batch, $bar) {
                 $batch['body'][] = [
                     'index' => [

@@ -33,3 +33,7 @@ export interface AnimeWithRelations extends Anime {
     voice_acting: VoiceActing[];
     genres: Genre[];
 }
+
+export interface AnimePerDomain {
+    [key: string]: number;
+}

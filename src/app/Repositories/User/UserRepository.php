@@ -38,4 +38,9 @@ class UserRepository implements UserRepositoryInterface
     {
         return $this->query->where('email', $email)->first();
     }
+
+    public function count(): int
+    {
+        return $this->query->count('id');
+    }
 }

@@ -1,0 +1,36 @@
+<script setup lang="ts">
+import Chart from '@/Components/Chart.vue';
+import { computed, inject } from 'vue';
+import { AnimePerDomain } from '@/types/anime/models';
+
+const animePerDomain = inject<AnimePerDomain>('animePerDomain');
+
+const data = computed(() => ({
+    labels: Object.keys(animePerDomain),
+    datasets: [
+        {
+            label: 'Sales',
+            data: Object.values(animePerDomain),
+            backgroundColor: [
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgb(255, 159, 64)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+            ],
+            borderWidth: 1,
+        },
+    ],
+}));
+</script>
+
+<template>
+    <Chart type="bar" :data="data" />
+</template>
+
+<style scoped></style>

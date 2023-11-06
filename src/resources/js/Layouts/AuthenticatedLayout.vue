@@ -6,6 +6,9 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import Searchbar from '@/Components/Input/Searchbar.vue';
+import Switcher from '@/Components/Theme/Switcher.vue';
+import Footer from '@/Components/Footer.vue';
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -62,6 +65,12 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
+                            <div class="flex items-center justify-between">
+                                <Searchbar class="mr-3" />
+
+                                <Switcher />
+                            </div>
+
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
@@ -91,8 +100,8 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')">
-                                            Profile</DropdownLink
-                                        >
+                                            Profile
+                                        </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
                                             method="post"
@@ -154,11 +163,34 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
+                        <Searchbar />
+                        <Switcher />
+                    </div>
+
+                    <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
                             :href="route('dashboard')"
                             :active="route().current('dashboard')"
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                    </div>
+
+                    <div v-if="hasRole('owner')" class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink
+                            :href="route('invitation.create')"
+                            :active="route().current('invitation.create')"
+                        >
+                            Invite
+                        </ResponsiveNavLink>
+                    </div>
+
+                    <div class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink
+                            :href="route('anime.index')"
+                            :active="route().current('anime.index')"
+                        >
+                            Anime
                         </ResponsiveNavLink>
                     </div>
 
@@ -177,8 +209,8 @@ const showingNavigationDropdown = ref(false);
 
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')">
-                                Profile</ResponsiveNavLink
-                            >
+                                Profile
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 :href="route('logout')"
                                 method="post"
@@ -202,6 +234,8 @@ const showingNavigationDropdown = ref(false);
             <main>
                 <slot />
             </main>
+
+            <Footer />
         </div>
     </div>
 </template>
