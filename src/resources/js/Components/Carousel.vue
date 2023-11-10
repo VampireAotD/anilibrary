@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import Carousel, { CarouselPassThroughOptions } from 'primevue/carousel';
+import Carousel from 'primevue/carousel';
 import { Link } from '@inertiajs/vue3';
-import { PassThrough } from 'primevue/ts-helpers';
-import { AnimeWithRelations } from '@/types/anime/models';
+import { AnimeWithRelations } from '@/types/anime/types';
 import { reactive, ref } from 'vue';
 import LeftBorderedHeader from '@/Components/LeftBorderedHeader.vue';
 
@@ -14,7 +13,7 @@ type Props = {
 
 defineProps<Props>();
 
-const customStyles = reactive<PassThrough<CarouselPassThroughOptions>>({
+const customStyles = reactive({
     item: () => ({
         class: ['overflow-hidden'],
     }),

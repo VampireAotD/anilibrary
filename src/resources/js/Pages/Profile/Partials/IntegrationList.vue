@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TelegramLoginWidget from '@/Components/Telegram/TelegramLoginWidget.vue';
+import TelegramLoginWidget from '@/Components/TelegramLoginWidget.vue';
 import { TelegramUser } from '@/types/telegram/types';
 import { router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -9,7 +9,9 @@ const page = usePage();
 const telegramUser = computed(() => page.props.auth.user.telegram_user);
 
 const handleTelegramLogin = (user: TelegramUser) => {
-    router.post(route('telegram.assign', user), undefined, {
+    const payload = { ...user };
+
+    router.post(route('telegram.assign'), payload, {
         preserveScroll: true,
     });
 };
@@ -41,7 +43,7 @@ const revokeTelegramAccount = () => {
 
                 <TelegramLoginWidget
                     v-if="!telegramUser"
-                    :callback-handler="handleTelegramLogin"
+                    :callback="handleTelegramLogin"
                 />
 
                 <div v-else class="flex flex-col">
@@ -51,8 +53,8 @@ const revokeTelegramAccount = () => {
                     </p>
 
                     <DangerButton @click="revokeTelegramAccount"
-                        >Revoke Telegram account</DangerButton
-                    >
+                        >Revoke Telegram account
+                    </DangerButton>
                 </div>
             </div>
         </div>

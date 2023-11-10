@@ -8,7 +8,8 @@ import { Ziggy } from '@/tests/mocks/ziggy.mock';
 import NavLink from '@/Components/NavLink.vue';
 
 vi.mock('@inertiajs/vue3', async () => {
-    const actual = await vi.importActual('@inertiajs/vue3');
+    const actual =
+        await vi.importActual<typeof import('@inertiajs/vue3')>('@inertiajs/vue3');
     return {
         ...actual,
         usePage: vi.fn(),
@@ -35,7 +36,7 @@ afterAll(() => {
     vi.clearAllMocks();
 });
 
-describe('AuthenticatedLayout test', () => {
+describe('AuthenticatedLayout test (AuthenticatedLayout.vue)', () => {
     config.global.plugins = [[ZiggyVue, Ziggy], [HasRolePlugin]];
 
     it('Invitation link must not be rendered if user is not owner', () => {

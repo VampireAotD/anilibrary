@@ -7,6 +7,9 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { HasRolePlugin } from '@/plugins/user/authorize';
 import PrimeVue from 'primevue/config';
+import Tailwind from 'primevue/passthrough/tailwind';
+import ToastService from 'primevue/toastservice';
+import Toast from 'primevue/toast';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Anilibrary';
 
@@ -22,7 +25,13 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(HasRolePlugin)
-            .use(PrimeVue)
+            .use(PrimeVue, {
+                ripple: true,
+                pt: Tailwind,
+                ptOptions: { mergeProps: false },
+            })
+            .use(ToastService)
+            .component('Toast', Toast)
             .mount(el);
     },
     progress: {

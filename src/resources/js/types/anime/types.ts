@@ -1,3 +1,5 @@
+import { Pagination } from '@/types';
+
 export interface Image {
     path: string;
 }
@@ -32,6 +34,10 @@ export interface AnimeWithRelations extends Anime {
     synonyms: Synonym[];
     voice_acting: VoiceActing[];
     genres: Genre[];
+}
+
+export interface AnimePagination extends Pagination {
+    data: Anime[];
 }
 
 export interface AnimePerDomain {

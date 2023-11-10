@@ -4,9 +4,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
-import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { ScrapeResult } from '@/types/pusher/types';
+import { useToast } from 'primevue/usetoast';
 
 const page = usePage();
 const toast = useToast();
@@ -24,24 +23,39 @@ const addAnime = () => {
         onSuccess: () => {
             const channelName = `scraper.${page.props.auth?.user?.id}`;
 
-            toast.info(page.props.flash.message, { position: 'bottom' });
+            toast.add({
+                summary: page.props.flash.message,
+            });
+
             emit('added', form.url);
 
             window.echo
                 .private(channelName)
                 .listen('.scrape.result', (result: ScrapeResult) => {
-                    toast.info(result.message, {
-                        position: 'bottom',
-                        type: result.type,
+                    toast.add({
+                        summary: result.message,
+                        severity: result.type,
+                        closable: true,
                     });
+
                     window.echo.leave(channelName);
                 })
                 .error(() => {
-                    toast.error('Error while establishing Pusher connection', {
-                        position: 'bottom',
+                    toast.add({
+                        summary: 'Error while establishing Pusher connection',
+                        severity: 'error',
+                        closable: true,
                     });
+
                     window.echo.leave(channelName);
                 });
+        },
+        onError: (error) => {
+            toast.add({
+                summary: error?.url ?? 'Unexpected error',
+                severity: 'error',
+                closable: true,
+            });
         },
         onFinish: () => {
             form.reset();
@@ -77,6 +91,8 @@ const addAnime = () => {
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Add</PrimaryButton>
             </div>
+
+            <Toast position="bottom-center" />
         </form>
     </section>
 </template>

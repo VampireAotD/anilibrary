@@ -2,10 +2,14 @@ import { describe, expect, it, vi } from 'vitest';
 import { usePage } from '@inertiajs/vue3';
 import { useHasRole } from '@/plugins/user/authorize';
 
-vi.mock('@inertiajs/vue3', () => ({
-    ...vi.importActual('@inertiajs/vue3'),
-    usePage: vi.fn(),
-}));
+vi.mock('@inertiajs/vue3', async () => {
+    const actual =
+        await vi.importActual<typeof import('@inertiajs/vue3')>('@inertiajs/vue3');
+    return {
+        ...actual,
+        usePage: vi.fn(),
+    };
+});
 
 const mockedUsePage = vi.mocked(usePage);
 const mockedData = {

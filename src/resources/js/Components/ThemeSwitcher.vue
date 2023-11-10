@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
-import { useDark, useToggle } from '@vueuse/core/index';
+import { useDark, useToggle } from '@vueuse/core';
 
 const isDark = useDark();
 const toggleDarkMode = useToggle(isDark);
@@ -8,8 +8,9 @@ const toggleDarkMode = useToggle(isDark);
 
 <template>
     <Button
-        class="text-black dark:text-white"
+        class="text-white dark:text-black bg-dark dark:bg-white dark:hover:bg-gray-100"
         rounded
+        severity="secondary"
         :icon="`pi ${isDark ? 'pi-sun' : 'pi-moon'}`"
         @click="toggleDarkMode()"
     />

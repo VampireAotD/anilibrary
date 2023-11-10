@@ -7,7 +7,7 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 import Searchbar from '@/Components/Input/Searchbar.vue';
-import Switcher from '@/Components/Theme/Switcher.vue';
+import ThemeSwitcher from '@/Components/ThemeSwitcher.vue';
 import Footer from '@/Components/Footer.vue';
 
 const showingNavigationDropdown = ref(false);
@@ -68,7 +68,7 @@ const showingNavigationDropdown = ref(false);
                             <div class="flex items-center justify-between">
                                 <Searchbar class="mr-3" />
 
-                                <Switcher />
+                                <ThemeSwitcher />
                             </div>
 
                             <!-- Settings Dropdown -->
@@ -164,7 +164,7 @@ const showingNavigationDropdown = ref(false);
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <Searchbar />
-                        <Switcher />
+                        <ThemeSwitcher />
                     </div>
 
                     <div class="pt-2 pb-3 space-y-1">

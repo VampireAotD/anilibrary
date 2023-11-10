@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import Chart from '@/Components/Chart.vue';
 import { computed, inject } from 'vue';
-import { AnimePerDomain } from '@/types/anime/models';
+import { AnimePerDomain } from '@/types/anime/types';
 
-const animePerDomain = inject<AnimePerDomain>('animePerDomain');
+const animePerDomain = inject<AnimePerDomain>('animePerDomain') as object;
 
 const data = computed(() => ({
     labels: Object.keys(animePerDomain),
     datasets: [
         {
-            label: 'Sales',
+            label: 'Anime per domain',
             data: Object.values(animePerDomain),
             backgroundColor: [
                 'rgba(255, 159, 64, 0.2)',

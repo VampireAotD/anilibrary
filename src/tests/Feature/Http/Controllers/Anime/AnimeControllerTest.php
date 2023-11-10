@@ -42,7 +42,7 @@ class AnimeControllerTest extends TestCase
                                      ->has('pagination')
                                      ->has('pagination.next_page_url')
                                      ->has('pagination.data', 20)
-                                     ->has('pagination.data.0', fn(Assert $page) => $page->has('image')->etc())
+                                     ->has('pagination.data.0', fn(Assert $page) => $page->etc())
         );
     }
 

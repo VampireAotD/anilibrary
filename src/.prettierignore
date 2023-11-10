@@ -6,3 +6,4 @@
 !*.vue
 !*.ts
 !*.js
+!tsconfig.json

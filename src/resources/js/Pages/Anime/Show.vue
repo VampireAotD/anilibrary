@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { AnimeWithRelations } from '@/types/anime/models';
+import { AnimeWithRelations } from '@/types/anime/types';
 import { computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import ExternalLink from '@/Components/ExternalLink.vue';
