@@ -35,7 +35,6 @@ describe('TelegramLoginWidget test (TelegramLoginWidget.vue)', () => {
 
     it('Creates login widget with redirect props', async () => {
         const url = '/redirect-url';
-
         global.route = vitest.fn().mockReturnValue(url);
 
         const wrapper = mount(TelegramLoginWidget, {
@@ -51,9 +50,10 @@ describe('TelegramLoginWidget test (TelegramLoginWidget.vue)', () => {
 
         const script = div.querySelector('script');
         expect(script!.getAttribute('data-auth-url')).toBe(url);
+        expect(script!.hasAttribute('data-onauth')).toBeFalsy();
     });
 
-    it('Calls the callback on authentication', async () => {
+    it('Creates login widget with callback props', async () => {
         const callbackMock = vitest.fn();
         window.onTelegramAuth = callbackMock;
 
@@ -70,5 +70,6 @@ describe('TelegramLoginWidget test (TelegramLoginWidget.vue)', () => {
 
         const script = div.querySelector('script');
         expect(script!.getAttribute('data-onauth')).toBe('onTelegramAuth(user)');
+        expect(script!.hasAttribute('data-auth-url')).toBeFalsy();
     });
 });

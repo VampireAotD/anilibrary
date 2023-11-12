@@ -10,7 +10,7 @@ const year = computed(() => {
 
 <template>
     <footer
-        class="border-t-2 border-gray-300 dark:border-red-500 bg-white shadow dark:bg-gray-800"
+        class="mt-auto border-t-2 border-gray-300 dark:border-red-500 bg-white shadow dark:bg-gray-800"
     >
         <div
             class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between"
