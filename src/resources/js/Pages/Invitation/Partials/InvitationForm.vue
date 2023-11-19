@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
+import PrimaryButton from '@/Components/Button/PrimaryButton.vue';
+import InputError from '@/Components/Input/InputError.vue';
+import InputLabel from '@/Components/Input/InputLabel.vue';
+import TextInput from '@/Components/Input/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -29,7 +29,6 @@ const submit = () => {
                 type="email"
                 class="mt-1 block w-full"
                 required
-                autofocus
                 autocomplete="email"
             />
 

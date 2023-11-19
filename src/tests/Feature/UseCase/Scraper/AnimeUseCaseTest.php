@@ -62,7 +62,7 @@ class AnimeUseCaseTest extends TestCase
             self::SCRAPER_ENDPOINT => [
                 'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
                 'episodes' => (string) $this->faker->randomNumber(),
-                'rating'   => $this->faker->randomFloat(),
+                'rating'   => $this->faker->randomAnimeRating(),
             ],
         ]);
 
@@ -79,7 +79,7 @@ class AnimeUseCaseTest extends TestCase
                 'image'    => $invalidImage,
                 'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
                 'episodes' => (string) $this->faker->randomNumber(),
-                'rating'   => $this->faker->randomFloat(),
+                'rating'   => $this->faker->randomAnimeRating(),
             ],
         ]);
 
@@ -102,7 +102,7 @@ class AnimeUseCaseTest extends TestCase
                 'title'    => $this->faker->sentence,
                 'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
                 'episodes' => $this->faker->randomAscii,
-                'rating'   => $this->faker->randomFloat(),
+                'rating'   => $this->faker->randomAnimeRating(),
                 'synonyms' => array_merge($anime->synonyms->pluck('synonym')->toArray(), $newSynonyms),
             ],
         ]);
@@ -151,7 +151,7 @@ class AnimeUseCaseTest extends TestCase
                 'image'       => $image,
                 'status'      => $this->faker->randomElement(AnimeStatusEnum::values()),
                 'episodes'    => $this->faker->randomAscii,
-                'rating'      => $this->faker->randomFloat(),
+                'rating'      => $this->faker->randomAnimeRating(),
                 'genres'      => Genre::factory(5)->make()->pluck('name')->toArray(),
                 'voiceActing' => VoiceActing::factory(5)->make()->pluck('name')->toArray(),
                 'synonyms'    => AnimeSynonym::factory(5)->make()->pluck('synonym')->toArray(),

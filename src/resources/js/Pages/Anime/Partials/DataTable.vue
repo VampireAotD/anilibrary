@@ -30,8 +30,14 @@ const openModal = () => {
 const handleUpdate = (event: DataTablePageEvent) => {
     router.get(
         route('anime.index'),
-        { page: event.page + 1, per_page: event.rows },
-        { preserveScroll: true }
+        {
+            page: event.page + 1,
+            per_page: event.rows,
+        },
+        {
+            preserveScroll: true,
+            only: ['pagination'],
+        }
     );
 };
 </script>

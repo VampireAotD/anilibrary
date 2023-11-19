@@ -121,7 +121,7 @@ class AnimeControllerTest extends TestCase
             'title'        => $anime->title,
             'status'       => $this->faker->randomElement(AnimeStatusEnum::values()),
             'episodes'     => $anime->episodes,
-            'rating'       => $this->faker->randomNumber(),
+            'rating'       => $this->faker->randomAnimeRating(),
             'urls'         => $urls,
             'synonyms'     => $synonyms,
             'voice_acting' => $anime->voiceActing->pluck('id')->toArray(),

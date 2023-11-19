@@ -4,7 +4,7 @@ import { AnimeWithRelations } from '@/types/anime/types';
 import { computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import ExternalLink from '@/Components/ExternalLink.vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import DangerButton from '@/Components/Button/DangerButton.vue';
 
 const props = defineProps<{
     anime: AnimeWithRelations;

@@ -82,6 +82,9 @@ final readonly class AnimeService
         return array_replace($initial, $perMonth);
     }
 
+    /**
+     * @return Collection<int, Anime>
+     */
     public function getTenLatestAnime(): Collection
     {
         return $this->animeRepository->withFilters([new RelationFilter(['image:model_id,path'])])->getLatestAnime();

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/Input/TextInput.vue';
+import InputLabel from '@/Components/Input/InputLabel.vue';
+import InputError from '@/Components/Input/InputError.vue';
+import PrimaryButton from '@/Components/Button/PrimaryButton.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { ScrapeResult } from '@/types/pusher/types';
 import { useToast } from 'primevue/usetoast';

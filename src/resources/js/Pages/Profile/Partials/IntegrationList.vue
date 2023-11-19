@@ -3,7 +3,7 @@ import TelegramLoginWidget from '@/Components/TelegramLoginWidget.vue';
 import { TelegramUser } from '@/types/telegram/types';
 import { router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import DangerButton from '@/Components/Button/DangerButton.vue';
 
 const page = usePage();
 const telegramUser = computed(() => page.props.auth.user.telegram_user);

@@ -24,7 +24,7 @@ class AnimeFactory extends Factory
             'title'    => $this->faker->title,
             'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
             'episodes' => (string) $this->faker->randomNumber(),
-            'rating'   => $this->faker->randomFloat(),
+            'rating'   => $this->faker->randomAnimeRating(),
         ];
     }
 }

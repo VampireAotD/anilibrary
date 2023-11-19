@@ -6,7 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
-import Searchbar from '@/Components/Input/Searchbar.vue';
+import SearchInput from '@/Components/Input/SearchInput.vue';
 import ThemeSwitcher from '@/Components/ThemeSwitcher.vue';
 import Footer from '@/Components/Footer.vue';
 
@@ -66,7 +66,7 @@ const showingNavigationDropdown = ref(false);
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <div class="flex items-center justify-between">
-                                <Searchbar class="mr-3" />
+                                <SearchInput class="mr-3" />
 
                                 <ThemeSwitcher />
                             </div>
@@ -163,7 +163,7 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <Searchbar />
+                        <SearchInput />
                         <ThemeSwitcher />
                     </div>
 

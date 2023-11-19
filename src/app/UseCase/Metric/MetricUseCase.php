@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\UseCase\Metric;
 
+use App\DTO\UseCase\Metric\MetricDTO;
 use App\Services\AnimeService;
 use App\Services\AnimeUrlService;
 use App\Services\UserService;
@@ -21,15 +22,15 @@ readonly class MetricUseCase
     ) {
     }
 
-    public function getAnimeMetrics(): array
+    public function getAnimeMetrics(): MetricDTO
     {
         // TODO add cache decorator for repositories
-        return [
-            'animeCount'     => $this->animeService->countAnime(),
-            'usersCount'     => $this->userService->countUsers(),
-            'animePerMonth'  => $this->animeService->getParsedAnimePerMonth(),
-            'animePerDomain' => $this->animeUrlService->countAnimePerDomain(),
-            'latestAnime'    => $this->animeService->getTenLatestAnime(),
-        ];
+        return new MetricDTO(
+            $this->animeService->countAnime(),
+            $this->userService->countUsers(),
+            $this->animeService->getParsedAnimePerMonth(),
+            $this->animeUrlService->countAnimePerDomain(),
+            $this->animeService->getTenLatestAnime(),
+        );
     }
 }

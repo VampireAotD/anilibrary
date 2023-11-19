@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { AnimePerDomain, AnimeWithRelations } from '@/types/anime/types';
 import StatisticCards from '@/Pages/Dashboard/Partials/StatisticCards.vue';
-import Carousel from '@/Components/Carousel.vue';
+import Carousel from '@/Pages/Dashboard/Partials/Carousel.vue';
 import Charts from '@/Pages/Dashboard/Partials/Charts.vue';
 import { provide } from 'vue';
 
