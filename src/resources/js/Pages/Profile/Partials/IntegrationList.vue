@@ -49,7 +49,7 @@ const revokeTelegramAccount = () => {
                 <div v-else class="flex flex-col">
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         Connected as
-                        {{ telegramUser.username ?? telegramUser.telegramId }}
+                        {{ telegramUser.username ?? telegramUser.telegram_id }}
                     </p>
 
                     <DangerButton @click="revokeTelegramAccount"

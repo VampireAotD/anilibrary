@@ -6,7 +6,7 @@ import 'primeicons/primeicons.css';
 import { createApp, DefineComponent, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { ZiggyVue } from 'ziggy-js/dist/vue.m';
 import { HasRolePlugin } from '@/plugins/user/authorize';
 import PrimeVue from 'primevue/config';
 import Tailwind from 'primevue/passthrough/tailwind';

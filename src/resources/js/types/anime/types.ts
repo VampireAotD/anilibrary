@@ -1,45 +1,5 @@
-import { Pagination } from '@/types';
+import { Laravel, Models } from '@/types';
 
-export interface Image {
-    path: string;
-}
+export type AnimePagination = Laravel.Pagination<Models.Anime>;
 
-export interface URL {
-    url: string;
-}
-
-export interface Synonym {
-    synonym: string;
-}
-
-export interface Genre {
-    name: string;
-}
-
-export interface VoiceActing {
-    name: string;
-}
-
-export interface Anime {
-    id: string;
-    title: string;
-    status: string;
-    episodes: string;
-    rating: number;
-}
-
-export interface AnimeWithRelations extends Anime {
-    image: Image;
-    urls: URL[];
-    synonyms: Synonym[];
-    voice_acting: VoiceActing[];
-    genres: Genre[];
-}
-
-export interface AnimePagination extends Pagination {
-    data: Anime[];
-}
-
-export interface AnimePerDomain {
-    [key: string]: number;
-}
+export type AnimePerDomain = Record<string, number>;

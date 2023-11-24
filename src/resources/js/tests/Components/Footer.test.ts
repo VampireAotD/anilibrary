@@ -1,16 +1,14 @@
-import { mount } from '@vue/test-utils';
+import { config, mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import Footer from '@/Components/Footer.vue';
+import { ZiggyVue } from 'ziggy-js/dist/vue.m';
+import { ZiggyMockConfig } from '../mocks/ziggy-js';
 
 describe('Footer test (Footer.vue)', () => {
     it('Renders correctly', () => {
-        const wrapper = mount(Footer, {
-            global: {
-                mocks: {
-                    route: vitest.fn().mockReturnValue('dashboard'),
-                },
-            },
-        });
+        config.global.plugins = [[ZiggyVue, ZiggyMockConfig]];
+
+        const wrapper = mount(Footer);
 
         expect(wrapper.exists()).toBeTruthy();
         expect(wrapper.find('footer').exists()).toBeTruthy();

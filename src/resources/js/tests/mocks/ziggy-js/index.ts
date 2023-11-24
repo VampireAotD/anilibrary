@@ -1,0 +1,1 @@
+export { ZiggyMockConfig } from './config';

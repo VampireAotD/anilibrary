@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import Carousel from 'primevue/carousel';
 import { Link } from '@inertiajs/vue3';
-import { AnimeWithRelations } from '@/types/anime/types';
 import { reactive, ref } from 'vue';
 import LeftBorderedHeader from '@/Components/LeftBorderedHeader.vue';
+import { Models } from '@/types';
 
 type Props = {
     display: number;
     scroll: number;
-    data: AnimeWithRelations[];
+    data: Models.Anime[];
 };
 
 defineProps<Props>();

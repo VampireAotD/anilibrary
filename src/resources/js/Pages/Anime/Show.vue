@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { AnimeWithRelations } from '@/types/anime/types';
 import { computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import ExternalLink from '@/Components/ExternalLink.vue';
 import DangerButton from '@/Components/Button/DangerButton.vue';
+import { Models } from '@/types';
 
 const props = defineProps<{
-    anime: AnimeWithRelations;
+    anime: Models.Anime;
 }>();
 
 const links = computed(() => props.anime.urls.map((link) => link.url));

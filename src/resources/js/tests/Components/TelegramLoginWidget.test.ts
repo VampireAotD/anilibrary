@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vitest } from 'vitest';
-import TelegramLoginWidget from '../../Components/TelegramLoginWidget.vue';
+import TelegramLoginWidget from '@/Components/TelegramLoginWidget.vue';
 import { RequestAccess, WidgetSize } from '@/types/telegram/enums';
 
 describe('TelegramLoginWidget test (TelegramLoginWidget.vue)', () => {

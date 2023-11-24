@@ -8,7 +8,7 @@ describe('ThemeSwitcher test (ThemeSwitcher.vue)', () => {
 
         expect(wrapper.exists()).toBeTruthy();
 
-        // By default regular theme is active
+        // By default, regular theme is active
         expect(wrapper.vm.isDark).toBeFalsy();
 
         await wrapper.find('button').trigger('click');
