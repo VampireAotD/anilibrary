@@ -5,9 +5,8 @@ import Toolbar from 'primevue/toolbar';
 import { Link, router } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
-import Modal from '@/Components/Modal.vue';
-import AddAnimeForm from '@/Pages/Anime/Partials/AddAnimeForm.vue';
 import { AnimePagination } from '@/types/anime/types';
+import AddAnimeModal from '@/Pages/Anime/Partials/AddAnimeModal.vue';
 
 defineProps<{
     pagination: AnimePagination;
@@ -100,9 +99,7 @@ const handleUpdate = (event: DataTablePageEvent) => {
             </DataTable>
         </div>
 
-        <Modal :show="showDialog" @close="showDialog = false">
-            <AddAnimeForm @added="console.log(123)" />
-        </Modal>
+        <AddAnimeModal :visible="showDialog" @close="showDialog = false" />
     </div>
 </template>
 

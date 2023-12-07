@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
-defineProps<{
+type Props = {
     modelValue: string;
-}>();
+};
 
-defineEmits(['update:modelValue']);
+defineProps<Props>();
+defineEmits<{ 'update:modelValue': [value: string] }>();
+defineExpose({ focus: () => input.value?.focus() });
 
 const input = ref<HTMLInputElement | null>(null);
 
@@ -14,8 +16,6 @@ onMounted(() => {
         input.value?.focus();
     }
 });
-
-defineExpose({ focus: () => input.value?.focus() });
 </script>
 
 <template>

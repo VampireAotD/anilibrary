@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Chart from '@/Components/Chart.vue';
+import Chart from '@/Components/BaseChart.vue';
 import { inject } from 'vue';
 
 const animePerMonth = inject('animePerMonth');

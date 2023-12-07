@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/Input/InputError.vue';
 import InputLabel from '@/Components/Input/InputLabel.vue';
 import PrimaryButton from '@/Components/Button/PrimaryButton.vue';
-import TextInput from '@/Components/Input/TextInput.vue';
+import BaseTextInput from '@/Components/BaseTextInput.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+import Checkbox from '@/Components/Checkbox.vue';
 
 defineProps<{
     canResetPassword?: boolean;
@@ -39,7 +39,7 @@ const submit = () => {
             <div>
                 <InputLabel for="email" value="Email" />
 
-                <TextInput
+                <BaseTextInput
                     id="email"
                     v-model="form.email"
                     type="email"
@@ -55,7 +55,7 @@ const submit = () => {
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
 
-                <TextInput
+                <BaseTextInput
                     id="password"
                     v-model="form.password"
                     type="password"
@@ -68,12 +68,18 @@ const submit = () => {
             </div>
 
             <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox v-model:checked="form.remember" name="remember" />
-                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400"
-                        >Remember me</span
+                <div class="flex items-center">
+                    <Checkbox
+                        id="remember"
+                        v-model:checked="form.remember"
+                        name="remember"
+                    />
+                    <label
+                        for="remember"
+                        class="ml-2 text-sm text-gray-600 dark:text-gray-400"
+                        >Remember me</label
                     >
-                </label>
+                </div>
             </div>
 
             <div class="flex items-center justify-end mt-4">

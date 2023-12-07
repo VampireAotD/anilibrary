@@ -1,17 +1,23 @@
 <script setup lang="ts">
-import TextInput from '@/Components/Input/TextInput.vue';
+import BaseTextInput from '@/Components/BaseTextInput.vue';
 import InputLabel from '@/Components/Input/InputLabel.vue';
 import InputError from '@/Components/Input/InputError.vue';
 import PrimaryButton from '@/Components/Button/PrimaryButton.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { ScrapeResult } from '@/types/pusher/types';
 import { useToast } from 'primevue/usetoast';
+import BaseModal from '@/Components/BaseModal.vue';
 
 const page = usePage();
 const toast = useToast();
 
+defineProps<{
+    visible: boolean;
+}>();
+
 const emit = defineEmits<{
     (e: 'added', url: string): void;
+    (e: 'close'): void;
 }>();
 
 const form = useForm({
@@ -65,36 +71,43 @@ const addAnime = () => {
 </script>
 
 <template>
-    <section class="p-6">
-        <header>
+    <BaseModal
+        :visible="visible"
+        close-on-escape
+        close-on-outside-click
+        @close="emit('close')"
+    >
+        <template #header>
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Add new anime
             </h2>
-        </header>
+        </template>
 
-        <form class="mt-6 space-y-6" @submit.prevent="addAnime">
-            <div>
-                <InputLabel for="url" value="URL" />
+        <template #body>
+            <form @submit.prevent="addAnime">
+                <div>
+                    <InputLabel for="url" value="URL" />
 
-                <TextInput
-                    id="url"
-                    ref="url"
-                    v-model="form.url"
-                    type="url"
-                    class="mt-1 block w-full"
-                    autocomplete="url"
-                />
+                    <BaseTextInput
+                        id="url"
+                        ref="url"
+                        v-model="form.url"
+                        type="url"
+                        class="mt-1 block w-full"
+                        autocomplete="url"
+                    />
 
-                <InputError :message="form.errors.url" class="mt-2" />
-            </div>
+                    <InputError :message="form.errors.url" class="mt-2" />
+                </div>
 
-            <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Add</PrimaryButton>
-            </div>
+                <div class="mt-6 flex items-center gap-4">
+                    <PrimaryButton :disabled="form.processing">Add</PrimaryButton>
+                </div>
+            </form>
+        </template>
+    </BaseModal>
 
-            <Toast position="bottom-center" />
-        </form>
-    </section>
+    <Toast position="bottom-center" />
 </template>
 
 <style scoped></style>

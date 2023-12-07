@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Chart from '@/Components/Chart.vue';
+import Chart from '@/Components/BaseChart.vue';
 import { computed, inject } from 'vue';
 import { AnimePerDomain } from '@/types/anime/types';
 

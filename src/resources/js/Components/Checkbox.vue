@@ -1,21 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const emit = defineEmits(['update:checked']);
-
-const props = defineProps<{
+type Props = {
     checked: boolean;
-    value?: any; //eslint-disable-line
-}>();
+    value?: unknown;
+};
+
+const props = defineProps<Props>();
+const emit = defineEmits<{ 'update:checked': [value: unknown] }>();
 
 const proxyChecked = computed({
-    get() {
-        return props.checked;
-    },
-
-    set(val) {
-        emit('update:checked', val);
-    },
+    get: () => props.checked,
+    set: (value: unknown) => emit('update:checked', value),
 });
 </script>
 
