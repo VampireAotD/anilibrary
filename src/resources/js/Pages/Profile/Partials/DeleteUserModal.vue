@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import BaseModal from '@/Components/BaseModal.vue';
-import InputLabel from '@/Components/Input/InputLabel.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 import DangerButton from '@/Components/Button/DangerButton.vue';
-import InputError from '@/Components/Input/InputError.vue';
+import InputError from '@/Components/InputError.vue';
 import BaseTextInput from '@/Components/BaseTextInput.vue';
 import SecondaryButton from '@/Components/Button/SecondaryButton.vue';
 import { useForm } from '@inertiajs/vue3';

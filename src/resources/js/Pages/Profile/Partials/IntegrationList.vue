@@ -52,8 +52,8 @@ const revokeTelegramAccount = () => {
                         {{ telegramUser.username ?? telegramUser.telegram_id }}
                     </p>
 
-                    <DangerButton @click="revokeTelegramAccount"
-                        >Revoke Telegram account
+                    <DangerButton @click="revokeTelegramAccount">
+                        Revoke Telegram account
                     </DangerButton>
                 </div>
             </div>
