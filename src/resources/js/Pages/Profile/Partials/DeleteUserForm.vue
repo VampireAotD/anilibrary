@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DangerButton from '@/Components/Button/DangerButton.vue';
 import { ref } from 'vue';
+import Button from '@/Components/Button.vue';
 import DeleteUserModal from '@/Pages/Profile/Partials/DeleteUserModal.vue';
 
 const confirmingUserDeletion = ref<boolean>(false);
@@ -23,7 +23,7 @@ const toggleConfirmationModal = () =>
             </p>
         </header>
 
-        <DangerButton @click="toggleConfirmationModal">Delete Account</DangerButton>
+        <Button color="danger" @click="toggleConfirmationModal">Delete Account</Button>
 
         <DeleteUserModal
             :show="confirmingUserDeletion"

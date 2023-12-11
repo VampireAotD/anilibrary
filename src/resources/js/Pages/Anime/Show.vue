@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import ExternalLink from '@/Components/BaseExternalLink.vue';
-import DangerButton from '@/Components/Button/DangerButton.vue';
+import Button from '@/Components/Button.vue';
 import { Models } from '@/types';
 
 const props = defineProps<{
@@ -127,7 +127,7 @@ const voiceActingList = computed(() =>
                                         </div>
 
                                         <div class="flex flex-wrap">
-                                            <DangerButton>Delete</DangerButton>
+                                            <Button color="danger">Delete</Button>
                                         </div>
                                     </div>
                                 </div>

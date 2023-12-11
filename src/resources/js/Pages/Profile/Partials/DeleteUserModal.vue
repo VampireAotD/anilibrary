@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import BaseModal from '@/Components/BaseModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import DangerButton from '@/Components/Button/DangerButton.vue';
 import InputError from '@/Components/InputError.vue';
 import BaseTextInput from '@/Components/BaseTextInput.vue';
-import SecondaryButton from '@/Components/Button/SecondaryButton.vue';
+import Button from '@/Components/Button.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref, watchEffect } from 'vue';
 
@@ -77,16 +76,17 @@ watchEffect(() => {
             </div>
 
             <div class="mt-6 flex justify-end">
-                <SecondaryButton @click="closeModal">Cancel</SecondaryButton>
+                <Button color="secondary" @click="closeModal">Cancel</Button>
 
-                <DangerButton
+                <Button
+                    color="danger"
                     class="ml-3"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                     @click="deleteUser"
                 >
                     Delete Account
-                </DangerButton>
+                </Button>
             </div>
         </template>
     </BaseModal>

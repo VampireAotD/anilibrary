@@ -2,11 +2,11 @@
 import BaseTextInput from '@/Components/BaseTextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/Button/PrimaryButton.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { ScrapeResult } from '@/types/pusher/types';
 import { useToast } from 'primevue/usetoast';
 import BaseModal from '@/Components/BaseModal.vue';
+import Button from '@/Components/Button.vue';
 
 const page = usePage();
 const toast = useToast();
@@ -101,7 +101,7 @@ const addAnime = () => {
                 </div>
 
                 <div class="mt-6 flex items-center gap-4">
-                    <PrimaryButton :disabled="form.processing">Add</PrimaryButton>
+                    <Button type="submit" :disabled="form.processing">Add</Button>
                 </div>
             </form>
         </template>

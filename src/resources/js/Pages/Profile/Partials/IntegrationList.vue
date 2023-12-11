@@ -3,7 +3,7 @@ import TelegramLoginWidget from '@/Components/TelegramLoginWidget.vue';
 import { TelegramUser } from '@/types/telegram/types';
 import { router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import DangerButton from '@/Components/Button/DangerButton.vue';
+import Button from '@/Components/Button.vue';
 
 const page = usePage();
 const telegramUser = computed(() => page.props.auth.user.telegram_user);
@@ -52,9 +52,9 @@ const revokeTelegramAccount = () => {
                         {{ telegramUser.username ?? telegramUser.telegram_id }}
                     </p>
 
-                    <DangerButton @click="revokeTelegramAccount">
+                    <Button color="danger" @click="revokeTelegramAccount">
                         Revoke Telegram account
-                    </DangerButton>
+                    </Button>
                 </div>
             </div>
         </div>
