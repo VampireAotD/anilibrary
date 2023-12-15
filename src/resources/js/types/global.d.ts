@@ -3,7 +3,7 @@ import { AxiosInstance } from 'axios';
 import ziggyRoute, { Config as ZiggyConfig } from 'ziggy-js';
 import { PageProps as AppPageProps } from './';
 import { useHasRole } from '@/plugins/user/authorize';
-import { onTelegramAuth } from '@/types/telegram/types';
+import { onTelegramAuth } from '@/entities/telegram-user';
 import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
 

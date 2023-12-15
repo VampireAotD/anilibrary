@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import InvitationForm from '@/Pages/Invitation/Partials/InvitationForm.vue';
+import InvitationForm from '@/pages/Invitation/Partials/InvitationForm.vue';
 import { describe, expect, it, vitest } from 'vitest';
 
 describe('InvitationForm test (InvitationForm.vue)', () => {
