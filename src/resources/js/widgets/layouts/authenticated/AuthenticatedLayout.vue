@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Footer } from '../../footer';
-import { Navigation } from '@/features/navigation';
+import { Navigation } from '@/widgets/navigation';
 </script>
 
 <template>

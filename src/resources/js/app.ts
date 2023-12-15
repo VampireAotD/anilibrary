@@ -6,6 +6,7 @@ import 'primeicons/primeicons.css';
 import { createApp, DefineComponent, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+// @ts-expect-error Declaration of ZiggyVue
 import { ZiggyVue } from 'ziggy-js/dist/vue.m';
 import { HasRolePlugin } from '@/plugins/user/authorize';
 import PrimeVue from 'primevue/config';

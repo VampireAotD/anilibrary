@@ -22,5 +22,5 @@
         "resources/js/**/*.d.ts",
         "resources/js/**/*.vue"
     ],
-    "exclude": ["resources/js/tests"]
+    "exclude": ["resources/js/**/*.test.ts"]
 }

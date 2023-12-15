@@ -1,4 +1,4 @@
-interface TelegramUser {
+export interface TelegramUser {
     id: number;
     first_name?: string;
     last_name?: string;
@@ -8,6 +8,4 @@ interface TelegramUser {
     hash: string;
 }
 
-declare function onTelegramAuth(user: TelegramUser): void;
-
-export { TelegramUser, onTelegramAuth };
+export declare function onTelegramAuth(user: TelegramUser): void;

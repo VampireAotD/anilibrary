@@ -1,1 +1,1 @@
-export { TelegramUser, onTelegramAuth } from './types';
+export { type TelegramUser, onTelegramAuth } from './types';
