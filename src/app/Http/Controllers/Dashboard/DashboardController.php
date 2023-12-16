@@ -17,6 +17,6 @@ class DashboardController extends Controller
 
     public function index(): Response
     {
-        return Inertia::render('Dashboard/Dashboard', $this->metricUseCase->getAnimeMetrics()->toArray());
+        return Inertia::render('Dashboard/Index', $this->metricUseCase->getAnimeMetrics()->toArray());
     }
 }

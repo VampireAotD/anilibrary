@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ParsedMonthly from '@/pages/Dashboard/Partials/ParsedMonthly.vue';
+import ParsedMonthly from '@/features/dashboard/charts/parsed-monthly-anime/ParsedMonthlyAnime.vue';
 import LeftBorderedHeader from '@/shared/ui/header/LeftBorderedHeader.vue';
-import CountPerDomain from '@/pages/Dashboard/Partials/CountPerDomain.vue';
+import CountPerDomain from '@/features/dashboard/charts/count-anime-per-domain/CountAnimePerDomain.vue';
 </script>
 
 <template>

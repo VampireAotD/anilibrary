@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
-import InvitationForm from '@/pages/Invitation/Partials/InvitationForm.vue';
+import InvitationForm from './CreateInvitationForm.vue';
 import { describe, expect, it, vitest } from 'vitest';
 
-describe('InvitationForm test (InvitationForm.vue)', () => {
+describe('InvitationForm test (CreateInvitationForm.vue)', () => {
     it('Renders correctly', () => {
         const wrapper = mount(InvitationForm);
 

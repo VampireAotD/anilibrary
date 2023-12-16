@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
 import { AuthenticatedLayout } from '@/widgets/layouts';
-import InvitationForm from '@/pages/Invitation/Partials/InvitationForm.vue';
+import { CreateInvitationForm } from '@/features/invitation/create-invitation';
 </script>
 
 <template>
@@ -13,7 +13,7 @@ import InvitationForm from '@/pages/Invitation/Partials/InvitationForm.vue';
                 <div
                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
                 >
-                    <InvitationForm />
+                    <CreateInvitationForm />
                 </div>
             </div>
         </div>

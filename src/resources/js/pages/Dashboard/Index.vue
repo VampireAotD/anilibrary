@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { AuthenticatedLayout } from '@/widgets/layouts';
 import { Head } from '@inertiajs/vue3';
-import { AnimePerDomain } from '@/types/anime/types';
-import StatisticCards from '@/pages/Dashboard/Partials/StatisticCards.vue';
-import Carousel from '@/pages/Dashboard/Partials/Carousel.vue';
-import Charts from '@/pages/Dashboard/Partials/Charts.vue';
+import { AnimePerDomain } from '@/entities/anime';
+import { Charts, StatisticCards } from '@/widgets/dashboard';
+import { AnimeCarousel } from '@/features/dashboard/anime-carousel';
 import { provide } from 'vue';
 import { Models } from '@/types';
 
@@ -43,7 +42,7 @@ provide('animePerDomain', props.animePerDomain);
                     :anime-per-domain="animePerDomain"
                 />
 
-                <Carousel :data="latestAnime" :display="4" :scroll="1" />
+                <AnimeCarousel :data="latestAnime" :display="4" :scroll="1" />
             </div>
         </div>
     </AuthenticatedLayout>

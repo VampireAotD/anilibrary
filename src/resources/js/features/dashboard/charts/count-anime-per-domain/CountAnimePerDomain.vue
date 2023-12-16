@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Chart } from '@/shared/ui/chart';
 import { computed, inject } from 'vue';
-import { AnimePerDomain } from '@/types/anime/types';
+import { type AnimePerDomain } from '@/entities/anime';
 
 const animePerDomain = inject<AnimePerDomain>('animePerDomain') as object;
 

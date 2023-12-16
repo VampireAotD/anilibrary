@@ -5,8 +5,8 @@ import Toolbar from 'primevue/toolbar';
 import { Link, router } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 import Column from 'primevue/column';
-import { AnimePagination } from '@/types/anime/types';
-import AddAnimeModal from '@/pages/Anime/Partials/AddAnimeModal.vue';
+import { AnimePagination } from '@/entities/anime';
+import { AddAnimeModal } from '@/features/anime/add-anime-modal';
 
 defineProps<{
     pagination: AnimePagination;
