@@ -7,6 +7,7 @@ import {
 } from '@/features/profile/update-profile';
 import { IntegrationList } from '@/features/profile/integration-list';
 import { DeleteUserForm } from '@/features/profile/delete-user';
+import { Logout } from '@/features/profile/logout';
 
 defineProps<{
     mustVerifyEmail?: boolean;
@@ -46,6 +47,10 @@ defineProps<{
 
                 <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                     <DeleteUserForm class="max-w-xl" />
+                </div>
+
+                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                    <Logout />
                 </div>
             </div>
         </div>

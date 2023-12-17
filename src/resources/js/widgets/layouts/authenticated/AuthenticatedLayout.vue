@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Footer } from '../../footer';
+import { Footer } from '@/widgets/footer';
 import { Navigation } from '@/widgets/navigation';
+import { BottomNavigation } from '@/widgets/bottom-navigation';
 </script>
 
 <template>
@@ -23,6 +24,9 @@ import { Navigation } from '@/widgets/navigation';
 
             <!-- Page Footer -->
             <Footer />
+
+            <!-- Mobile Bottom Navigation -->
+            <BottomNavigation />
         </div>
     </div>
 </template>

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vitest } from 'vitest';
 import TelegramLoginWidget from './TelegramLoginWidget.vue';
-import { RequestAccess, WidgetSize } from '@/features/telegram/login-widget/types';
+import { RequestAccess, WidgetSize } from './types';
 
 describe('TelegramLoginWidget test (TelegramLoginWidget.vue)', () => {
     it('Renders correctly', async () => {

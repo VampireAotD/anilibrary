@@ -4,7 +4,7 @@ import AuthenticatedLayout from './AuthenticatedLayout.vue';
 import { ZiggyVue } from 'ziggy-js/dist/vue.m';
 import { HasRolePlugin } from '@/plugins/user/authorize';
 import { usePage } from '@inertiajs/vue3';
-import { NavLink } from '@/features/navigation/navigation-link';
+import { NavigationLink } from '@/features/navigation/navigation-link';
 import { ZiggyMockConfig } from '@/mocks/ziggy-js';
 
 vi.mock('@inertiajs/vue3', async () => {
@@ -51,7 +51,7 @@ describe('AuthenticatedLayout test (AuthenticatedLayout.vue)', () => {
             },
         });
 
-        const links = layoutWrapper.findAllComponents(NavLink);
+        const links = layoutWrapper.findAllComponents(NavigationLink);
         expect(links.length).toBe(2);
     });
 
@@ -67,7 +67,7 @@ describe('AuthenticatedLayout test (AuthenticatedLayout.vue)', () => {
             },
         });
 
-        const links = layoutWrapper.findAllComponents(NavLink);
+        const links = layoutWrapper.findAllComponents(NavigationLink);
         const invitationLink = links.filter((link) => link.text().match('Invite')).at(0);
 
         expect(links.length).toBe(3);

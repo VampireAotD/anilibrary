@@ -2,7 +2,7 @@
 import Carousel from 'primevue/carousel';
 import { Link } from '@inertiajs/vue3';
 import { reactive, ref } from 'vue';
-import LeftBorderedHeader from '@/shared/ui/header/LeftBorderedHeader.vue';
+import { SectionTitle } from '@/shared/ui/section-title';
 import { Models } from '@/types';
 
 type Props = {
@@ -47,7 +47,7 @@ const responsiveOptions = ref([
 
 <template>
     <div>
-        <LeftBorderedHeader title="Recently added anime" />
+        <SectionTitle title="Recently added anime" />
 
         <Carousel
             :value="data"
