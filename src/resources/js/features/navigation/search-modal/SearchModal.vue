@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Modal } from '@/shared/ui/modal';
-import { TextInput } from '@/shared/ui/input/text';
+import { TextInput } from '@/shared/ui/input';
 import { ref } from 'vue';
 
 type Props = {
