@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { Chart } from '@/shared/ui/chart';
-import { computed, inject } from 'vue';
-import { type AnimePerDomain } from '@/entities/anime';
+import { computed } from 'vue';
+import { type AddedAnimePerDomain } from '@/entities/anime';
 
-const animePerDomain = inject<AnimePerDomain>('animePerDomain') as object;
+type Props = {
+    domainStatistic: AddedAnimePerDomain;
+};
+
+const { domainStatistic } = defineProps<Props>();
 
 const data = computed(() => ({
-    labels: Object.keys(animePerDomain),
+    labels: Object.keys(domainStatistic),
     datasets: [
         {
             label: 'Anime per domain',
-            data: Object.values(animePerDomain),
+            data: Object.values(domainStatistic),
             backgroundColor: [
                 'rgba(255, 159, 64, 0.2)',
                 'rgba(75, 192, 192, 0.2)',

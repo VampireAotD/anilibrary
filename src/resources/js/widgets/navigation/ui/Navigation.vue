@@ -3,9 +3,29 @@ import { Link } from '@inertiajs/vue3';
 import { DropdownLink } from '@/features/navigation/dropdown-link';
 import { NavigationLink } from '@/features/navigation/navigation-link';
 import { ApplicationLogo } from '@/shared/ui/logo';
-import { SearchInput } from '@/features/navigation/search';
 import { Dropdown } from '@/shared/ui/dropdown';
 import { ThemeSwitcher } from '@/features/theme-switcher';
+import { SearchButton } from '@/features/navigation/search-button';
+import { SearchModal } from '@/features/navigation/search-modal';
+import { ComponentPublicInstance, onMounted, onUnmounted, ref } from 'vue';
+
+const showSearchModal = ref<boolean>(false);
+const buttonRef = ref<HTMLButtonElement | null>(null);
+
+const toggleSearchModalVisibility = () =>
+    (showSearchModal.value = !showSearchModal.value);
+
+const activateSearch = (event: KeyboardEvent) => {
+    if (event.ctrlKey && event.key === 'k') {
+        event.preventDefault();
+
+        (buttonRef.value as ComponentPublicInstance)?.$el.click();
+        (buttonRef.value as ComponentPublicInstance)?.$el.blur();
+    }
+};
+
+onMounted(() => window.addEventListener('keydown', activateSearch));
+onUnmounted(() => window.removeEventListener('keydown', activateSearch));
 </script>
 
 <template>
@@ -57,7 +77,11 @@ import { ThemeSwitcher } from '@/features/theme-switcher';
 
                 <div class="flex sm:items-center sm:ml-6">
                     <div class="flex items-center justify-between">
-                        <SearchInput class="mr-3" />
+                        <SearchButton
+                            ref="buttonRef"
+                            class="mr-3"
+                            @click="toggleSearchModalVisibility"
+                        />
 
                         <ThemeSwitcher />
                     </div>
@@ -107,6 +131,8 @@ import { ThemeSwitcher } from '@/features/theme-switcher';
             </div>
         </div>
     </nav>
+
+    <SearchModal :visible="showSearchModal" @closed="toggleSearchModalVisibility" />
 </template>
 
 <style scoped></style>

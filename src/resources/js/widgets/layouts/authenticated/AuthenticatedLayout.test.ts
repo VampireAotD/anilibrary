@@ -2,7 +2,7 @@ import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
 import { config, mount } from '@vue/test-utils';
 import AuthenticatedLayout from './AuthenticatedLayout.vue';
 import { ZiggyVue } from 'ziggy-js/dist/vue.m';
-import { HasRolePlugin } from '@/plugins/user/authorize';
+import { HasRolePlugin } from '@/shared/plugins/user/authorize';
 import { usePage } from '@inertiajs/vue3';
 import { NavigationLink } from '@/features/navigation/navigation-link';
 import { ZiggyMockConfig } from '@/mocks/ziggy-js';

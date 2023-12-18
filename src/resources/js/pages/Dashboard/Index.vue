@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import { AuthenticatedLayout } from '@/widgets/layouts';
 import { Head } from '@inertiajs/vue3';
-import { AnimePerDomain } from '@/entities/anime';
+import { type AddedAnimePerDomain, type AddedAnimePerMonth } from '@/entities/anime';
 import { Charts, StatisticCards } from '@/widgets/dashboard';
 import { AnimeCarousel } from '@/features/dashboard/anime-carousel';
-import { provide } from 'vue';
 import { Models } from '@/types';
 
 type Props = {
     animeCount: number;
     usersCount: number;
-    animePerMonth: number[];
-    animePerDomain: AnimePerDomain;
+    animePerMonth: AddedAnimePerMonth;
+    animePerDomain: AddedAnimePerDomain;
     latestAnime: Models.Anime[];
 };
 
-const props = defineProps<Props>();
-
-provide('animePerMonth', props.animePerMonth);
-provide('animePerDomain', props.animePerDomain);
+defineProps<Props>();
 </script>
 
 <template>

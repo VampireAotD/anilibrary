@@ -35,7 +35,12 @@ describe('BaseModal test (Modal.vue)', () => {
             props: { visible: true, closeOnEscape: true },
         });
 
-        await wrapper.find('.modal-wrapper').trigger('keyup.esc');
+        const modal = wrapper.find('.modal-wrapper');
+        expect(modal.isVisible()).toBeTruthy();
+
+        const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+        window.dispatchEvent(escapeEvent);
+
         expect(wrapper.emitted()).toHaveProperty('close');
     });
 
@@ -47,5 +52,28 @@ describe('BaseModal test (Modal.vue)', () => {
         await wrapper.find('.modal-wrapper').trigger('click');
         expect(wrapper.emitted()).toHaveProperty('click:outside');
         expect(wrapper.emitted()).toHaveProperty('close');
+    });
+
+    it('Modal will render content in slots', async () => {
+        const wrapper = mount(BaseModal, {
+            props: { visible: true },
+            slots: {
+                header: '<div>Test Header</div>',
+                body: '<div>Test Body</div>',
+                footer: '<div>Test Footer</div>',
+            },
+        });
+
+        expect(wrapper.find('header').html()).toContain('<div>Test Header</div>');
+        expect(wrapper.find('main').html()).toContain('<div>Test Body</div>');
+        expect(wrapper.find('footer').html()).toContain('<div>Test Footer</div>');
+    });
+
+    it('Modal will not render close closeButton prop is false', () => {
+        const wrapper = mount(BaseModal, {
+            props: { visible: true, closeButton: false },
+        });
+
+        expect(wrapper.find('button[aria-label="close"]').exists()).toBeFalsy();
     });
 });

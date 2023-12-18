@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { CountAnimePerDomain, ParsedMonthlyAnime } from '@/features/dashboard/charts';
 import { SectionTitle } from '@/shared/ui/section-title';
+import { type AddedAnimePerDomain, type AddedAnimePerMonth } from '@/entities/anime';
+
+type Props = {
+    animePerMonth: AddedAnimePerMonth;
+    animePerDomain: AddedAnimePerDomain;
+};
+
+defineProps<Props>();
 </script>
 
 <template>
@@ -8,9 +16,9 @@ import { SectionTitle } from '@/shared/ui/section-title';
         <SectionTitle title="Charts" />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-5">
-            <ParsedMonthlyAnime />
+            <ParsedMonthlyAnime :monthly-statistic="animePerMonth" />
 
-            <CountAnimePerDomain />
+            <CountAnimePerDomain :domain-statistic="animePerDomain" />
         </div>
     </div>
 </template>

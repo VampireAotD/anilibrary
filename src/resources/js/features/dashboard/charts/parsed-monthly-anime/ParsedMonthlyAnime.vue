@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { Chart } from '@/shared/ui/chart';
-import { inject } from 'vue';
+import { type AddedAnimePerMonth } from '@/entities/anime';
 
-const animePerMonth = inject('animePerMonth');
+type Props = {
+    monthlyStatistic: AddedAnimePerMonth;
+};
+
+const { monthlyStatistic } = defineProps<Props>();
 
 const months: string[] = [
     'January',
@@ -26,7 +30,7 @@ const data = {
     datasets: [
         {
             label: 'Parsed anime per month',
-            data: animePerMonth,
+            data: monthlyStatistic,
             fill: false,
             borderColor: documentStyle.getPropertyValue('--red-500'),
             tension: 0.4,

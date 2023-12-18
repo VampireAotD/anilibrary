@@ -2,7 +2,7 @@ import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { AxiosInstance } from 'axios';
 import ziggyRoute, { Config as ZiggyConfig } from 'ziggy-js';
 import { PageProps as AppPageProps } from './';
-import { useHasRole } from '@/plugins/user/authorize';
+import { useHasRole } from '@/shared/plugins/user/authorize';
 import { onTelegramAuth } from '@/entities/telegram-user';
 import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';

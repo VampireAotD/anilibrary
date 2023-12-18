@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { NavigationLink } from '@/features/bottom-navigation/navigation-link';
+import { useHasRole } from '@/shared/plugins/user/authorize';
+import { computed } from 'vue';
+
+const isOwner = useHasRole('owner');
+const gridColumns = computed((): string => (isOwner ? 'grid-cols-4' : 'grid-cols-3'));
 </script>
 
 <template>
     <nav
         class="fixed sm:hidden bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-300 dark:bg-gray-800 dark:border-gray-600"
     >
-        <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+        <div class="grid h-full max-w-lg mx-auto font-medium" :class="gridColumns">
             <NavigationLink text="Home" :url="route('dashboard')">
                 <svg
                     class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-red-500"

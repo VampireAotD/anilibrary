@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { type ModalSize } from './types';
 
 type Props = {
     visible: boolean;
     closeOnEscape?: boolean;
     closeOnOutsideClick?: boolean;
+    closeButton?: boolean;
     size?: ModalSize;
 };
 
-const props = withDefaults(defineProps<Props>(), {
-    size: '2xl',
-});
+const props = withDefaults(defineProps<Props>(), { closeButton: true, size: '2xl' });
 const emit = defineEmits<{ close: []; 'click:outside': [] }>();
 const modalRef = ref<HTMLElement | null>(null);
 
@@ -32,10 +31,12 @@ const modalSize = computed(() => {
 });
 
 const close = () => {
-    emit('close');
+    if (props.visible) {
+        emit('close');
+    }
 };
-const closeOnEscape = () => {
-    if (props.closeOnEscape) {
+const closeOnEscape = (event: KeyboardEvent) => {
+    if (props.closeOnEscape && event.key === 'Escape') {
         close();
     }
 };
@@ -46,9 +47,15 @@ const closeOnOutsideClick = () => {
     }
 };
 
-watchEffect(() => {
-    if (modalRef.value) {
-        modalRef.value!.focus();
+onMounted(() => {
+    if (props.closeOnEscape) {
+        window.addEventListener('keydown', closeOnEscape);
+    }
+});
+
+onUnmounted(() => {
+    if (props.closeOnEscape) {
+        window.removeEventListener('keydown', closeOnEscape);
     }
 });
 </script>
@@ -69,11 +76,9 @@ watchEffect(() => {
             <div
                 ref="modalRef"
                 class="modal-wrapper overflow-y-auto overflow-x-hidden outline-none fixed top-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center flex"
-                tabindex="0"
-                @keyup.esc="closeOnEscape"
                 @click.self="closeOnOutsideClick"
             >
-                <div :class="modalSize" class="modal relative p-4 w-full h-full">
+                <div :class="modalSize" class="modal relative p-4 w-full">
                     <!-- Modal content -->
                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
                         <!-- Modal header -->
@@ -88,6 +93,7 @@ watchEffect(() => {
                             <slot name="header" />
 
                             <button
+                                v-if="closeButton"
                                 aria-label="close"
                                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                                 type="button"

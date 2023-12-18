@@ -2,6 +2,8 @@ import { Laravel, Models } from '@/types';
 
 type AnimePagination = Laravel.Pagination<Models.Anime>;
 
-type AnimePerDomain = Record<string, number>;
+type AddedAnimePerDomain = Record<string, number>;
 
-export { type AnimePagination, type AnimePerDomain };
+type AddedAnimePerMonth = number[];
+
+export { type AnimePagination, type AddedAnimePerDomain, type AddedAnimePerMonth };
