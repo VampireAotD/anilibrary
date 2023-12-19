@@ -62,9 +62,19 @@ app:
 install:
 	./scripts/install.sh
 
+.PHONY: test-db-up
+test-db-up:
+	$(compose) -f docker-compose.testing.yml up --build -d
+
+.PHONY: test-db-down
+test-db-down:
+	$(compose) -f docker-compose.testing.yml down
+
 .PHONY: test
 test:
+	@make test-db-up
 	$(compose) exec app ./artisan test
+	@make test-db-down
 
 .PHONY: psalm
 psalm:

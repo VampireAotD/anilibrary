@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Anime;
 
-use App\Enums\AnimeStatusEnum;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -119,7 +118,7 @@ class AnimeControllerTest extends TestCase
 
         $this->actingAs($user)->put(route('anime.update', [$anime->id]), [
             'title'        => $anime->title,
-            'status'       => $this->faker->randomElement(AnimeStatusEnum::values()),
+            'status'       => $this->faker->randomAnimeStatus(),
             'episodes'     => $anime->episodes,
             'rating'       => $this->faker->randomAnimeRating(),
             'urls'         => $urls,

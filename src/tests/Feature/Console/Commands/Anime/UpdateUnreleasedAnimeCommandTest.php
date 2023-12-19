@@ -70,7 +70,7 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
                 'title'    => $anime->title,
                 'status'   => AnimeStatusEnum::READY->value,
                 'episodes' => $anime->episodes,
-                'rating'   => $rating = $this->faker->randomNumber(),
+                'rating'   => $rating = $this->faker->randomAnimeRating(),
             ]),
         ]);
 

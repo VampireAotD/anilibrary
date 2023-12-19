@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  testing-database:
+    image: mysql:8.0
+    container_name: anilibrary-testing-database
+    environment:
+      MYSQL_DATABASE: anilibrary-testing
+      MYSQL_USER: testing
+      MYSQL_PASSWORD: testing
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    tmpfs:
+      - /var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - testing
+
+networks:
+  testing:
+    name: testing
+    external: true

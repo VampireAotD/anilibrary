@@ -62,8 +62,9 @@ services:
       - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
       - ./docker/supervisor/conf.d/:/etc/supervisor/conf.d/
     networks:
-      - anilibrary
       - local
+      - anilibrary
+      - testing
 
   node:
     build:
@@ -98,6 +99,8 @@ networks:
     driver: bridge
   anilibrary:
     name: anilibrary
+  testing:
+    name: testing
 
 volumes:
   mysql-data:

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Handlers;
 
-use App\Enums\AnimeStatusEnum;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\AddAnimeHandlerEnum;
 use App\Enums\Validation\Telegram\SupportedUrlRuleEnum;
@@ -93,9 +92,9 @@ class AddAnimeHandlerTest extends TestCase
     {
         Http::fake([
             '*' => [
-                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                'episodes' => $this->faker->randomAscii,
-                'rating'   => $this->faker->randomFloat(),
+                'status'   => $this->faker->randomAnimeStatus(),
+                'episodes' => $this->faker->randomAnimeEpisodes(),
+                'rating'   => $this->faker->randomAnimeRating(),
             ],
         ]);
 
@@ -115,9 +114,9 @@ class AddAnimeHandlerTest extends TestCase
         Http::fake([
             '*' => [
                 'title'    => $this->faker->sentence,
-                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                'episodes' => $this->faker->randomAscii,
-                'rating'   => $this->faker->randomFloat(),
+                'status'   => $this->faker->randomAnimeStatus(),
+                'episodes' => $this->faker->randomAnimeEpisodes(),
+                'rating'   => $this->faker->randomAnimeRating(),
             ],
         ]);
 
@@ -131,8 +130,8 @@ class AddAnimeHandlerTest extends TestCase
         $update   = $this->createFakeTextMessageUpdate($url);
         $response = $this->bot->handleUpdate($update);
 
-        Bus::assertDispatched(UpsertAnimeJob::class);
         $this->assertInstanceOf(Message::class, $response);
         $this->assertEquals(AddAnimeHandlerEnum::PARSE_HAS_ENDED->value, $response->text);
+        Bus::assertDispatched(UpsertAnimeJob::class);
     }
 }

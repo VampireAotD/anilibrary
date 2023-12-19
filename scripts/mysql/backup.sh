@@ -10,5 +10,5 @@ mkdir -p "${MYSQL_BACKUP_PATH}"
 
 backup_filename=anilibrary-backup_$(date +'%Y-%m-%d').sql
 
-docker exec database mysqldump -u root \
+docker exec anilibrary-database mysqldump -u root \
 --password="${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE}" > "${MYSQL_BACKUP_PATH}/$backup_filename"

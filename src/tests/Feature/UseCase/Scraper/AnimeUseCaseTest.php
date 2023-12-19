@@ -60,8 +60,8 @@ class AnimeUseCaseTest extends TestCase
     {
         Http::fake([
             self::SCRAPER_ENDPOINT => [
-                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                'episodes' => (string) $this->faker->randomNumber(),
+                'status'   => $this->faker->randomAnimeStatus(),
+                'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
             ],
         ]);
@@ -77,8 +77,8 @@ class AnimeUseCaseTest extends TestCase
             self::SCRAPER_ENDPOINT => [
                 'title'    => $this->faker->sentence,
                 'image'    => $invalidImage,
-                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                'episodes' => (string) $this->faker->randomNumber(),
+                'status'   => $this->faker->randomAnimeStatus(),
+                'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
             ],
         ]);
@@ -100,8 +100,8 @@ class AnimeUseCaseTest extends TestCase
         Http::fake([
             self::SCRAPER_ENDPOINT => [
                 'title'    => $this->faker->sentence,
-                'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-                'episodes' => $this->faker->randomAscii,
+                'status'   => $this->faker->randomAnimeStatus(),
+                'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
                 'synonyms' => array_merge($anime->synonyms->pluck('synonym')->toArray(), $newSynonyms),
             ],
@@ -149,8 +149,8 @@ class AnimeUseCaseTest extends TestCase
             self::SCRAPER_ENDPOINT => [
                 'title'       => $this->faker->sentence,
                 'image'       => $image,
-                'status'      => $this->faker->randomElement(AnimeStatusEnum::values()),
-                'episodes'    => $this->faker->randomAscii,
+                'status'      => $this->faker->randomAnimeStatus(),
+                'episodes'    => $episodes = $this->faker->randomAnimeEpisodes(),
                 'rating'      => $this->faker->randomAnimeRating(),
                 'genres'      => Genre::factory(5)->make()->pluck('name')->toArray(),
                 'voiceActing' => VoiceActing::factory(5)->make()->pluck('name')->toArray(),

@@ -8,7 +8,7 @@ use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
-use Tests\Helpers\Faker\Providers\AnimeRatingProvider;
+use Tests\Helpers\Faker\Providers\AnimeInformationProvider;
 
 trait CreatesApplication
 {
@@ -27,7 +27,7 @@ trait CreatesApplication
         $app->singleton(Generator::class, function () {
             $faker = Factory::create();
 
-            $faker->addProvider(new AnimeRatingProvider($faker));
+            $faker->addProvider(new AnimeInformationProvider($faker));
 
             return $faker;
         });

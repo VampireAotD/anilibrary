@@ -6,8 +6,6 @@ namespace App\Console\Commands\Lists\Anime;
 
 use App\DTO\Service\Anime\UpsertAnimeDTO;
 use App\Enums\AnimeStatusEnum;
-use App\Models\AnimeSynonym;
-use App\Models\AnimeUrl;
 use App\Models\Genre;
 use App\Models\VoiceActing;
 use App\Services\AnimeService;
@@ -71,11 +69,9 @@ class ParseCommand extends Command
                     )
                 );
 
-                $synonyms = collect($parsed['synonyms'])->mapInto(AnimeSynonym::class);
-                $anime->synonyms()->saveMany($synonyms);
+                $anime->synonyms()->upsertRelated($parsed['synonyms'], 'synonym');
 
-                $urls = collect($parsed['urls'])->mapInto(AnimeUrl::class);
-                $anime->urls()->saveMany($urls);
+                $anime->urls()->upsertRelated($parsed['urls'], 'url');
 
                 $anime->image()->create($parsed['image']);
 
