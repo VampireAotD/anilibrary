@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Lists\Anime;
 
 use App\Enums\AnimeStatusEnum;
+use App\Filters\ColumnFilter;
+use App\Filters\RelationFilter;
 use App\Models\Anime;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
@@ -12,8 +14,6 @@ use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\ColumnFilter;
-use App\Repositories\Filters\RelationFilter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;

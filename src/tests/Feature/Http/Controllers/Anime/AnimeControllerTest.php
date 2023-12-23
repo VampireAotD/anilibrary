@@ -108,13 +108,34 @@ class AnimeControllerTest extends TestCase
         $this->assertEquals(1, $anime->urls->count());
         $this->assertEquals(1, $anime->synonyms->count());
 
+        $generatedUrls = [
+            [
+                'url' => $url = $this->faker->url,
+            ],
+            [
+                'url' => $url,
+            ],
+            [
+                'url' => $url,
+            ],
+        ];
+
+        $generatedSynonyms = [
+            [
+                'synonym' => $synonym = $this->faker->name,
+            ],
+            [
+                'synonym' => $synonym,
+            ],
+            [
+                'synonym' => $synonym,
+            ],
+        ];
+
         // For updating anime upsertRelated is used, so even if the same data will be sent multiple times
         // they will be created only one time, other times they will be just updated
-        $urls     = array_merge($anime->urls->pluck('url')->toArray(), [$url = fake()->url, $url, $url]);
-        $synonyms = array_merge(
-            $anime->synonyms->pluck('synonym')->toArray(),
-            [$synonym = fake()->name, $synonym, $synonym]
-        );
+        $urls     = array_merge($anime->urls->pluck('url')->toArray(), $generatedUrls);
+        $synonyms = array_merge($anime->synonyms->pluck('synonym')->toArray(), $generatedSynonyms);
 
         $this->actingAs($user)->put(route('anime.update', [$anime->id]), [
             'title'        => $anime->title,

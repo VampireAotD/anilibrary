@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Lists\Anime;
 
 use App\Console\Commands\Lists\Anime\GenerateCommand;
+use App\Filters\ColumnFilter;
+use App\Filters\RelationFilter;
 use App\Mail\AnimeListMail;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\ColumnFilter;
-use App\Repositories\Filters\RelationFilter;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;

@@ -10,7 +10,7 @@ import { SearchModal } from '@/features/navigation/search-modal';
 import { ComponentPublicInstance, onMounted, onUnmounted, ref } from 'vue';
 
 const showSearchModal = ref<boolean>(false);
-const buttonRef = ref<HTMLButtonElement | null>(null);
+const buttonRef = ref<ComponentPublicInstance<HTMLButtonElement> | null>(null);
 
 const toggleSearchModalVisibility = () =>
     (showSearchModal.value = !showSearchModal.value);
@@ -19,8 +19,8 @@ const activateSearch = (event: KeyboardEvent) => {
     if (event.ctrlKey && event.key === 'k') {
         event.preventDefault();
 
-        (buttonRef.value as ComponentPublicInstance)?.$el.click();
-        (buttonRef.value as ComponentPublicInstance)?.$el.blur();
+        buttonRef.value?.$el.click();
+        buttonRef.value?.$el.blur();
     }
 };
 
@@ -87,7 +87,7 @@ onUnmounted(() => window.removeEventListener('keydown', activateSearch));
                     </div>
 
                     <!-- Settings Dropdown -->
-                    <div class="hidden sm:relative ml-3">
+                    <div class="hidden sm:flex ml-3">
                         <Dropdown align="right" width="48">
                             <template #trigger>
                                 <span class="inline-flex rounded-md">

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Contracts;
 
-use App\Repositories\Filters\QueryFilterInterface;
+use App\Filters\QueryFilterInterface;
 
 interface FilterQuery
 {

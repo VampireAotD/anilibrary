@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Lists\Anime;
 
+use App\Filters\ColumnFilter;
+use App\Filters\RelationFilter;
 use App\Mail\AnimeListMail;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\ColumnFilter;
-use App\Repositories\Filters\RelationFilter;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;

@@ -20,7 +20,7 @@ class AnimeFactory extends Factory
     public function definition(): array
     {
         return [
-            'title'    => $this->faker->title,
+            'title'    => $this->faker->unique()->sentence,
             'status'   => $this->faker->randomAnimeStatus(),
             'episodes' => $this->faker->randomAnimeEpisodes(),
             'rating'   => $this->faker->randomAnimeRating(),

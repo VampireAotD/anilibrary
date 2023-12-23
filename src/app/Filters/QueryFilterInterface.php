@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Filters;
+namespace App\Filters;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;

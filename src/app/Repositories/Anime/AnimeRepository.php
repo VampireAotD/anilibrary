@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Repositories\Anime;
 
 use App\Enums\AnimeStatusEnum;
+use App\Filters\QueryFilterInterface;
 use App\Models\Anime;
-use App\Repositories\Filters\QueryFilterInterface;
 use App\Repositories\Params\PaginationParams;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

@@ -33,22 +33,22 @@ class UpdateRequest extends FormRequest
         $animeId = $this->anime->id;
 
         return [
-            'title'          => ['required', 'string', Rule::unique(Anime::class)->ignore($animeId)],
-            'status'         => ['required', new Enum(AnimeStatusEnum::class)],
-            'episodes'       => 'required|string',
-            'rating'         => 'required|numeric',
-            'image'          => 'nullable|image',
-            'urls'           => 'required|array',
-            'urls.*'         => ['url', Rule::unique(AnimeUrl::class, 'url')->ignore($animeId, 'anime_id')],
-            'synonyms'       => 'nullable|array',
-            'synonyms.*'     => [
+            'title'              => ['required', 'string', Rule::unique(Anime::class)->ignore($animeId)],
+            'status'             => ['required', new Enum(AnimeStatusEnum::class)],
+            'episodes'           => 'required|string',
+            'rating'             => 'required|numeric',
+            'image'              => 'nullable|image',
+            'urls'               => 'required|array',
+            'urls.*.url'         => ['url', Rule::unique(AnimeUrl::class, 'url')->ignore($animeId, 'anime_id')],
+            'synonyms'           => 'nullable|array',
+            'synonyms.*.synonym' => [
                 'string',
                 Rule::unique(AnimeSynonym::class, 'synonym')->ignore($animeId, 'anime_id'),
             ],
-            'voice_acting'   => 'nullable|array',
-            'voice_acting.*' => 'uuid|exists:voice_acting,id',
-            'genres'         => 'nullable|array',
-            'genres.*'       => 'uuid|exists:genres,id',
+            'voice_acting'       => 'nullable|array',
+            'voice_acting.*'     => 'uuid|exists:voice_acting,id',
+            'genres'             => 'nullable|array',
+            'genres.*'           => 'uuid|exists:genres,id',
         ];
     }
 }

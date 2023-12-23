@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\Service\Anime\UpsertAnimeDTO;
+use App\Filters\RelationFilter;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\RelationFilter;
 use App\Traits\CanTransformArray;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -57,11 +57,11 @@ final readonly class AnimeService
     private function upsertRelations(Anime $anime, UpsertAnimeDTO $dto): void
     {
         if ($dto->urls) {
-            $anime->urls()->upsertRelated($this->toAssociativeArray('url', $dto->urls), 'url');
+            $anime->urls()->upsertRelated($dto->urls, 'url');
         }
 
         if ($dto->synonyms) {
-            $anime->synonyms()->upsertRelated($this->toAssociativeArray('synonym', $dto->synonyms), 'synonym');
+            $anime->synonyms()->upsertRelated($dto->synonyms, 'synonym');
         }
 
         if ($dto->voiceActing) {

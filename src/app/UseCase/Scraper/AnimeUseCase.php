@@ -85,7 +85,8 @@ final readonly class AnimeUseCase
 
             $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
 
-            if ($dto->synonyms) {
+            // Don't update image on CDN if there is one already
+            if (!$anime->image && $dto->synonyms) {
                 $anime->synonyms()->upsertRelated($this->toAssociativeArray('synonym', $dto->synonyms), ['synonym']);
             }
 

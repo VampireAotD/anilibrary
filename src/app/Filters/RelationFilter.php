@@ -2,24 +2,26 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Filters;
+namespace App\Filters;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class InFilter
+ * Class RelationFilter
  * @package App\Filters\Query\Filters
  */
-readonly class InFilter implements QueryFilterInterface
+readonly class RelationFilter implements QueryFilterInterface
 {
-    public function __construct(private string $column, private array $values)
+    public function __construct(private array $relations = [])
     {
     }
 
     public function filter(Builder $builder, Closure $next): Builder
     {
-        $builder->whereIn($this->column, $this->values);
+        if ($this->relations) {
+            $builder->with($this->relations);
+        }
 
         return $next($builder);
     }

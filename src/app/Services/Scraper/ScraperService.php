@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Http;
  * Class ScraperService
  * @package App\Services\Scraper
  */
-class ScraperService
+final class ScraperService
 {
     /**
      * @param string $url

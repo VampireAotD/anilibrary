@@ -9,12 +9,12 @@ use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
 use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
 use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
 use App\Facades\Telegram\State\UserStateFacade;
+use App\Filters\InFilter;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\InFilter;
 use App\Repositories\Params\PaginationParams;
 use App\Services\Telegram\CaptionService;
-use App\Services\Telegram\HashService;
+use App\Services\Telegram\IdCodecService;
 
 /**
  * Class CaptionUseCase
@@ -24,14 +24,14 @@ readonly class CaptionUseCase
 {
     public function __construct(
         private AnimeRepositoryInterface $animeRepository,
-        private HashService              $base62Service,
+        private IdCodecService           $idCodecService,
         private CaptionService           $captionService
     ) {
     }
 
     public function createDecodedAnimeCaption(ViewEncodedAnimeDTO $dto): array
     {
-        $decoded = $this->base62Service->decodeUuid($dto->encodedId);
+        $decoded = $this->idCodecService->decode($dto->encodedId);
 
         /** @var Anime|null $anime */
         $anime = $this->animeRepository->findById($decoded);

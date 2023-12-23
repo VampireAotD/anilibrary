@@ -9,7 +9,7 @@ use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
 use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Models\Anime;
-use App\Services\Telegram\HashService;
+use App\Services\Telegram\IdCodecService;
 use App\UseCase\Telegram\CaptionUseCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -23,14 +23,14 @@ class CaptionUseCaseTest extends TestCase
     use WithFaker;
     use CanCreateFakeAnime;
 
-    private HashService    $hashService;
+    private IdCodecService $idCodecService;
     private CaptionUseCase $captionUseCase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->hashService    = $this->app->make(HashService::class);
+        $this->idCodecService = $this->app->make(IdCodecService::class);
         $this->captionUseCase = $this->app->make(CaptionUseCase::class);
     }
 
@@ -39,7 +39,7 @@ class CaptionUseCaseTest extends TestCase
      */
     public function testCannotReturnCaptionOfUnknownAnime(): void
     {
-        $encoded = $this->hashService->encodeUuid(Str::orderedUuid()->toString());
+        $encoded = $this->idCodecService->encode(Str::orderedUuid()->toString());
         $caption = $this->captionUseCase->createDecodedAnimeCaption(
             new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
         );
@@ -53,13 +53,13 @@ class CaptionUseCaseTest extends TestCase
     public function testCanCreateCaptionForAddedAnime(): void
     {
         $anime   = $this->createAnimeWithRelations();
-        $encoded = $this->hashService->encodeUuid($anime->id);
+        $encoded = $this->idCodecService->encode($anime->id);
         $caption = $this->captionUseCase->createDecodedAnimeCaption(
             new ViewEncodedAnimeDTO($encoded, $this->faker->randomNumber())
         );
 
         $this->assertNotEmpty($caption);
-        $this->assertEquals($anime->id, $this->hashService->decodeUuid($encoded));
+        $this->assertEquals($anime->id, $this->idCodecService->decode($encoded));
         $this->assertEquals($anime->toTelegramCaption, $caption['caption']);
         $this->assertEquals($anime->image->path, $caption['photo']);
         $this->assertNotEmpty($caption['reply_markup']['inline_keyboard']);

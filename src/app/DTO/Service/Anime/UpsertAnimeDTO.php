@@ -17,9 +17,9 @@ final readonly class UpsertAnimeDTO implements Arrayable, FromArray
 {
     public function __construct(
         public string          $title,
-        public AnimeStatusEnum $status,
-        public float           $rating,
-        public string          $episodes,
+        public AnimeStatusEnum $status = AnimeStatusEnum::ANNOUNCE,
+        public float           $rating = 0,
+        public string          $episodes = '0 / ?',
         public array           $urls = [],
         public array           $synonyms = [],
         public array           $voiceActing = [],
@@ -55,7 +55,7 @@ final readonly class UpsertAnimeDTO implements Arrayable, FromArray
     public static function fromArray(array $data): FromArray
     {
         return new self(
-            $data['title'] ?? '',
+            $data['title'],
             AnimeStatusEnum::tryFrom($data['status'] ?? '') ?? AnimeStatusEnum::ANNOUNCE->value,
             $data['rating'] ?? 0,
             $data['episodes'] ?? '?',

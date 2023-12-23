@@ -128,6 +128,27 @@ class AnimeUseCaseTest extends TestCase
         $this->assertTrue($foundAnime->synonyms->intersect($anime->synonyms)->isNotEmpty());
     }
 
+    public function testWillNotUpdateImageIfAnimeAlreadyHasOne(): void
+    {
+        $anime = $this->createAnimeWithRelations();
+
+        $this->assertNotNull($anime->image);
+
+        Http::fake([
+            self::SCRAPER_ENDPOINT => [
+                'title'    => $anime->title,
+                'image'    => sprintf('data:image/jpeg;base64,%s', Str::random()),
+                'status'   => $this->faker->randomAnimeStatus(),
+                'episodes' => $this->faker->randomAnimeEpisodes(),
+                'rating'   => $this->faker->randomAnimeRating(),
+            ],
+        ]);
+
+        $foundAnime = $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
+
+        $this->assertEquals($anime->image, $foundAnime->image);
+    }
+
     public static function validEncodedImageProvider(): array
     {
         return [
@@ -150,7 +171,7 @@ class AnimeUseCaseTest extends TestCase
                 'title'       => $this->faker->sentence,
                 'image'       => $image,
                 'status'      => $this->faker->randomAnimeStatus(),
-                'episodes'    => $episodes = $this->faker->randomAnimeEpisodes(),
+                'episodes'    => $this->faker->randomAnimeEpisodes(),
                 'rating'      => $this->faker->randomAnimeRating(),
                 'genres'      => Genre::factory(5)->make()->pluck('name')->toArray(),
                 'voiceActing' => VoiceActing::factory(5)->make()->pluck('name')->toArray(),

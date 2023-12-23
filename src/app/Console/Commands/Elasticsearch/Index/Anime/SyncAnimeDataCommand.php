@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Console\Commands\Elasticsearch\Index\Anime;
 
 use App\Enums\Elasticsearch\IndexEnum;
+use App\Filters\ColumnFilter;
+use App\Filters\RelationFilter;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\ColumnFilter;
-use App\Repositories\Filters\RelationFilter;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;

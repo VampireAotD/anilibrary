@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Anime;
 
 use App\DTO\Service\Anime\UpsertAnimeDTO;
+use App\Filters\ColumnFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Anime\CreateRequest;
 use App\Http\Requests\Anime\IndexRequest;
@@ -12,7 +13,6 @@ use App\Http\Requests\Anime\UpdateRequest;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\ColumnFilter;
 use App\Repositories\Params\PaginationParams;
 use App\Services\AnimeService;
 use Illuminate\Http\RedirectResponse;
