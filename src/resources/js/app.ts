@@ -6,13 +6,13 @@ import 'primeicons/primeicons.css';
 import { createApp, DefineComponent, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-// @ts-expect-error Declaration of ZiggyVue
-import { ZiggyVue } from 'ziggy-js/dist/vue.m';
 import { HasRolePlugin } from '@/shared/plugins/user/authorize';
 import PrimeVue from 'primevue/config';
 import Tailwind from 'primevue/passthrough/tailwind';
 import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
+// @ts-expect-error Declaration of ZiggyVue
+import { ZiggyVue } from 'ziggy-js/dist/vue.m';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Anilibrary';
 
@@ -26,7 +26,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
-            .use(ZiggyVue, Ziggy)
+            .use(ZiggyVue)
             .use(HasRolePlugin)
             .use(PrimeVue, {
                 ripple: true,

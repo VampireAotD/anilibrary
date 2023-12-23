@@ -1,6 +1,6 @@
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { AxiosInstance } from 'axios';
-import ziggyRoute, { Config as ZiggyConfig } from 'ziggy-js';
+import ziggyRoute from 'ziggy-js';
 import { PageProps as AppPageProps } from './';
 import { useHasRole } from '@/shared/plugins/user/authorize';
 import { onTelegramAuth } from '@/entities/telegram-user';
@@ -17,7 +17,6 @@ declare global {
 
     /*eslint-disable*/
     var route: typeof ziggyRoute;
-    var Ziggy: ZiggyConfig;
     var hasRole: typeof useHasRole;
     /*eslint-enable*/
 }
