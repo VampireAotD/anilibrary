@@ -15,11 +15,14 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 final readonly class UpsertAnimeDTO implements Arrayable, FromArray
 {
+    public const DEFAULT_RATING   = 0;
+    public const DEFAULT_EPISODES = '0 / ?';
+
     public function __construct(
         public string          $title,
         public AnimeStatusEnum $status = AnimeStatusEnum::ANNOUNCE,
-        public float           $rating = 0,
-        public string          $episodes = '0 / ?',
+        public float           $rating = self::DEFAULT_RATING,
+        public string          $episodes = self::DEFAULT_EPISODES,
         public array           $urls = [],
         public array           $synonyms = [],
         public array           $voiceActing = [],
@@ -57,8 +60,8 @@ final readonly class UpsertAnimeDTO implements Arrayable, FromArray
         return new self(
             $data['title'],
             AnimeStatusEnum::tryFrom($data['status'] ?? '') ?? AnimeStatusEnum::ANNOUNCE->value,
-            $data['rating'] ?? 0,
-            $data['episodes'] ?? '?',
+            $data['rating'] ?? self::DEFAULT_RATING,
+            $data['episodes'] ?? self::DEFAULT_EPISODES,
             $data['urls'] ?? [],
             $data['synonyms'] ?? [],
             $data['voice_acting'] ?? [],
