@@ -2,19 +2,20 @@
 import { AuthenticatedLayout } from '@/widgets/layouts';
 import { computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import { ExternalLink } from '@/shared/ui/external-link';
-import { Button } from '@/shared/ui/button';
 import { Models } from '@/types';
+import { ExternalLink } from '@/shared/ui/external-link';
+import { AnimeRating } from '@/features/anime/rating';
 
-const props = defineProps<{
-    anime: Models.Anime;
-}>();
+const props = defineProps<{ anime: Models.Anime }>();
 
+const rating = computed(() => props.anime.rating);
 const links = computed(() => props.anime.urls.map((link) => link.url));
 const synonyms = computed(() => props.anime.synonyms.map((synonym) => synonym.synonym));
-const genres = computed(() => props.anime.genres.map((genre) => genre.name));
-const voiceActingList = computed(() =>
-    props.anime.voice_acting.map((voiceActing) => voiceActing.name)
+const genres = computed((): string =>
+    props.anime.genres.map((genre) => genre.name).join(', ')
+);
+const voiceActingList = computed((): string =>
+    props.anime.voice_acting.map((voiceActing) => voiceActing.name).join(', ')
 );
 </script>
 
@@ -26,109 +27,86 @@ const voiceActingList = computed(() =>
             <h2
                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
             >
-                Details for {{ anime.title }} anime
+                {{ anime.title }}
             </h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
-                >
-                    <section class="p-6 text-gray-600 body-font">
-                        <div class="container px-5 mx-auto flex flex-wrap">
-                            <div
-                                class="lg:w-1/4 h-1/3 mb-10 lg:mb-0 rounded-lg overflow-hidden"
-                            >
-                                <img
-                                    :src="anime.image.path"
-                                    class="object-cover object-center h-full w-full"
-                                    :alt="anime.title"
-                                />
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm">
+                    <section class="p-2 text-gray-600 body-font">
+                        <div class="container mx-auto flex flex-wrap">
+                            <div class="grid grid-cols-1 mb-5">
+                                <div class="px-1 mb-5 lg:mb-0 overflow-hidden">
+                                    <img
+                                        :src="anime.image.path"
+                                        class="w-full sm:w-64 sm:h-80"
+                                        :alt="anime.title"
+                                    />
+                                </div>
+
+                                <div>
+                                    <ExternalLink
+                                        v-for="(link, key) in links"
+                                        :key="key"
+                                        text="Смотреть"
+                                        :url="link"
+                                    />
+                                </div>
                             </div>
 
                             <div
-                                class="flex flex-col flex-wrap h-full lg:w-1/2 lg:pl-12 lg:text-left text-center"
+                                class="flex flex-col flex-wrap h-full lg:w-1/2 lg:pl-12 lg:text-left"
                             >
-                                <div class="flex flex-col lg:items-start items-center">
-                                    <div class="flex-grow">
-                                        <div class="mb-2">
-                                            <h2
-                                                class="text-gray-900 text-lg title-font font-medium mb-1 font-semibold dark:text-gray-200 leading-tight"
+                                <div class="flex flex-col">
+                                    <AnimeRating v-model="rating" class="mb-2" />
+
+                                    <div class="mb-2">
+                                        <h2
+                                            class="text-gray-900 text-4xl title-font font-medium mb-1 font-semibold dark:text-gray-200 leading-tight"
+                                        >
+                                            {{ anime.title }}
+                                        </h2>
+
+                                        <ul class="list-none text-xs">
+                                            <li
+                                                v-for="(synonym, key) in synonyms"
+                                                :key="key"
                                             >
-                                                {{ anime.title }}
-                                            </h2>
+                                                {{ synonym }}
+                                            </li>
+                                        </ul>
+                                    </div>
 
-                                            <ul class="list-none">
-                                                <li
-                                                    v-for="(synonym, key) in synonyms"
-                                                    :key="key"
-                                                    class="font-medium text-sm text-neutral-300 font-medium"
-                                                >
-                                                    {{ synonym }}
-                                                </li>
-                                            </ul>
-                                        </div>
+                                    <hr class="my-4 border-t border-gray-200" />
 
-                                        <div class="mb-2">
-                                            <h3
-                                                class="text-gray-400 text-md font-medium font-semibold dark:text-gray-200 leading-tight"
-                                            >
-                                                Links
-                                            </h3>
-
-                                            <div class="flex flex-wrap">
-                                                <ExternalLink
-                                                    v-for="(link, key) in links"
-                                                    :key="key"
-                                                    :url="link"
-                                                    class="text-neutral-400 hover:underline mr-1"
-                                                    text="Watch"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-2">
-                                            <h3
-                                                class="text-gray-400 text-md font-medium font-semibold dark:text-gray-200 leading-tight"
-                                            >
-                                                Genres
-                                            </h3>
-
-                                            <div class="flex flex-wrap">
-                                                <span
-                                                    v-for="(genre, key) in genres"
-                                                    :key="key"
-                                                    class="cursor-pointer text-neutral-400 hover:underline mr-1"
-                                                >
-                                                    {{ genre }}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-4">
-                                            <h3
-                                                class="text-gray-400 text-md font-medium font-semibold dark:text-gray-200 leading-tight"
-                                            >
-                                                Voice acting
-                                            </h3>
-
-                                            <div class="flex flex-wrap">
-                                                <span
-                                                    v-for="(
-                                                        voiceActing, key
-                                                    ) in voiceActingList"
-                                                    :key="key"
-                                                    class="cursor-pointer text-neutral-400 hover:underline mr-1"
-                                                >
-                                                    {{ voiceActing }}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div class="flex flex-wrap">
-                                            <Button variant="danger">Delete</Button>
-                                        </div>
+                                    <div>
+                                        <dl class="grid grid-cols-2 gap-x-4 gap-y-2">
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                Эпизоды
+                                            </dt>
+                                            <dd class="mt-1 text-sm text-gray-900">
+                                                {{ anime.episodes }}
+                                            </dd>
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                Статус
+                                            </dt>
+                                            <dd class="mt-1 text-sm text-gray-900">
+                                                {{ anime.status }}
+                                            </dd>
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                Жанр
+                                            </dt>
+                                            <dd class="mt-1 text-sm text-gray-900">
+                                                {{ genres }}
+                                            </dd>
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                Озвучка
+                                            </dt>
+                                            <dd class="mt-1 text-sm text-gray-900">
+                                                {{ voiceActingList }}
+                                            </dd>
+                                        </dl>
                                     </div>
                                 </div>
                             </div>

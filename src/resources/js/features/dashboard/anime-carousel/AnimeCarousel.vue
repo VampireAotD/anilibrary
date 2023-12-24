@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/vue3';
 import { reactive, ref } from 'vue';
 import { SectionTitle } from '@/shared/ui/section-title';
 import { Models } from '@/types';
+import DeferredContent from 'primevue/deferredcontent';
 
 type Props = {
     display: number;
@@ -46,7 +47,7 @@ const responsiveOptions = ref([
 </script>
 
 <template>
-    <div>
+    <DeferredContent>
         <SectionTitle title="Recently added anime" />
 
         <Carousel
@@ -82,7 +83,7 @@ const responsiveOptions = ref([
                 </div>
             </template>
         </Carousel>
-    </div>
+    </DeferredContent>
 </template>
 
 <style scoped></style>

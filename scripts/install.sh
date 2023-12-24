@@ -15,15 +15,13 @@ function set_compose_bin {
   if which docker-compose >/dev/null 2>&1; then
     echo docker-compose
     return 0
-  fi
-
-  if which docker compose >/dev/null 2>&1; then
+  elif docker compose version >/dev/null 2>&1; then
     echo docker compose
     return 0
+  else
+    echo "Couldn't find any version of docker compose"
+    return 1
   fi
-
-  echo "Couldn't find any version of docker compose"
-  return 1
 }
 
 compose=$(set_compose_bin) || {
