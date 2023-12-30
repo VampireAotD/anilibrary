@@ -13,7 +13,7 @@ use App\Models\AnimeUrl;
 use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
-use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Services\AnimeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -24,13 +24,13 @@ class ParseCommandTest extends TestCase
     use RefreshDatabase;
     use CanCreateFakeAnime;
 
-    private AnimeRepositoryInterface $animeRepository;
+    private AnimeService $animeService;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->animeRepository = $this->app->make(AnimeRepositoryInterface::class);
+        $this->animeService = $this->app->make(AnimeService::class);
     }
 
     /**
@@ -56,7 +56,7 @@ class ParseCommandTest extends TestCase
         Storage::shouldReceive('disk->get')
                ->with(config('lists.anime.file'))
                ->andReturn(
-                   $this->animeRepository->withFilters([
+                   $this->animeService->all([
                        new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
                        new RelationFilter([
                            'urls:anime_id,url',
@@ -65,7 +65,7 @@ class ParseCommandTest extends TestCase
                            'genres:id,name',
                            'voiceActing:id,name',
                        ]),
-                   ])->getAll()->toJson(JSON_PRETTY_PRINT)
+                   ])->toJson(JSON_PRETTY_PRINT)
                );
 
         $this->refreshTestDatabase();
@@ -75,7 +75,7 @@ class ParseCommandTest extends TestCase
              ->expectsOutput('Parsed anime list');
 
         /** @var Anime $anime */
-        $anime = $this->animeRepository->getAll()->first();
+        $anime = $this->animeService->all()->first();
 
         $this->assertModelExists($anime);
         $this->assertNotEmpty($anime->title);

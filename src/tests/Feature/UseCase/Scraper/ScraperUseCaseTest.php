@@ -12,7 +12,7 @@ use App\Models\AnimeUrl;
 use App\Models\Genre;
 use App\Models\Image;
 use App\Models\VoiceActing;
-use App\UseCase\Scraper\AnimeUseCase;
+use App\UseCase\Scraper\ScraperUseCase;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -25,7 +25,7 @@ use Tests\TestCase;
 use Tests\Traits\CanCreateMocks;
 use Tests\Traits\Fake\CanCreateFakeAnime;
 
-class AnimeUseCaseTest extends TestCase
+class ScraperUseCaseTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -34,7 +34,7 @@ class AnimeUseCaseTest extends TestCase
 
     private const SCRAPER_ENDPOINT = '/api/v1/anime/parse';
 
-    private AnimeUseCase $animeUseCase;
+    private ScraperUseCase $scraperUseCase;
 
     protected function setUp(): void
     {
@@ -42,7 +42,7 @@ class AnimeUseCaseTest extends TestCase
 
         $this->setUpFakeCloudinary();
 
-        $this->animeUseCase = $this->app->make(AnimeUseCase::class);
+        $this->scraperUseCase = $this->app->make(ScraperUseCase::class);
     }
 
     /**
@@ -67,7 +67,7 @@ class AnimeUseCaseTest extends TestCase
         ]);
 
         $this->expectException(ValidationException::class);
-        $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
+        $this->scraperUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 
     #[DataProvider('invalidImageProvider')]
@@ -85,7 +85,7 @@ class AnimeUseCaseTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage(EncodedImageRuleEnum::INVALID_ENCODING->value);
-        $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
+        $this->scraperUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 
     public function testCanFindAnimeByTitleAndSynonymsAfterScrapeRequest(): void
@@ -108,7 +108,7 @@ class AnimeUseCaseTest extends TestCase
         ]);
 
         $url        = $this->faker->url;
-        $foundAnime = $this->animeUseCase->scrapeAndCreateAnime($url);
+        $foundAnime = $this->scraperUseCase->scrapeAndCreateAnime($url);
 
         $foundAnime->refresh(); // to load upserted relation
 
@@ -144,7 +144,7 @@ class AnimeUseCaseTest extends TestCase
             ],
         ]);
 
-        $foundAnime = $this->animeUseCase->scrapeAndCreateAnime($this->faker->url);
+        $foundAnime = $this->scraperUseCase->scrapeAndCreateAnime($this->faker->url);
 
         $this->assertEquals($anime->image, $foundAnime->image);
     }
@@ -182,7 +182,7 @@ class AnimeUseCaseTest extends TestCase
         Bus::fake();
 
         $url   = $this->faker->url;
-        $anime = $this->animeUseCase->scrapeAndCreateAnime($url);
+        $anime = $this->scraperUseCase->scrapeAndCreateAnime($url);
 
         $anime->refresh(); // to load upserted relation
 

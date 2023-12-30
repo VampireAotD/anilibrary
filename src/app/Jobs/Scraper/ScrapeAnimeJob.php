@@ -8,7 +8,7 @@ use App\DTO\Events\Pusher\ScrapeResultDTO;
 use App\Enums\Events\Pusher\ScrapeResultTypeEnum;
 use App\Enums\QueueEnum;
 use App\Events\Pusher\ScrapeResultEvent;
-use App\UseCase\Scraper\AnimeUseCase;
+use App\UseCase\Scraper\ScraperUseCase;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -36,10 +36,10 @@ class ScrapeAnimeJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(AnimeUseCase $animeUseCase): void
+    public function handle(ScraperUseCase $scraperUseCase): void
     {
         try {
-            $anime = $animeUseCase->scrapeAndCreateAnime($this->url);
+            $anime = $scraperUseCase->scrapeAndCreateAnime($this->url);
             ScrapeResultEvent::broadcast(
                 new ScrapeResultDTO(
                     $this->userId,

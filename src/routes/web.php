@@ -26,7 +26,7 @@ Route::group(['as' => 'profile.'], function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('destroy');
 });
 
-Route::resource('anime', AnimeController::class)->only(['index', 'show', 'store', 'update']);
+Route::resource('anime', AnimeController::class)->except(['edit', 'destroy']);
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/invitation.php';

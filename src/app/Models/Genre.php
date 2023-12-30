@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Pivots\AnimeGenre;
+use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,12 +30,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Genre filter(array $filters)
  * @mixin \Eloquent
  */
 class Genre extends Model
 {
-    use HasFactory;
     use HasUuids;
+    use HasFactory;
+    use Filterable;
 
     protected $fillable = ['name'];
 

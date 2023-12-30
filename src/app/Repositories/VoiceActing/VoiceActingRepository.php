@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories\VoiceActing;
 
+use App\Filters\QueryFilterInterface;
 use App\Models\VoiceActing;
-use App\Repositories\Traits\CanSearchByName;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\LazyCollection;
 
 /**
  * Class VoiceActingRepository
@@ -14,8 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class VoiceActingRepository implements VoiceActingRepositoryInterface
 {
-    use CanSearchByName;
-
     /**
      * @var Builder|VoiceActing
      */
@@ -24,6 +24,33 @@ class VoiceActingRepository implements VoiceActingRepositoryInterface
     public function __construct()
     {
         $this->query = VoiceActing::query();
+    }
+
+    /**
+     * @param array<QueryFilterInterface> $filters
+     */
+    public function withFilters(array $filters): static
+    {
+        $this->query = VoiceActing::filter($filters);
+
+        return $this;
+    }
+
+    /**
+     * @return LazyCollection<int, VoiceActing>
+     */
+    public function getAll(): LazyCollection
+    {
+        return $this->query->lazy();
+    }
+
+    /**
+     * @param array<string> $names
+     * @return Collection<int, VoiceActing>
+     */
+    public function findByNames(array $names): Collection
+    {
+        return $this->query->whereIn('name', $names)->get();
     }
 
     /**

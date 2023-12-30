@@ -13,7 +13,7 @@ use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
 use App\Rules\Telegram\SupportedUrlRule;
 use App\Services\AnimeService;
-use App\UseCase\Scraper\AnimeUseCase;
+use App\UseCase\Scraper\ScraperUseCase;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Validator;
@@ -31,7 +31,7 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
 {
     protected array $allowedMessages = [CommandEnum::ADD_ANIME_COMMAND->value, CommandEnum::ADD_ANIME_BUTTON->value];
 
-    private AnimeUseCase        $animeUseCase;
+    private ScraperUseCase      $scraperUseCase;
     private AnimeService        $animeService;
     private CallbackDataFactory $callbackDataFactory;
 
@@ -39,7 +39,7 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
     {
         parent::__construct($bot, $update);
 
-        $this->animeUseCase        = app(AnimeUseCase::class);
+        $this->scraperUseCase      = app(ScraperUseCase::class);
         $this->animeService        = app(AnimeService::class);
         $this->callbackDataFactory = app(CallbackDataFactory::class);
     }
@@ -70,7 +70,7 @@ final class AddAnimeHandler extends TextMessageUpdateHandler
                 return $this->sendScrapedMessage($anime);
             }
 
-            $anime   = $this->animeUseCase->scrapeAndCreateAnime($message->text);
+            $anime   = $this->scraperUseCase->scrapeAndCreateAnime($message->text);
             $message = $this->sendScrapedMessage($anime);
 
             UserStateFacade::resetExecutedCommandsList($chatId);

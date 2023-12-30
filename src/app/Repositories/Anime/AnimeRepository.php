@@ -7,7 +7,6 @@ namespace App\Repositories\Anime;
 use App\Enums\AnimeStatusEnum;
 use App\Filters\QueryFilterInterface;
 use App\Models\Anime;
-use App\Repositories\Params\PaginationParams;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -45,10 +44,6 @@ class AnimeRepository implements AnimeRepositoryInterface
         return $this->query->updateOrCreate(['title' => $data['title']], $data);
     }
 
-    /**
-     * @param string $id
-     * @return Anime|null
-     */
     public function findById(string $id): ?Anime
     {
         return $this->query->find($id);
@@ -56,7 +51,6 @@ class AnimeRepository implements AnimeRepositoryInterface
 
     /**
      * @param array<string> $data
-     * @return Anime|null
      */
     public function findByTitleAndSynonyms(array $data): ?Anime
     {
@@ -96,9 +90,9 @@ class AnimeRepository implements AnimeRepositoryInterface
         return $this->query->get();
     }
 
-    public function paginate(PaginationParams $filter): LengthAwarePaginator
+    public function paginate(int $page, int $perPage = 1): LengthAwarePaginator
     {
-        return $this->query->paginate($filter->perPage, page: $filter->page);
+        return $this->query->paginate($perPage, page: $page);
     }
 
     /**

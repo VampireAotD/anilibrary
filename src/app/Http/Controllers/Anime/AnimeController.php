@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Anime;
 
+use App\DTO\Service\Anime\AnimePaginationDTO;
 use App\DTO\Service\Anime\UpsertAnimeDTO;
+use App\Enums\AnimeStatusEnum;
 use App\Filters\ColumnFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Anime\CreateRequest;
@@ -12,9 +14,9 @@ use App\Http\Requests\Anime\IndexRequest;
 use App\Http\Requests\Anime\UpdateRequest;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use App\Models\Anime;
-use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Params\PaginationParams;
 use App\Services\AnimeService;
+use App\Services\GenreService;
+use App\Services\VoiceActingService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,8 +25,9 @@ use Throwable;
 class AnimeController extends Controller
 {
     public function __construct(
-        private readonly AnimeRepositoryInterface $animeRepository,
-        private readonly AnimeService             $animeService,
+        private readonly AnimeService       $animeService,
+        private readonly GenreService       $genreService,
+        private readonly VoiceActingService $voiceActingService
     ) {
     }
 
@@ -36,10 +39,15 @@ class AnimeController extends Controller
         $page    = (int) $request->get('page', 1);
         $perPage = (int) $request->get('per_page', 20);
 
-        $filter     = new PaginationParams($page, $perPage);
-        $pagination = $this->animeRepository->withFilters([
-            new ColumnFilter(['id', 'title', 'episodes', 'rating', 'status']),
-        ])->paginate($filter);
+        $pagination = $this->animeService->paginate(
+            new AnimePaginationDTO(
+                $page,
+                $perPage,
+                [
+                    new ColumnFilter(['id', 'title', 'episodes', 'rating', 'status']),
+                ]
+            )
+        );
 
         return Inertia::render('Anime/Index', compact('pagination'));
     }
@@ -49,7 +57,11 @@ class AnimeController extends Controller
      */
     public function create()
     {
-        //
+        $statuses    = AnimeStatusEnum::values();
+        $genres      = $this->genreService->all([new ColumnFilter(['name'])])->pluck('name')->toArray();
+        $voiceActing = $this->voiceActingService->all([new ColumnFilter(['name'])])->pluck('name')->toArray();
+
+        return Inertia::render('Anime/Create', compact('statuses', 'genres', 'voiceActing'));
     }
 
     /**

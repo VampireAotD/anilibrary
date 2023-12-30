@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories\Genre;
 
+use App\Filters\QueryFilterInterface;
 use App\Models\Genre;
-use App\Repositories\Traits\CanSearchByName;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\LazyCollection;
 
 /**
  * Class GenreRepository
@@ -14,13 +16,38 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class GenreRepository implements GenreRepositoryInterface
 {
-    use CanSearchByName;
-
     protected Builder | Genre $query;
 
     public function __construct()
     {
         $this->query = Genre::query();
+    }
+
+    /**
+     * @param array<QueryFilterInterface> $filters
+     */
+    public function withFilters(array $filters): static
+    {
+        $this->query = Genre::filter($filters);
+
+        return $this;
+    }
+
+    /**
+     * @return LazyCollection<int, Genre>
+     */
+    public function getAll(): LazyCollection
+    {
+        return $this->query->lazy();
+    }
+
+    /**
+     * @param array<string> $names
+     * @return Collection<int, Genre>
+     */
+    public function findByNames(array $names): Collection
+    {
+        return $this->query->whereIn('name', $names)->get();
     }
 
     /**

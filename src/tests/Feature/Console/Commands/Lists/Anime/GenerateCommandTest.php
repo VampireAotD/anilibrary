@@ -8,7 +8,7 @@ use App\Console\Commands\Lists\Anime\GenerateCommand;
 use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
 use App\Mail\AnimeListMail;
-use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Services\AnimeService;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -23,14 +23,14 @@ class GenerateCommandTest extends TestCase
     use CanCreateFakeUsers;
     use CanCreateFakeAnime;
 
-    private AnimeRepositoryInterface $animeRepository;
+    private AnimeService $animeService;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->seed(RoleSeeder::class);
-        $this->animeRepository = $this->app->make(AnimeRepositoryInterface::class);
+        $this->animeService = $this->app->make(AnimeService::class);
     }
 
     public function testCommandWillNotGenerateAnimeListIfOwnerNotExist(): void
@@ -65,7 +65,7 @@ class GenerateCommandTest extends TestCase
 
         $this->assertJson($json);
         $this->assertJsonStringEqualsJsonString(
-            $this->animeRepository->withFilters([
+            $this->animeService->all([
                 new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
                 new RelationFilter([
                     'urls:anime_id,url',
@@ -74,7 +74,7 @@ class GenerateCommandTest extends TestCase
                     'genres:id,name',
                     'voiceActing:id,name',
                 ]),
-            ])->getAll()->toJson(JSON_PRETTY_PRINT),
+            ])->toJson(JSON_PRETTY_PRINT),
             $json
         );
 

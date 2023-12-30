@@ -6,19 +6,21 @@ namespace App\Repositories\Anime;
 
 use App\Models\Anime;
 use App\Repositories\Contracts\FilterQuery;
-use App\Repositories\Contracts\FindById;
-use App\Repositories\Contracts\Paginate;
+use App\Repositories\Contracts\GetAll;
 use App\Repositories\Contracts\Quantity;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\LazyCollection;
 
 /**
  * Interface AnimeRepositoryInterface
  * @package App\Repositories\Contracts\Anime
  */
-interface AnimeRepositoryInterface extends FindById, Paginate, FilterQuery, Quantity
+interface AnimeRepositoryInterface extends FilterQuery, Quantity, GetAll
 {
     public function create(array $data): Anime;
+
+    public function findById(string $id): ?Anime;
 
     /**
      * @param array<string> $data
@@ -37,10 +39,7 @@ interface AnimeRepositoryInterface extends FindById, Paginate, FilterQuery, Quan
      */
     public function findRandomAnime(): ?Anime;
 
-    /**
-     * @return Collection<int, Anime>
-     */
-    public function getAll(): Collection;
+    public function paginate(int $page, int $perPage = 1): LengthAwarePaginator;
 
     /**
      * @return LazyCollection<int, Anime>

@@ -7,8 +7,8 @@ namespace App\Console\Commands\Lists\Anime;
 use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
 use App\Mail\AnimeListMail;
-use App\Repositories\Anime\AnimeRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\AnimeService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -36,14 +36,14 @@ class GenerateCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(AnimeRepositoryInterface $animeRepository, UserRepositoryInterface $userRepository): int
+    public function handle(AnimeService $animeService, UserRepositoryInterface $userRepository): int
     {
         if (!$owner = $userRepository->findOwner()) {
             $this->error('Owner not found');
             return Command::FAILURE;
         }
 
-        $animeList = $animeRepository->withFilters([
+        $animeList = $animeService->all([
             new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
             new RelationFilter([
                 'urls:anime_id,url',
@@ -52,7 +52,7 @@ class GenerateCommand extends Command
                 'genres:id,name',
                 'voiceActing:id,name',
             ]),
-        ])->getAll();
+        ]);
 
         Storage::disk('lists')->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
 

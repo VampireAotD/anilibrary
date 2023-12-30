@@ -6,9 +6,9 @@ namespace App\Console\Commands\Anime;
 
 use App\Mail\Anime\FailedUnreleasedAnimeMail;
 use App\Models\Anime;
-use App\Repositories\Anime\AnimeRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
-use App\UseCase\Scraper\AnimeUseCase;
+use App\Services\AnimeService;
+use App\UseCase\Scraper\ScraperUseCase;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Mail;
@@ -32,9 +32,9 @@ class UpdateUnreleasedAnimeCommand extends Command
     protected $description = 'Update information for unreleased anime';
 
     public function __construct(
-        private readonly AnimeRepositoryInterface $animeRepository,
-        private readonly AnimeUseCase             $animeUseCase,
-        private readonly UserRepositoryInterface  $userRepository
+        private readonly AnimeService            $animeService,
+        private readonly ScraperUseCase          $scraperUseCase,
+        private readonly UserRepositoryInterface $userRepository
     ) {
         parent::__construct();
     }
@@ -46,9 +46,9 @@ class UpdateUnreleasedAnimeCommand extends Command
     {
         $failedList = [];
 
-        $this->animeRepository->getUnreleased()->each(function (Anime $anime) use (&$failedList) {
+        $this->animeService->unreleased()->each(function (Anime $anime) use (&$failedList) {
             try {
-                $this->animeUseCase->scrapeAndCreateAnime($anime->urls->first()->url);
+                $this->scraperUseCase->scrapeAndCreateAnime($anime->urls->first()->url);
             } catch (RequestException | ValidationException | Throwable $e) {
                 $failedList[$anime->id] = $e->getMessage();
             }

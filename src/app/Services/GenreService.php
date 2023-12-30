@@ -4,19 +4,31 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Filters\QueryFilterInterface;
+use App\Models\Genre;
 use App\Repositories\Genre\GenreRepositoryInterface;
 use App\Traits\CanTransformArray;
+use Illuminate\Support\LazyCollection;
 
 /**
  * Class GenreService
  * @package App\Services
  */
-final class GenreService
+final readonly class GenreService
 {
     use CanTransformArray;
 
-    public function __construct(private readonly GenreRepositoryInterface $genreRepository)
+    public function __construct(private GenreRepositoryInterface $genreRepository)
     {
+    }
+
+    /**
+     * @param array<QueryFilterInterface> $filters
+     * @return LazyCollection<int, Genre>
+     */
+    public function all(array $filters = []): LazyCollection
+    {
+        return $this->genreRepository->withFilters($filters)->getAll();
     }
 
     /**
@@ -25,7 +37,7 @@ final class GenreService
      */
     public function sync(array $genres): array
     {
-        $stored    = $this->genreRepository->findSimilarByNames($genres);
+        $stored    = $this->genreRepository->findByNames($genres);
         $newGenres = array_diff($genres, $stored->pluck('name')->toArray());
 
         if (!$newGenres) {

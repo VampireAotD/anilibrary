@@ -24,10 +24,10 @@ use Illuminate\Validation\ValidationException;
 use Throwable;
 
 /**
- * Class AnimeUseCase
+ * Class ScraperUseCase
  * @package App\UseCase\Scraper
  */
-final readonly class AnimeUseCase
+final readonly class ScraperUseCase
 {
     use CanTransformArray;
 

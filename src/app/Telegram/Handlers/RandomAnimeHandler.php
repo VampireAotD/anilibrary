@@ -8,7 +8,7 @@ use App\DTO\Service\Telegram\Caption\ViewAnimeCaptionDTO;
 use App\Enums\Telegram\Commands\CommandEnum;
 use App\Enums\Telegram\Handlers\RandomAnimeEnum;
 use App\Facades\Telegram\State\UserStateFacade;
-use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Services\AnimeService;
 use App\Services\Telegram\CaptionService;
 use Exception;
 use GuzzleHttp\Promise\PromiseInterface;
@@ -27,15 +27,15 @@ final class RandomAnimeHandler extends TextMessageUpdateHandler
         CommandEnum::RANDOM_ANIME_BUTTON->value,
     ];
 
-    private CaptionService           $captionService;
-    private AnimeRepositoryInterface $animeRepository;
+    private CaptionService $captionService;
+    private AnimeService   $animeService;
 
     public function __construct(TeleBot $bot, Update $update)
     {
         parent::__construct($bot, $update);
 
-        $this->captionService  = app(CaptionService::class);
-        $this->animeRepository = app(AnimeRepositoryInterface::class);
+        $this->captionService = app(CaptionService::class);
+        $this->animeService   = app(AnimeService::class);
     }
 
     /**
@@ -46,7 +46,7 @@ final class RandomAnimeHandler extends TextMessageUpdateHandler
         $chatId = $this->update->chat()->id;
 
         try {
-            $randomAnime = $this->animeRepository->findRandomAnime();
+            $randomAnime = $this->animeService->randomAnime();
 
             if (!$randomAnime) {
                 return $this->sendMessage([

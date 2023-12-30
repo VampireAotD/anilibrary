@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,12 +27,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing filter(array $filters)
  * @mixin \Eloquent
  */
 class VoiceActing extends Model
 {
-    use HasFactory;
     use HasUuids;
+    use HasFactory;
+    use Filterable;
 
     protected $table = 'voice_acting';
 
