@@ -20,6 +20,9 @@ RUN apt-get update && apt-get install -y \
     && groupadd -g ${GROUP_ID} anilibrary \
     && useradd -u ${USER_ID} -ms /bin/bash -g anilibrary anilibrary
 
+COPY /supervisor/conf.d /etc/supervisor/conf.d
+COPY /supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 USER anilibrary

@@ -59,8 +59,6 @@ services:
       - "9000:9000"
     volumes:
       - ./src:/anilibrary
-      - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
-      - ./docker/supervisor/conf.d/:/etc/supervisor/conf.d/
     networks:
       - local
       - anilibrary
