@@ -32,13 +32,20 @@ compose=$(set_compose_bin) || {
 echo '⠿ Installing Anilibrary'
 
 log 'Creating .env file with values from .env.example in root'
-cp ./.env.example ./.env
+if [ ! -f ./.env ]; then
+  cp ./.env.example ./.env
+fi
 
 log 'Creating Laravel .env file with values from .env.example in src'
-cp ./src/.env.example ./src/.env
+if [ ! -f ./src/.env ]; then
+  cp ./src/.env.example ./src/.env
+fi
 
 log 'Building images'
 $compose up -d --build
+
+log 'Installing frontend dependencies'
+$compose exec node yarn install --immutable
 
 log 'Installing Composer packages'
 $compose exec app composer install
@@ -50,7 +57,6 @@ log 'Creating database'
 $compose exec app ./artisan migrate --seed
 
 log 'Parsing anime list'
-
 if ! $compose exec app ./artisan anime-list:parse >/dev/null 2>&1; then
   echo '>> No anime list were found, skipping...'
 fi
