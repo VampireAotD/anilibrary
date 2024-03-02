@@ -67,7 +67,6 @@ class AnimeRepository implements AnimeRepositoryInterface
      */
     public function findByUrl(string $url): ?Anime
     {
-        /** @phpstan-ignore-next-line */
         return $this->query->withWhereHas(
             'urls',
             fn(Builder | HasMany $query) => $query->where('url', $url)

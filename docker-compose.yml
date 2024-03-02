@@ -19,7 +19,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql:rw
     ports:
-      - ${MYSQL_PORT:-3306}:3306
+      - ${MYSQL_PORT}:3306
     networks:
       - local
 
@@ -35,30 +35,29 @@ services:
     volumes:
       - anilibrary-redis-data:/data
     ports:
-      - ${REDIS_PORT:-6379}:6379
+      - ${REDIS_PORT}:6379
     networks:
       - local
 
   app:
     build:
-      args:
-        GROUP_ID: ${GROUP_ID:-1000}
-        USER_ID: ${USER_ID:-1000}
       context: docker/php
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_healthy
-    container_name: php
+    container_name: anilibrary
     tty: true
     environment:
-      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      XDEBUG_MODE: ${XDEBUG_MODE}
       PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
-    ports:
-      - "9000:9000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./src:/anilibrary
+    ports:
+      - ${APP_PORT}:9000
     networks:
       - local
       - anilibrary
@@ -66,28 +65,30 @@ services:
 
   node:
     build:
-      dockerfile: docker/node/Dockerfile
+      context: docker/node
     depends_on:
-      - app
+      app:
+        condition: service_started
     container_name: anilibrary-node
-    working_dir: /app
+    tty: true
     volumes:
       - ./src:/app
     ports:
-      - "5173:5173"
+      - ${NODE_PORT}:5173
     networks:
       - local
 
   nginx:
     build:
       context: docker/nginx
-    container_name: anilibrary-nginx
     depends_on:
-      - app
-    ports:
-      - "80:80"
+      app:
+        condition: service_started
+    container_name: anilibrary-nginx
     volumes:
       - ./src/public:/anilibrary/public
+    ports:
+      - ${SERVER_PORT}:80
     networks:
       - local
       - anilibrary

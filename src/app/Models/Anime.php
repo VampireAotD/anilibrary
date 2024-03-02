@@ -7,6 +7,8 @@ namespace App\Models;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeVoiceActing;
 use App\Models\Traits\Filterable;
+use App\Observers\AnimeObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,6 +53,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Anime filter(array $filters)
  * @mixin \Eloquent
  */
+#[ObservedBy(AnimeObserver::class)]
 class Anime extends Model
 {
     use HasUuids;

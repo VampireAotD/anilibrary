@@ -69,7 +69,6 @@ final readonly class AnimeService
     }
 
     /**
-     *
      * @param array<QueryFilterInterface> $filters
      * @return Collection|LazyCollection<int, Anime>
      */

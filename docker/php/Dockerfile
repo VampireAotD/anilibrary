@@ -1,29 +1,23 @@
-FROM php:8.2-fpm
+ARG PHP_VERSION=8.3
 
-COPY ./conf.d /usr/local/etc/php/conf.d
+FROM php:${PHP_VERSION}-fpm-alpine
 
-ARG GROUP_ID
-ARG USER_ID
+ARG GROUP_ID=1000
+ARG USER_ID=1000
 
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    libgmp-dev \
-    supervisor \
+RUN apk add --no-cache ${PHPIZE_DEPS} libzip-dev zip unzip git curl gmp-dev supervisor linux-headers \
     && pecl install xdebug \
     && docker-php-ext-install -j$(nproc) pdo_mysql zip exif pcntl bcmath gmp opcache \
-    && apt-get clean  \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && groupadd -g ${GROUP_ID} anilibrary \
-    && useradd -u ${USER_ID} -ms /bin/bash -g anilibrary anilibrary
+    && docker-php-ext-enable xdebug \
+    && addgroup -g ${GROUP_ID} anilibrary \
+    && adduser -u ${USER_ID} -D -S -G anilibrary anilibrary \
+    && apk del linux-headers ${PHPIZE_DEPS}
 
+COPY ./conf.d /usr/local/etc/php/conf.d
 COPY /supervisor/conf.d /etc/supervisor/conf.d
 COPY /supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
 USER anilibrary
 
