@@ -22,9 +22,7 @@ class ValidateSignatureMiddleware
         $telegramHash = $request->get('hash');
         abort_if(!$telegramHash, Response::HTTP_BAD_REQUEST, 'Missing Telegram signature');
 
-        // For the time being, Anilibrary has only one bot and not planning to add another one,
-        // so we can just take token from its bot
-        $hashedToken = hash('sha256', config('telebot.bots.anilibrary.token'), true);
+        $hashedToken = hash('sha256', config('nutgram.token'), true);
 
         // Transform all request fields into signature
         $signature = $request->collect()

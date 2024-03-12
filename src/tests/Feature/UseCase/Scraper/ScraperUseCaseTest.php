@@ -32,7 +32,7 @@ class ScraperUseCaseTest extends TestCase
     use CanCreateFakeAnime;
     use CanCreateMocks;
 
-    private const SCRAPER_ENDPOINT = '/api/v1/anime/parse';
+    private const string SCRAPER_ENDPOINT = '/api/v1/anime/parse';
 
     private ScraperUseCase $scraperUseCase;
 

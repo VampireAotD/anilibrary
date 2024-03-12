@@ -16,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class UpsertAnimeJob implements ShouldQueue
 {
@@ -45,7 +46,7 @@ class UpsertAnimeJob implements ShouldQueue
                 'body'  => $this->anime->toJson(),
             ]);
         } catch (ClientResponseException | MissingParameterException | ServerResponseException $exception) {
-            logger()->error('Upsert anime job', [
+            Log::error('Upsert anime job', [
                 'anime_id'          => $this->anime->id,
                 'exception_trace'   => $exception->getTraceAsString(),
                 'exception_message' => $exception->getMessage(),

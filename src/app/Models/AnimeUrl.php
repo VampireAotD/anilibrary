@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Anime          $anime
- * @property-read Attribute                  $toTelegramKeyboardButton
+ * @property-read Attribute                  $domain
  * @method static \Database\Factories\AnimeUrlFactory            factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newQuery()
@@ -42,14 +42,10 @@ class AnimeUrl extends Model
         return $this->belongsTo(Anime::class);
     }
 
-    public function toTelegramKeyboardButton(): Attribute
+    public function domain(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                $domain = parse_url($this->url)['host'] ?? '';
-
-                return ['text' => $domain, 'url' => $this->url];
-            }
-        );
+            get: fn(): string => parse_url($this->url)['host'] ?? '',
+        )->shouldCache();
     }
 }

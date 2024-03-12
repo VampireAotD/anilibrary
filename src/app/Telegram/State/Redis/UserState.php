@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Redis;
  */
 class UserState
 {
-    private const MAX_EXECUTED_COMMANDS_STORAGE_TTL = 3000;
+    private const int MAX_EXECUTED_COMMANDS_STORAGE_TTL = 3000;
 
     private function state()
     {

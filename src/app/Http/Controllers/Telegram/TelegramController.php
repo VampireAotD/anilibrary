@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Telegram;
 
-use App\DTO\Service\Telegram\CreateUserDTO;
+use App\DTO\Service\Telegram\User\CreateUserDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Telegram\AssignRequest;
 use App\Services\TelegramUserService;

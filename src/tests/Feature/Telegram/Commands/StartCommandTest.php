@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Commands;
 
-use App\Enums\Telegram\Commands\StartCommandEnum;
+use App\Enums\Telegram\Actions\CommandEnum;
 use App\Jobs\Telegram\CreateUserJob;
-use App\Telegram\Commands\StartCommand;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
@@ -24,45 +23,53 @@ class StartCommandTest extends TestCase
         parent::setUp();
 
         $this->setUpFakeBot();
-        $this->bot->addHandler([StartCommand::class]);
     }
 
     public function testCommandWillNotRegisterUserIfThereIsNoInfoAboutHim(): void
     {
         Bus::fake();
 
-        $update   = $this->createFakeCommandUpdate('/start');
-        $response = $this->bot->handleUpdate($update);
+        $response = $this->bot->hearMessage([
+            'text' => CommandEnum::START_COMMAND->value,
+            'from' => null,
+        ])->reply();
 
         Bus::assertNotDispatched(CreateUserJob::class);
-
-        $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
+        $response->assertReplyMessage(['text' => __('telegram.commands.start.welcome_message')]);
     }
 
     public function testCommandWillNotRegisterUserIfHeIsBot(): void
     {
         Bus::fake();
 
-        $update   = $this->createFakeCommandUpdateWithBot('/start');
-        $response = $this->bot->handleUpdate($update);
+        $response = $this->bot->hearMessage([
+            'text' => CommandEnum::START_COMMAND->value,
+            'from' => [
+                'is_bot' => true,
+            ],
+        ])->reply();
 
         Bus::assertNotDispatched(CreateUserJob::class);
-
-        $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
+        $response->assertReplyMessage(['text' => __('telegram.commands.start.welcome_message')]);
     }
 
     public function testCommandWillShowMenuAndRegisterNewUserIfHeIsNotBot(): void
     {
         Bus::fake();
 
-        $update   = $this->createFakeCommandUpdateWithUser('/start');
-        $response = $this->bot->handleUpdate($update);
+        $response = $this->bot->hearMessage([
+            'text' => CommandEnum::START_COMMAND->value,
+            'from' => [
+                'is_bot' => false,
+                'id'     => self::FAKE_TELEGRAM_ID,
+            ],
+        ])->reply();
 
         Bus::assertDispatched(
             CreateUserJob::class,
-            fn(CreateUserJob $job) => $job->dto->telegramId === self::FAKE_TELEGRAM_ID
+            fn(CreateUserJob $job) => $job->dto->telegramId === $response->userId()
         );
 
-        $this->assertEquals(StartCommandEnum::WELCOME_MESSAGE->value, $response->text);
+        $response->assertReplyMessage(['text' => __('telegram.commands.start.welcome_message')]);
     }
 }

@@ -53,6 +53,9 @@ trait CanCreateFakeAnime
         return $anime;
     }
 
+    /**
+     * @return Collection<Anime>
+     */
     protected function createAnimeCollectionWithRelations(int $quantity = 1): Collection
     {
         $collection = $this->createAnimeCollection($quantity);

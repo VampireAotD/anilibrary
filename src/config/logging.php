@@ -134,6 +134,17 @@ return [
             'via'     => LogstashHandler::class,
             'address' => env('LOGSTASH_ADDRESS', ''),
         ],
+
+        'nutgram' => [
+            'driver'     => 'monolog',
+            'level'      => env('LOG_LEVEL', 'debug'),
+            'handler'    => StreamHandler::class,
+            'formatter'  => Nutgram\Laravel\Log\NutgramFormatter::class,
+            'with'       => [
+                'stream' => 'php://stderr',
+            ],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
     ],
 
 ];

@@ -4,76 +4,52 @@ declare(strict_types=1);
 
 namespace App\Telegram\Callbacks;
 
-use App\DTO\UseCase\Telegram\Caption\PaginationDTO;
-use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
-use App\Telegram\Callbacks\Traits\CanSafelyRetrieveArguments;
-use App\UseCase\Telegram\CaptionUseCase;
-use Exception;
-use GuzzleHttp\Promise\PromiseInterface;
-use WeStacks\TeleBot\Exceptions\TeleBotException;
-use WeStacks\TeleBot\Handlers\CallbackHandler;
-use WeStacks\TeleBot\Objects\Message;
-use WeStacks\TeleBot\Objects\Update;
-use WeStacks\TeleBot\TeleBot;
+use App\DTO\UseCase\Telegram\Anime\GenerateAnimeListDTO;
+use App\Enums\Telegram\Callbacks\CallbackDataTypeEnum;
+use App\Exceptions\UseCase\Telegram\AnimeMessageException;
+use App\UseCase\Telegram\AnimeMessageUseCase;
+use Illuminate\Support\Facades\Log;
+use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Types\Input\InputMediaPhoto;
 
-/**
- * Class AnimeListCallback
- * @package App\Telegram\Callbacks
- */
-final class AnimeListCallback extends CallbackHandler
+final readonly class AnimeListCallback implements CallbackInterface
 {
-    use CanSafelyRetrieveArguments;
-
-    protected CaptionUseCase $callbackQueryUseCase;
-
-    public function __construct(TeleBot $bot, Update $update)
+    public function __construct(private AnimeMessageUseCase $animeMessageUseCase)
     {
-        parent::__construct($bot, $update);
-
-        $command = CallbackQueryTypeEnum::ANIME_LIST->value;
-
-        $this->match                = "#command=({$command})&page=(\d+)#m";
-        $this->callbackQueryUseCase = app(CaptionUseCase::class);
     }
 
-    /**
-     * @return PromiseInterface|Message|bool|void
-     */
-    public function handle()
+    public static function command(): string
     {
-        $arguments = $this->safelyRetrieveArguments();
+        $command = CallbackDataTypeEnum::ANIME_LIST->value;
+        return "command=({$command})&page=(\d+)";
+    }
 
-        if (!$arguments) {
-            return;
-        }
-
+    public function __invoke(Nutgram $bot, string ...$arguments): void
+    {
         [, $page] = $arguments;
 
-        $chatId = $this->update->chat()->id;
-
         try {
-            $page    = (int) ($page ?? 1);
-            $caption = $this->callbackQueryUseCase->createPaginationCaption(new PaginationDTO($chatId, $page));
+            $pagination = $this->animeMessageUseCase->generateAnimeList(
+                new GenerateAnimeListDTO((int) $page)
+            );
 
-            if (!$caption) {
-                return;
-            }
-
-            return $this->editMessageMedia([
-                'media'        => [
-                    'media'   => $caption['photo'],
-                    'type'    => 'photo',
-                    'caption' => $caption['caption'],
-                ],
-                'reply_markup' => $caption['reply_markup'],
-            ]);
-        } catch (TeleBotException) {
-            // Prevent bot from breaking because of next or prev page spam
-        } catch (Exception $exception) {
-            logger()->error('Anime list callback', [
+            $bot->editMessageMedia(
+                new InputMediaPhoto(
+                    media           : $pagination->photo,
+                    caption         : $pagination->caption,
+                    parse_mode      : null,
+                    caption_entities: null,
+                    has_spoiler     : false
+                ),
+                reply_markup: $pagination->generateReplyMarkup(),
+            );
+        } catch (AnimeMessageException $exception) {
+            Log::error('Anime list callback', [
                 'exception_message' => $exception->getMessage(),
                 'exception_trace'   => $exception->getTraceAsString(),
             ]);
+
+            $bot->sendMessage(__('telegram.callbacks.anime_list.render_error'));
         }
     }
 }

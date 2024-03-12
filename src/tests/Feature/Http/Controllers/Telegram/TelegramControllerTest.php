@@ -18,7 +18,7 @@ class TelegramControllerTest extends TestCase
 
     private function createValidSignature(array $data = []): string
     {
-        $hashedToken = hash('sha256', config('telebot.bots.anilibrary.token'), true);
+        $hashedToken = hash('sha256', config('nutgram.token'), true);
 
         $signature = collect($data)
             ->except('hash')

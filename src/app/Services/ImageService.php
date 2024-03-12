@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
  */
 final class ImageService
 {
-    private const BASE_FOLDER = 'anime';
+    private const string BASE_FOLDER = 'anime';
 
     /**
      * @param string $image

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
-use App\DTO\Service\Telegram\CreateUserDTO;
+use App\DTO\Service\Telegram\User\CreateUserDTO;
 use App\Enums\QueueEnum;
 use App\Services\TelegramUserService;
 use Illuminate\Bus\Queueable;

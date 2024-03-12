@@ -4,30 +4,32 @@ declare(strict_types=1);
 
 namespace Tests\Traits;
 
+use App\Telegram\Middleware\BotAccessMiddleware;
+use App\Telegram\Middleware\UserActivityMiddleware;
+use App\Telegram\Middleware\UserStatusMiddleware;
 use CloudinaryLabs\CloudinaryLaravel\CloudinaryEngine;
 use Elastic\Elasticsearch\Client as ElasticsearchClient;
 use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\Exception\AuthenticationException;
 use Http\Mock\Client;
 use PHPUnit\Framework\MockObject\Exception;
-use WeStacks\TeleBot\Laravel\TeleBot as LaravelWrapper;
-use WeStacks\TeleBot\TeleBot;
+use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Testing\FakeNutgram;
 
-/**
- * Trait CanCreateMocks
- * @package Tests\Traits
- */
 trait CanCreateMocks
 {
-    protected TeleBot $bot;
-    protected Client  $mockClient;
+    protected Client      $elasticClient;
+    protected FakeNutgram $bot;
 
     protected function setUpFakeBot(): void
     {
-        $bot = LaravelWrapper::bot()->fake();
-        $bot->clearHandlers();
+        $this->bot = $this->app->make(Nutgram::class);
 
-        $this->bot = $bot;
+        $this->bot->withoutMiddleware([
+            BotAccessMiddleware::class,
+            UserStatusMiddleware::class,
+            UserActivityMiddleware::class,
+        ]);
     }
 
     /**
@@ -48,6 +50,6 @@ trait CanCreateMocks
         $mockClient = new Client();
 
         $this->app->instance(ElasticsearchClient::class, ClientBuilder::create()->setHttpClient($mockClient)->build());
-        $this->mockClient = $mockClient;
+        $this->elasticClient = $mockClient;
     }
 }

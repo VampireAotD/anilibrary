@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\DTO\Service\Telegram\CreateUserDTO;
+use App\DTO\Service\Telegram\User\CreateUserDTO;
 use App\Models\TelegramUser;
 use App\Models\User;
 use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;

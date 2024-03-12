@@ -23,7 +23,7 @@ class UpdateIndexMappingsCommandTest extends TestCase
 
     public function testCommandCanUpdateAnimeIndexMappings(): void
     {
-        $this->mockClient->addResponse(
+        $this->elasticClient->addResponse(
             new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value]), ResponseStatus::HTTP_OK)
         );
 

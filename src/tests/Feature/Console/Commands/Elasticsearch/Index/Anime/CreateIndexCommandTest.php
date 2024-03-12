@@ -23,18 +23,18 @@ class CreateIndexCommandTest extends TestCase
 
     public function testCommandWillNotCreateAnimeIndexIfItIsAlreadyExists(): void
     {
-        $this->mockClient->addResponse(new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value])));
+        $this->elasticClient->addResponse(new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value])));
 
         $this->artisan('elasticsearch:create-anime-index')->assertFailed();
     }
 
     public function testCommandCanCreateAnimeIndex(): void
     {
-        $this->mockClient->addResponse(
+        $this->elasticClient->addResponse(
             new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value]), ResponseStatus::HTTP_NOT_FOUND)
         );
 
-        $this->mockClient->addResponse(new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value])));
+        $this->elasticClient->addResponse(new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value])));
 
         $this->artisan('elasticsearch:create-anime-index')->assertOk();
     }

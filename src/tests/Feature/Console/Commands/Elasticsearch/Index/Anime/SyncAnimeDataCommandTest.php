@@ -34,7 +34,7 @@ class SyncAnimeDataCommandTest extends TestCase
 
         $items = $animeList->map(fn(Anime $anime) => ['index' => IndexEnum::ANIME_INDEX->value, 'id' => $anime->id]);
 
-        $this->mockClient->addResponse(
+        $this->elasticClient->addResponse(
             new JsonResponse(json_encode(['errors' => false, 'items' => $items->toArray()]))
         );
 

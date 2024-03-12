@@ -33,9 +33,6 @@ class ParseCommandTest extends TestCase
         $this->animeService = $this->app->make(AnimeService::class);
     }
 
-    /**
-     * @return void
-     */
     public function testCommandCannotParseAnimeListWithoutFile(): void
     {
         Storage::shouldReceive('disk->exists')->with(config('lists.anime.file'))->andReturnFalse();
@@ -45,9 +42,6 @@ class ParseCommandTest extends TestCase
              ->expectsOutput('Anime list not found');
     }
 
-    /**
-     * @return void
-     */
     public function testCommandCanParseAnimeList(): void
     {
         $this->createAnimeCollectionWithRelations(10);

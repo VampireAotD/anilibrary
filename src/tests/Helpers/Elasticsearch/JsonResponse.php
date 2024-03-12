@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseStatus;
  */
 final class JsonResponse extends GuzzleResponse
 {
-    private const ES_HEADERS = [Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME];
+    private const array ES_HEADERS = [Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME];
 
     public function __construct(
         $body = null,

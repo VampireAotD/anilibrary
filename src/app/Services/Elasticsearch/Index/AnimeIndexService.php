@@ -8,6 +8,7 @@ use App\Enums\Elasticsearch\IndexEnum;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class AnimeIndexService
@@ -51,7 +52,7 @@ final readonly class AnimeIndexService
                 ],
             ])->asArray();
         } catch (ClientResponseException | ServerResponseException $e) {
-            logger()->error('Elasticsearch anime index multi match', [
+            Log::error('Elasticsearch anime index multi match', [
                 'exception_trace'   => $e->getTraceAsString(),
                 'exception_message' => $e->getMessage(),
             ]);

@@ -18,6 +18,7 @@ use App\Services\AnimeService;
 use App\Services\GenreService;
 use App\Services\VoiceActingService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
@@ -109,7 +110,7 @@ class AnimeController extends Controller
 
             return to_route('anime.show', $anime->id);
         } catch (Throwable $exception) {
-            logger()->error('Updating anime', [
+            Log::error('Updating anime', [
                 'exception_trace'   => $exception->getTraceAsString(),
                 'exception_message' => $exception->getMessage(),
             ]);

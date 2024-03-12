@@ -4,68 +4,45 @@ declare(strict_types=1);
 
 namespace App\Telegram\Callbacks;
 
-use App\DTO\UseCase\Telegram\Caption\ViewEncodedAnimeDTO;
-use App\Enums\Telegram\Callbacks\CallbackQueryTypeEnum;
-use App\Enums\Telegram\Callbacks\ViewAnimeCallbackEnum;
-use App\Telegram\Callbacks\Traits\CanSafelyRetrieveArguments;
-use App\UseCase\Telegram\CaptionUseCase;
-use Exception;
-use GuzzleHttp\Promise\PromiseInterface;
-use WeStacks\TeleBot\Handlers\CallbackHandler;
-use WeStacks\TeleBot\Objects\Message;
-use WeStacks\TeleBot\Objects\Update;
-use WeStacks\TeleBot\TeleBot;
+use App\DTO\UseCase\Telegram\Anime\GenerateAnimeMessageDTO;
+use App\Enums\Telegram\Callbacks\CallbackDataTypeEnum;
+use App\Exceptions\UseCase\Telegram\AnimeMessageException;
+use App\UseCase\Telegram\AnimeMessageUseCase;
+use Illuminate\Support\Facades\Log;
+use SergiX44\Nutgram\Nutgram;
 
-/**
- * Class ViewAnimeCallback
- * @package App\Telegram\Callbacks
- */
-final class ViewAnimeCallback extends CallbackHandler
+final readonly class ViewAnimeCallback implements CallbackInterface
 {
-    use CanSafelyRetrieveArguments;
-
-    private CaptionUseCase $callbackQueryUseCase;
-
-    public function __construct(TeleBot $bot, Update $update)
+    public function __construct(private AnimeMessageUseCase $animeMessageUseCase)
     {
-        parent::__construct($bot, $update);
-
-        $command = CallbackQueryTypeEnum::VIEW_ANIME->value;
-
-        $this->match                = "#command=({$command})&animeId=(\w+)#m";
-        $this->callbackQueryUseCase = app(CaptionUseCase::class);
     }
 
-    /**
-     * @return PromiseInterface|Message|void
-     */
-    public function handle()
+    public static function command(): string
     {
-        $arguments = $this->safelyRetrieveArguments();
+        $command = CallbackDataTypeEnum::VIEW_ANIME->value;
+        return "command=($command)&animeId=(\w+)";
+    }
 
-        if (!$arguments) {
-            return;
-        }
-
-        [, $encodedId] = $arguments;
-
-        $chatId = $this->update->chat()->id;
+    public function __invoke(Nutgram $bot, string ...$arguments): void
+    {
+        [, $animeId] = $arguments;
 
         try {
-            $caption = $this->callbackQueryUseCase->createDecodedAnimeCaption(
-                new ViewEncodedAnimeDTO($encodedId, $chatId)
+            $message = $this->animeMessageUseCase->generateAnimeMessage(
+                new GenerateAnimeMessageDTO($animeId, true)
             );
 
-            if (!$caption) {
-                return $this->sendMessage(['text' => ViewAnimeCallbackEnum::FAILED_TO_GET_ANIME->value]);
-            }
-
-            return $this->sendPhoto($caption);
-        } catch (Exception $exception) {
-            logger()->error('View anime callback', [
+            $bot->sendPhoto(
+                photo  : $message->photo,
+                caption: $message->caption,
+            );
+        } catch (AnimeMessageException $exception) {
+            Log::error('View anime callback', [
                 'exception_message' => $exception->getMessage(),
                 'exception_trace'   => $exception->getTraceAsString(),
             ]);
+
+            $bot->sendMessage(__('telegram.callbacks.view_anime.render_error'));
         }
     }
 }
