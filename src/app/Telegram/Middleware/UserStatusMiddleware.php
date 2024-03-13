@@ -8,6 +8,7 @@ use App\Facades\Telegram\State\UserStateFacade;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Chat\ChatMemberBanned;
 use SergiX44\Nutgram\Telegram\Types\Chat\ChatMemberLeft;
+use SergiX44\Nutgram\Telegram\Types\Chat\ChatMemberRestricted;
 
 final class UserStatusMiddleware
 {
@@ -25,6 +26,7 @@ final class UserStatusMiddleware
         switch (true) {
             case $chatMember instanceof ChatMemberLeft:
             case $chatMember instanceof ChatMemberBanned:
+            case $chatMember instanceof ChatMemberRestricted:
                 UserStateFacade::resetExecutedCommandsList($chatMemberUpdate->chat->id);
                 $next($bot);
                 return;

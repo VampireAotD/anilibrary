@@ -114,12 +114,12 @@ class Anime extends Model
     }
 
     /**
-     * @return Attribute
+     * @return Attribute<string, never>
      */
     public function toTelegramCaption(): Attribute
     {
         return Attribute::make(
-            fn() => sprintf(
+            get: fn() => sprintf(
                 "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s",
                 $this->title,
                 $this->status,

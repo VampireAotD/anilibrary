@@ -63,6 +63,7 @@ class AnimeRepository implements AnimeRepositoryInterface
      */
     public function findByUrl(string $url): ?Anime
     {
+        /** @psalm-suppress InvalidArgument */
         return $this->query->withWhereHas(
             'urls',
             fn(Builder | HasMany $query) => $query->where('url', $url)

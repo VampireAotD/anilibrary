@@ -40,7 +40,7 @@
         "nunomaduro/collision": "^7.10",
         "php-http/mock-client": "^1.6",
         "phpunit/phpunit": "^10.4",
-        "psalm/plugin-laravel": "^2.9",
+        "psalm/plugin-laravel": "^2.10",
         "spatie/laravel-ignition": "^2.4",
         "vimeo/psalm": "^5.22"
     },

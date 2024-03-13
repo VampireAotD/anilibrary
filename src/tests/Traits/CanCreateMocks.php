@@ -25,6 +25,8 @@ trait CanCreateMocks
     {
         $this->bot = $this->app->make(Nutgram::class);
 
+        // Disabling bot middlewares for testing other handlers
+        // To test middleware attach it ot bot in test class
         $this->bot->withoutMiddleware([
             BotAccessMiddleware::class,
             UserStatusMiddleware::class,
