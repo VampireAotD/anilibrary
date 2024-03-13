@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
 
 final class SignedUrlService
@@ -18,7 +18,7 @@ final class SignedUrlService
             'hash' => $hash,
         ]);
 
-        Redis::setex($hash, $expirationTime->unix(), $email);
+        Cache::add($hash, $email, $expirationTime);
 
         return $url;
     }

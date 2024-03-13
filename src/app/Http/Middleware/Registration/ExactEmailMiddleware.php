@@ -6,7 +6,7 @@ namespace App\Http\Middleware\Registration;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExactEmailMiddleware
@@ -20,7 +20,8 @@ class ExactEmailMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $knownEmail = Redis::exists(hash('sha256', $request->post('email', '')));
+        $knownEmail = Cache::has(hash('sha256', $request->post('email', '')));
+
         abort_if(!$knownEmail, Response::HTTP_FORBIDDEN, 'Unknown email');
 
         return $next($request);

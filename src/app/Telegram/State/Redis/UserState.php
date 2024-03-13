@@ -5,93 +5,73 @@ declare(strict_types=1);
 namespace App\Telegram\State\Redis;
 
 use App\Enums\Telegram\State\Redis\UserStateKeyEnum;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 class UserState
 {
-    private const int MAX_EXECUTED_COMMANDS_STORAGE_TTL = 3000;
+    private const int EXECUTED_COMMANDS_STORAGE_TTL = 3000; // 5 minutes
 
-    private function state()
+    private function stateKey(UserStateKeyEnum $key, int $telegramId): string
     {
-        return Redis::connection()->client();
-    }
-
-    private function stateKeys(int $telegramId): array
-    {
-        return array_map(fn(string $key) => sprintf('%s:%d', $key, $telegramId), UserStateKeyEnum::values());
+        return sprintf('%s:%d', $key->value, $telegramId);
     }
 
     public function setLastActiveAt(int $telegramId): void
     {
-        [$lastActiveAtKey] = $this->stateKeys($telegramId);
-
-        $this->state()->set($lastActiveAtKey, now()->unix());
+        Cache::add($this->stateKey(UserStateKeyEnum::WAS_LAST_ACTIVE_AT_KEY, $telegramId), now()->unix());
     }
 
     public function addExecutedCommand(int $telegramId, string $command): void
     {
-        [, $executedCommandsKey] = $this->stateKeys($telegramId);
+        $key = $this->stateKey(UserStateKeyEnum::LAST_EXECUTED_COMMANDS_LIST_KEY, $telegramId);
 
-        $commandsList = json_decode($this->state()->get($executedCommandsKey) ?? '');
+        $commands   = Cache::get($key, []);
+        $commands[] = $command;
 
-        $commandsList[] = $command;
-
-        $this->state()->setex(
-            $executedCommandsKey,
-            self::MAX_EXECUTED_COMMANDS_STORAGE_TTL,
-            json_encode($commandsList)
+        Cache::add(
+            $key,
+            $commands,
+            now()->addSeconds(self::EXECUTED_COMMANDS_STORAGE_TTL)
         );
     }
 
     public function getLastExecutedCommand(int $telegramId): string
     {
-        [, $executedCommandsKey] = $this->stateKeys($telegramId);
+        $commands = Cache::get($this->stateKey(UserStateKeyEnum::LAST_EXECUTED_COMMANDS_LIST_KEY, $telegramId), []);
 
-        $commandsList = json_decode($this->state()->get($executedCommandsKey) ?? '') ?? [];
-
-        return end($commandsList) ?: '';
+        return end($commands) ?: '';
     }
 
     public function resetExecutedCommandsList(int $telegramId): void
     {
-        [, $executedCommandsKey] = $this->stateKeys($telegramId);
-
-        $this->state()->del($executedCommandsKey);
+        Cache::delete($this->stateKey(UserStateKeyEnum::LAST_EXECUTED_COMMANDS_LIST_KEY, $telegramId));
     }
 
     public function saveSearchResult(int $telegramId, array $result = []): void
     {
-        [, , $searchResultKey] = $this->stateKeys($telegramId);
+        $key = $this->stateKey(UserStateKeyEnum::SEARCH_RESULT_KEY, $telegramId);
 
-        $this->state()->del($searchResultKey);
-        $this->state()->set($searchResultKey, json_encode($result));
+        Cache::delete($key);
+        Cache::add($key, $result);
     }
 
     public function getSearchResult(int $telegramId): array
     {
-        [, , $searchResultKey] = $this->stateKeys($telegramId);
-
-        return json_decode($this->state()->get($searchResultKey) ?? '') ?? [];
+        return Cache::get($this->stateKey(UserStateKeyEnum::SEARCH_RESULT_KEY, $telegramId), []);
     }
 
     public function saveSearchResultPreview(int $telegramId, int $previewId): void
     {
-        [, , , $searchResultPreviewKey] = $this->stateKeys($telegramId);
-
-        $this->state()->set($searchResultPreviewKey, $previewId);
+        Cache::add($this->stateKey(UserStateKeyEnum::PREVIEW_SEARCH_RESULT_KEY, $telegramId), $previewId);
     }
 
     public function getSearchResultPreview(int $telegramId): ?string
     {
-        [, , , $searchResultPreviewKey] = $this->stateKeys($telegramId);
-
-        return $this->state()->get($searchResultPreviewKey);
+        return Cache::get($this->stateKey(UserStateKeyEnum::PREVIEW_SEARCH_RESULT_KEY, $telegramId));
     }
 
     public function removeSearchResultPreview(int $telegramId): void
     {
-        [, , , $searchResultPreviewKey] = $this->stateKeys($telegramId);
-
-        $this->state()->del($searchResultPreviewKey);
+        Cache::delete($this->stateKey(UserStateKeyEnum::PREVIEW_SEARCH_RESULT_KEY, $telegramId));
     }
 }

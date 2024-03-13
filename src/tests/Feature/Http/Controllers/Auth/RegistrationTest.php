@@ -7,13 +7,12 @@ namespace Tests\Feature\Http\Controllers\Auth;
 use App\Notifications\Auth\VerifyEmailNotification;
 use App\Providers\RouteServiceProvider;
 use App\Services\SignedUrlService;
-use Carbon\Carbon;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -38,28 +37,26 @@ class RegistrationTest extends TestCase
 
     public function testRegistrationScreenCannotBeRenderedIfSignatureIsInvalid(): void
     {
-        $this->get(
-            route('register', [
-                'expires'   => now()->unix(),
-                'signature' => $this->faker->name,
-            ])
-        )->assertForbidden();
+        $this->get(route('register', [
+            'expires'   => now()->unix(),
+            'signature' => $this->faker->name,
+        ]))->assertForbidden();
     }
 
     public function testRegistrationScreenCannotBeRenderedIfUrlIsExpired(): void
     {
-        Redis::shouldReceive('setex')->andReturnTrue();
+        Cache::shouldReceive('add')->andReturnTrue();
 
         $url = $this->signedUrlService->createRegistrationLink($this->faker->email);
 
-        Carbon::setTestNow(now()->addMinutes(config('auth.registration_link_timeout') + 1));
+        $this->travel(config('auth.registration_link_timeout') + 1)->minutes();
 
         $this->get($url)->assertForbidden();
     }
 
     public function testUserCannotRegisterWithUnknownEmail(): void
     {
-        Redis::shouldReceive('exists')->andReturnFalse();
+        Cache::shouldReceive('has')->andReturnFalse();
 
         $this->post(route('register'), ['email' => $this->faker->unique()->email])->assertForbidden();
     }
@@ -67,15 +64,15 @@ class RegistrationTest extends TestCase
     public function testUserCannotRegisterTwoTimesWithSameLink(): void
     {
         Notification::fake();
-        Redis::shouldReceive('setex')->once()->andReturnTrue();
-        Redis::shouldReceive('exists')->twice()->andReturnTrue();
+        Cache::shouldReceive('add')->once()->andReturnTrue();
+        Cache::shouldReceive('has')->twice()->andReturnTrue();
 
         $email = $this->faker->unique()->safeEmail();
         $url   = $this->signedUrlService->createRegistrationLink($email);
 
         $this->get($url)->assertOk();
 
-        Redis::shouldReceive('del')->once()->andReturnTrue();
+        Cache::shouldReceive('delete')->once()->andReturnTrue();
 
         $response = $this->post(route('register'), [
             'name'                  => $this->faker->name,
@@ -93,15 +90,15 @@ class RegistrationTest extends TestCase
         Auth::logout();
         $this->assertFalse(Auth::check());
 
-        Redis::shouldReceive('exists')->once()->andReturnFalse();
+        Cache::shouldReceive('has')->once()->andReturnFalse();
         $this->get($url)->assertForbidden();
     }
 
     public function testUserCanRegister(): void
     {
         Notification::fake();
-        Redis::shouldReceive('exists')->andReturnTrue();
-        Redis::shouldReceive('del')->andReturnTrue();
+        Cache::shouldReceive('has')->andReturnTrue();
+        Cache::shouldReceive('delete')->andReturnTrue();
 
         $response = $this->post(route('register'), [
             'name'                  => $this->faker->name,

@@ -11,7 +11,7 @@ use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        Redis::del(hash('sha256', $user->email));
+        Cache::delete(hash('sha256', $user->email));
 
         return redirect(RouteServiceProvider::HOME);
     }
