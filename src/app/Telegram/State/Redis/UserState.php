@@ -7,10 +7,6 @@ namespace App\Telegram\State\Redis;
 use App\Enums\Telegram\State\Redis\UserStateKeyEnum;
 use Illuminate\Support\Facades\Redis;
 
-/**
- * Class UserState
- * @package App\Telegram\State\Redis
- */
 class UserState
 {
     private const int MAX_EXECUTED_COMMANDS_STORAGE_TTL = 3000;

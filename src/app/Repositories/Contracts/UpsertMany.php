@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\Contracts;
 
-/**
- * Interface UpsertMany
- * @package App\Repositories\Contracts\Common
- */
 interface UpsertMany
 {
     /**

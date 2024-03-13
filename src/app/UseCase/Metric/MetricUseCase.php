@@ -9,11 +9,7 @@ use App\Services\AnimeService;
 use App\Services\AnimeUrlService;
 use App\Services\UserService;
 
-/**
- * Class MetricUseCase
- * @package App\UseCase\Metric
- */
-readonly class MetricUseCase
+final readonly class MetricUseCase
 {
     public function __construct(
         private AnimeService    $animeService,

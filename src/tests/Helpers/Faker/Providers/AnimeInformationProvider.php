@@ -7,10 +7,6 @@ namespace Tests\Helpers\Faker\Providers;
 use App\Enums\AnimeStatusEnum;
 use Faker\Provider\Base;
 
-/**
- * Class AnimeInformationProvider
- * @package Tests\Helpers\Faker\Providers
- */
 class AnimeInformationProvider extends Base
 {
     public function randomAnimeRating(int $min = 0, int $max = 10): float

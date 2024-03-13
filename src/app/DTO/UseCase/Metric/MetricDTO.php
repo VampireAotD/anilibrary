@@ -9,11 +9,9 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- * Class MetricDTO
- * @package App\DTO\UseCase\Metric
  * @template-implements Arrayable<string, mixed>
  */
-readonly class MetricDTO implements Arrayable
+final readonly class MetricDTO implements Arrayable
 {
     /**
      * @param int                    $animeCount

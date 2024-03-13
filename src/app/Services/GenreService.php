@@ -10,10 +10,6 @@ use App\Repositories\Genre\GenreRepositoryInterface;
 use App\Traits\CanTransformArray;
 use Illuminate\Support\LazyCollection;
 
-/**
- * Class GenreService
- * @package App\Services
- */
 final readonly class GenreService
 {
     use CanTransformArray;

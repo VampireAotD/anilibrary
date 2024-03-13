@@ -10,10 +10,6 @@ use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
 use App\Traits\CanTransformArray;
 use Illuminate\Support\LazyCollection;
 
-/**
- * Class VoiceActingService
- * @package App\Services
- */
 final readonly class VoiceActingService
 {
     use CanTransformArray;

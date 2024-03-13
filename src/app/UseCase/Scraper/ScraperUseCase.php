@@ -23,10 +23,6 @@ use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
-/**
- * Class ScraperUseCase
- * @package App\UseCase\Scraper
- */
 final readonly class ScraperUseCase
 {
     use CanTransformArray;

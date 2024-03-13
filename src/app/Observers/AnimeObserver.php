@@ -7,10 +7,6 @@ namespace App\Observers;
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Models\Anime;
 
-/**
- * Class AnimeObserver
- * @package App\Observers
- */
 class AnimeObserver
 {
     /**

@@ -13,10 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\LazyCollection;
 
-/**
- * Class AnimeRepository
- * @package App\Repositories
- */
 class AnimeRepository implements AnimeRepositoryInterface
 {
     /**

@@ -9,14 +9,12 @@ use App\Enums\AnimeStatusEnum;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
- * Class UpsertAnimeDTO
- * @package App\DTO\Service\Anime
  * @template-implements Arrayable<string, mixed>
  */
 final readonly class UpsertAnimeDTO implements Arrayable, FromArray
 {
-    public const DEFAULT_RATING   = 0;
-    public const DEFAULT_EPISODES = '0 / ?';
+    public const int    DEFAULT_RATING   = 0;
+    public const string DEFAULT_EPISODES = '0 / ?';
 
     public function __construct(
         public string          $title,

@@ -7,11 +7,7 @@ namespace App\Filters;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Class RelationFilter
- * @package App\Filters\Query\Filters
- */
-readonly class RelationFilter implements QueryFilterInterface
+final readonly class RelationFilter implements QueryFilterInterface
 {
     public function __construct(private array $relations = [])
     {

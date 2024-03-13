@@ -7,10 +7,6 @@ namespace App\Repositories\TelegramUser;
 use App\Models\TelegramUser;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Class TelegramUserRepository
- * @package App\Repositories
- */
 class TelegramUserRepository implements TelegramUserRepositoryInterface
 {
     /**

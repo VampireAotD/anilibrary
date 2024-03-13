@@ -9,10 +9,6 @@ use App\Models\VoiceActing;
 use App\Traits\CanTransformArray;
 use Illuminate\Database\Seeder;
 
-/**
- * Class VoiceActingSeeder
- * @package Database\Seeders
- */
 class VoiceActingSeeder extends Seeder
 {
     use CanTransformArray;

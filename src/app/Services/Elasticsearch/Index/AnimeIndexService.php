@@ -10,10 +10,6 @@ use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Class AnimeIndexService
- * @package App\Services\Elasticsearch\Index
- */
 final readonly class AnimeIndexService
 {
     public function __construct(public Client $client)

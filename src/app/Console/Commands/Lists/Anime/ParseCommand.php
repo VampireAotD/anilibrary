@@ -13,11 +13,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * Class ParseCommand
- * @package App\Console\Commands\Lists\Anime
- */
-class ParseCommand extends Command
+final class ParseCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -43,8 +39,6 @@ class ParseCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {

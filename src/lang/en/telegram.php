@@ -12,6 +12,12 @@ return [
             'welcome_message' => "You are welcome to AniLibrary Bot!\nPlease, select the desired action below:",
         ],
 
+        'random_anime' => [
+            'unable_to_find_anime' => 'Unable to find any anime.',
+        ],
+    ],
+
+    'conversations' => [
         'add_anime' => [
             'provide_url'      => 'Provide url for scraping, this may take a few minutes.',
             'scrape_failed'    => 'Could not scrape anime, try again.',
@@ -23,13 +29,7 @@ return [
             'example'    => "Provide anime title, genres, voice actors and more, for example :\nNaruto, Adventure, AniDub\nand the bot will try to find something for you.",
             'no_results' => 'No available results. Please try again.',
         ],
-
-        'random_anime' => [
-            'unable_to_find_anime' => 'Unable to find any anime.',
-        ],
     ],
-
-    'conversations' => [],
 
     'callbacks' => [
         'anime_list' => [
@@ -44,4 +44,5 @@ return [
             'render_error' => 'Could not get anime.',
         ],
     ],
+    
 ];

@@ -8,10 +8,6 @@ use Elastic\Elasticsearch\Response\Elasticsearch;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Symfony\Component\HttpFoundation\Response as ResponseStatus;
 
-/**
- * Class JsonResponse
- * @package Tests\Helpers\Elascticsearch
- */
 final class JsonResponse extends GuzzleResponse
 {
     private const array ES_HEADERS = [Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME];

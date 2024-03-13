@@ -6,10 +6,6 @@ namespace App\Services;
 
 use App\Repositories\User\UserRepositoryInterface;
 
-/**
- * Class UserService
- * @package App\Services
- */
 readonly class UserService
 {
     public function __construct(private UserRepositoryInterface $userRepository)

@@ -6,10 +6,6 @@ namespace App\DTO\Service\Anime;
 
 use App\Filters\QueryFilterInterface;
 
-/**
- * Class AnimePaginationDTO
- * @package App\DTO\Service\Anime
- */
 final readonly class AnimePaginationDTO
 {
     /**

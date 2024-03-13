@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Telegram\Conversations;
 
 use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
-use App\Enums\Validation\Telegram\SupportedUrlRuleEnum;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
@@ -32,7 +31,7 @@ final class AddAnimeConversation extends Conversation
 
     public function start(Nutgram $bot): void
     {
-        $bot->sendMessage(__('telegram.commands.add_anime.provide_url'));
+        $bot->sendMessage(__('telegram.conversations.add_anime.provide_url'));
 
         $this->next('scrape');
     }
@@ -42,13 +41,10 @@ final class AddAnimeConversation extends Conversation
         $message = $bot->message()?->text;
         $userId  = $bot->userId();
 
-        $validUrl = Validator::make(
-            ['url' => $bot->message()->text],
-            ['url' => ['required', new SupportedUrlRule()]]
-        )->passes();
+        $errors = Validator::make(['url' => $message], ['url' => ['required', new SupportedUrlRule()]])->errors();
 
-        if (!$validUrl) {
-            $bot->sendMessage(SupportedUrlRuleEnum::UNSUPPORTED_URL->value);
+        if ($errors->isNotEmpty()) {
+            $bot->sendMessage($errors->first());
             return;
         }
 
@@ -70,7 +66,7 @@ final class AddAnimeConversation extends Conversation
                 'url'              => $message,
             ]);
 
-            $bot->sendMessage(__('telegram.commands.add_anime.scrape_failed'));
+            $bot->sendMessage(__('telegram.conversations.add_anime.scrape_failed'));
             $this->end();
         } finally {
             UserStateFacade::resetExecutedCommandsList($userId);
@@ -82,10 +78,10 @@ final class AddAnimeConversation extends Conversation
         $callbackData = $this->callbackDataFactory->resolve(new ViewAnimeCallbackDataDTO($anime->id));
 
         $this->bot->sendMessage(
-            text        : __('telegram.commands.add_anime.scrape_has_ended'),
+            text        : __('telegram.conversations.add_anime.scrape_has_ended'),
             reply_markup: InlineKeyboardMarkup::make()->addRow(
                 InlineKeyboardButton::make(
-                    text         : __('telegram.commands.add_anime.view_anime'),
+                    text         : __('telegram.conversations.add_anime.view_anime'),
                     callback_data: $callbackData
                 )
             )

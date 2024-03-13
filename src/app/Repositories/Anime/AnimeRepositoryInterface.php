@@ -12,10 +12,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\LazyCollection;
 
-/**
- * Interface AnimeRepositoryInterface
- * @package App\Repositories\Contracts\Anime
- */
 interface AnimeRepositoryInterface extends FilterQuery, Quantity, GetAll
 {
     public function create(array $data): Anime;

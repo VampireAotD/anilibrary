@@ -6,10 +6,6 @@ namespace App\Enums;
 
 use App\Enums\Traits\CanProvideCasesValues;
 
-/**
- * Enum QueueEnum
- * @package App\Enums
- */
 enum QueueEnum: string
 {
     use CanProvideCasesValues;

@@ -9,10 +9,6 @@ use App\Repositories\Contracts\FindByName;
 use App\Repositories\Contracts\GetAll;
 use App\Repositories\Contracts\UpsertMany;
 
-/**
- * Interface VoiceActingRepositoryInterface
- * @package App\Repositories\Contracts
- */
 interface VoiceActingRepositoryInterface extends FindByName, UpsertMany, GetAll, FilterQuery
 {
     //

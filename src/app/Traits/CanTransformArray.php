@@ -6,10 +6,6 @@ namespace App\Traits;
 
 use Illuminate\Support\Str;
 
-/**
- * Trait CanGenerateNamesArray
- * @package App\Traits
- */
 trait CanTransformArray
 {
     protected function toAssociativeArray(string $key, array $data): array

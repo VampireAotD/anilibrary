@@ -7,10 +7,6 @@ namespace App\Services;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\URL;
 
-/**
- * Class SignedUrlService
- * @package App\Services
- */
 final class SignedUrlService
 {
     public function createRegistrationLink(string $email): string

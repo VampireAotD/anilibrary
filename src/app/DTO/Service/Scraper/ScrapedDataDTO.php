@@ -7,11 +7,9 @@ namespace App\DTO\Service\Scraper;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
- * Class ScrapedDataDTO
  * @template-implements Arrayable<string, mixed>
- * @package App\DTO\Service\Scraper
  */
-readonly class ScrapedDataDTO implements Arrayable
+final readonly class ScrapedDataDTO implements Arrayable
 {
     public ?string $image;
 

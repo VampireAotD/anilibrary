@@ -9,10 +9,6 @@ use Monolog\Handler\SocketHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class LogstashHandler
- * @package App\Loggers\Logstash
- */
 final class LogstashHandler
 {
     public function __invoke(array $config): LoggerInterface

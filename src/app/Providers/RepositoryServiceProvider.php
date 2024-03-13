@@ -18,10 +18,6 @@ use App\Repositories\VoiceActing\VoiceActingRepository;
 use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
-/**
- * Class RepositoryServiceProvider
- * @package App\Providers
- */
 class RepositoryServiceProvider extends ServiceProvider
 {
     public array $bindings = [

@@ -6,10 +6,6 @@ namespace App\Repositories\Contracts;
 
 use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Interface FindByName
- * @package App\Repositories\Contracts
- */
 interface FindByName
 {
     /**

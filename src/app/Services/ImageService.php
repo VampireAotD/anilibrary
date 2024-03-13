@@ -8,10 +8,6 @@ use App\Models\Anime;
 use App\Models\Image;
 use Illuminate\Support\Str;
 
-/**
- * Class ImageService
- * @package App\Services
- */
 final class ImageService
 {
     private const string BASE_FOLDER = 'anime';

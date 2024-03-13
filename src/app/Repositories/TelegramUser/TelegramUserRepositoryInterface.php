@@ -6,10 +6,6 @@ namespace App\Repositories\TelegramUser;
 
 use App\Models\TelegramUser;
 
-/**
- * Interface AnimeRepositoryInterface
- * @package App\Repositories\Contracts\TelegramUser
- */
 interface TelegramUserRepositoryInterface
 {
     /**

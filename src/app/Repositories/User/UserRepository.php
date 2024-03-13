@@ -8,10 +8,6 @@ use App\Enums\RoleEnum;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Class UserRepository
- * @package App\Repositories
- */
 class UserRepository implements UserRepositoryInterface
 {
     /**

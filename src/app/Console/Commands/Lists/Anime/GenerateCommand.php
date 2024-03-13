@@ -13,11 +13,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * Class GenerateCommand
- * @package App\Console\Commands\Lists\Anime
- */
-class GenerateCommand extends Command
+final class GenerateCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -40,7 +36,7 @@ class GenerateCommand extends Command
     {
         if (!$owner = $userRepository->findOwner()) {
             $this->error('Owner not found');
-            return Command::FAILURE;
+            return self::FAILURE;
         }
 
         $animeList = $animeService->all([
@@ -60,6 +56,6 @@ class GenerateCommand extends Command
 
         $this->info('Anime list successfully generated');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

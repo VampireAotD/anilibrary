@@ -9,11 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * Class AnimeListMail
- * @package App\Mail
- */
-class AnimeListMail extends Mailable
+final class AnimeListMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -28,8 +24,6 @@ class AnimeListMail extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
     public function build(): self
     {

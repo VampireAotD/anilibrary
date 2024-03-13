@@ -7,10 +7,6 @@ namespace App\Repositories\AnimeUrl;
 use App\Models\AnimeUrl;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Class AnimeUrlRepository
- * @package App\Repositories\AnimeUrl
- */
 class AnimeUrlRepository implements AnimeUrlRepositoryInterface
 {
     /**

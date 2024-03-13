@@ -16,10 +16,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\LazyCollection;
 
-/**
- * Class AnimeService
- * @package App\Services
- */
 final readonly class AnimeService
 {
     use CanTransformArray;

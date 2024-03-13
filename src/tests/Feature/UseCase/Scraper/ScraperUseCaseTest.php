@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\UseCase\Scraper;
 
 use App\Enums\AnimeStatusEnum;
-use App\Enums\Validation\Scraper\EncodedImageRuleEnum;
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
@@ -84,7 +83,7 @@ class ScraperUseCaseTest extends TestCase
         ]);
 
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage(EncodedImageRuleEnum::INVALID_ENCODING->value);
+        $this->expectExceptionMessage(__('validation.scraper.image', ['attribute' => 'image']));
         $this->scraperUseCase->scrapeAndCreateAnime($this->faker->url);
     }
 
@@ -92,9 +91,11 @@ class ScraperUseCaseTest extends TestCase
     {
         $anime = $this->createAnimeWithRelations();
 
+        // Ensure that anime already has relations
         $this->assertCount(1, $anime->urls);
         $this->assertCount(1, $anime->synonyms);
 
+        // Create new synonyms that scraper will return
         $newSynonyms = AnimeSynonym::factory(4)->make()->pluck('synonym')->toArray();
 
         Http::fake([
@@ -110,8 +111,9 @@ class ScraperUseCaseTest extends TestCase
         $url        = $this->faker->url;
         $foundAnime = $this->scraperUseCase->scrapeAndCreateAnime($url);
 
-        $foundAnime->refresh(); // to load upserted relation
+        $foundAnime->refresh(); // to reload relations
 
+        // Ensure that anime has been updated
         $this->assertEquals($anime->id, $foundAnime->id);
         $this->assertEquals($anime->title, $foundAnime->title);
         $this->assertEquals($anime->status, $foundAnime->status);
@@ -120,6 +122,7 @@ class ScraperUseCaseTest extends TestCase
         $this->assertEquals($anime->genres->toArray(), $foundAnime->genres->toArray());
         $this->assertEquals($anime->voiceActing->toArray(), $foundAnime->voiceActing->toArray());
 
+        // Ensure that new relations have been created
         $this->assertCount(2, $foundAnime->urls);
         $this->assertTrue($foundAnime->urls->intersect($anime->urls)->isNotEmpty());
         $this->assertContainsEquals($url, $foundAnime->urls->pluck('url'));
@@ -184,7 +187,7 @@ class ScraperUseCaseTest extends TestCase
         $url   = $this->faker->url;
         $anime = $this->scraperUseCase->scrapeAndCreateAnime($url);
 
-        $anime->refresh(); // to load upserted relation
+        $anime->refresh(); // to reload relations
 
         $this->assertIsString($anime->id);
         $this->assertNotEmpty($anime->title);

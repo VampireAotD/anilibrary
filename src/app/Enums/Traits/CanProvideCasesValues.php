@@ -6,10 +6,6 @@ namespace App\Enums\Traits;
 
 use UnitEnum;
 
-/**
- * Trait CanProvideCasesValues
- * @package App\Enums\Traits
- */
 trait CanProvideCasesValues
 {
     public static function values(): array

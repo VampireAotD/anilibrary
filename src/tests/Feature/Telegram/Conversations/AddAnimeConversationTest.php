@@ -6,7 +6,6 @@ namespace Tests\Feature\Telegram\Conversations;
 
 use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
 use App\Enums\Telegram\Actions\CommandEnum;
-use App\Enums\Validation\Telegram\SupportedUrlRuleEnum;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
@@ -57,11 +56,11 @@ class AddAnimeConversationTest extends TestCase
         $this->bot->willStartConversation()
                   ->hearText(CommandEnum::ADD_ANIME_COMMAND->value)
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.add_anime.provide_url')])
+                  ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.provide_url')])
                   ->assertActiveConversation()
                   ->hearText('test')
                   ->reply()
-                  ->assertReplyMessage(['text' => SupportedUrlRuleEnum::UNSUPPORTED_URL->value]);
+                  ->assertReplyMessage(['text' => __('validation.telegram.url')]);
     }
 
     #[DataProvider('supportedUrlsProvider')]
@@ -75,17 +74,17 @@ class AddAnimeConversationTest extends TestCase
         $this->bot->willStartConversation()
                   ->hearMessage($this->createFakeTextMessageUpdateData(CommandEnum::ADD_ANIME_COMMAND->value))
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.add_anime.provide_url')])
+                  ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.provide_url')])
                   ->assertActiveConversation()
                   ->hearText($url)
                   ->reply()
                   ->assertReplyMessage([
-                      'text'         => __('telegram.commands.add_anime.scrape_has_ended'),
+                      'text'         => __('telegram.conversations.add_anime.scrape_has_ended'),
                       'reply_markup' => [
                           'inline_keyboard' => [
                               [
                                   [
-                                      'text'          => __('telegram.commands.add_anime.view_anime'),
+                                      'text'          => __('telegram.conversations.add_anime.view_anime'),
                                       'callback_data' => $this->callbackDataFactory->resolve(
                                           new ViewAnimeCallbackDataDTO($anime->id)
                                       ),
@@ -114,11 +113,11 @@ class AddAnimeConversationTest extends TestCase
         $this->bot->willStartConversation()
                   ->hearMessage($this->createFakeTextMessageUpdateData(CommandEnum::ADD_ANIME_COMMAND->value))
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.add_anime.provide_url')])
+                  ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.provide_url')])
                   ->assertActiveConversation()
                   ->hearText($url)
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.add_anime.scrape_failed')]);
+                  ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.scrape_failed')]);
     }
 
     #[DataProvider('supportedUrlsProvider')]
@@ -142,11 +141,11 @@ class AddAnimeConversationTest extends TestCase
         $this->bot->willStartConversation()
                   ->hearMessage($this->createFakeTextMessageUpdateData(CommandEnum::ADD_ANIME_COMMAND->value))
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.add_anime.provide_url')])
+                  ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.provide_url')])
                   ->assertActiveConversation()
                   ->hearText($url)
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.add_anime.scrape_has_ended')]);
+                  ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.scrape_has_ended')]);
 
         Bus::assertDispatched(UpsertAnimeJob::class);
 

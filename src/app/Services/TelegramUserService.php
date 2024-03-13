@@ -10,10 +10,6 @@ use App\Models\User;
 use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Class TelegramUserService
- * @package App\Services
- */
 final readonly class TelegramUserService
 {
     public function __construct(private TelegramUserRepositoryInterface $telegramUserRepository)

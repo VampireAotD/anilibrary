@@ -36,10 +36,10 @@ class SearchAnimeConversationTest extends TestCase
         $this->bot->willStartConversation()
                   ->hearText(CommandEnum::SEARCH_ANIME_COMMAND->value)
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.search_anime.example')])
+                  ->assertReplyMessage(['text' => __('telegram.conversations.search_anime.example')])
                   ->hearText($this->faker->text)
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.search_anime.no_results')]);
+                  ->assertReplyMessage(['text' => __('telegram.conversations.search_anime.no_results')]);
     }
 
     public function testBotWillRespondWithSearchResultsAndPagination(): void
@@ -75,7 +75,7 @@ class SearchAnimeConversationTest extends TestCase
         $this->bot->willStartConversation()
                   ->hearText(CommandEnum::SEARCH_ANIME_COMMAND->value)
                   ->reply()
-                  ->assertReplyMessage(['text' => __('telegram.commands.search_anime.example')])
+                  ->assertReplyMessage(['text' => __('telegram.conversations.search_anime.example')])
                   ->hearText($this->faker->text)
                   ->reply()
                   ->assertReplyMessage([

@@ -7,11 +7,7 @@ namespace App\Filters;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Class InFilter
- * @package App\Filters\Query\Filters
- */
-readonly class InFilter implements QueryFilterInterface
+final readonly class InFilter implements QueryFilterInterface
 {
     public function __construct(private string $column, private array $values)
     {

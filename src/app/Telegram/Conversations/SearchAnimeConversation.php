@@ -24,7 +24,7 @@ final class SearchAnimeConversation extends Conversation
 
     public function start(Nutgram $bot): void
     {
-        $bot->sendMessage(__('telegram.commands.search_anime.example'));
+        $bot->sendMessage(__('telegram.conversations.search_anime.example'));
         $this->next('search');
     }
 
@@ -37,7 +37,7 @@ final class SearchAnimeConversation extends Conversation
             $animeList = Arr::get($response, 'hits.hits');
 
             if (!$animeList) {
-                $bot->sendMessage(__('telegram.commands.search_anime.no_results'));
+                $bot->sendMessage(__('telegram.conversations.search_anime.no_results'));
                 $this->end();
                 return;
             }
@@ -70,7 +70,7 @@ final class SearchAnimeConversation extends Conversation
                 'exception_trace'   => $exception->getTraceAsString(),
             ]);
 
-            $bot->sendMessage(__('telegram.commands.search_anime.no_results'));
+            $bot->sendMessage(__('telegram.conversations.search_anime.no_results'));
             UserStateFacade::resetExecutedCommandsList($userId);
             $this->end();
         }
