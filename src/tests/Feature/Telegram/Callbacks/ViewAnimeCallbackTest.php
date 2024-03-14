@@ -9,8 +9,8 @@ use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
-use Tests\Traits\CanCreateMocks;
-use Tests\Traits\Fake\CanCreateFakeAnime;
+use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
 
 class ViewAnimeCallbackTest extends TestCase
 {

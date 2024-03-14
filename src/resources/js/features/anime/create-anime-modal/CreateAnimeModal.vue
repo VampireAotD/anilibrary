@@ -22,7 +22,7 @@ const form = useForm({
     rating: '',
     episodes: '',
     urls: [{ url: '' }],
-    synonyms: [{ synonym: '' }],
+    synonyms: [{ name: '' }],
     genres: [],
     voiceActing: [],
     image: null,

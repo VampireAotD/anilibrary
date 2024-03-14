@@ -46,7 +46,7 @@ class VoiceActingRepository implements VoiceActingRepositoryInterface
      */
     public function findByNames(array $names): Collection
     {
-        return $this->query->whereIn('name', $names)->get();
+        return $this->query->select(['id', 'name'])->whereIn('name', $names)->get();
     }
 
     /**

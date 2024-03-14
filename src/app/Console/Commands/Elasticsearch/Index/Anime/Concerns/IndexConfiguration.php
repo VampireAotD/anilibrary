@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands\Elasticsearch\Index\Anime\Traits;
+namespace App\Console\Commands\Elasticsearch\Index\Anime\Concerns;
 
-trait IndexConfigurationTrait
+trait IndexConfiguration
 {
     protected function getIndexSettings(): array
     {

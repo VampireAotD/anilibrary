@@ -28,22 +28,25 @@ final readonly class VoiceActingService
     }
 
     /**
-     * @param string[] $voiceActing
-     * @return string[]
+     * @param array<string> $voiceActing
+     * @return array<string>
      */
     public function sync(array $voiceActing): array
     {
-        $stored         = $this->voiceActingRepository->findByNames($voiceActing);
-        $newVoiceActing = array_diff($voiceActing, $stored->pluck('name')->toArray());
+        $stored           = $this->voiceActingRepository->findByNames($voiceActing);
+        $voiceActingNames = collect($voiceActing)->pluck('name');
 
-        if (!$newVoiceActing) {
-            return $stored->pluck('id')->toArray();
+        // Find difference between stored voice acting and new ones
+        $newVoiceActing = $voiceActingNames->diff($stored->pluck('name'))->map(
+            fn(string $voiceActing) => ['name' => $voiceActing]
+        );
+
+        // If there is new voice acting - upsert them and get their ids
+        if ($newVoiceActing->isNotEmpty()) {
+            $this->voiceActingRepository->upsertMany($newVoiceActing->toArray(), ['name']);
+            $stored = $this->voiceActingRepository->findByNames($voiceActing);
         }
 
-        $newVoiceActing = $this->toAssociativeArrayWithUuid('name', $newVoiceActing);
-
-        $this->voiceActingRepository->upsertMany($newVoiceActing, ['name']);
-
-        return $stored->toBase()->merge($newVoiceActing)->pluck('id')->toArray();
+        return $stored->pluck('id')->toArray();
     }
 }

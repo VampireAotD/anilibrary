@@ -10,8 +10,8 @@ use App\Facades\Telegram\State\UserStateFacade;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Tests\Traits\CanCreateMocks;
-use Tests\Traits\Fake\CanCreateFakeAnime;
+use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
 
 class RandomAnimeCommandTest extends TestCase
 {

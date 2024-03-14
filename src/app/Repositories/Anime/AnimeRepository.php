@@ -52,8 +52,8 @@ class AnimeRepository implements AnimeRepositoryInterface
     {
         return $this->query
             ->whereIn('title', $data)
-            ->with('synonyms')
-            ->orWhereHas('synonyms', fn(Builder $query) => $query->whereIn('synonym', $data))
+            ->with(['urls', 'synonyms'])
+            ->orWhereHas('synonyms', fn(Builder $query) => $query->whereIn('name', $data))
             ->first();
     }
 

@@ -10,7 +10,7 @@ use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ChatMemberStatus;
 use SergiX44\Nutgram\Telegram\Properties\UpdateType;
 use Tests\TestCase;
-use Tests\Traits\CanCreateMocks;
+use Tests\Concerns\CanCreateMocks;
 
 class UserStatusMiddlewareTest extends TestCase
 {

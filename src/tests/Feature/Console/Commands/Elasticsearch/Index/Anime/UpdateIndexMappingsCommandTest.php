@@ -8,7 +8,7 @@ use App\Enums\Elasticsearch\IndexEnum;
 use Illuminate\Http\Response as ResponseStatus;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
-use Tests\Traits\CanCreateMocks;
+use Tests\Concerns\CanCreateMocks;
 
 class UpdateIndexMappingsCommandTest extends TestCase
 {

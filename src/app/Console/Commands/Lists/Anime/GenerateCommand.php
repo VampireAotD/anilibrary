@@ -43,7 +43,7 @@ final class GenerateCommand extends Command
             new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
             new RelationFilter([
                 'urls:anime_id,url',
-                'synonyms:anime_id,synonym',
+                'synonyms:anime_id,name',
                 'image:id,model_id,path,alias',
                 'genres:id,name',
                 'voiceActing:id,name',

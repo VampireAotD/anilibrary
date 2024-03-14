@@ -69,7 +69,7 @@ declare namespace Models {
     }
 
     export interface AnimeSynonym extends Id {
-        synonym: string;
+        name: string;
     }
 
     export interface AnimeUrl extends Id {

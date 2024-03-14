@@ -16,8 +16,8 @@ use App\Models\VoiceActing;
 use App\Services\AnimeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeAnime;
 
 class ParseCommandTest extends TestCase
 {
@@ -54,7 +54,7 @@ class ParseCommandTest extends TestCase
                        new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
                        new RelationFilter([
                            'urls:anime_id,url',
-                           'synonyms:anime_id,synonym',
+                           'synonyms:anime_id,name',
                            'image:id,model_id,path,alias',
                            'genres:id,name',
                            'voiceActing:id,name',
@@ -95,6 +95,6 @@ class ParseCommandTest extends TestCase
 
         $this->assertTrue($anime->synonyms->isNotEmpty());
         $this->assertInstanceOf(AnimeSynonym::class, $anime->synonyms->first());
-        $this->assertNotEmpty($anime->synonyms->first()->synonym);
+        $this->assertNotEmpty($anime->synonyms->first()->name);
     }
 }

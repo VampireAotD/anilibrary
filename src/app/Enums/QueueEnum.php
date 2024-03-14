@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use App\Enums\Traits\CanProvideCasesValues;
+use App\Enums\Concerns\ProvideValues;
 
 enum QueueEnum: string
 {
-    use CanProvideCasesValues;
+    use ProvideValues;
 
     case MAIL_QUEUE                          = 'mail';
     case REGISTER_TELEGRAM_USER_QUEUE        = 'register';

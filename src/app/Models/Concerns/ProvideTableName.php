@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Traits;
+namespace App\Models\Concerns;
 
-trait CanProvideTableName
+trait ProvideTableName
 {
     /**
      * @return string

@@ -13,9 +13,9 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeAnime;
-use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class GenerateCommandTest extends TestCase
 {
@@ -69,7 +69,7 @@ class GenerateCommandTest extends TestCase
                 new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
                 new RelationFilter([
                     'urls:anime_id,url',
-                    'synonyms:anime_id,synonym',
+                    'synonyms:anime_id,name',
                     'image:id,model_id,path,alias',
                     'genres:id,name',
                     'voiceActing:id,name',

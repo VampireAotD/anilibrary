@@ -39,7 +39,7 @@ class SyncAnimeDataCommand extends Command
 
         $animeList = $animeService->all([
             new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
-            new RelationFilter(['synonyms:anime_id,synonym', 'genres:id,name', 'voiceActing:id,name']),
+            new RelationFilter(['synonyms:anime_id,name', 'genres:id,name', 'voiceActing:id,name']),
         ]);
 
         $bar = $this->output->createProgressBar($animeList->count());

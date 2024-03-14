@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Traits;
+namespace Tests\Concerns;
 
 use App\Telegram\Middleware\BotAccessMiddleware;
 use App\Telegram\Middleware\UserActivityMiddleware;

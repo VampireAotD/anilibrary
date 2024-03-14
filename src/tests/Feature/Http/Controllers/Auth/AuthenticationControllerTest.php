@@ -7,7 +7,7 @@ namespace Tests\Feature\Http\Controllers\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeUsers;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 
 class AuthenticationControllerTest extends TestCase
 {

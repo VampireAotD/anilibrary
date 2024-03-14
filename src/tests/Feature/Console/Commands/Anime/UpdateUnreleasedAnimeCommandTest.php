@@ -15,9 +15,9 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
-use Tests\Traits\CanCreateMocks;
-use Tests\Traits\Fake\CanCreateFakeAnime;
-use Tests\Traits\Fake\CanCreateFakeUsers;
+use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 
 class UpdateUnreleasedAnimeCommandTest extends TestCase
 {

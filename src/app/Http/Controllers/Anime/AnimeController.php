@@ -84,7 +84,7 @@ class AnimeController extends Controller
         $anime->load([
             'image:model_id,path',
             'urls:anime_id,url',
-            'synonyms:anime_id,synonym',
+            'synonyms:anime_id,name',
             'voiceActing:name',
             'genres:name',
         ]);

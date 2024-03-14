@@ -21,7 +21,7 @@ final class EncodedImageRule implements ValidationRule
     {
         if (
             !preg_match('#data:image/(jpeg|jpg|png|gif|webp);base64,.#mi', $value)
-            && config('cloudinary.default_image') !== $value
+            && $value !== config('cloudinary.default_image')
         ) {
             $fail(__('validation.scraper.image', ['attribute' => $attribute]));
         }

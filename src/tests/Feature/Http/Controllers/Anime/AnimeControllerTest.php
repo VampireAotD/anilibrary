@@ -9,9 +9,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeAnime;
-use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class AnimeControllerTest extends TestCase
 {
@@ -122,20 +122,20 @@ class AnimeControllerTest extends TestCase
 
         $generatedSynonyms = [
             [
-                'synonym' => $synonym = $this->faker->name,
+                'name' => $synonym = $this->faker->name,
             ],
             [
-                'synonym' => $synonym,
+                'name' => $synonym,
             ],
             [
-                'synonym' => $synonym,
+                'name' => $synonym,
             ],
         ];
 
         // For updating anime upsertRelated is used, so even if the same data will be sent multiple times
         // they will be created only one time, other times they will be just updated
-        $urls     = array_merge($anime->urls->pluck('url')->toArray(), $generatedUrls);
-        $synonyms = array_merge($anime->synonyms->pluck('synonym')->toArray(), $generatedSynonyms);
+        $urls     = array_merge($anime->urls->select('url')->toArray(), $generatedUrls);
+        $synonyms = array_merge($anime->synonyms->select('name')->toArray(), $generatedSynonyms);
 
         $this->actingAs($user)->put(route('anime.update', [$anime->id]), [
             'title'        => $anime->title,

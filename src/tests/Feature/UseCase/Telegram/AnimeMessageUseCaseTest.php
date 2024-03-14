@@ -17,7 +17,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
 
 class AnimeMessageUseCaseTest extends TestCase
 {

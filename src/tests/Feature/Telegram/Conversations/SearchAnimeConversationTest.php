@@ -11,8 +11,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
-use Tests\Traits\CanCreateMocks;
-use Tests\Traits\Fake\CanCreateFakeAnime;
+use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
 
 class SearchAnimeConversationTest extends TestCase
 {

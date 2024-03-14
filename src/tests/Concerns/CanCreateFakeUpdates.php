@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Traits;
+namespace Tests\Concerns;
 
 trait CanCreateFakeUpdates
 {

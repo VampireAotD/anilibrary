@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeUsers;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 
 class InvitationControllerTest extends TestCase
 {

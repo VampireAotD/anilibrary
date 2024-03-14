@@ -7,8 +7,8 @@ namespace Tests\Feature\Telegram\Middleware;
 use App\Telegram\Middleware\BotAccessMiddleware;
 use SergiX44\Nutgram\Nutgram;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeUpdates;
-use Tests\Traits\CanCreateMocks;
+use Tests\Concerns\CanCreateFakeUpdates;
+use Tests\Concerns\CanCreateMocks;
 
 class BotAccessMiddlewareTest extends TestCase
 {

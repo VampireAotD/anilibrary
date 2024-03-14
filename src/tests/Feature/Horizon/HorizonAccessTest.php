@@ -8,7 +8,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeUsers;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 
 class HorizonAccessTest extends TestCase
 {

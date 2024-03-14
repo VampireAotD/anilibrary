@@ -113,7 +113,7 @@ final readonly class AnimeService
         }
 
         if ($dto->synonyms) {
-            $anime->synonyms()->upsertRelated($dto->synonyms, 'synonym');
+            $anime->synonyms()->upsertRelated($dto->synonyms, 'name');
         }
 
         if ($dto->voiceActing) {

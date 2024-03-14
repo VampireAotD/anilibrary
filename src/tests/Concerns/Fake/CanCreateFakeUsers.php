@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Traits\Fake;
+namespace Tests\Concerns\Fake;
 
 use App\Enums\RoleEnum;
 use App\Models\User;

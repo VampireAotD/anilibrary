@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Elasticsearch\Index\Anime;
 
-use App\Console\Commands\Elasticsearch\Index\Anime\Traits\IndexConfigurationTrait;
+use App\Console\Commands\Elasticsearch\Index\Anime\Concerns\IndexConfiguration;
 use App\Enums\Elasticsearch\IndexEnum;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
 class CreateIndexCommand extends Command
 {
-    use IndexConfigurationTrait;
+    use IndexConfiguration;
 
     /**
      * The name and signature of the console command.

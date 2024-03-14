@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\TestCase;
-use Tests\Traits\CanCreateMocks;
-use Tests\Traits\Fake\CanCreateFakeAnime;
 
 class ScraperUseCaseTest extends TestCase
 {
@@ -96,7 +96,7 @@ class ScraperUseCaseTest extends TestCase
         $this->assertCount(1, $anime->synonyms);
 
         // Create new synonyms that scraper will return
-        $newSynonyms = AnimeSynonym::factory(4)->make()->pluck('synonym')->toArray();
+        $newSynonyms = AnimeSynonym::factory(4)->make()->toArray();
 
         Http::fake([
             self::SCRAPER_ENDPOINT => [
@@ -104,7 +104,7 @@ class ScraperUseCaseTest extends TestCase
                 'status'   => $this->faker->randomAnimeStatus(),
                 'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
-                'synonyms' => array_merge($anime->synonyms->pluck('synonym')->toArray(), $newSynonyms),
+                'synonyms' => array_merge($anime->synonyms->select('name')->toArray(), $newSynonyms),
             ],
         ]);
 
@@ -176,9 +176,9 @@ class ScraperUseCaseTest extends TestCase
                 'status'      => $this->faker->randomAnimeStatus(),
                 'episodes'    => $this->faker->randomAnimeEpisodes(),
                 'rating'      => $this->faker->randomAnimeRating(),
-                'genres'      => Genre::factory(5)->make()->pluck('name')->toArray(),
-                'voiceActing' => VoiceActing::factory(5)->make()->pluck('name')->toArray(),
-                'synonyms'    => AnimeSynonym::factory(5)->make()->pluck('synonym')->toArray(),
+                'genres'      => Genre::factory(5)->make()->toArray(),
+                'voiceActing' => VoiceActing::factory(5)->make()->toArray(),
+                'synonyms'    => AnimeSynonym::factory(5)->make()->toArray(),
             ],
         ]);
 
@@ -214,7 +214,7 @@ class ScraperUseCaseTest extends TestCase
 
         $this->assertTrue($anime->synonyms->isNotEmpty());
         $this->assertInstanceOf(AnimeSynonym::class, $anime->synonyms->first());
-        $this->assertNotEmpty($anime->synonyms->first()->synonym);
+        $this->assertNotEmpty($anime->synonyms->first()->name);
 
         Bus::assertDispatched(UpsertAnimeJob::class);
     }

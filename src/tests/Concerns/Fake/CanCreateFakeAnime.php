@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Traits\Fake;
+namespace Tests\Concerns\Fake;
 
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Models\Anime;

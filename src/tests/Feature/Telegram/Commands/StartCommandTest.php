@@ -9,8 +9,8 @@ use App\Jobs\Telegram\CreateUserJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeUpdates;
-use Tests\Traits\CanCreateMocks;
+use Tests\Concerns\CanCreateFakeUpdates;
+use Tests\Concerns\CanCreateMocks;
 
 class StartCommandTest extends TestCase
 {

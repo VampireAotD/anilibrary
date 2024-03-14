@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Enums\Traits;
+namespace App\Enums\Concerns;
 
 use UnitEnum;
 
-trait CanProvideCasesValues
+trait ProvideValues
 {
     public static function values(): array
     {

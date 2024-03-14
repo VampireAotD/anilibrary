@@ -53,49 +53,54 @@ final readonly class ScraperUseCase
             ]
         )->validate();
 
-        return $this->createAnime(new ScrapedDataDTO(...$response));
+        return $this->upsert(new ScrapedDataDTO(...$response));
     }
 
-    private function createAnime(ScrapedDataDTO $dto): Anime
+    private function upsert(ScrapedDataDTO $dto): Anime
     {
         $anime = $this->animeService->findByTitleAndSynonyms(array_merge($dto->synonyms, [$dto->title]));
 
         // Some anime have similar synonyms, this prevents updating wrong anime
         // TODO try to resolve this in better way
-        $parsed = parse_url($dto->url);
+        $domain = parse_url($dto->url)['host'] ?? '';
 
         if (
             $anime
-            && $anime->urls->filter(fn(AnimeUrl $animeUrl) => str_contains($animeUrl->url, $parsed['host']))->isEmpty()
+            && $anime->urls->filter(fn(AnimeUrl $animeUrl) => str_contains($animeUrl->url, $domain))->isEmpty()
         ) {
-            $anime->synonyms()->upsertRelated($this->toAssociativeArray('synonym', $dto->synonyms), ['synonym']);
             $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
+            $anime->synonyms()->upsertRelated($dto->synonyms, ['name']);
 
             return $anime;
         }
 
         return DB::transaction(function () use ($dto): Anime {
             $anime = $this->animeService->create(
-                new UpsertAnimeDTO($dto->title, AnimeStatusEnum::from($dto->status), $dto->rating, $dto->episodes)
+                new UpsertAnimeDTO(
+                    $dto->title,
+                    AnimeStatusEnum::from($dto->status),
+                    $dto->rating,
+                    $dto->episodes
+                )
             );
 
             $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
 
             // Don't update image on CDN if there is one already
-            if (!$anime->image && $dto->synonyms) {
-                $anime->synonyms()->upsertRelated($this->toAssociativeArray('synonym', $dto->synonyms), ['synonym']);
-            }
-
-            if ($dto->image) {
+            if ($dto->image && !$anime->image) {
                 $this->imageService->upsert($dto->image, $anime);
             }
 
+            if ($dto->synonyms) {
+                $anime->synonyms()->upsertRelated($dto->synonyms, ['name']);
+            };
+
             if ($dto->voiceActing) {
-                $anime->voiceActing()->sync($this->voiceActingService->sync($dto->voiceActing), false);
+                $anime->voiceActing()->syncWithoutDetaching($this->voiceActingService->sync($dto->voiceActing));
             }
 
             if ($dto->genres) {
-                $anime->genres()->sync($this->genreService->sync($dto->genres), false);
+                $anime->genres()->syncWithoutDetaching($this->genreService->sync($dto->genres));
             }
 
             return $anime;

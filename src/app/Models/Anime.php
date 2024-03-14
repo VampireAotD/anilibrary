@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\Filterable;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeVoiceActing;
-use App\Models\Traits\Filterable;
 use App\Observers\AnimeObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -76,8 +76,7 @@ class Anime extends Model
      */
     public function voiceActing(): BelongsToMany
     {
-        return $this->belongsToMany(VoiceActing::class)
-                    ->using(AnimeVoiceActing::class);
+        return $this->belongsToMany(VoiceActing::class)->using(AnimeVoiceActing::class);
     }
 
     /**
@@ -93,8 +92,7 @@ class Anime extends Model
      */
     public function genres(): BelongsToMany
     {
-        return $this->belongsToMany(Genre::class, AnimeGenre::getTableName())
-                    ->using(AnimeGenre::class);
+        return $this->belongsToMany(Genre::class, AnimeGenre::getTableName())->using(AnimeGenre::class);
     }
 
     /**

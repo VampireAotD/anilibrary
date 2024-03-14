@@ -9,8 +9,8 @@ use App\Facades\Telegram\State\UserStateFacade;
 use App\Telegram\Middleware\UserActivityMiddleware;
 use SergiX44\Nutgram\Nutgram;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeUpdates;
-use Tests\Traits\CanCreateMocks;
+use Tests\Concerns\CanCreateFakeUpdates;
+use Tests\Concerns\CanCreateMocks;
 
 class UserActivityMiddlewareTest extends TestCase
 {

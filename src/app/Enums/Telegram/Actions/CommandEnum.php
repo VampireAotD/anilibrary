@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Enums\Telegram\Actions;
 
-use App\Enums\Traits\CanProvideCasesValues;
+use App\Enums\Concerns\ProvideValues;
 
 enum CommandEnum: string
 {
-    use CanProvideCasesValues;
+    use ProvideValues;
 
     case START_COMMAND        = '/start';
     case ADD_ANIME_COMMAND    = '/add';

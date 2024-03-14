@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
-use Tests\Traits\CanCreateFakeUpdates;
-use Tests\Traits\CanCreateMocks;
-use Tests\Traits\Fake\CanCreateFakeAnime;
+use Tests\Concerns\CanCreateFakeUpdates;
+use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
 
 class AddAnimeConversationTest extends TestCase
 {

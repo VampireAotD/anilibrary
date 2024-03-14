@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Models\Traits;
+namespace App\Models\Concerns;
 
 use App\Filters\QueryFilterInterface;
 use Illuminate\Database\Eloquent\Builder;

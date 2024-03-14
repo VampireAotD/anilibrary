@@ -28,22 +28,23 @@ final readonly class GenreService
     }
 
     /**
-     * @param string[] $genres
-     * @return string[]
+     * @param array<string> $genres
+     * @return array<string>
      */
     public function sync(array $genres): array
     {
-        $stored    = $this->genreRepository->findByNames($genres);
-        $newGenres = array_diff($genres, $stored->pluck('name')->toArray());
+        $stored     = $this->genreRepository->findByNames($genres);
+        $genreNames = collect($genres)->pluck('name');
 
-        if (!$newGenres) {
-            return $stored->pluck('id')->toArray();
+        // Find difference between stored genres and new ones
+        $newGenres = $genreNames->diff($stored->pluck('name'))->map(fn(string $genre) => ['name' => $genre]);
+
+        // If there is new genres - upsert them and get their ids
+        if ($newGenres->isNotEmpty()) {
+            $this->genreRepository->upsertMany($newGenres->toArray(), ['name']);
+            $stored = $this->genreRepository->findByNames($genres);
         }
 
-        $newGenres = $this->toAssociativeArrayWithUuid('name', $newGenres);
-
-        $this->genreRepository->upsertMany($newGenres, ['name']);
-
-        return $stored->toBase()->merge($newGenres)->pluck('id')->toArray();
+        return $stored->pluck('id')->toArray();
     }
 }
