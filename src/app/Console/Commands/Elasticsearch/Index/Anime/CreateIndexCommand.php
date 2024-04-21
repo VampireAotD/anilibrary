@@ -33,10 +33,10 @@ class CreateIndexCommand extends Command
      */
     public function handle(Client $client): int
     {
-        if ($client->indices()->exists(['index' => IndexEnum::ANIME_INDEX->value])->asBool()) {
+        if ($client->indices()->exists(['index' => [IndexEnum::ANIME_INDEX->value]])->asBool()) {
             $this->warn('Index already exists!');
 
-            return Command::FAILURE;
+            return self::INVALID;
         }
 
         $client->indices()->create([
@@ -49,6 +49,6 @@ class CreateIndexCommand extends Command
 
         $this->info('Successfully created index');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

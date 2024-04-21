@@ -27,13 +27,12 @@ class MacroServiceProvider extends ServiceProvider
     public function boot(): void
     {
         /**
-         * @see            https://github.com/laravel/framework/pull/40057
-         * @psalm-suppress UndefinedMethod
+         * @see https://github.com/laravel/framework/pull/40057
          */
         HasMany::macro(
             'upsertRelated',
             function (array $values, array | string $uniqueBy, array | null $update = null): int {
-                /** @var $this HasMany */
+                /** @var HasMany $this */
                 data_set($values, '*.' . $this->getForeignKeyName(), $this->getParentKey());
                 return $this->getRelated()->upsert($values, $uniqueBy, $update);
             }

@@ -7,7 +7,11 @@ namespace App\Console\Commands\Elasticsearch\Index\Anime;
 use App\Console\Commands\Elasticsearch\Index\Anime\Concerns\IndexConfiguration;
 use App\Enums\Elasticsearch\IndexEnum;
 use Elastic\Elasticsearch\Client;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Exception\MissingParameterException;
+use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class UpdateIndexMappingsCommand extends Command
 {
@@ -29,17 +33,26 @@ class UpdateIndexMappingsCommand extends Command
 
     /**
      * Execute the console command.
-     * @psalm-suppress InvalidArgument
      */
     public function handle(Client $manager): int
     {
-        $manager->indices()->putMapping([
-            'index' => IndexEnum::ANIME_INDEX->value,
-            'body'  => $this->getIndexMappings(),
-        ]);
+        /** @psalm-suppress InvalidArgument */
+        try {
+            $manager->indices()->putMapping([
+                'index' => [IndexEnum::ANIME_INDEX->value],
+                'body'  => $this->getIndexMappings(),
+            ]);
+        } catch (ClientResponseException | MissingParameterException | ServerResponseException $e) {
+            Log::error("Elasticsearch anime index mappings update failed", [
+                'exception_trace'   => $e->getTraceAsString(),
+                'exception_message' => $e->getMessage(),
+            ]);
+
+            return self::FAILURE;
+        }
 
         $this->info(sprintf('Mappings for %s index were updated', IndexEnum::ANIME_INDEX->value));
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

@@ -10,8 +10,12 @@ use App\Filters\RelationFilter;
 use App\Models\Anime;
 use App\Services\AnimeService;
 use Elastic\Elasticsearch\Client;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\LazyCollection;
 
 class SyncAnimeDataCommand extends Command
 {
@@ -48,11 +52,12 @@ class SyncAnimeDataCommand extends Command
         $animeList->chunk(100)->each(function (Collection $collection) use ($client, $bar) {
             $batch = ['body' => []];
 
-            /** @phpstan-ignore-next-line */
+            /** @var LazyCollection<int, Anime> $collection */
             $collection->each(function (Anime $anime) use (&$batch, $bar) {
                 $batch['body'][] = [
                     'index' => [
                         '_index' => IndexEnum::ANIME_INDEX->value,
+                        '_id'    => $anime->id,
                     ],
                 ];
 
@@ -61,7 +66,14 @@ class SyncAnimeDataCommand extends Command
                 $bar->advance();
             });
 
-            $client->bulk($batch);
+            try {
+                $client->bulk($batch);
+            } catch (ClientResponseException | ServerResponseException $e) {
+                Log::error('Sync anime data command', [
+                    'exception_trace'   => $e->getTraceAsString(),
+                    'exception_message' => $e->getMessage(),
+                ]);
+            }
         });
 
         $bar->finish();

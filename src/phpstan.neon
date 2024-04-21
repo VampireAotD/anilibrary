@@ -5,6 +5,8 @@ parameters:
     paths:
         - app/
     level: 5
+    noEnvCallsOutsideOfConfig: true
+    checkModelAppends: true
     excludePaths:
         - ./app/Providers/MacroServiceProvider.php
         - ./app/Telegram/State/UserState.php

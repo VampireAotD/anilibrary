@@ -35,7 +35,6 @@ class UpsertAnimeJob implements ShouldQueue
 
     /**
      * Execute the job.
-     * @psalm-suppress InvalidArgument
      */
     public function handle(Client $client): void
     {
@@ -43,7 +42,7 @@ class UpsertAnimeJob implements ShouldQueue
             $client->index([
                 'index' => IndexEnum::ANIME_INDEX->value,
                 'id'    => $this->anime->id,
-                'body'  => $this->anime->toJson(),
+                'body'  => $this->anime->toArray(),
             ]);
         } catch (ClientResponseException | MissingParameterException | ServerResponseException $exception) {
             Log::error('Upsert anime job', [

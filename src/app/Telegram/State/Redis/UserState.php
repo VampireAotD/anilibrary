@@ -37,6 +37,7 @@ class UserState
 
     public function getLastExecutedCommand(int $telegramId): string
     {
+        /** @var array $commands */
         $commands = Cache::get($this->stateKey(UserStateKeyEnum::LAST_EXECUTED_COMMANDS_LIST_KEY, $telegramId), []);
 
         return end($commands) ?: '';
