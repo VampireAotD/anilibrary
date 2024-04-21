@@ -25,7 +25,7 @@ final readonly class AnimeMessageService
             return new InlineKeyboardButtonDTO($url->domain, $url->url);
         })->toArray();
 
-        return new AnimeMessageDTO($anime->image->path, $anime->toTelegramCaption, $buttons);
+        return new AnimeMessageDTO($anime->image->path, $anime->to_telegram_caption, $buttons);
     }
 
     public function createMessageWithPagination(

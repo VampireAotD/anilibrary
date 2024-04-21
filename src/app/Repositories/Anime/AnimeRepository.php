@@ -16,9 +16,9 @@ use Illuminate\Support\LazyCollection;
 class AnimeRepository implements AnimeRepositoryInterface
 {
     /**
-     * @var Builder|Anime
+     * @var Builder<Anime>
      */
-    protected Builder | Anime $query;
+    protected Builder $query;
 
     public function __construct()
     {

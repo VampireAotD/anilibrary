@@ -44,5 +44,5 @@ return [
             'render_error' => 'Could not get anime.',
         ],
     ],
-    
+
 ];

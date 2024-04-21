@@ -8,9 +8,9 @@ use App\DTO\Factory\Telegram\CallbackData\PaginationCallbackDataDTO;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\TestCase;
 
 class AnimeListCallbackTest extends TestCase
 {
@@ -45,7 +45,7 @@ class AnimeListCallbackTest extends TestCase
         $reply = [
             'type'        => 'photo',
             'media'       => $anime->image->path,
-            'caption'     => $anime->toTelegramCaption,
+            'caption'     => $anime->to_telegram_caption,
             'has_spoiler' => false,
         ];
 
@@ -68,7 +68,7 @@ class AnimeListCallbackTest extends TestCase
         $media = [
             'type'        => 'photo',
             'media'       => $anime->image->path,
-            'caption'     => $anime->toTelegramCaption,
+            'caption'     => $anime->to_telegram_caption,
             'has_spoiler' => false,
         ];
 

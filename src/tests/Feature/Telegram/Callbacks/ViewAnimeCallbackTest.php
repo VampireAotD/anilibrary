@@ -8,9 +8,9 @@ use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\TestCase;
 
 class ViewAnimeCallbackTest extends TestCase
 {
@@ -45,7 +45,7 @@ class ViewAnimeCallbackTest extends TestCase
 
         $this->bot->hearCallbackQueryData($callbackData)->reply()->assertReplyMessage([
             'photo'   => $anime->image->path,
-            'caption' => $anime->toTelegramCaption,
+            'caption' => $anime->to_telegram_caption,
         ]);
     }
 }

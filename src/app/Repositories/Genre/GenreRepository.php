@@ -12,7 +12,10 @@ use Illuminate\Support\LazyCollection;
 
 class GenreRepository implements GenreRepositoryInterface
 {
-    protected Builder | Genre $query;
+    /**
+     * @var Builder<Genre>
+     */
+    protected Builder $query;
 
     public function __construct()
     {

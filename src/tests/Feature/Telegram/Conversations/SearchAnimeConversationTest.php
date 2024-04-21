@@ -9,10 +9,10 @@ use App\Facades\Telegram\State\UserStateFacade;
 use App\Models\Anime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\Helpers\Elasticsearch\JsonResponse;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Helpers\Elasticsearch\JsonResponse;
+use Tests\TestCase;
 
 class SearchAnimeConversationTest extends TestCase
 {
@@ -80,7 +80,7 @@ class SearchAnimeConversationTest extends TestCase
                   ->reply()
                   ->assertReplyMessage([
                       'photo'   => $anime->image->path,
-                      'caption' => $anime->toTelegramCaption,
+                      'caption' => $anime->to_telegram_caption,
                   ]);
     }
 }

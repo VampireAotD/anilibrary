@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Builder;
 class AnimeUrlRepository implements AnimeUrlRepositoryInterface
 {
     /**
-     * @var Builder|AnimeUrl
+     * @var Builder<AnimeUrl>
      */
-    protected Builder | AnimeUrl $query;
+    protected Builder $query;
 
     public function __construct()
     {

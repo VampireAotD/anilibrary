@@ -17,28 +17,30 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+#[ObservedBy(AnimeObserver::class)]
 /**
  * App\Models\Anime
  *
  * @property string                                                                       $id
  * @property string                                                                       $title
- * @property \Illuminate\Support\Carbon|null                                              $created_at
- * @property \Illuminate\Support\Carbon|null                                              $updated_at
- * @property string|null                                                                  $deleted_at
  * @property string                                                                       $status
  * @property float                                                                        $rating
  * @property string|null                                                                  $episodes
+ * @property \Illuminate\Support\Carbon|null                                              $created_at
+ * @property \Illuminate\Support\Carbon|null                                              $updated_at
+ * @property string|null                                                                  $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Genre>        $genres
  * @property-read int|null                                                                $genres_count
  * @property-read \App\Models\Image|null                                                  $image
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AnimeSynonym> $synonyms
  * @property-read int|null                                                                $synonyms_count
+ * @property-read string                                                                  $to_telegram_caption
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AnimeUrl>     $urls
  * @property-read int|null                                                                $urls_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\VoiceActing>  $voiceActing
  * @property-read int|null                                                                $voice_acting_count
- * @property-read Attribute                                                               $toTelegramCaption
- * @method static \Database\Factories\AnimeFactory            factory($count = null, $state = [])
+ * @method static \Database\Factories\AnimeFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Anime filter(array $filters)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Anime query()
@@ -50,10 +52,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Anime whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Anime filter(array $filters)
  * @mixin \Eloquent
  */
-#[ObservedBy(AnimeObserver::class)]
 class Anime extends Model
 {
     use HasUuids;
@@ -67,9 +67,15 @@ class Anime extends Model
         'episodes',
     ];
 
-    protected $casts = [
-        'id' => 'string',
-    ];
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'string',
+        ];
+    }
 
     /**
      * @return BelongsToMany
@@ -111,13 +117,10 @@ class Anime extends Model
         return $this->hasMany(AnimeUrl::class);
     }
 
-    /**
-     * @return Attribute<string, never>
-     */
     public function toTelegramCaption(): Attribute
     {
         return Attribute::make(
-            get: fn() => sprintf(
+            get: fn(): string => sprintf(
                 "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s",
                 $this->title,
                 $this->status,

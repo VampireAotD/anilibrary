@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Builder;
 class TelegramUserRepository implements TelegramUserRepositoryInterface
 {
     /**
-     * @var Builder|TelegramUser
+     * @var Builder<TelegramUser>
      */
-    protected Builder | TelegramUser $query;
+    protected Builder $query;
 
     public function __construct()
     {

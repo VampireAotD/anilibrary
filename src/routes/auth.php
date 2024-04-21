@@ -59,8 +59,7 @@ Route::group(
 );
 
 Route::group(['name' => 'password', 'as' => 'password.'], function () {
-    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-         ->name('confirm');
+    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])->name('confirm');
 
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 

@@ -13,9 +13,9 @@ use Illuminate\Support\LazyCollection;
 class VoiceActingRepository implements VoiceActingRepositoryInterface
 {
     /**
-     * @var Builder|VoiceActing
+     * @var Builder<VoiceActing>
      */
-    protected Builder | VoiceActing $query;
+    protected Builder $query;
 
     public function __construct()
     {

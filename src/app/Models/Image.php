@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Model|\Eloquent            $anime
- * @method static \Database\Factories\ImageFactory            factory(...$parameters)
+ * @method static \Database\Factories\ImageFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Image newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Image newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Image query()

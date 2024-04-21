@@ -19,9 +19,9 @@ return new class extends Migration {
         });
 
         Schema::table('telegram_users', function (Blueprint $table) {
-            $table->string('first_name')->after('telegram_id')->nullable();
-            $table->string('last_name')->after('first_name')->nullable();
-            $table->string('username')->after('last_name')->nullable()->change();
+            $table->string('first_name')->nullable()->after('telegram_id');
+            $table->string('last_name')->nullable()->after('first_name');
+            $table->string('username')->nullable()->change();
         });
     }
 

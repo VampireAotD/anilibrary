@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Builder;
 class UserRepository implements UserRepositoryInterface
 {
     /**
-     * @var Builder|User
+     * @var Builder<User>
      */
-    protected Builder | User $query;
+    protected Builder $query;
 
     public function __construct()
     {

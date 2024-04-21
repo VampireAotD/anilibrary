@@ -9,9 +9,9 @@ use App\Enums\Telegram\Buttons\CommandButtonEnum;
 use App\Facades\Telegram\State\UserStateFacade;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\TestCase;
 
 class RandomAnimeCommandTest extends TestCase
 {
@@ -53,7 +53,7 @@ class RandomAnimeCommandTest extends TestCase
 
         $this->bot->hearText(CommandEnum::RANDOM_ANIME_COMMAND->value)->reply()->assertReplyMessage([
             'photo'   => $anime->image->path,
-            'caption' => $anime->toTelegramCaption,
+            'caption' => $anime->to_telegram_caption,
         ]);
     }
 }

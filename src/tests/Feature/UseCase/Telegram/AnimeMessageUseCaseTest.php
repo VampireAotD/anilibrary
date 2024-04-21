@@ -16,8 +16,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
-use Tests\TestCase;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\TestCase;
 
 class AnimeMessageUseCaseTest extends TestCase
 {
@@ -53,7 +53,7 @@ class AnimeMessageUseCaseTest extends TestCase
         $replyMarkup = $message->generateReplyMarkup();
 
         $this->assertEquals($anime->image->path, $message->photo);
-        $this->assertEquals($anime->toTelegramCaption, $message->caption);
+        $this->assertEquals($anime->to_telegram_caption, $message->caption);
         $this->assertNotEmpty($replyMarkup->inline_keyboard);
 
         $row = $replyMarkup->inline_keyboard[0]; // Message has only one row, but can have multiple buttons
@@ -77,7 +77,7 @@ class AnimeMessageUseCaseTest extends TestCase
         $first = $animeList->first();
         $this->assertInstanceOf(Anime::class, $first);
         $this->assertEquals($first->image->path, $message->photo);
-        $this->assertEquals($first->toTelegramCaption, $message->caption);
+        $this->assertEquals($first->to_telegram_caption, $message->caption);
 
         $keyboard = $replyMarkup->inline_keyboard;
         $this->assertNotEmpty($keyboard);
@@ -95,7 +95,7 @@ class AnimeMessageUseCaseTest extends TestCase
         $middle = $animeList->offsetGet(1);
         $this->assertInstanceOf(Anime::class, $middle);
         $this->assertEquals($middle->image->path, $message->photo);
-        $this->assertEquals($middle->toTelegramCaption, $message->caption);
+        $this->assertEquals($middle->to_telegram_caption, $message->caption);
 
         $keyboard = $replyMarkup->inline_keyboard;
         $this->assertNotEmpty($keyboard);
@@ -117,7 +117,7 @@ class AnimeMessageUseCaseTest extends TestCase
         $last = $animeList->last();
         $this->assertInstanceOf(Anime::class, $last);
         $this->assertEquals($last->image->path, $message->photo);
-        $this->assertEquals($last->toTelegramCaption, $message->caption);
+        $this->assertEquals($last->to_telegram_caption, $message->caption);
 
         $keyboard = $replyMarkup->inline_keyboard;
         $this->assertNotEmpty($keyboard);
@@ -156,6 +156,6 @@ class AnimeMessageUseCaseTest extends TestCase
 
         $this->assertInstanceOf(Anime::class, $anime);
         $this->assertEquals($anime->image->path, $message->photo);
-        $this->assertEquals($anime->toTelegramCaption, $message->caption);
+        $this->assertEquals($anime->to_telegram_caption, $message->caption);
     }
 }

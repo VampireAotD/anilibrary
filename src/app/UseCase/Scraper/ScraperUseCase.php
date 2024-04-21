@@ -93,7 +93,7 @@ final readonly class ScraperUseCase
 
             if ($dto->synonyms) {
                 $anime->synonyms()->upsertRelated($dto->synonyms, ['name']);
-            };
+            }
 
             if ($dto->voiceActing) {
                 $anime->voiceActing()->syncWithoutDetaching($this->voiceActingService->sync($dto->voiceActing));

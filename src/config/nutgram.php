@@ -79,4 +79,3 @@ return [
     */
     'whitelist'   => env('TELEGRAM_WHITELIST', ''),
 ];
-
