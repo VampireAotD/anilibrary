@@ -10,7 +10,7 @@ const props = defineProps<{ anime: Models.Anime }>();
 
 const rating = computed(() => props.anime.rating);
 const links = computed(() => props.anime.urls.map((link) => link.url));
-const synonyms = computed(() => props.anime.synonyms.map((synonym) => synonym.synonym));
+const synonyms = computed(() => props.anime.synonyms.map((synonym) => synonym.name));
 const genres = computed((): string =>
     props.anime.genres.map((genre) => genre.name).join(', ')
 );

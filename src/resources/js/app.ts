@@ -11,7 +11,6 @@ import PrimeVue from 'primevue/config';
 import Tailwind from 'primevue/passthrough/tailwind';
 import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
-// @ts-expect-error Declaration of ZiggyVue
 import { ZiggyVue } from 'ziggy-js';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Anilibrary';

@@ -1,18 +1,7 @@
 <script setup lang="ts">
 import Rating from 'primevue/rating';
-import { computed } from 'vue';
 
-type Props = {
-    modelValue: number;
-};
-
-const props = defineProps<Props>();
-const emit = defineEmits<{ 'update:modelValue': [value: number] }>();
-
-const rating = computed({
-    get: () => props.modelValue,
-    set: (value: number) => emit('update:modelValue', value),
-});
+const rating = defineModel<number>();
 </script>
 
 <template>
