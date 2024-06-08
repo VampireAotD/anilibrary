@@ -8,18 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * App\Models\Pivots\AnimeVoiceActing
- *
- * @property string $id
- * @property string $anime_id
- * @property string $voice_acting_id
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing query()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing whereAnimeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing whereVoiceActingId($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperAnimeVoiceActing
  */
 class AnimeVoiceActing extends Pivot
 {

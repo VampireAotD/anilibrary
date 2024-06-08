@@ -11,13 +11,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "aws/aws-sdk-php": "^3.304",
+        "aws/aws-sdk-php": "^3.311",
         "cloudinary-labs/cloudinary-laravel": "^2.1",
         "elasticsearch/elasticsearch": "^8.13",
         "firebase/php-jwt": "^6.10",
         "guzzlehttp/guzzle": "^7.8",
-        "inertiajs/inertia-laravel": "^1.0",
-        "laravel/framework": "^11.4",
+        "inertiajs/inertia-laravel": "^1.2",
+        "laravel/framework": "^11.10",
         "laravel/horizon": "^5.24",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
@@ -25,7 +25,7 @@
         "predis/predis": "^2.2",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-permission": "^6.7",
-        "tightenco/ziggy": "^2.1",
+        "tightenco/ziggy": "^2.2",
         "tuupola/base62": "^2.1"
     },
     "require-dev": {
@@ -34,15 +34,15 @@
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^2.9",
         "laravel/breeze": "^2.0",
-        "laravel/pint": "^1.15",
+        "laravel/pint": "^1.16",
         "laravel/sail": "^1.29",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
         "php-http/mock-client": "^1.6",
         "phpunit/phpunit": "^10.5",
         "psalm/plugin-laravel": "^2.11",
-        "spatie/laravel-ignition": "^2.5",
-        "vimeo/psalm": "^5.23"
+        "spatie/laravel-ignition": "^2.7",
+        "vimeo/psalm": "^5.24"
     },
     "autoload": {
         "psr-4": {
@@ -57,12 +57,22 @@
         }
     },
     "scripts": {
+        "ide-helper": [
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta",
+            "@php artisan ide-helper:models -M",
+            "@php artisan ide-helper:eloquent"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
+        "post-install-cmd": [
+            "@ide-helper"
+        ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi",
+            "@ide-helper"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

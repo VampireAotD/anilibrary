@@ -10,23 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\AnimeUrl
- *
- * @property string                          $anime_id
- * @property string                          $url
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Anime          $anime
- * @property-read string                     $domain
- * @method static \Database\Factories\AnimeUrlFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl query()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl whereAnimeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl whereUrl($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperAnimeUrl
  */
 class AnimeUrl extends Model
 {
@@ -34,15 +18,16 @@ class AnimeUrl extends Model
 
     protected $fillable = ['anime_id', 'url'];
 
-    /**
-     * @return BelongsTo
-     */
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);
     }
 
-    public function domain(): Attribute
+    /**
+     * @psalm-suppress TooManyTemplateParams
+     * @return Attribute<string, never>
+     */
+    protected function domain(): Attribute
     {
         return Attribute::make(
             get: fn(): string => parse_url($this->url)['host'] ?? '',

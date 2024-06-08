@@ -81,8 +81,9 @@ optimize: ## Optimize Laravel app.
 .PHONY: ide-helper
 ide-helper: ## Generate Laravel IDE helpers.
 	$(compose) exec app ./artisan ide-helper:generate;
-	$(compose) exec app ./artisan ide-helper:model --reset -W;
 	$(compose) exec app ./artisan ide-helper:meta;
+	$(compose) exec app ./artisan ide-helper:models -M;
+	$(compose) exec app ./artisan ide-helper:eloquent
 
 .PHONY: test-db-up
 test-db-up: ## Start testing database.

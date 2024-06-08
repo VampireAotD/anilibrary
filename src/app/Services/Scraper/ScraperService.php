@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Scraper;
 
 use Firebase\JWT\JWT;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -12,9 +13,7 @@ use Illuminate\Support\Facades\Http;
 final class ScraperService
 {
     /**
-     * @param string $url
-     * @return Response
-     * @throws RequestException
+     * @throws RequestException|ConnectionException
      */
     public function sendScrapeRequest(string $url): Response
     {
@@ -26,9 +25,6 @@ final class ScraperService
                    ->throw();
     }
 
-    /**
-     * @return string
-     */
     private function createJWTToken(): string
     {
         return JWT::encode([

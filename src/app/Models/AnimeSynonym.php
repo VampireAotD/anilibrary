@@ -9,22 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\AnimeSynonym
- *
- * @property string                          $anime_id
- * @property string                          $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Anime          $anime
- * @method static \Database\Factories\AnimeSynonymFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeSynonym newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeSynonym newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeSynonym query()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeSynonym whereAnimeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeSynonym whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeSynonym whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeSynonym whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperAnimeSynonym
  */
 class AnimeSynonym extends Model
 {
@@ -32,9 +17,6 @@ class AnimeSynonym extends Model
 
     protected $fillable = ['anime_id', 'name'];
 
-    /**
-     * @return BelongsTo
-     */
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);

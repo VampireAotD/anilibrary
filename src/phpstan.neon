@@ -7,6 +7,5 @@ parameters:
     level: 5
     noEnvCallsOutsideOfConfig: true
     checkModelAppends: true
-    excludePaths:
-        - ./app/Providers/MacroServiceProvider.php
-        - ./app/Telegram/State/UserState.php
+    ignoreErrors: # https://github.com/larastan/larastan/issues/555#issuecomment-1013604870
+            - '#PHPDoc tag @mixin contains unknown class App\\Models#'

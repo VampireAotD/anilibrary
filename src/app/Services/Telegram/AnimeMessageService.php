@@ -25,8 +25,6 @@ final readonly class AnimeMessageService
             return new InlineKeyboardButtonDTO($url->domain, $url->url);
         })->toArray();
 
-        // Suppressing PHPStan's false positive on `to_telegram_caption` which it mistakenly flags as undefined property.
-        /** @phpstan-ignore-next-line */
         return new AnimeMessageDTO($anime->image->path, $anime->to_telegram_caption, $buttons);
     }
 
