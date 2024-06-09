@@ -99,7 +99,7 @@ Before you start to work with Anilibrary, you need to fill all required environm
       Logstash, and specify it url here.
     - `ELASTICSEARCH_*` - If you want to have proper search, specify your Elasticsearch credentials.
 
-After configuration, you can use `make yarn-watch` to access website.
+After configuration, you can use `make frontned-watch` to access website.
 
 ---
 
@@ -137,7 +137,7 @@ After configuration, you can use `make yarn-watch` to access website.
    You can test your frontend and backend using these commands:
    ```shell
    make test #for PHP tests
-   make yarn-test # for TS tests
+   make frontend-test # for TS tests
    ```
 
 ---

@@ -1,5 +1,5 @@
 compose  := $(shell command -v docker-compose || echo docker compose)
-frontend := $(compose) exec node yarn
+frontend := $(compose) exec node pnpm
 
 .PHONY: help
 help:
@@ -87,11 +87,11 @@ ide-helper: ## Generate Laravel IDE helpers.
 
 .PHONY: test-db-up
 test-db-up: ## Start testing database.
-	$(compose) -f docker-compose.testing.yml up --build -d
+	$(compose) -f compose.testing.yml up --build -d
 
 .PHONY: test-db-down
 test-db-down: ## Shut down testing database.
-	$(compose) -f docker-compose.testing.yml down
+	$(compose) -f compose.testing.yml down
 
 .PHONY: backup
 backup: ## Create database backup.

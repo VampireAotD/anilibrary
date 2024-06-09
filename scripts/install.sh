@@ -45,7 +45,7 @@ log 'Building images'
 $compose up -d --build
 
 log 'Installing frontend dependencies'
-$compose exec node yarn install --immutable
+$compose exec node pnpm install --frozen-lockfile
 
 log 'Installing Composer packages'
 $compose exec app composer install
@@ -56,12 +56,12 @@ $compose exec app ./artisan key:generate
 log 'Creating database'
 $compose exec app ./artisan migrate --seed
 
+log 'Resolving owner'
+$compose exec app ./artisan setup:create-owner
+
 log 'Parsing anime list'
 if ! $compose exec app ./artisan anime-list:parse >/dev/null 2>&1; then
   echo '>> No anime list were found, skipping...'
 fi
-
-log 'Resolving owner'
-$compose exec app ./artisan setup:create-owner
 
 echo '⠿ Anilibrary has been successfully installed!'
