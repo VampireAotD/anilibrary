@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Feature\Telegram\Commands;
+namespace Tests\Feature\Telegram\Commands;
 
 use App\Enums\Telegram\Actions\CommandEnum;
 use App\Enums\Telegram\Buttons\CommandButtonEnum;

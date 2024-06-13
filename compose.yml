@@ -37,28 +37,15 @@ services:
     networks:
       - local
 
-  node:
-    build:
-      context: docker/node
+  nginx:
     depends_on:
       app:
-        condition: service_started
-    container_name: anilibrary-node
-    tty: true
-    volumes:
-      - ./src:/app
-    ports:
-      - ${NODE_PORT}:5173
-    networks:
-      - local
-
-  nginx:
+        condition: service_healthy
     build:
       context: docker/nginx
-    depends_on:
-      app:
-        condition: service_started
     container_name: anilibrary-nginx
+    environment:
+      NGINX_LOGS_TO_LOGSTASH: ${NGINX_LOGS_TO_LOGSTASH}
     volumes:
       - ./src/public:/anilibrary/public
     ports:
@@ -68,24 +55,22 @@ services:
       - anilibrary
 
   app:
-    build:
-      context: docker/php
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_healthy
+    build:
+      context: docker/php
     container_name: anilibrary
-    tty: true
     environment:
       XDEBUG_MODE: ${XDEBUG_MODE}
-      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway" # for xdebug
     volumes:
       - ./src:/anilibrary
     ports:
-      - ${APP_PORT}:9000
+      - ${NODE_PORT}:5173
     networks:
       - local
       - anilibrary

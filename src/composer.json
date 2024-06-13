@@ -19,6 +19,7 @@
         "inertiajs/inertia-laravel": "^1.2",
         "laravel/framework": "^11.10",
         "laravel/horizon": "^5.24",
+        "laravel/octane": "^2.4",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "nutgram/laravel": "^1.4",

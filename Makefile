@@ -1,5 +1,5 @@
 compose  := $(shell command -v docker-compose || echo docker compose)
-frontend := $(compose) exec node pnpm
+frontend := $(compose) exec app pnpm
 
 .PHONY: help
 help:
@@ -13,53 +13,26 @@ install: ## Create .env files, install frontend and backend dependencies, build 
 .PHONY: up
 up: ## Start all containers.
 	$(compose) up -d
-	@make supervisor
-
-.PHONY: down
-down: ## Shut down all containers and remove orphans.
-	$(compose) down --remove-orphans
 
 .PHONY: build
 build: ## Build images.
 	$(compose) up -d --build
 
-.PHONY: supervisor
-supervisor: ## Launch supervisor. Use is to manage Horizon, scheduler, Telegram long polling.
-	$(compose) exec -d app supervisord -c /etc/supervisor/supervisord.conf
+.PHONY: down
+down: ## Shut down all containers and remove orphans.
+	$(compose) down --remove-orphans
 
-.PHONY: scheduler
-scheduler: ## Launch Laravel scheduler.
-	$(compose) exec -d app ./artisan schedule:work
-
-.PHONY: horizon
-horizon: ## Launch Laravel Horizon. Horizon is used to launch and manage queues.
-	$(compose) exec -d app ./artisan horizon
-
-.PHONY: horizon-pause
-horizon-pause: ## Pause Laravel Horizon.
-	$(compose) exec -d app ./artisan horizon:pause
-
-.PHONY: horizon-continue
-horizon-continue: ## Resume Laravel Horizon.
-	$(compose) exec -d app ./artisan horizon:continue
+.PHONY: octane-status
+octane-status: ## Check Laravel Octane status.
+	$(compose) exec app ./artisan octane:status
 
 .PHONY: horizon-status
 horizon-status: ## Check Laravel Horizon status.
 	$(compose) exec app ./artisan horizon:status
 
-.PHONY: horizon-terminate
-horizon-terminate: ## Terminate Laravel Horizon.
-	$(compose) exec -d app ./artisan horizon:terminate
-
 .PHONY: app-sh
 app-sh: ## Enter app container.
 	$(compose) exec app sh
-
-.PHONY: test
-test: ## Run backend tests.
-	@make test-db-up
-	$(compose) exec app ./artisan test
-	@make test-db-down
 
 .PHONY: psalm
 psalm: ## Run Psalm.
@@ -78,13 +51,6 @@ optimize: ## Optimize Laravel app.
 	$(compose) exec app ./artisan optimize:clear;
 	$(compose) exec app ./artisan optimize;
 
-.PHONY: ide-helper
-ide-helper: ## Generate Laravel IDE helpers.
-	$(compose) exec app ./artisan ide-helper:generate;
-	$(compose) exec app ./artisan ide-helper:meta;
-	$(compose) exec app ./artisan ide-helper:models -M;
-	$(compose) exec app ./artisan ide-helper:eloquent
-
 .PHONY: test-db-up
 test-db-up: ## Start testing database.
 	$(compose) -f compose.testing.yml up --build -d
@@ -93,9 +59,11 @@ test-db-up: ## Start testing database.
 test-db-down: ## Shut down testing database.
 	$(compose) -f compose.testing.yml down
 
-.PHONY: backup
-backup: ## Create database backup.
-	./scripts/mysql/backup.sh
+.PHONY: test
+test: ## Run backend tests.
+	@make test-db-up
+	$(compose) exec app ./artisan test
+	@make test-db-down
 
 .PHONY: frontend-watch
 frontend-watch: ## Start frontend dev server.

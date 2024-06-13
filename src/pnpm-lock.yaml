@@ -51,6 +51,9 @@ importers:
       axios:
         specifier: ^1.6
         version: 1.7.2
+      chokidar:
+        specifier: ^3.6.0
+        version: 3.6.0
       eslint:
         specifier: ^8.57
         version: 8.57.0

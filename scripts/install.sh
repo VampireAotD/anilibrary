@@ -45,7 +45,7 @@ log 'Building images'
 $compose up -d --build
 
 log 'Installing frontend dependencies'
-$compose exec node pnpm install --frozen-lockfile
+$compose exec app pnpm install --frozen-lockfile
 
 log 'Installing Composer packages'
 $compose exec app composer install
