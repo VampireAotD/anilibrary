@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
+use Tests\TestCase;
 
 class AuthenticationControllerTest extends TestCase
 {
@@ -31,7 +30,7 @@ class AuthenticationControllerTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $response->assertRedirect(route('dashboard', absolute: false));
     }
 
     public function testUsersCannotAuthenticateWithInvalidPassword(): void

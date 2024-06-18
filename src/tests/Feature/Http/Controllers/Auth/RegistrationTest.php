@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Auth;
 
 use App\Notifications\Auth\VerifyEmailNotification;
-use App\Providers\RouteServiceProvider;
 use App\Services\SignedUrlService;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -85,7 +84,7 @@ class RegistrationTest extends TestCase
         Notification::assertSentTo(auth()->user(), VerifyEmailNotification::class);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $response->assertRedirect(route('dashboard', absolute: false));
 
         Auth::logout();
         $this->assertFalse(Auth::check());
@@ -111,6 +110,6 @@ class RegistrationTest extends TestCase
         Notification::assertSentTo(auth()->user(), VerifyEmailNotification::class);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $response->assertRedirect(route('dashboard', absolute: false));
     }
 }
