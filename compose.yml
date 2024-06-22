@@ -4,20 +4,20 @@ services:
       context: docker/mysql
     container_name: anilibrary-database
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_AUTHENTICATION_PLUGIN: caching_sha2_password
     healthcheck:
-      test: [ "CMD", "mysqladmin", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD",  "ping", "-h", "localhost" ]
-      interval: 2s
+      test: [ "CMD", "mysqladmin", "-u$DB_USER", "-p$DB_PASSWORD",  "ping", "-h", "localhost" ]
+      interval: 10s
       timeout: 5s
       retries: 5
     volumes:
-      - mysql-data:/var/lib/mysql:rw
+      - db-data:/var/lib/mysql:rw
     ports:
-      - ${MYSQL_PORT}:3306
+      - ${DB_PORT}:3306
     networks:
       - local
 
@@ -27,11 +27,11 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD}
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli -a $REDIS_PASSWORD ping | grep PONG" ]
-      interval: 2s
+      interval: 10s
       timeout: 5s
       retries: 5
     volumes:
-      - anilibrary-redis-data:/data
+      - redis-data:/data
     ports:
       - ${REDIS_PORT}:6379
     networks:
@@ -77,13 +77,15 @@ services:
       - testing
 
 networks:
-  local:
-    driver: bridge
   anilibrary:
     name: anilibrary
+  local:
+    name: anilibrary-local
   testing:
-    name: testing
+    name: anilibrary-testing
 
 volumes:
-  mysql-data:
-  anilibrary-redis-data:
+  db-data:
+    name: anilibrary-db-data
+  redis-data:
+    name: anilibrary-redis-data

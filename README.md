@@ -32,74 +32,41 @@ To fully use Anilibrary you can also use one or all services that are related to
 Before you start to work with Anilibrary, you need to fill all required environment variables which will be located in
 **.env** and **src/.env**. To acquire them, you can use script **install.sh** or launch it by using `make install`.
 
-### Required variables:
+### Variables
 
-1. **MySQL:**
+#### For containers
 
-   For proper MySQL database connectivity, the following required environment variables are needed:
+This variables will be located in **.env** and are required for container to run properly.
 
-    - `MYSQL_USER` - MySQL database username with necessary privileges to access the database.
-    - `MYSQL_PASSWORD` - Password for the MySQL database user.
-    - `MYSQL_ROOT_PASSWORD` - Password for the MySQL root user.
+| Variable                 | Default Value | Description                                                          |
+|--------------------------|---------------|----------------------------------------------------------------------|
+| `XDEBUG_MODE`            | coverage      | Used to set the mode for Xdebug. By default it is set to `coverage`. |
+| `SERVER_PORT`            | 80            | Specifies the port on which Nginx will run.                          |
+| `NGINX_LOGS_TO_LOGSTASH` | false         | Indicates whether Nginx logs should be sent to Logstash.             |
+| `NODE_PORT`              | 5173          | Specifies the port on which the Vite server will run.                |
+| `DB_DATABASE`            | anilibrary    | The name of the database to be used.                                 |
+| `DB_PORT`                | 3306          | Specifies the port for the database connection.                      |
+| `DB_USER`                | (empty)       | The username for the database connection.                            |
+| `DB_PASSWORD`            | (empty)       | The password for the database connection.                            |
+| `DB_ROOT_PASSWORD`       | (empty)       | The root password for the database connection.                       |
+| `REDIS_PORT`             | 6379          | Specifies the port for the Redis connection.                         |
+| `REDIS_PASSWORD`         | (empty)       | The password for the Redis connection.                               |
 
-2. **Redis:**
+#### Variables for Anilibrary
 
-   To enable Redis support, set the following required environment variables:
+This variables will be in **./src/.env** and are required for application to properly work with containers and other
+services.
 
-    - `REDIS_PASSWORD` - Password for accessing the Redis server.
-
-3. **Application:**
-
-   Anilibrary is written using Laravel, which also relies on some required environment variables which are located in
-   **src/.env**:
-
-    - `DB_HOST` - Hostname of MySQL, you can specify it in **docker-compose.yml** using **container_name** or **name of
-      the service** which is **database**.
-    - `DB_PORT` - Value of `MYSQL_PORT` from **.env** in the project root.
-    - `DB_DATABASE` - Value of `MYSQL_DATABASE` from **.env** in the project root.
-    - `DB_USERNAME` - Value of `MYSQL_USER` from **.env** in the project
-      root.
-    - `DB_PASSWORD` - Value of `MYSQL_PASSWORD` from **.env** in the project root.
-    - `REDIS_HOST` - Hostname of Redis, you can specify it in **docker-compose.yml** using **container_name** or **name
-      of the service** which is **redis**.
-    - `REDIS_PORT` - Value of `REDIS_PORT` from **.env** in the project root.
-    - `REDIS_PASSWORD` - Value of `REDIS_PASSWORD` from **.env** in the project root.
-
-### Optional:
-
-1. **MySQL:**
-
-   Some MySQL parameters can be set to default values, but you may customize them if needed:
-
-    - `MYSQL_DATABASE` - Sets the database name, by default it will be **anilibrary**.
-    - `MYSQL_PORT` - Sets the database port, by default it will be **3306**.
-    - `MYSQL_BACKUP_PATH` - If you want to backup your database you can specify path on where to store the backup
-      itself. For more convenience you can use script **backup.sh**, which is located in **scripts/mysql**.
-
-2. **Redis:**
-
-   Additionally, you can use optional Redis environment variables:
-
-    - `REDIS_PORT` - Sets the Redis port, by default it will be **6379**.
-
-3. **Application:**
-
-   In addition to the required variables, you can specify some variables that are optional, but needed to work fully
-   with Anilibrary:
-
-    - `XDEBUG_MODE` - If you want to enable **Xdebug** you can set this variable to **on**.
-    - `PUSHER_*` - If you want to use real-time notifications, specify your [Pusher](https://pusher.com) credentials.
-    - `TELEGRAM_*` - If you also want to have Anilibrary bot, specify your Telegram bot credentials.
-    - `TELEGRAM_WHITELIST` - Specify Telegram IDs who can work with bot.
-    - `CLOUDINARY_*` - All images are stored in **Cloudinary**, so if you want to use this storage, specify your
-      [Cloudinary](https://cloudinary.com) credentials.
-    - `JWT_SECRET` - If you want to use **Scraper**, you need to specify this variable here and in **Scraper** as well.
-    - `SCRAPER_URL` - Also, you need to specify it url if you want to use it.
-    - `LOGSTASH_ADDRESS` - If you want to send visualize your logs in Kibana, send them to **ELK** service using
-      Logstash, and specify it url here.
-    - `ELASTICSEARCH_*` - If you want to have proper search, specify your Elasticsearch credentials.
-
-After configuration, you can use `make frontned-watch` to access website.
+| Variable           | Description                                                                                                                   |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `DB_*`             | Set of variables for database connection, use values from **.env** for containers.                                            |
+| `REDIS_*`          | Set of variables for Redis connection, use values from **.env** for containers.                                               |
+| `TELEGRAM_*`       | Set of variables for Telegram bot.                                                                                            |
+| `CLOUDINARY_*`     | Set of variables for Cloudinary storage.                                                                                      |
+| `ELASTICSEARCH_*`  | Set of variables for Elasticsearch, use with [monitoring microservice](https://github.com/VampireAotD/anilibrary-monitoring). |
+| `JWT_SECRET`       | Secret for communication with different Anilibrary microservices.                                                             |
+| `SCRAPER_URL`      | Url for scraper microservice.                                                                                                 |
+| `LOGSTASH_ADDRESS` | Url for Logstash receiver.                                                                                                    |
 
 ---
 
@@ -109,7 +76,7 @@ After configuration, you can use `make frontned-watch` to access website.
 
    For code quality you can use things like **Psalm**, **PHPStan** and **Laravel Pint**. You can use them directly in
    container, or via Makefile,like this:
-   ```shell
+   ```sh
    make phpstan
    make psalm
    make pint
@@ -122,29 +89,21 @@ After configuration, you can use `make frontned-watch` to access website.
 2. **Nginx logs to ELK service**
 
    If you want to visualize you Nginx logs in Kibana you can send them to Elasticsearch via Logstash. All of them are
-   configured in **ELK** service. To send logs you need to specify **APP_ENV** and **LOGSTASH_URL** for nginx container,
-   like this:
+   configured in **ELK** service. To send logs you need to set **NGINX_LOGS_TO_LOGSTASH** variable to **true** in
+   **.env** and specify **LOGSTASH_URL** for Nginx container, like this:
 
    ```diff
+   # compose.yml
+   
    nginx:
    +  environment:
-   +    APP_ENV: production
    +    LOGSTASH_URL: <your-url>
    ```
 
 3. **Testing**
 
    You can test your frontend and backend using these commands:
-   ```shell
+   ```sh
    make test #for PHP tests
    make frontend-test # for TS tests
    ```
-
----
-
-## Known issues
-
-1. Anilibrary is using [`Telebot`](https://github.com/westacks/telebot) library for managing bot, and due to it
-   limitations, some tests can require additional call of `fake()` method, or cannot be made because of `mock()` method,
-   more info in
-   this [`issue`](https://github.com/westacks/telebot/issues/58).

@@ -16,5 +16,5 @@ services:
 
 networks:
   testing:
-    name: testing
+    name: anilibrary-testing
     external: true

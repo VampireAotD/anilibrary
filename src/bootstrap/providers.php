@@ -6,6 +6,7 @@ return [
     App\Providers\AliasServiceProvider::class,
     App\Providers\AppServiceProvider::class,
     App\Providers\FacadeServiceProvider::class,
+    App\Providers\FakerServiceProvider::class,
     App\Providers\HorizonServiceProvider::class,
     App\Providers\MacroServiceProvider::class,
     App\Providers\RepositoryServiceProvider::class,
