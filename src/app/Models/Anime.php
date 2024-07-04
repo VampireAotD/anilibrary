@@ -32,6 +32,8 @@ class Anime extends Model
         'status',
         'rating',
         'episodes',
+        'type',
+        'year',
     ];
 
     /**
@@ -51,7 +53,9 @@ class Anime extends Model
 
     public function image(): MorphOne
     {
-        return $this->morphOne(Image::class, 'model');
+        return $this->morphOne(Image::class, 'model')->withDefault([
+            'path' => config('cloudinary.default_image'),
+        ]);
     }
 
     public function genres(): BelongsToMany

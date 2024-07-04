@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\Service\Anime\AnimePaginationDTO;
+use App\DTO\Service\Anime\FindSimilarAnimeDTO;
 use App\DTO\Service\Anime\UpsertAnimeDTO;
 use App\Filters\QueryFilterInterface;
 use App\Filters\RelationFilter;
+use App\Jobs\Image\UploadJob;
 use App\Models\Anime;
 use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Traits\CanTransformArray;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +19,6 @@ use Illuminate\Support\LazyCollection;
 
 final readonly class AnimeService
 {
-    use CanTransformArray;
-
     public function __construct(private AnimeRepositoryInterface $animeRepository)
     {
     }
@@ -49,9 +48,9 @@ final readonly class AnimeService
         return $this->animeRepository->findById($id);
     }
 
-    public function findByTitleAndSynonyms(array $data): ?Anime
+    public function findSimilar(FindSimilarAnimeDTO $dto): ?Anime
     {
-        return $this->animeRepository->findByTitleAndSynonyms($data);
+        return $this->animeRepository->findSimilar($dto->toArray());
     }
 
     public function findByUrl(string $url): ?Anime
@@ -108,20 +107,26 @@ final readonly class AnimeService
 
     private function upsertRelations(Anime $anime, UpsertAnimeDTO $dto): void
     {
-        if ($dto->urls) {
-            $anime->urls()->upsertRelated($dto->urls, 'url');
+        $anime->urls()->upsertRelated($dto->urls, ['url']);
+
+        // Anime will always have default image path related to it
+        // even if there is no actual record in DB, that's because
+        // of Laravel withDefault method on image relation, so here
+        // need to check if image has an actual ID
+        if ($dto->image && !$anime->image?->id) {
+            UploadJob::dispatch($anime, $dto->image);
         }
 
         if ($dto->synonyms) {
-            $anime->synonyms()->upsertRelated($dto->synonyms, 'name');
-        }
-
-        if ($dto->voiceActing) {
-            $anime->voiceActing()->sync($dto->voiceActing);
+            $anime->synonyms()->upsertRelated($dto->synonyms, ['name']);
         }
 
         if ($dto->genres) {
-            $anime->genres()->sync($dto->genres);
+            $anime->genres()->syncWithoutDetaching($dto->genres);
+        }
+
+        if ($dto->voiceActing) {
+            $anime->voiceActing()->syncWithoutDetaching($dto->voiceActing);
         }
     }
 }

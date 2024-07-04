@@ -12,11 +12,6 @@ final class ImageService
 {
     private const string BASE_FOLDER = 'anime';
 
-    /**
-     * @param string $image
-     * @param Anime  $anime
-     * @return Image
-     */
     public function upsert(string $image, Anime $anime): Image
     {
         if ($anime->image) {

@@ -7,13 +7,10 @@ namespace App\Services;
 use App\Filters\QueryFilterInterface;
 use App\Models\Genre;
 use App\Repositories\Genre\GenreRepositoryInterface;
-use App\Traits\CanTransformArray;
 use Illuminate\Support\LazyCollection;
 
 final readonly class GenreService
 {
-    use CanTransformArray;
-
     public function __construct(private GenreRepositoryInterface $genreRepository)
     {
     }
@@ -28,21 +25,23 @@ final readonly class GenreService
     }
 
     /**
-     * @param array<string> $genres
-     * @return array<string>
+     * @param array<array{name: string}> $genres
+     * @return array<string> Array of genre ids
      */
     public function sync(array $genres): array
     {
-        $stored     = $this->genreRepository->findByNames($genres);
-        $genreNames = collect($genres)->pluck('name');
+        // TODO try to reduce queries
+
+        $names  = collect($genres)->pluck('name');
+        $stored = $this->genreRepository->findByNames($names->toArray());
 
         // Find difference between stored genres and new ones
-        $newGenres = $genreNames->diff($stored->pluck('name'))->map(fn(string $genre) => ['name' => $genre]);
+        $newGenres = $names->diff($stored->pluck('name'))->map(fn(string $genre) => ['name' => $genre]);
 
         // If there is new genres - upsert them and get their ids
         if ($newGenres->isNotEmpty()) {
             $this->genreRepository->upsertMany($newGenres->toArray(), ['name']);
-            $stored = $this->genreRepository->findByNames($genres);
+            $stored = $this->genreRepository->findByNames($names->toArray());
         }
 
         return $stored->pluck('id')->toArray();

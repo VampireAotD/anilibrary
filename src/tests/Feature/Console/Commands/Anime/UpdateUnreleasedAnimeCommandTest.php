@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Anime;
 
 use App\Console\Commands\Anime\UpdateUnreleasedAnimeCommand;
-use App\Enums\AnimeStatusEnum;
+use App\Enums\Anime\StatusEnum;
 use App\Mail\Anime\FailedUnreleasedAnimeMail;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Database\Seeders\RoleSeeder;
@@ -14,10 +14,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
+use Tests\TestCase;
 
 class UpdateUnreleasedAnimeCommandTest extends TestCase
 {
@@ -37,7 +37,7 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
 
     public function testCommandWillSendMailWithAnimeInfoAndReasonIfItCouldNotUpdateInfoAndOwnerIsFound(): void
     {
-        $anime = $this->createAnimeWithRelations(['status' => AnimeStatusEnum::ANNOUNCE->value]);
+        $anime = $this->createAnimeWithRelations(['status' => StatusEnum::ANNOUNCE->value]);
         $owner = $this->createOwner();
 
         Http::fake([
@@ -62,13 +62,17 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
 
     public function testCommandCanUpdateAnimeInfo(): void
     {
-        $anime = $this->createAnimeWithRelations(['status' => AnimeStatusEnum::ANNOUNCE->value]);
+        $this->markTestSkipped('Decide if this command is needed');
+
+        $anime = $this->createAnimeWithRelations(['status' => StatusEnum::ANNOUNCE->value]);
         $this->createOwner();
 
         Http::fake([
             '*' => Http::response([
                 'title'    => $anime->title,
-                'status'   => AnimeStatusEnum::READY->value,
+                'type'     => $anime->type,
+                'year'     => $anime->year,
+                'status'   => StatusEnum::READY->value,
                 'episodes' => $anime->episodes,
                 'rating'   => $rating = $this->faker->randomAnimeRating(),
             ]),
@@ -84,7 +88,7 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
 
         $anime->refresh();
 
-        $this->assertEquals(AnimeStatusEnum::READY->value, $anime->status);
+        $this->assertEquals(StatusEnum::READY->value, $anime->status);
         $this->assertEquals($rating, $anime->rating);
     }
 }

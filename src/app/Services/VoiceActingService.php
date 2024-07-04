@@ -7,13 +7,10 @@ namespace App\Services;
 use App\Filters\QueryFilterInterface;
 use App\Models\VoiceActing;
 use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
-use App\Traits\CanTransformArray;
 use Illuminate\Support\LazyCollection;
 
 final readonly class VoiceActingService
 {
-    use CanTransformArray;
-
     public function __construct(private VoiceActingRepositoryInterface $voiceActingRepository)
     {
     }
@@ -28,23 +25,23 @@ final readonly class VoiceActingService
     }
 
     /**
-     * @param array<string> $voiceActing
-     * @return array<string>
+     * @param array<array{name: string}> $voiceActing
+     * @return array<string> Array of voice acting ids
      */
     public function sync(array $voiceActing): array
     {
-        $stored           = $this->voiceActingRepository->findByNames($voiceActing);
-        $voiceActingNames = collect($voiceActing)->pluck('name');
+        $names  = collect($voiceActing)->pluck('name');
+        $stored = $this->voiceActingRepository->findByNames($names->toArray());
 
         // Find difference between stored voice acting and new ones
-        $newVoiceActing = $voiceActingNames->diff($stored->pluck('name'))->map(
+        $newVoiceActing = $names->diff($stored->pluck('name'))->map(
             fn(string $voiceActing) => ['name' => $voiceActing]
         );
 
         // If there is new voice acting - upsert them and get their ids
         if ($newVoiceActing->isNotEmpty()) {
             $this->voiceActingRepository->upsertMany($newVoiceActing->toArray(), ['name']);
-            $stored = $this->voiceActingRepository->findByNames($voiceActing);
+            $stored = $this->voiceActingRepository->findByNames($names->toArray());
         }
 
         return $stored->pluck('id')->toArray();

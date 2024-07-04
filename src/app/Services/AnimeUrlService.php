@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Repositories\AnimeUrl\AnimeUrlRepositoryInterface;
 
-readonly class AnimeUrlService
+final readonly class AnimeUrlService
 {
     public function __construct(private AnimeUrlRepositoryInterface $animeUrlRepository)
     {

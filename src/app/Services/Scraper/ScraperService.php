@@ -10,7 +10,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
-final class ScraperService
+final readonly class ScraperService
 {
     /**
      * @throws RequestException|ConnectionException
@@ -21,7 +21,7 @@ final class ScraperService
 
         return Http::baseUrl(config('services.scraper.url'))
                    ->withToken($token)
-                   ->post('/api/v1/anime/parse', ['url' => $url])
+                   ->post('/api/v1/anime/scrape', ['url' => $url])
                    ->throw();
     }
 

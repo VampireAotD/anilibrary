@@ -30,7 +30,7 @@ class ScrapeAnimeJob implements ShouldQueue
      */
     public function __construct(public readonly string $userId, public readonly string $url)
     {
-        $this->onConnection('redis')->onQueue(QueueEnum::SCRAPE_ANIME_QUEUE->value);
+        $this->onConnection('redis')->onQueue(QueueEnum::SCRAPER_QUEUE->value);
     }
 
     /**
@@ -39,7 +39,7 @@ class ScrapeAnimeJob implements ShouldQueue
     public function handle(ScraperUseCase $scraperUseCase): void
     {
         try {
-            $anime = $scraperUseCase->scrapeAndCreateAnime($this->url);
+            $anime = $scraperUseCase->scrapeByUrl($this->url);
             ScrapeResultEvent::broadcast(
                 new ScrapeResultDTO(
                     $this->userId,

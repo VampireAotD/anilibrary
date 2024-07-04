@@ -18,7 +18,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class UpsertAnimeJob implements ShouldQueue
+final class UpsertAnimeJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -30,7 +30,7 @@ class UpsertAnimeJob implements ShouldQueue
      */
     public function __construct(public readonly Anime $anime)
     {
-        $this->afterCommit()->onQueue(QueueEnum::UPSERT_ANIME_IN_ELASTICSEARCH_QUEUE->value)->onConnection('redis');
+        $this->onConnection('redis')->onQueue(QueueEnum::ELASTICSEARCH_QUEUE->value)->afterCommit();
     }
 
     /**

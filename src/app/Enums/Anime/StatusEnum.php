@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Enums;
+namespace App\Enums\Anime;
 
 use App\Enums\Concerns\ProvideValues;
 
-enum AnimeStatusEnum: string
+enum StatusEnum: string
 {
     use ProvideValues;
 

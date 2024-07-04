@@ -10,9 +10,10 @@ enum QueueEnum: string
 {
     use ProvideValues;
 
-    case MAIL_QUEUE                          = 'mail';
-    case REGISTER_TELEGRAM_USER_QUEUE        = 'register';
-    case UPSERT_ANIME_IN_ELASTICSEARCH_QUEUE = 'upsert-anime';
-    case SCRAPE_ANIME_QUEUE                  = 'scrape-anime';
-    case PUSHER_SCRAPER_RESPONSE_QUEUE       = 'pusher-scrape-response';
+    case MAIL_QUEUE          = 'mail';
+    case PUSHER_QUEUE        = 'pusher';
+    case SCRAPER_QUEUE       = 'scraper';
+    case TELEGRAM_QUEUE      = 'telegram';
+    case ELASTICSEARCH_QUEUE = 'elasticsearch';
+    case IMAGE_STORAGE_QUEUE = 'image-storage';
 }

@@ -19,10 +19,9 @@ interface AnimeRepositoryInterface extends FilterQuery, Quantity, GetAll
     public function findById(string $id): ?Anime;
 
     /**
-     * @param array<string> $data
-     * @return Anime|null
+     * @param array{titles: array<array{name: string}>, type: string, year: int} $data
      */
-    public function findByTitleAndSynonyms(array $data): ?Anime;
+    public function findSimilar(array $data): ?Anime;
 
     /**
      * @param string $url

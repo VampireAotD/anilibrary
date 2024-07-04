@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Anime;
 
-use App\Enums\AnimeStatusEnum;
+use App\Enums\Anime\StatusEnum;
+use App\Enums\Anime\TypeEnum;
 use App\Models\Anime;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
@@ -34,7 +35,9 @@ class UpdateRequest extends FormRequest
 
         return [
             'title'           => ['required', 'string', Rule::unique(Anime::class)->ignore($animeId)],
-            'status'          => ['required', new Enum(AnimeStatusEnum::class)],
+            'type'            => ['required', new Enum(TypeEnum::class)],
+            'status'          => ['required', new Enum(StatusEnum::class)],
+            'year'            => 'required|integer',
             'episodes'        => 'required|string',
             'rating'          => 'required|numeric',
             'image'           => 'nullable|image',

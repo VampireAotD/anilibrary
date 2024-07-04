@@ -9,6 +9,7 @@ use App\Models\TelegramUser;
 use App\Models\User;
 use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 final readonly class TelegramUserService
 {
@@ -21,6 +22,9 @@ final readonly class TelegramUserService
         return $this->telegramUserRepository->upsert($dto->toArray());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function createAndAttach(CreateUserDTO $dto, User $user): TelegramUser
     {
         return DB::transaction(function () use ($dto, $user) {

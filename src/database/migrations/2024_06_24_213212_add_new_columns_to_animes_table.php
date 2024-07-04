@@ -9,30 +9,25 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
         Schema::table('animes', function (Blueprint $table) {
             // Values are hardcoded here so that migration would not fail if enum will be deleted.
-            $statuses = ['Анонс', 'Онгоинг', 'Вышел'];
+            $types = ['ТВ Сериал', 'Фильм'];
 
-            $table->enum('status', $statuses)->after('title')->default('Анонс');
-            $table->float('rating', precision: 24)->after('status')->default(1);
-            $table->string('episodes')->after('rating')->nullable();
+            $table->enum('type', $types)->after('title');
+            $table->year('year')->after('episodes');
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {
         Schema::table('animes', function (Blueprint $table) {
-            $table->dropColumn(['status', 'rating', 'episodes']);
+            $table->dropColumn(['type', 'year']);
         });
     }
 };

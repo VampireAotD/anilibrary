@@ -61,7 +61,7 @@ class ScraperServiceTest extends TestCase
     public function testServiceCanSendScrapeRequest(): void
     {
         Http::fake(function (Request $request) {
-            $this->assertEquals(config('services.scraper.url') . '/api/v1/anime/parse', $request->url());
+            $this->assertEquals(config('services.scraper.url') . '/api/v1/anime/scrape', $request->url());
             $this->assertNotEmpty($request->headers()['Authorization']);
 
             return Http::response(['data' => 'test data']);

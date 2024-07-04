@@ -34,7 +34,7 @@ final class ScrapeResultEvent implements ShouldBroadcast
      */
     public function broadcastQueue(): string
     {
-        return QueueEnum::PUSHER_SCRAPER_RESPONSE_QUEUE->value;
+        return QueueEnum::PUSHER_QUEUE->value;
     }
 
     /**

@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Repositories\User\UserRepositoryInterface;
 
-readonly class UserService
+final readonly class UserService
 {
     public function __construct(private UserRepositoryInterface $userRepository)
     {

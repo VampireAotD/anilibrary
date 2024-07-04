@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Anime;
 
 use App\DTO\Service\Anime\AnimePaginationDTO;
 use App\DTO\Service\Anime\UpsertAnimeDTO;
-use App\Enums\AnimeStatusEnum;
+use App\Enums\Anime\StatusEnum;
 use App\Filters\ColumnFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Anime\CreateRequest;
@@ -58,7 +58,7 @@ class AnimeController extends Controller
      */
     public function create()
     {
-        $statuses    = AnimeStatusEnum::values();
+        $statuses    = StatusEnum::values();
         $genres      = $this->genreService->all([new ColumnFilter(['name'])])->pluck('name')->toArray();
         $voiceActing = $this->voiceActingService->all([new ColumnFilter(['name'])])->pluck('name')->toArray();
 

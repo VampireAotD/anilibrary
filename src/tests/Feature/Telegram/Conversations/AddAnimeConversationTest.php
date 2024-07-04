@@ -16,10 +16,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateFakeUpdates;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\TestCase;
 
 class AddAnimeConversationTest extends TestCase
 {
@@ -100,6 +100,8 @@ class AddAnimeConversationTest extends TestCase
     {
         Http::fake([
             '*' => [
+                'year'     => $this->faker->year,
+                'type'     => $this->faker->randomAnimeType(),
                 'status'   => $this->faker->randomAnimeStatus(),
                 'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
@@ -126,6 +128,8 @@ class AddAnimeConversationTest extends TestCase
         Http::fake([
             '*' => [
                 'title'    => $title = $this->faker->sentence,
+                'type'     => $type = $this->faker->randomAnimeType(),
+                'year'     => $year = $this->faker->year,
                 'status'   => $status = $this->faker->randomAnimeStatus(),
                 'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
                 'rating'   => $rating = $this->faker->randomAnimeRating(),
@@ -151,6 +155,8 @@ class AddAnimeConversationTest extends TestCase
 
         $anime = Anime::query()->first();
         $this->assertEquals($anime->title, $title);
+        $this->assertEquals($anime->type, $type);
+        $this->assertEquals($anime->year, $year);
         $this->assertEquals($anime->status, $status);
         $this->assertEquals($anime->episodes, $episodes);
         $this->assertEquals($anime->rating, $rating);

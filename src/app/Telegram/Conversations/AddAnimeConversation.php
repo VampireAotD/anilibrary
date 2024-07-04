@@ -55,7 +55,7 @@ final class AddAnimeConversation extends Conversation
                 return;
             }
 
-            $anime = $this->scraperUseCase->scrapeAndCreateAnime($message);
+            $anime = $this->scraperUseCase->scrapeByUrl($message);
 
             $this->sendScrapedMessage($anime);
             $this->end();

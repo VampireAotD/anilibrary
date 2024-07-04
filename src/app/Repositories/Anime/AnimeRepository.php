@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Anime;
 
-use App\Enums\AnimeStatusEnum;
+use App\Enums\Anime\StatusEnum;
 use App\Filters\QueryFilterInterface;
 use App\Models\Anime;
 use Illuminate\Database\Eloquent\Builder;
@@ -46,15 +46,18 @@ class AnimeRepository implements AnimeRepositoryInterface
     }
 
     /**
-     * @param array<string> $data
+     * @param array{titles: array<array{name: string}>, type: string, year: int} $data
      */
-    public function findByTitleAndSynonyms(array $data): ?Anime
+    public function findSimilar(array $data): ?Anime
     {
-        return $this->query
-            ->whereIn('title', $data)
-            ->with(['urls', 'synonyms'])
-            ->orWhereHas('synonyms', fn(Builder $query) => $query->whereIn('name', $data))
-            ->first();
+        return $this->query->where(function (Builder $query) use ($data) {
+            $query->with(['synonyms'])
+                  ->whereIn('title', $data['titles'])
+                  ->orWhereHas('synonyms', fn(Builder $query) => $query->whereIn('name', $data['titles']));
+        })->where([
+            'type' => $data['type'],
+            'year' => $data['year'],
+        ])->first();
     }
 
     /**
@@ -96,7 +99,7 @@ class AnimeRepository implements AnimeRepositoryInterface
      */
     public function getUnreleased(): LazyCollection
     {
-        return $this->query->with('urls')->whereNot('status', AnimeStatusEnum::READY->value)->lazy();
+        return $this->query->with('urls')->whereNot('status', StatusEnum::READY->value)->lazy();
     }
 
     /**

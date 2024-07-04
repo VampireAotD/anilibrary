@@ -21,9 +21,11 @@ class AnimeFactory extends Factory
     {
         return [
             'title'    => $this->faker->unique()->sentence,
+            'type'     => $this->faker->randomAnimeType(),
             'status'   => $this->faker->randomAnimeStatus(),
             'episodes' => $this->faker->randomAnimeEpisodes(),
             'rating'   => $this->faker->randomAnimeRating(),
+            'year'     => $this->faker->year,
         ];
     }
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\UseCase\Scraper;
 
-use App\Enums\AnimeStatusEnum;
+use App\Enums\Anime\StatusEnum;
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
+use App\Jobs\Image\UploadJob;
 use App\Models\AnimeSynonym;
 use App\Models\AnimeUrl;
 use App\Models\Genre;
-use App\Models\Image;
 use App\Models\VoiceActing;
 use App\UseCase\Scraper\ScraperUseCase;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -31,7 +31,7 @@ class ScraperUseCaseTest extends TestCase
     use CanCreateFakeAnime;
     use CanCreateMocks;
 
-    private const string SCRAPER_ENDPOINT = '/api/v1/anime/parse';
+    private const string SCRAPER_ENDPOINT = '/api/v1/anime/scrape';
 
     private ScraperUseCase $scraperUseCase;
 
@@ -59,6 +59,8 @@ class ScraperUseCaseTest extends TestCase
     {
         Http::fake([
             self::SCRAPER_ENDPOINT => [
+                'year'     => $this->faker->year,
+                'type'     => $this->faker->randomAnimeType(),
                 'status'   => $this->faker->randomAnimeStatus(),
                 'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
@@ -66,7 +68,7 @@ class ScraperUseCaseTest extends TestCase
         ]);
 
         $this->expectException(ValidationException::class);
-        $this->scraperUseCase->scrapeAndCreateAnime($this->faker->url);
+        $this->scraperUseCase->scrapeByUrl($this->faker->url);
     }
 
     #[DataProvider('invalidImageProvider')]
@@ -76,6 +78,8 @@ class ScraperUseCaseTest extends TestCase
             self::SCRAPER_ENDPOINT => [
                 'title'    => $this->faker->sentence,
                 'image'    => $invalidImage,
+                'year'     => $this->faker->year,
+                'type'     => $this->faker->randomAnimeType(),
                 'status'   => $this->faker->randomAnimeStatus(),
                 'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
@@ -84,7 +88,7 @@ class ScraperUseCaseTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage(__('validation.scraper.image', ['attribute' => 'image']));
-        $this->scraperUseCase->scrapeAndCreateAnime($this->faker->url);
+        $this->scraperUseCase->scrapeByUrl($this->faker->url);
     }
 
     public function testCanFindAnimeByTitleAndSynonymsAfterScrapeRequest(): void
@@ -101,6 +105,8 @@ class ScraperUseCaseTest extends TestCase
         Http::fake([
             self::SCRAPER_ENDPOINT => [
                 'title'    => $this->faker->sentence,
+                'year'     => $anime->year,
+                'type'     => $anime->type,
                 'status'   => $this->faker->randomAnimeStatus(),
                 'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
@@ -109,7 +115,7 @@ class ScraperUseCaseTest extends TestCase
         ]);
 
         $url        = $this->faker->url;
-        $foundAnime = $this->scraperUseCase->scrapeAndCreateAnime($url);
+        $foundAnime = $this->scraperUseCase->scrapeByUrl($url);
 
         $foundAnime->refresh(); // to reload relations
 
@@ -141,13 +147,15 @@ class ScraperUseCaseTest extends TestCase
             self::SCRAPER_ENDPOINT => [
                 'title'    => $anime->title,
                 'image'    => sprintf('data:image/jpeg;base64,%s', Str::random()),
+                'year'     => $anime->year,
+                'type'     => $anime->type,
                 'status'   => $this->faker->randomAnimeStatus(),
                 'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
             ],
         ]);
 
-        $foundAnime = $this->scraperUseCase->scrapeAndCreateAnime($this->faker->url);
+        $foundAnime = $this->scraperUseCase->scrapeByUrl($this->faker->url);
 
         $this->assertEquals($anime->image, $foundAnime->image);
     }
@@ -173,6 +181,8 @@ class ScraperUseCaseTest extends TestCase
             self::SCRAPER_ENDPOINT => [
                 'title'       => $this->faker->sentence,
                 'image'       => $image,
+                'year'        => $this->faker->year,
+                'type'        => $this->faker->randomAnimeType(),
                 'status'      => $this->faker->randomAnimeStatus(),
                 'episodes'    => $this->faker->randomAnimeEpisodes(),
                 'rating'      => $this->faker->randomAnimeRating(),
@@ -185,19 +195,18 @@ class ScraperUseCaseTest extends TestCase
         Bus::fake();
 
         $url   = $this->faker->url;
-        $anime = $this->scraperUseCase->scrapeAndCreateAnime($url);
+        $anime = $this->scraperUseCase->scrapeByUrl($url);
 
         $anime->refresh(); // to reload relations
 
         $this->assertIsString($anime->id);
         $this->assertNotEmpty($anime->title);
-        $this->assertContainsEquals($anime->status, AnimeStatusEnum::values());
+        $this->assertContainsEquals($anime->status, StatusEnum::values());
         $this->assertNotEmpty($anime->episodes);
 
-        $this->assertNotNull($anime->image);
-        $this->assertInstanceOf(Image::class, $anime->image);
-        $this->assertNotEmpty($anime->image->path);
-        $this->assertNotEmpty($anime->image->alias);
+        Bus::assertDispatched(UploadJob::class, function (UploadJob $job) use ($image) {
+            return $job->image === $image;
+        });
 
         $this->assertTrue($anime->voiceActing->isNotEmpty());
         $this->assertInstanceOf(VoiceActing::class, $anime->voiceActing->first());
