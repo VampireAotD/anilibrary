@@ -139,9 +139,9 @@ class AnimeControllerTest extends TestCase
 
         $this->actingAs($user)->put(route('anime.update', [$anime->id]), [
             'title'        => $anime->title,
-            'type'         => $this->faker->randomAnimeType(),
+            'type'         => $this->faker->randomAnimeType()->value,
             'year'         => $this->faker->year,
-            'status'       => $this->faker->randomAnimeStatus(),
+            'status'       => $this->faker->randomAnimeStatus()->value,
             'episodes'     => $anime->episodes,
             'rating'       => $this->faker->randomAnimeRating(),
             'urls'         => $urls,

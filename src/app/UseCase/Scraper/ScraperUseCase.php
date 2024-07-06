@@ -13,7 +13,7 @@ use App\Models\Anime;
 use App\Rules\Scraper\EncodedImageRule;
 use App\Services\AnimeService;
 use App\Services\GenreService;
-use App\Services\Scraper\ScraperService;
+use App\Services\Scraper\Client;
 use App\Services\VoiceActingService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +25,7 @@ use Throwable;
 final readonly class ScraperUseCase
 {
     public function __construct(
-        private ScraperService     $scraperService,
+        private Client             $client,
         private AnimeService       $animeService,
         private VoiceActingService $voiceActingService,
         private GenreService       $genreService
@@ -37,7 +37,7 @@ final readonly class ScraperUseCase
      */
     public function scrapeByUrl(string $url): Anime
     {
-        $response = array_merge(['url' => $url], $this->scraperService->sendScrapeRequest($url)->json());
+        $response = array_merge(['url' => $url], $this->client->scrapeByUrl($url)->json());
 
         $this->validateResponse($response);
 
@@ -76,12 +76,21 @@ final readonly class ScraperUseCase
         );
 
         if ($anime) {
-            return DB::transaction(function () use ($anime, $dto): Anime {
-                $anime->urls()->updateOrCreate(['url' => $dto->url], [$dto->url]);
-                $anime->synonyms()->upsertRelated($dto->synonyms, ['name']);
-
-                return $anime;
-            });
+            return $this->animeService->update(
+                $anime,
+                new UpsertAnimeDTO(
+                    $anime->title,
+                    $anime->type,
+                    (int) $anime->year,
+                    [['url' => $dto->url]],
+                    $dto->status,
+                    $dto->rating,
+                    $dto->episodes,
+                    synonyms   : $dto->synonyms,
+                    voiceActing: $dto->voiceActing,
+                    genres     : $dto->genres
+                )
+            );
         }
 
         return DB::transaction(function () use ($dto): Anime {

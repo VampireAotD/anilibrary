@@ -7,9 +7,9 @@ namespace Tests\Feature\Http\Controllers\Dashboard;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
-use Tests\TestCase;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
+use Tests\TestCase;
 
 class DashboardControllerTest extends TestCase
 {

@@ -7,14 +7,13 @@ namespace Tests\Feature\Console\Commands\Anime;
 use App\Console\Commands\Anime\UpdateUnreleasedAnimeCommand;
 use App\Enums\Anime\StatusEnum;
 use App\Mail\Anime\FailedUnreleasedAnimeMail;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use App\Services\Scraper\Client;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
@@ -25,30 +24,27 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
     use WithFaker;
     use CanCreateFakeUsers;
     use CanCreateFakeAnime;
-    use CanCreateMocks;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->seed(RoleSeeder::class);
-        $this->setUpFakeCloudinary();
     }
 
     public function testCommandWillSendMailWithAnimeInfoAndReasonIfItCouldNotUpdateInfoAndOwnerIsFound(): void
     {
-        $anime = $this->createAnimeWithRelations(['status' => StatusEnum::ANNOUNCE->value]);
+        $anime = $this->createAnimeWithRelations(['status' => StatusEnum::ANNOUNCE]);
         $owner = $this->createOwner();
 
-        Http::fake([
-            '*' => Http::response(status: Response::HTTP_UNPROCESSABLE_ENTITY),
-        ]);
         Mail::fake();
+        Http::fake([
+            Client::SCRAPE_ENDPOINT => Http::response(status: Response::HTTP_UNPROCESSABLE_ENTITY),
+        ]);
 
         $this->artisan(UpdateUnreleasedAnimeCommand::class)
              ->expectsOutput('Failed to update some anime, mail is queued')
-             ->expectsOutput('All anime has been updated!')
-             ->assertOk();
+             ->assertFailed();
 
         Mail::assertQueued(
             FailedUnreleasedAnimeMail::class,
@@ -62,25 +58,19 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
 
     public function testCommandCanUpdateAnimeInfo(): void
     {
-        $this->markTestSkipped('Decide if this command is needed');
-
-        $anime = $this->createAnimeWithRelations(['status' => StatusEnum::ANNOUNCE->value]);
         $this->createOwner();
+        $anime = $this->createAnimeWithRelations(['status' => StatusEnum::ANNOUNCE]);
 
         Http::fake([
-            '*' => Http::response([
+            Client::SCRAPE_ENDPOINT => Http::response([
                 'title'    => $anime->title,
                 'type'     => $anime->type,
                 'year'     => $anime->year,
-                'status'   => StatusEnum::READY->value,
-                'episodes' => $anime->episodes,
+                'status'   => StatusEnum::READY,
+                'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
                 'rating'   => $rating = $this->faker->randomAnimeRating(),
             ]),
         ]);
-
-        Cloudinary::shouldReceive('destroy')->andReturnNull();
-        Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
-        Cloudinary::shouldReceive('getSecurePath')->andReturn($anime->image->path);
 
         $this->artisan(UpdateUnreleasedAnimeCommand::class)
              ->expectsOutput('All anime has been updated!')
@@ -88,7 +78,8 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
 
         $anime->refresh();
 
-        $this->assertEquals(StatusEnum::READY->value, $anime->status);
+        $this->assertEquals(StatusEnum::READY, $anime->status);
         $this->assertEquals($rating, $anime->rating);
+        $this->assertEquals($episodes, $anime->episodes);
     }
 }

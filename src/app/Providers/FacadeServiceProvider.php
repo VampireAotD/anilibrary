@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Facades\Telegram\State\UserStateFacade;
-use App\Telegram\State\Redis\UserState;
+use App\Telegram\State\UserState;
 use Illuminate\Support\ServiceProvider;
 
 class FacadeServiceProvider extends ServiceProvider

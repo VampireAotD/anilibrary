@@ -8,6 +8,7 @@ use App\Enums\Elasticsearch\IndexEnum;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
+use Elastic\Transport\Exception\NoNodeAvailableException;
 use Illuminate\Support\Facades\Log;
 
 final readonly class AnimeIndexService
@@ -47,10 +48,10 @@ final readonly class AnimeIndexService
                     ],
                 ],
             ])->asArray();
-        } catch (ClientResponseException | ServerResponseException $e) {
+        } catch (ClientResponseException | ServerResponseException | NoNodeAvailableException $exception) {
             Log::error('Elasticsearch anime index multi match', [
-                'exception_trace'   => $e->getTraceAsString(),
-                'exception_message' => $e->getMessage(),
+                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $exception->getMessage(),
             ]);
 
             return [];

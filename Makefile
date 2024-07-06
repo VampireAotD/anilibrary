@@ -46,6 +46,10 @@ phpstan: ## Run PHPStan.
 pint: ## Run Laravel Pint.
 	$(compose) exec app vendor/bin/pint --config pint.json
 
+.PHONY: infection
+infection: ## Run Infection mutation tests.
+	$(compose) exec app vendor/bin/infection --threads=4
+
 .PHONY: optimize
 optimize: ## Optimize Laravel app.
 	$(compose) exec app ./artisan optimize:clear;

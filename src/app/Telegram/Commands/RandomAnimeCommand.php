@@ -7,7 +7,6 @@ namespace App\Telegram\Commands;
 use App\DTO\UseCase\Telegram\Anime\GenerateAnimeMessageDTO;
 use App\Enums\Telegram\Actions\ActionEnum;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
-use App\Facades\Telegram\State\UserStateFacade;
 use App\Services\AnimeService;
 use App\UseCase\Telegram\AnimeMessageUseCase;
 use Illuminate\Support\Facades\Log;
@@ -43,8 +42,6 @@ final class RandomAnimeCommand extends Command
                 'exception_message' => $exception->getMessage(),
                 'exception_trace'   => $exception->getTraceAsString(),
             ]);
-        } finally {
-            UserStateFacade::resetExecutedCommandsList($bot->userId());
         }
     }
 }

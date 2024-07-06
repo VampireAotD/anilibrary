@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\LazyCollection;
+use Throwable;
 
 final readonly class AnimeService
 {
@@ -23,6 +24,9 @@ final readonly class AnimeService
     {
     }
 
+    /**
+     * @throws Throwable
+     */
     public function create(UpsertAnimeDTO $dto): Anime
     {
         return DB::transaction(function () use ($dto) {
@@ -33,6 +37,9 @@ final readonly class AnimeService
         });
     }
 
+    /**
+     * @throws Throwable
+     */
     public function update(Anime $anime, UpsertAnimeDTO $dto): Anime
     {
         return DB::transaction(function () use ($anime, $dto) {
@@ -84,7 +91,7 @@ final readonly class AnimeService
 
     public function getParsedAnimePerMonth(): array
     {
-        // Initial array of parsed anime per month where month is a key, and value is a parsed anime count
+        // Initial array of parsed anime per month, where month is a key, and value is a parsed anime count
         $initial = array_fill(0, 12, 0);
 
         $perMonth = $this->animeRepository->getAddedAnimePerMonth();

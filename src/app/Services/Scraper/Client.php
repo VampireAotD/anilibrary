@@ -10,22 +10,22 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
-final readonly class ScraperService
+final readonly class Client
 {
+    public const string SCRAPE_ENDPOINT = '/api/v1/anime/scrape';
+
     /**
      * @throws RequestException|ConnectionException
      */
-    public function sendScrapeRequest(string $url): Response
+    public function scrapeByUrl(string $url): Response
     {
-        $token = $this->createJWTToken();
-
         return Http::baseUrl(config('services.scraper.url'))
-                   ->withToken($token)
-                   ->post('/api/v1/anime/scrape', ['url' => $url])
+                   ->withToken($this->createToken())
+                   ->post(self::SCRAPE_ENDPOINT, ['url' => $url])
                    ->throw();
     }
 
-    private function createJWTToken(): string
+    private function createToken(): string
     {
         return JWT::encode([
             'iss' => 'anilibrary',

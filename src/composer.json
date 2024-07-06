@@ -33,6 +33,7 @@
         "barryvdh/laravel-debugbar": "^3.13",
         "barryvdh/laravel-ide-helper": "^3.0",
         "fakerphp/faker": "^1.23",
+        "infection/infection": "^0.27.11",
         "larastan/larastan": "^2.9",
         "laravel/breeze": "^2.1",
         "laravel/pint": "^1.16",

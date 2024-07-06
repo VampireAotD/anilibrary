@@ -6,11 +6,11 @@ namespace Tests\Feature\Telegram\Conversations;
 
 use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
 use App\Enums\Telegram\Actions\CommandEnum;
-use App\Facades\Telegram\State\UserStateFacade;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
+use App\Jobs\Image\UploadJob;
 use App\Models\Anime;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use App\Services\Scraper\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
@@ -36,7 +36,6 @@ class AddAnimeConversationTest extends TestCase
         parent::setUp();
 
         $this->setUpFakeBot();
-        $this->setUpFakeCloudinary();
         $this->callbackDataFactory = $this->app->make(CallbackDataFactory::class);
     }
 
@@ -66,8 +65,6 @@ class AddAnimeConversationTest extends TestCase
     #[DataProvider('supportedUrlsProvider')]
     public function testBotWillReturnAnimeWithoutScrapingIfUrlIsAlreadyInDatabase(string $url): void
     {
-        UserStateFacade::shouldReceive('resetExecutedCommandsList')->with(self::FAKE_TELEGRAM_ID)->once();
-
         $anime = $this->createAnimeWithRelations();
         $anime->urls()->create(['url' => $url]);
 
@@ -98,19 +95,16 @@ class AddAnimeConversationTest extends TestCase
     #[DataProvider('supportedUrlsProvider')]
     public function testBotWillRespondWithFailureMessageIfScrapedDataWereInvalid(string $url): void
     {
+        Bus::fake();
         Http::fake([
-            '*' => [
+            Client::SCRAPE_ENDPOINT => Http::response([
                 'year'     => $this->faker->year,
                 'type'     => $this->faker->randomAnimeType(),
                 'status'   => $this->faker->randomAnimeStatus(),
                 'episodes' => $this->faker->randomAnimeEpisodes(),
                 'rating'   => $this->faker->randomAnimeRating(),
-            ],
+            ]),
         ]);
-
-        Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
-        Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
-        UserStateFacade::shouldReceive('resetExecutedCommandsList')->with(self::FAKE_TELEGRAM_ID)->once();
 
         $this->bot->willStartConversation()
                   ->hearMessage($this->createFakeTextMessageUpdateData(CommandEnum::ADD_ANIME_COMMAND->value))
@@ -120,27 +114,25 @@ class AddAnimeConversationTest extends TestCase
                   ->hearText($url)
                   ->reply()
                   ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.scrape_failed')]);
+
+        Bus::assertNotDispatched(UploadJob::class);
     }
 
     #[DataProvider('supportedUrlsProvider')]
     public function testBotCanScrapeSupportedUrls(string $url): void
     {
+        Bus::fake();
         Http::fake([
-            '*' => [
+            Client::SCRAPE_ENDPOINT => Http::response([
                 'title'    => $title = $this->faker->sentence,
+                'image'    => $image = $this->faker->randomAnimeImage(),
                 'type'     => $type = $this->faker->randomAnimeType(),
                 'year'     => $year = $this->faker->year,
                 'status'   => $status = $this->faker->randomAnimeStatus(),
                 'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
                 'rating'   => $rating = $this->faker->randomAnimeRating(),
-            ],
+            ]),
         ]);
-
-        Bus::fake();
-
-        Cloudinary::shouldReceive('uploadFile')->andReturnSelf();
-        Cloudinary::shouldReceive('getSecurePath')->andReturn($this->faker->imageUrl);
-        UserStateFacade::shouldReceive('resetExecutedCommandsList')->with(self::FAKE_TELEGRAM_ID)->once();
 
         $this->bot->willStartConversation()
                   ->hearMessage($this->createFakeTextMessageUpdateData(CommandEnum::ADD_ANIME_COMMAND->value))
@@ -151,9 +143,12 @@ class AddAnimeConversationTest extends TestCase
                   ->reply()
                   ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.scrape_has_ended')]);
 
-        Bus::assertDispatched(UpsertAnimeJob::class);
-
         $anime = Anime::query()->first();
+        $this->assertInstanceOf(Anime::class, $anime);
+
+        Bus::assertDispatched(UpsertAnimeJob::class);
+        Bus::assertDispatched(UploadJob::class, fn(UploadJob $job): bool => $job->image === $image);
+
         $this->assertEquals($anime->title, $title);
         $this->assertEquals($anime->type, $type);
         $this->assertEquals($anime->year, $year);

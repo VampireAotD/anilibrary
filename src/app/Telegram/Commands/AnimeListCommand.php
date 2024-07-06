@@ -7,7 +7,6 @@ namespace App\Telegram\Commands;
 use App\DTO\UseCase\Telegram\Anime\GenerateAnimeListDTO;
 use App\Enums\Telegram\Actions\ActionEnum;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
-use App\Facades\Telegram\State\UserStateFacade;
 use App\UseCase\Telegram\AnimeMessageUseCase;
 use Illuminate\Support\Facades\Log;
 use SergiX44\Nutgram\Handlers\Type\Command;
@@ -34,8 +33,6 @@ final class AnimeListCommand extends Command
                 'exception_message' => $exception->getMessage(),
                 'exception_trace'   => $exception->getTraceAsString(),
             ]);
-        } finally {
-            UserStateFacade::resetExecutedCommandsList($bot->userId());
         }
     }
 }

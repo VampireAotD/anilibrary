@@ -41,7 +41,7 @@ class CreateOwnerCommand extends Command
     public function handle(UserRepositoryInterface $userRepository): int
     {
         if (config('app.env') === 'production' || $userRepository->findOwner()) {
-            return Command::INVALID;
+            return self::INVALID;
         }
 
         $email    = $this->askEmail();
@@ -59,7 +59,7 @@ class CreateOwnerCommand extends Command
         $this->info('Owner has been created');
         $this->newLine()->info(sprintf('Credentials - email: %s, password: %s', $email, $password));
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function askEmail(): string

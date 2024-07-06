@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Anime\StatusEnum;
+use App\Enums\Anime\TypeEnum;
 use App\Models\Concerns\Filterable;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeVoiceActing;
@@ -37,18 +39,15 @@ class Anime extends Model
     ];
 
     /**
-     * @return array<string, string>
+     * @return array{id: 'string', type: 'App\Enums\Anime\TypeEnum', status: 'App\Enums\Anime\StatusEnum'}
      */
     protected function casts(): array
     {
         return [
-            'id' => 'string',
+            'id'     => 'string',
+            'type'   => TypeEnum::class,
+            'status' => StatusEnum::class,
         ];
-    }
-
-    public function voiceActing(): BelongsToMany
-    {
-        return $this->belongsToMany(VoiceActing::class)->using(AnimeVoiceActing::class);
     }
 
     public function image(): MorphOne
@@ -58,9 +57,9 @@ class Anime extends Model
         ]);
     }
 
-    public function genres(): BelongsToMany
+    public function urls(): HasMany
     {
-        return $this->belongsToMany(Genre::class, AnimeGenre::getTableName())->using(AnimeGenre::class);
+        return $this->hasMany(AnimeUrl::class);
     }
 
     public function synonyms(): HasMany
@@ -68,9 +67,14 @@ class Anime extends Model
         return $this->hasMany(AnimeSynonym::class);
     }
 
-    public function urls(): HasMany
+    public function voiceActing(): BelongsToMany
     {
-        return $this->hasMany(AnimeUrl::class);
+        return $this->belongsToMany(VoiceActing::class)->using(AnimeVoiceActing::class);
+    }
+
+    public function genres(): BelongsToMany
+    {
+        return $this->belongsToMany(Genre::class, AnimeGenre::getTableName())->using(AnimeGenre::class);
     }
 
     /**
@@ -83,7 +87,7 @@ class Anime extends Model
             get: fn(): string => sprintf(
                 "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s",
                 $this->title,
-                $this->status,
+                $this->status->value,
                 $this->episodes,
                 $this->rating,
                 $this->voiceActing->implode('name', ', '),

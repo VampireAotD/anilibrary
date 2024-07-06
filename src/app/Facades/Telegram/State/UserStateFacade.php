@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Facades\Telegram\State;
 
-use App\Telegram\State\Redis\UserState;
+use App\Telegram\State\UserState;
 use Illuminate\Support\Facades\Facade;
 
 /**

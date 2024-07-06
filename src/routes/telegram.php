@@ -15,8 +15,6 @@ use App\Telegram\Commands\StartCommand;
 use App\Telegram\Conversations\AddAnimeConversation;
 use App\Telegram\Conversations\SearchAnimeConversation;
 use App\Telegram\Middleware\BotAccessMiddleware;
-use App\Telegram\Middleware\UserActivityMiddleware;
-use App\Telegram\Middleware\UserStatusMiddleware;
 use SergiX44\Nutgram\Conversations\Conversation;
 
 /*
@@ -35,7 +33,7 @@ use SergiX44\Nutgram\Conversations\Conversation;
 Conversation::refreshOnDeserialize();
 
 // Apply middlewares
-$bot->middlewares([BotAccessMiddleware::class, UserStatusMiddleware::class, UserActivityMiddleware::class]);
+$bot->middlewares([BotAccessMiddleware::class]);
 
 // Start
 $bot->onCommand(ActionEnum::START_COMMAND->value, StartCommand::class);

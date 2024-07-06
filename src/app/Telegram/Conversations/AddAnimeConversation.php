@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Telegram\Conversations;
 
 use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
-use App\Facades\Telegram\State\UserStateFacade;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
 use App\Rules\Telegram\SupportedUrlRule;
@@ -19,6 +18,7 @@ use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
+use Throwable;
 
 final class AddAnimeConversation extends Conversation
 {
@@ -38,10 +38,11 @@ final class AddAnimeConversation extends Conversation
 
     public function scrape(Nutgram $bot): void
     {
-        $message = $bot->message()?->text;
-        $userId  = $bot->userId();
-
-        $errors = Validator::make(['url' => $message], ['url' => ['required', new SupportedUrlRule()]])->errors();
+        $url    = $bot->message()?->text;
+        $errors = Validator::make(
+            data : ['url' => $url],
+            rules: ['url' => ['required', new SupportedUrlRule()]],
+        )->errors();
 
         if ($errors->isNotEmpty()) {
             $bot->sendMessage($errors->first());
@@ -49,27 +50,25 @@ final class AddAnimeConversation extends Conversation
         }
 
         try {
-            if ($anime = $this->animeService->findByUrl($message)) {
+            if ($anime = $this->animeService->findByUrl($url)) {
                 $this->sendScrapedMessage($anime);
                 $this->end();
                 return;
             }
 
-            $anime = $this->scraperUseCase->scrapeByUrl($message);
+            $anime = $this->scraperUseCase->scrapeByUrl($url);
 
             $this->sendScrapedMessage($anime);
             $this->end();
-        } catch (RequestException | ValidationException $exception) {
+        } catch (RequestException | ValidationException | Throwable $exception) {
             Log::error('Add anime conversation', [
                 'exceptionMessage' => $exception->getMessage(),
                 'exceptionTrace'   => $exception->getTraceAsString(),
-                'url'              => $message,
+                'url'              => $url,
             ]);
 
             $bot->sendMessage(__('telegram.conversations.add_anime.scrape_failed'));
             $this->end();
-        } finally {
-            UserStateFacade::resetExecutedCommandsList($userId);
         }
     }
 

@@ -31,7 +31,7 @@ final readonly class FindSimilarAnimeDTO implements Arrayable
     {
         return [
             'titles' => $this->titles,
-            'type'   => $this->type->value,
+            'type'   => $this->type,
             'year'   => $this->year,
         ];
     }

@@ -10,6 +10,11 @@ use Faker\Provider\Base;
 
 final class AnimeInformationProvider extends Base
 {
+    public function randomAnimeImage(): string
+    {
+        return sprintf("data:image/png;base64,%s", base64_encode($this->generator->sentence));
+    }
+
     public function randomAnimeRating(int $min = 0, int $max = 10): float
     {
         return $this->generator->randomFloat(1, $min, $max);
@@ -20,13 +25,13 @@ final class AnimeInformationProvider extends Base
         return (string) $this->generator->randomNumber();
     }
 
-    public function randomAnimeStatus(): string
+    public function randomAnimeStatus(): StatusEnum
     {
-        return $this->generator->randomElement(StatusEnum::values());
+        return $this->generator->randomElement(StatusEnum::cases());
     }
 
-    public function randomAnimeType(): string
+    public function randomAnimeType(): TypeEnum
     {
-        return $this->generator->randomElement(TypeEnum::values());
+        return $this->generator->randomElement(TypeEnum::cases());
     }
 }

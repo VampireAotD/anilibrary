@@ -59,10 +59,12 @@ class UpdateUnreleasedAnimeCommand extends Command
         if ($owner && $failedList) {
             Mail::to($owner->email)->queue(new FailedUnreleasedAnimeMail($failedList));
             $this->warn('Failed to update some anime, mail is queued');
+
+            return self::FAILURE;
         }
 
         $this->info('All anime has been updated!');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

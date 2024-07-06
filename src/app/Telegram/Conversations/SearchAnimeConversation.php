@@ -30,9 +30,8 @@ final class SearchAnimeConversation extends Conversation
 
     public function search(Nutgram $bot): void
     {
-        $userId = $bot->userId();
-
         try {
+            $userId    = $bot->userId();
             $response  = $this->animeIndexService->multiMatchSearch($bot->message()?->text);
             $animeList = Arr::get($response, 'hits.hits');
 
@@ -48,7 +47,7 @@ final class SearchAnimeConversation extends Conversation
                 $bot->deleteMessage($userId, (int) $messageId);
             }
 
-            $ids = array_filter(Arr::pluck($animeList, '_source.id'));
+            $ids = Arr::pluck($animeList, '_source.id');
             UserStateFacade::saveSearchResult($userId, $ids);
 
             $caption = $this->animeMessageUseCase->generateSearchResult(
@@ -61,7 +60,6 @@ final class SearchAnimeConversation extends Conversation
                 reply_markup: $caption->generateReplyMarkup()
             );
 
-            UserStateFacade::resetExecutedCommandsList($userId);
             UserStateFacade::saveSearchResultPreview($userId, $message->message_id);
             $this->end();
         } catch (AnimeMessageException $exception) {
@@ -71,7 +69,6 @@ final class SearchAnimeConversation extends Conversation
             ]);
 
             $bot->sendMessage(__('telegram.conversations.search_anime.no_results'));
-            UserStateFacade::resetExecutedCommandsList($userId);
             $this->end();
         }
     }

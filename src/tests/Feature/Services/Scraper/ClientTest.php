@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Services\Scraper;
 
-use App\Services\Scraper\ScraperService;
+use App\Services\Scraper\Client;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -14,17 +14,17 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
-class ScraperServiceTest extends TestCase
+class ClientTest extends TestCase
 {
     use WithFaker;
 
-    protected ScraperService $scraperService;
+    protected Client $client;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->scraperService = $this->app->make(ScraperService::class);
+        $this->client = $this->app->make(Client::class);
     }
 
     public function testServiceWillThrowRequestExceptionOnFailure(): void
@@ -34,7 +34,7 @@ class ScraperServiceTest extends TestCase
         });
 
         $this->expectException(RequestException::class);
-        $this->scraperService->sendScrapeRequest($this->faker->url);
+        $this->client->scrapeByUrl($this->faker->url);
     }
 
     public function testServiceWillCreateAcceptableToken(): void
@@ -48,11 +48,12 @@ class ScraperServiceTest extends TestCase
             $this->assertEquals('anilibrary', $decodedToken['iss']);
             $this->assertArrayHasKey('iat', $decodedToken);
             $this->assertArrayHasKey('exp', $decodedToken);
+            $this->assertEquals(now()->addDays(14)->unix(), $decodedToken['exp']);
 
             return Http::response(['data' => 'test data']);
         });
 
-        $response = $this->scraperService->sendScrapeRequest($this->faker->url);
+        $response = $this->client->scrapeByUrl($this->faker->url);
 
         $this->assertEquals(Response::HTTP_OK, $response->status());
         $this->assertEquals(['data' => 'test data'], $response->json());
@@ -61,13 +62,14 @@ class ScraperServiceTest extends TestCase
     public function testServiceCanSendScrapeRequest(): void
     {
         Http::fake(function (Request $request) {
-            $this->assertEquals(config('services.scraper.url') . '/api/v1/anime/scrape', $request->url());
+            $this->assertEquals(config('services.scraper.url') . Client::SCRAPE_ENDPOINT, $request->url());
             $this->assertNotEmpty($request->headers()['Authorization']);
+            $this->assertArrayHasKey('url', $request->data());
 
             return Http::response(['data' => 'test data']);
         });
 
-        $response = $this->scraperService->sendScrapeRequest($this->faker->url);
+        $response = $this->client->scrapeByUrl($this->faker->url);
 
         $this->assertEquals(Response::HTTP_OK, $response->status());
         $this->assertEquals(['data' => 'test data'], $response->json());

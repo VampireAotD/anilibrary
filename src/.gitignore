@@ -15,6 +15,7 @@ _ide_helper_models.php
 .env.production
 .phpunit.result.cache
 .pnpm-store
+/mutation
 Homestead.json
 Homestead.yaml
 auth.json

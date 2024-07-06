@@ -54,14 +54,11 @@ class SearchAnimeConversationTest extends TestCase
 
         $this->elasticClient->addResponse(new JsonResponse(json_encode($response)));
 
-        // No previous search results as the conversation just started
+        // There must be no previous search results as the conversation just started
         UserStateFacade::shouldReceive('getSearchResultPreview')->once()->andReturnNull();
 
         // Save given search results
         UserStateFacade::shouldReceive('saveSearchResult')->once();
-
-        // Reset all executed commands
-        UserStateFacade::shouldReceive('resetExecutedCommandsList')->once();
 
         // Retrieve search results from cache
         UserStateFacade::shouldReceive('getSearchResult')->once()->andReturn($animeList->pluck('id')->toArray());
@@ -82,5 +79,44 @@ class SearchAnimeConversationTest extends TestCase
                       'photo'   => $anime->image->path,
                       'caption' => $anime->to_telegram_caption,
                   ]);
+    }
+
+    public function testBotWillDeletePreviousSearchResultsOnNewSearch(): void
+    {
+        $animeList = $this->createAnimeCollectionWithRelations();
+
+        $response = [
+            'hits' => [
+                'hits' => $animeList->map(fn(Anime $anime) => ['_source' => $anime->toArray()])->all(),
+            ],
+        ];
+
+        $this->elasticClient->addResponse(new JsonResponse(json_encode($response)));
+
+        // Get previous search results
+        UserStateFacade::shouldReceive('getSearchResultPreview')->once()->andReturn($this->faker->randomNumber());
+
+        // Delete previous search results
+        UserStateFacade::shouldReceive('removeSearchResultPreview')->once();
+
+        // Save given search results
+        UserStateFacade::shouldReceive('saveSearchResult')->once();
+
+        // Retrieve search results from cache
+        UserStateFacade::shouldReceive('getSearchResult')->once()->andReturn($animeList->pluck('id')->toArray());
+
+        // Save previous search results
+        UserStateFacade::shouldReceive('saveSearchResultPreview')->once();
+
+        $anime = $animeList->first();
+        $this->assertInstanceOf(Anime::class, $anime);
+
+        $this->bot->willStartConversation()
+                  ->hearText(CommandEnum::SEARCH_ANIME_COMMAND->value)
+                  ->reply()
+                  ->assertReplyMessage(['text' => __('telegram.conversations.search_anime.example')])
+                  ->hearText($this->faker->text)
+                  ->reply()
+                  ->assertCalled('deleteMessage');
     }
 }
