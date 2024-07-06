@@ -12,7 +12,7 @@ use Laravel\Horizon\HorizonApplicationServiceProvider;
 class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
     /**
-     * Bootstrap any application services.
+     * Register services.
      */
     public function boot(): void
     {

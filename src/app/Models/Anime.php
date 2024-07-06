@@ -39,6 +39,7 @@ class Anime extends Model
     ];
 
     /**
+     * @psalm-suppress InvalidReturnStatement, InvalidReturnType Suppressed because of conflict with PHPStan parser
      * @return array{id: 'string', type: 'App\Enums\Anime\TypeEnum', status: 'App\Enums\Anime\StatusEnum'}
      */
     protected function casts(): array

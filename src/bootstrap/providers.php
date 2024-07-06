@@ -9,6 +9,5 @@ return [
     App\Providers\FakerServiceProvider::class,
     App\Providers\HorizonServiceProvider::class,
     App\Providers\MacroServiceProvider::class,
-    App\Providers\RepositoryServiceProvider::class,
     App\Providers\RouteServiceProvider::class,
 ];
