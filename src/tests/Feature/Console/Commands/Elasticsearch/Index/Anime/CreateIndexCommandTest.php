@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Elasticsearch\Index\Anime;
 
 use App\Enums\Elasticsearch\IndexEnum;
-use Illuminate\Http\Response as ResponseStatus;
+use Illuminate\Http\Response;
+use Tests\Concerns\CanCreateMocks;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
-use Tests\Concerns\CanCreateMocks;
 
 class CreateIndexCommandTest extends TestCase
 {
@@ -23,18 +23,18 @@ class CreateIndexCommandTest extends TestCase
 
     public function testCommandWillNotCreateAnimeIndexIfItIsAlreadyExists(): void
     {
-        $this->elasticClient->addResponse(new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value])));
+        $this->elasticHandler->append(new JsonResponse(['index' => IndexEnum::ANIME_INDEX->value]));
 
         $this->artisan('elasticsearch:create-anime-index')->assertFailed();
     }
 
     public function testCommandCanCreateAnimeIndex(): void
     {
-        $this->elasticClient->addResponse(
-            new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value]), ResponseStatus::HTTP_NOT_FOUND)
+        $this->elasticHandler->append(
+            new JsonResponse(['index' => IndexEnum::ANIME_INDEX->value], Response::HTTP_NOT_FOUND)
         );
 
-        $this->elasticClient->addResponse(new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value])));
+        $this->elasticHandler->append(new JsonResponse(['index' => IndexEnum::ANIME_INDEX->value]));
 
         $this->artisan('elasticsearch:create-anime-index')->assertOk();
     }

@@ -5,17 +5,21 @@ declare(strict_types=1);
 namespace Tests\Concerns;
 
 use App\Telegram\Middleware\BotAccessMiddleware;
+use CloudinaryLabs\CloudinaryLaravel\CloudinaryEngine;
 use Elastic\Elasticsearch\Client as ElasticsearchClient;
 use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\Exception\AuthenticationException;
-use Http\Mock\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use PHPUnit\Framework\MockObject\Exception;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Testing\FakeNutgram;
 
 trait CanCreateMocks
 {
-    protected Client      $elasticClient;
     protected FakeNutgram $bot;
+    protected MockHandler $elasticHandler;
 
     protected function setUpFakeBot(): void
     {
@@ -29,13 +33,27 @@ trait CanCreateMocks
     }
 
     /**
+     * @throws Exception
+     */
+    protected function setUpFakeCloudinary(): void
+    {
+        $this->app->instance(CloudinaryEngine::class, $this->createMock(CloudinaryEngine::class));
+    }
+
+    /**
      * @throws AuthenticationException
      */
     public function setUpFakeElasticsearchClient(): void
     {
-        $mockClient = new Client();
+        $this->elasticHandler = new MockHandler();
 
-        $this->app->instance(ElasticsearchClient::class, ClientBuilder::create()->setHttpClient($mockClient)->build());
-        $this->elasticClient = $mockClient;
+        $handlerStack = HandlerStack::create($this->elasticHandler);
+
+        $client = new Client(['handler' => $handlerStack]);
+
+        $this->app->instance(
+            ElasticsearchClient::class,
+            ClientBuilder::create()->setHttpClient($client)->build()
+        );
     }
 }

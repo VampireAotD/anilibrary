@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Elasticsearch\Index\Anime;
 
 use App\Enums\Elasticsearch\IndexEnum;
-use Illuminate\Http\Response as ResponseStatus;
+use Tests\Concerns\CanCreateMocks;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
-use Tests\Concerns\CanCreateMocks;
 
 class UpdateIndexMappingsCommandTest extends TestCase
 {
@@ -23,9 +22,7 @@ class UpdateIndexMappingsCommandTest extends TestCase
 
     public function testCommandCanUpdateAnimeIndexMappings(): void
     {
-        $this->elasticClient->addResponse(
-            new JsonResponse(json_encode(['index' => IndexEnum::ANIME_INDEX->value]), ResponseStatus::HTTP_OK)
-        );
+        $this->elasticHandler->append(new JsonResponse(['index' => IndexEnum::ANIME_INDEX->value]));
 
         $this->artisan('elasticsearch:update-anime-index-mappings')->assertOk();
     }

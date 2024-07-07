@@ -31,7 +31,7 @@ class SearchAnimeConversationTest extends TestCase
 
     public function testBotWillRespondThatNoSearchResultsWereFound(): void
     {
-        $this->elasticClient->addResponse(new JsonResponse(json_encode(['hits' => ['hits' => []]])));
+        $this->elasticHandler->append(new JsonResponse(['hits' => ['hits' => []]]));
 
         $this->bot->willStartConversation()
                   ->hearText(CommandEnum::SEARCH_ANIME_COMMAND->value)
@@ -52,7 +52,7 @@ class SearchAnimeConversationTest extends TestCase
             ],
         ];
 
-        $this->elasticClient->addResponse(new JsonResponse(json_encode($response)));
+        $this->elasticHandler->append(new JsonResponse($response));
 
         // There must be no previous search results as the conversation just started
         UserStateFacade::shouldReceive('getSearchResultPreview')->once()->andReturnNull();
@@ -91,7 +91,7 @@ class SearchAnimeConversationTest extends TestCase
             ],
         ];
 
-        $this->elasticClient->addResponse(new JsonResponse(json_encode($response)));
+        $this->elasticHandler->append(new JsonResponse($response));
 
         // Get previous search results
         UserStateFacade::shouldReceive('getSearchResultPreview')->once()->andReturn($this->faker->randomNumber());

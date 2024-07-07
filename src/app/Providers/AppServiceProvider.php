@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\Anime;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use App\Repositories\Anime\AnimeRepository;
 use App\Repositories\Anime\AnimeRepositoryInterface;
@@ -81,8 +83,10 @@ class AppServiceProvider extends ServiceProvider
     private function enforceMorphAliases(): void
     {
         Relation::enforceMorphMap([
-            'anime' => Anime::class,
-            'user'  => User::class,
+            'user'       => User::class,
+            'role'       => Role::class,
+            'anime'      => Anime::class,
+            'permission' => Permission::class,
         ]);
     }
 }

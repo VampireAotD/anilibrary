@@ -7,10 +7,10 @@ namespace Tests\Feature\Console\Commands\Elasticsearch\Index\Anime;
 use App\Enums\Elasticsearch\IndexEnum;
 use App\Models\Anime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Helpers\Elasticsearch\JsonResponse;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Helpers\Elasticsearch\JsonResponse;
+use Tests\TestCase;
 
 class SyncAnimeDataCommandTest extends TestCase
 {
@@ -34,9 +34,7 @@ class SyncAnimeDataCommandTest extends TestCase
 
         $items = $animeList->map(fn(Anime $anime) => ['index' => IndexEnum::ANIME_INDEX->value, 'id' => $anime->id]);
 
-        $this->elasticClient->addResponse(
-            new JsonResponse(json_encode(['errors' => false, 'items' => $items->toArray()]))
-        );
+        $this->elasticHandler->append(new JsonResponse(['errors' => false, 'items' => $items->toArray()]));
 
         $this->artisan('elasticsearch:sync-anime')->assertOk();
     }

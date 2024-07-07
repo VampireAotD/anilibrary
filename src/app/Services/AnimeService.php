@@ -119,8 +119,9 @@ final readonly class AnimeService
         // Anime will always have default image path related to it
         // even if there is no actual record in DB, that's because
         // of Laravel withDefault method on image relation, so here
-        // need to check if image has an actual ID
-        if ($dto->image && !$anime->image?->id) {
+        // need to check if image has default path then it can be
+        // replaced with new one
+        if ($dto->image && $anime->image->default) {
             UploadJob::dispatch($anime, $dto->image);
         }
 
