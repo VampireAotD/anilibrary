@@ -23,6 +23,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "nutgram/laravel": "^1.4",
+        "opcodesio/log-viewer": "^3.10",
         "predis/predis": "^2.2",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-permission": "^6.7",
@@ -69,10 +70,13 @@
             "@php artisan package:discover --ansi"
         ],
         "post-install-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi",
+            "@php artisan vendor:publish --tag=log-viewer-assets --ansi",
             "@ide-helper"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi",
+            "@php artisan vendor:publish --tag=log-viewer-assets --ansi",
             "@ide-helper"
         ],
         "post-root-package-install": [
