@@ -15,7 +15,7 @@ occur, so for now - it need to be used for development purposes only!**
 
 ## Related services:
 
-To fully use Anilibrary you can also use one or all services that are related to it:
+To fully use **Anilibrary** you can also use one or all services that are related to it:
 
 1. [`Scraper`](https://github.com/VampireAotD/anilibrary-scraper) - a service that allows you to scrape anime data from
    different sites.
@@ -29,8 +29,12 @@ To fully use Anilibrary you can also use one or all services that are related to
 
 ## Build and deployment
 
-Before you start to work with Anilibrary, you need to fill all required environment variables which will be located in
-**.env** and **src/.env**. To acquire them, you can use script **install.sh** or launch it by using `make install`.
+Before you start to work with **Anilibrary**, you need to fill all required environment variables which will be located
+in `.env` and `src/.env`. To acquire them, you can use script **install.sh** or launch it by using:
+
+```sh
+make install
+```
 
 ### Variables
 
@@ -57,53 +61,72 @@ This variables will be located in **.env** and are required for container to run
 This variables will be in **./src/.env** and are required for application to properly work with containers and other
 services.
 
-| Variable           | Description                                                                                                                   |
-|--------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| `DB_*`             | Set of variables for database connection, use values from **.env** for containers.                                            |
-| `REDIS_*`          | Set of variables for Redis connection, use values from **.env** for containers.                                               |
-| `TELEGRAM_*`       | Set of variables for Telegram bot.                                                                                            |
-| `CLOUDINARY_*`     | Set of variables for Cloudinary storage.                                                                                      |
-| `ELASTICSEARCH_*`  | Set of variables for Elasticsearch, use with [monitoring microservice](https://github.com/VampireAotD/anilibrary-monitoring). |
-| `JWT_SECRET`       | Secret for communication with different Anilibrary microservices.                                                             |
-| `SCRAPER_URL`      | Url for scraper microservice.                                                                                                 |
-| `LOGSTASH_ADDRESS` | Url for Logstash receiver.                                                                                                    |
+| Variable           | Description                                                                                                               |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------|
+| `DB_*`             | Set of variables for database connection, use values from **.env** for containers.                                        |
+| `REDIS_*`          | Set of variables for **Redis** connection, use values from **.env** for containers.                                       |
+| `TELEGRAM_*`       | Set of variables for Telegram bot.                                                                                        |
+| `CLOUDINARY_*`     | Set of variables for Cloudinary storage.                                                                                  |
+| `ELASTICSEARCH_*`  | Set of variables for **Elasticsearch**, use with [ELK stack microservice](https://github.com/VampireAotD/anilibrary-elk). |
+| `JWT_SECRET`       | Secret for communication with different **Anilibrary** microservices.                                                     |
+| `SCRAPER_URL`      | Url for **scraper microservice**.                                                                                         |
+| `LOGSTASH_ADDRESS` | Url for **Logstash** receiver.                                                                                            |
 
 ---
 
-## Some quality of life
+## Testing
 
-1. **Git hooks**
+Currently, **MySQL** is primary DB for **Anilibrary**, so it will be used for tests as well. Container with testing
+database, which is called `anilibrary-testing-database` will be up whenever you launch all other containers via Docker.
 
-   For code quality you can use things like **Psalm**, **PHPStan** and **Laravel Pint**. You can use them directly in
-   container, or via Makefile,like this:
-   ```sh
-   make phpstan
-   make psalm
-   make pint
-   ```
-   But if you don't want to do it manually you can write in **pre-commit** hook which is located in **.hooks**
-   directory.
-   To apply this and other hooks you can use **apply_hooks.sh** script, which is located in **scripts/git** folder. If
-   you don't want to you those anymore, you can use **revoke_hooks** script.
+To run tests for backend use:
 
-2. **Nginx logs to ELK service**
+```sh
+make test
+```
 
-   If you want to visualize you Nginx logs in Kibana you can send them to Elasticsearch via Logstash. All of them are
-   configured in **ELK** service. To send logs you need to set **NGINX_LOGS_TO_LOGSTASH** variable to **true** in
-   **.env** and specify **LOGSTASH_URL** for Nginx container, like this:
+To run tests for frontend use:
 
-   ```diff
-   # compose.yml
-   
-   nginx:
-   +  environment:
-   +    LOGSTASH_URL: <your-url>
-   ```
+```sh
+make frontend-test
+```
 
-3. **Testing**
+---
 
-   You can test your frontend and backend using these commands:
-   ```sh
-   make test #for PHP tests
-   make frontend-test # for TS tests
-   ```
+## Commits
+
+Before commiting use must ensure that project is tested, passed all static checks and has the same code style across it.
+
+To do that you can use different commands, for example, to run static analysis use:
+
+```sh
+make psalm
+make phpstan
+```
+
+To ensure that project has same code style use:
+
+```sh
+make pint
+```
+
+To make life easier and automatically run all this commands for you before commit, **Git hooks** are used. To run them,
+**Anilibrary**
+uses [Lefthook](https://github.com/evilmartians/lefthook), so you must install it aswell.
+
+---
+
+## Logs
+
+As mentioned before, **Anilibrary** has its own [ELK stack](https://github.com/VampireAotD/anilibrary-elk), so logs from
+it or **Nginx** can be send to **Logstash**, and be visualised in **Kibana**. To send **Nginx** logs to **Logstash**,
+you need to set `NGINX_LOGS_TO_LOGSTASH`variable to `true` in `.env` and specify `LOGSTASH_URL` for **Nginx** container
+in `compose.yml`, like this:
+
+```diff
+# compose.yml
+
+nginx:
++  environment:
++    LOGSTASH_URL: <your-url>
+```
