@@ -43,7 +43,7 @@ jobs:
           coverage: xdebug
 
       - name: Install Composer dependencies
-        run: composer install -qn --no-ansi --no-progress --no-scripts --prefer-dist
+        run: composer install -qn --no-ansi --no-progress --prefer-dist
 
       - name: Run tests
         env:
