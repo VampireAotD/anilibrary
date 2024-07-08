@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Models\Anime;
 use Cloudinary\Api\Exception\ApiError;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -18,15 +17,13 @@ final readonly class ImageService
         // have a default image path, so need to check if it is an
         // actual image in DB and delete it if it is
         if (!$anime->image->default) {
-            /** @phpstan-ignore-next-line For CI/CD */
-            Cloudinary::destroy($anime->image->alias);
+            // TODO Use Cloudinary facade when it will have a mixin
+            cloudinary()->destroy($anime->image->alias);
         }
 
         try {
             $alias = sprintf('%s/%s', $anime->id, Str::random());
-
-            /** @phpstan-ignore-next-line For CI/CD */
-            $path = Cloudinary::uploadFile(
+            $path  = cloudinary()->uploadFile(
                 file   : $image,
                 options: [
                     'folder'    => config('cloudinary.default_folder'),

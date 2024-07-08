@@ -55,19 +55,9 @@ optimize: ## Optimize Laravel app.
 	$(compose) exec app ./artisan optimize:clear;
 	$(compose) exec app ./artisan optimize;
 
-.PHONY: test-db-up
-test-db-up: ## Start testing database.
-	$(compose) -f compose.testing.yml up --build -d
-
-.PHONY: test-db-down
-test-db-down: ## Shut down testing database.
-	$(compose) -f compose.testing.yml down
-
 .PHONY: test
 test: ## Run backend tests.
-	@make test-db-up
 	$(compose) exec app ./artisan test
-	@make test-db-down
 
 .PHONY: frontend-watch
 frontend-watch: ## Start frontend dev server.

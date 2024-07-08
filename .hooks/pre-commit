@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-make pint
-
-git add -u
