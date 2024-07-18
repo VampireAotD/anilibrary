@@ -101,6 +101,9 @@ To do that you can use different commands, for example, to run static analysis u
 
 ```sh
 make psalm
+```
+
+```sh
 make phpstan
 ```
 
@@ -111,8 +114,7 @@ make pint
 ```
 
 To make life easier and automatically run all this commands for you before commit, **Git hooks** are used. To run them,
-**Anilibrary**
-uses [Lefthook](https://github.com/evilmartians/lefthook), so you must install it aswell.
+**Anilibrary** uses [Lefthook](https://github.com/evilmartians/lefthook), so you must install it as well.
 
 ---
 

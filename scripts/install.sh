@@ -59,9 +59,4 @@ $compose exec app ./artisan migrate --seed
 log 'Resolving owner'
 $compose exec app ./artisan setup:create-owner
 
-log 'Parsing anime list'
-if ! $compose exec app ./artisan anime-list:parse >/dev/null 2>&1; then
-  echo '>> No anime list were found, skipping...'
-fi
-
 echo '⠿ Anilibrary has been successfully installed!'
