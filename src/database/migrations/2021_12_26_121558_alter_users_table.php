@@ -15,8 +15,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropPrimary('id');
-            $table->uuid('id')->first()->primary()->change();
+            $table->dropColumn('id');
+            $table->uuid('id')->first()->primary();
         });
     }
 
