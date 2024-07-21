@@ -28,7 +28,7 @@ octane-status: ## Check Laravel Octane status.
 
 .PHONY: horizon-status
 horizon-status: ## Check Laravel Horizon status.
-	$(compose) exec app ./artisan horizon:status
+	$(compose) exec horizon ./artisan horizon:status
 
 .PHONY: app-sh
 app-sh: ## Enter app container.

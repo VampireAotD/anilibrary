@@ -75,20 +75,78 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    build:
+    build: &app
       context: docker/php
     container_name: anilibrary
     environment:
       XDEBUG_MODE: ${XDEBUG_MODE}
     extra_hosts:
       - "host.docker.internal:host-gateway" # for xdebug
+    healthcheck:
+      test: php artisan octane:status || exit 1
+      start_period: 5s
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - ./src:/anilibrary
+      - ./docker/php/supervisor/conf.d/octane.conf:/etc/supervisor/conf.d/octane.conf
     ports:
       - ${NODE_PORT}:5173
     networks:
       - local
       - anilibrary
+
+  horizon:
+    depends_on:
+      app:
+        condition: service_healthy
+    build: *app
+    container_name: anilibrary-horizon
+    healthcheck:
+      test: php artisan horizon:status || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./src:/anilibrary
+      - ./docker/php/supervisor/conf.d/horizon.conf:/etc/supervisor/conf.d/horizon.conf
+    networks:
+      - local
+
+  scheduler:
+    depends_on:
+      app:
+        condition: service_healthy
+    build: *app
+    container_name: anilibrary-scheduler
+    healthcheck:
+      test: php artisan schedule:list || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./src:/anilibrary
+      - ./docker/php/supervisor/conf.d/scheduler.conf:/etc/supervisor/conf.d/scheduler.conf
+    networks:
+      - local
+
+  telegram:
+    depends_on:
+      app:
+        condition: service_healthy
+    build: *app
+    container_name: anilibrary-telegram
+    healthcheck:
+      test: php artisan nutgram:list || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./src:/anilibrary
+      - ./docker/php/supervisor/conf.d/telegram.conf:/etc/supervisor/conf.d/telegram.conf
+    networks:
+      - local
 
 networks:
   anilibrary:

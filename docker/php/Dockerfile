@@ -42,7 +42,6 @@ RUN addgroup -g ${GROUP_ID} anilibrary \
 USER anilibrary
 
 COPY ./php.ini /usr/local/etc/php/php.ini
-COPY ./supervisor/conf.d /etc/supervisor/conf.d
 COPY ./supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
@@ -58,5 +57,3 @@ EXPOSE 8000
 EXPOSE 5173
 
 ENTRYPOINT ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
-
-HEALTHCHECK --start-period=5s --interval=10s --timeout=5s --retries=5 CMD php artisan octane:status || exit 1
