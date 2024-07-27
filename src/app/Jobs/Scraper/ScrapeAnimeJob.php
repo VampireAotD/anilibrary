@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Jobs\Scraper;
 
-use App\DTO\Events\Pusher\ScrapeResultDTO;
-use App\Enums\Events\Pusher\ScrapeResultTypeEnum;
+use App\DTO\Events\Scraper\ScrapeAnimeResultDTO;
+use App\Enums\Events\Scraper\ScrapeResultTypeEnum;
 use App\Enums\QueueEnum;
-use App\Events\Pusher\ScrapeResultEvent;
+use App\Events\Scraper\ScrapeAnimeResultEvent;
 use App\UseCase\Scraper\ScraperUseCase;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -40,16 +40,16 @@ class ScrapeAnimeJob implements ShouldQueue
     {
         try {
             $anime = $scraperUseCase->scrapeByUrl($this->url);
-            ScrapeResultEvent::broadcast(
-                new ScrapeResultDTO(
+            ScrapeAnimeResultEvent::broadcast(
+                new ScrapeAnimeResultDTO(
                     $this->userId,
                     ScrapeResultTypeEnum::SUCCESS,
                     $anime->id
                 )
             );
         } catch (RequestException | ValidationException | Throwable $e) {
-            ScrapeResultEvent::broadcast(
-                new ScrapeResultDTO(
+            ScrapeAnimeResultEvent::broadcast(
+                new ScrapeAnimeResultDTO(
                     $this->userId,
                     ScrapeResultTypeEnum::ERROR,
                     $e->getMessage()

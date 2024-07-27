@@ -20,7 +20,7 @@ ARG USER_ID=1000
 RUN apk update \
     && apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git zip unzip supervisor \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS linux-headers brotli-dev pcre-dev pcre2-dev zlib-dev \
-    && pecl install xdebug swoole \
+    && pecl install xdebug swoole uv \
     && docker-php-ext-install -j$(nproc) \
     pcntl \
     mbstring \
@@ -53,7 +53,8 @@ COPY --from=node /usr/local/bin /usr/local/bin
 
 WORKDIR /anilibrary
 
-EXPOSE 8000
 EXPOSE 5173
+EXPOSE 8000
+EXPOSE 8080
 
 ENTRYPOINT ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]

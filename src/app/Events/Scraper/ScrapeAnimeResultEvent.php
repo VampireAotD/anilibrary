@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Events\Pusher;
+namespace App\Events\Scraper;
 
-use App\DTO\Events\Pusher\ScrapeResultDTO;
+use App\DTO\Events\Scraper\ScrapeAnimeResultDTO;
 use App\Enums\QueueEnum;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -13,7 +13,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final class ScrapeResultEvent implements ShouldBroadcast
+final class ScrapeAnimeResultEvent implements ShouldBroadcast
 {
     use Dispatchable;
     use InteractsWithSockets;
@@ -24,7 +24,7 @@ final class ScrapeResultEvent implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(public readonly ScrapeResultDTO $dto)
+    public function __construct(public readonly ScrapeAnimeResultDTO $dto)
     {
         //
     }
@@ -34,7 +34,7 @@ final class ScrapeResultEvent implements ShouldBroadcast
      */
     public function broadcastQueue(): string
     {
-        return QueueEnum::PUSHER_QUEUE->value;
+        return QueueEnum::SOCKET_QUEUE->value;
     }
 
     /**
@@ -42,7 +42,7 @@ final class ScrapeResultEvent implements ShouldBroadcast
      */
     public function broadcastAs(): string
     {
-        return 'scrape.result';
+        return 'scrape.anime.result';
     }
 
     /**
@@ -63,6 +63,6 @@ final class ScrapeResultEvent implements ShouldBroadcast
      */
     public function broadcastOn(): Channel
     {
-        return new PrivateChannel('scraper.' . $this->dto->userId);
+        return new PrivateChannel('scrape.anime.' . $this->dto->userId);
     }
 }

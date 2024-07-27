@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Enums\Events\Pusher;
+namespace App\Enums\Events\Scraper;
 
 enum ScrapeResultTypeEnum: string
 {

@@ -11,7 +11,7 @@ enum QueueEnum: string
     use ProvideValues;
 
     case MAIL_QUEUE          = 'mail';
-    case PUSHER_QUEUE        = 'pusher';
+    case SOCKET_QUEUE        = 'socket';
     case SCRAPER_QUEUE       = 'scraper';
     case TELEGRAM_QUEUE      = 'telegram';
     case ELASTICSEARCH_QUEUE = 'elasticsearch';

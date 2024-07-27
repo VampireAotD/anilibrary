@@ -84,7 +84,6 @@ services:
       - "host.docker.internal:host-gateway" # for xdebug
     healthcheck:
       test: php artisan octane:status || exit 1
-      start_period: 5s
       interval: 10s
       timeout: 5s
       retries: 5
@@ -145,6 +144,18 @@ services:
     volumes:
       - ./src:/anilibrary
       - ./docker/php/supervisor/conf.d/telegram.conf:/etc/supervisor/conf.d/telegram.conf
+    networks:
+      - local
+
+  reverb:
+    depends_on:
+      app:
+        condition: service_healthy
+    build: *app
+    container_name: anilibrary-reverb
+    volumes:
+      - ./src:/anilibrary
+      - ./docker/php/supervisor/conf.d/reverb.conf:/etc/supervisor/conf.d/reverb.conf
     networks:
       - local
 

@@ -3,7 +3,7 @@ import { TextInput } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { useForm, usePage } from '@inertiajs/vue3';
-import { ScrapeResult } from '@/entities/pusher';
+import { ScrapeResult } from '@/entities/scraper';
 import { useToast } from 'primevue/usetoast';
 import { Modal } from '@/shared/ui/modal';
 import { Button } from '@/shared/ui/button';
@@ -27,7 +27,7 @@ const form = useForm({
 const addAnime = () => {
     form.post(route('anime.store'), {
         onSuccess: () => {
-            const channelName = `scraper.${page.props.auth?.user?.id}`;
+            const channelName = `scrape.anime.${page.props.auth?.user?.id}`;
 
             toast.add({
                 summary: page.props.flash.message,
@@ -37,7 +37,7 @@ const addAnime = () => {
 
             window.echo
                 .private(channelName)
-                .listen('.scrape.result', (result: ScrapeResult) => {
+                .listen('.scrape.anime.result', (result: ScrapeResult) => {
                     toast.add({
                         summary: result.message,
                         severity: result.type,
@@ -48,7 +48,7 @@ const addAnime = () => {
                 })
                 .error(() => {
                     toast.add({
-                        summary: 'Error while establishing Pusher connection',
+                        summary: 'Error while establishing websocket connection',
                         severity: 'error',
                         closable: true,
                     });
