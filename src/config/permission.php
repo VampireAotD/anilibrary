@@ -110,7 +110,7 @@ return [
      * TickTerminated, TaskTerminated and RequestTerminated
      * NOTE: This should not be needed in most cases, but an Octane/Vapor combination benefited from it.
      */
-    'register_octane_reset_listener'   => false,
+    'register_octane_reset_listener' => false,
 
     /*
      * Teams Feature.

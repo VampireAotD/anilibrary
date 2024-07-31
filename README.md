@@ -21,7 +21,7 @@ To fully use **Anilibrary** you can also use one or all services that are relate
    different sites.
 2. [`ELK`](https://github.com/VampireAotD/anilibrary-elk) - service that is used for advanced logging and search.
 3. [`Monitoring`](https://github.com/VampireAotD/anilibrary-monitoring) - service for collecting different metrics and
-   traces from all Anilibrary services.
+   traces from all **Anilibrary** services.
 4. [`gRPC`](https://github.com/VampireAotD/anilibrary-grpc) - service that is used for communication using gRPC,
    generates client and server implementations for different languages.
 
@@ -29,18 +29,25 @@ To fully use **Anilibrary** you can also use one or all services that are relate
 
 ## Build and deployment
 
-Before you start to work with **Anilibrary**, you need to fill all required environment variables which will be located
-in `.env` and `src/.env`. To acquire them, you can use script **install.sh** or launch it by using:
+Before you start to work with **Anilibrary**, you need to create `.env` file in the project root:
 
 ```sh
-make install
+cp ./.env.example ./.env
 ```
+
+and `.env` file in the `src` directory:
+
+```sh
+cp ./src/.env.example ./src/.env
+```
+
+After that you must fill up all required environment variables.
 
 ### Variables
 
 #### For containers
 
-This variables will be located in **.env** and are required for container to run properly.
+This variables will be located in project root `.env` file and are required for containers to run properly.
 
 | Variable                 | Default Value | Description                                                          |
 |--------------------------|---------------|----------------------------------------------------------------------|
@@ -71,6 +78,14 @@ services.
 | `JWT_SECRET`       | Secret for communication with different **Anilibrary** microservices.                                                     |
 | `SCRAPER_URL`      | Url for **scraper microservice**.                                                                                         |
 | `LOGSTASH_ADDRESS` | Url for **Logstash** receiver.                                                                                            |
+
+### Launching
+
+After filling up all environment variables you can proceed installation of **Anilibrary** by using:
+
+```sh
+make install
+```
 
 ---
 
@@ -121,7 +136,7 @@ To make life easier and automatically run all this commands for you before commi
 ## Logs
 
 As mentioned before, **Anilibrary** has its own [ELK stack](https://github.com/VampireAotD/anilibrary-elk), so logs from
-it or **Nginx** can be send to **Logstash**, and be visualised in **Kibana**. To send **Nginx** logs to **Logstash**,
+it or **Nginx** can be sent to **Logstash**, and be visualised in **Kibana**. To send **Nginx** logs to **Logstash**,
 you need to set `NGINX_LOGS_TO_LOGSTASH`variable to `true` in `.env` and specify `LOGSTASH_URL` for **Nginx** container
 in `compose.yml`, like this:
 

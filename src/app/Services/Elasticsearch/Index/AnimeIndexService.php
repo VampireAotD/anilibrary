@@ -28,8 +28,8 @@ final readonly class AnimeIndexService
                 'body'  => [
                     'query' => [
                         'multi_match' => [
-                            'query'                => $term,
-                            'fields'               => [
+                            'query'  => $term,
+                            'fields' => [
                                 'title^8',
                                 'status',
                                 'rating',

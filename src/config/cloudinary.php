@@ -18,7 +18,7 @@ return [
     | URL that used for uploading media files to Cloudinary.
     |
     */
-    'cloud_url'        => env('CLOUDINARY_URL'),
+    'cloud_url' => env('CLOUDINARY_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ return [
     | Upload preset From Cloudinary dashboard.
     |
     */
-    'upload_preset'    => env('CLOUDINARY_UPLOAD_PRESET'),
+    'upload_preset' => env('CLOUDINARY_UPLOAD_PRESET'),
 
     /*
     |--------------------------------------------------------------------------
@@ -50,7 +50,7 @@ return [
     | Route to get `cloud_image_url` from Blade Upload Widget.
     |
     */
-    'upload_route'     => env('CLOUDINARY_UPLOAD_ROUTE'),
+    'upload_route' => env('CLOUDINARY_UPLOAD_ROUTE'),
 
     /*
     |--------------------------------------------------------------------------
@@ -60,7 +60,7 @@ return [
     | Controller action to get `cloud_image_url` from Blade Upload Widget.
     |
     */
-    'upload_action'    => env('CLOUDINARY_UPLOAD_ACTION'),
+    'upload_action' => env('CLOUDINARY_UPLOAD_ACTION'),
 
     /*
     |--------------------------------------------------------------------------
@@ -81,5 +81,5 @@ return [
     | Default image url that will be used when no image is provided.
     |
     */
-    'default_image'  => env('CLOUDINARY_DEFAULT_IMAGE', ''),
+    'default_image' => env('CLOUDINARY_DEFAULT_IMAGE', ''),
 ];

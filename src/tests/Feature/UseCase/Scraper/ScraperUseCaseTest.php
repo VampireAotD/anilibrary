@@ -13,9 +13,11 @@ use App\Models\Genre;
 use App\Models\VoiceActing;
 use App\Services\Scraper\Client;
 use App\UseCase\Scraper\ScraperUseCase;
+use Http\Promise\RejectedPromise;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Bus;
@@ -71,7 +73,9 @@ class ScraperUseCaseTest extends TestCase
     public function testCannotScrapeIfServiceIsDown(): void
     {
         Http::fake([
-            Client::SCRAPE_ENDPOINT => [],
+            Client::SCRAPE_ENDPOINT => fn(Request $request) => new RejectedPromise(
+                throw new ConnectionException('testing'),
+            ),
         ]);
 
         $this->expectException(ConnectionException::class);
@@ -141,9 +145,9 @@ class ScraperUseCaseTest extends TestCase
                 'title'    => $this->faker->sentence,
                 'year'     => $anime->year,
                 'type'     => $anime->type,
-                'status'   => $status = $this->faker->randomAnimeStatus(),
+                'status'   => $status   = $this->faker->randomAnimeStatus(),
                 'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
-                'rating'   => $rating = $this->faker->randomAnimeRating(),
+                'rating'   => $rating   = $this->faker->randomAnimeRating(),
                 'synonyms' => array_merge($anime->synonyms->select('name')->toArray(), $newSynonyms),
             ]),
         ]);

@@ -9,11 +9,11 @@ trait IndexConfiguration
     protected function getIndexSettings(): array
     {
         return [
-            'index'    => [
+            'index' => [
                 'max_ngram_diff' => 10,
             ],
             'analysis' => [
-                'filter'   => [
+                'filter' => [
                     'english_stemmer' => [
                         'type'     => 'stemmer',
                         'language' => 'english',
@@ -22,15 +22,15 @@ trait IndexConfiguration
                         'type'     => 'stemmer',
                         'language' => 'russian',
                     ],
-                    'english_stop'    => [
+                    'english_stop' => [
                         'type'     => 'stop',
                         'language' => '_english_',
                     ],
-                    'russian_stop'    => [
+                    'russian_stop' => [
                         'type'     => 'stop',
                         'language' => '_russian_',
                     ],
-                    'autocomplete'    => [
+                    'autocomplete' => [
                         'type'     => 'ngram',
                         'min_gram' => 3,
                         'max_gram' => 8,
@@ -42,8 +42,8 @@ trait IndexConfiguration
                         'char_filter' => [
                             'html_strip',
                         ],
-                        'tokenizer'   => 'standard',
-                        'filter'      => [
+                        'tokenizer' => 'standard',
+                        'filter'    => [
                             'lowercase',
                             'english_stemmer',
                             'english_stop',
@@ -61,27 +61,27 @@ trait IndexConfiguration
     {
         return [
             'properties' => [
-                'title'             => [
+                'title' => [
                     'type'     => 'text',
                     'analyzer' => 'anime_analyzer',
                 ],
-                'status'            => [
+                'status' => [
                     'type' => 'keyword',
                 ],
-                'rating'            => [
+                'rating' => [
                     'type' => 'keyword',
                 ],
-                'episodes'          => [
+                'episodes' => [
                     'type' => 'keyword',
                 ],
-                'urls.url'          => [
+                'urls.url' => [
                     'type' => 'keyword',
                 ],
-                'synonyms.synonym'  => [
+                'synonyms.synonym' => [
                     'type'     => 'text',
                     'analyzer' => 'anime_analyzer',
                 ],
-                'genres.name'       => [
+                'genres.name' => [
                     'type'     => 'text',
                     'analyzer' => 'anime_analyzer',
                 ],

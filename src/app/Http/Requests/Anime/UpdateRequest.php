@@ -48,10 +48,10 @@ class UpdateRequest extends FormRequest
                 'string',
                 Rule::unique(AnimeSynonym::class, 'name')->ignore($animeId, 'anime_id'),
             ],
-            'voice_acting'    => 'nullable|array',
-            'voice_acting.*'  => 'uuid|exists:voice_acting,id',
-            'genres'          => 'nullable|array',
-            'genres.*'        => 'uuid|exists:genres,id',
+            'voice_acting'   => 'nullable|array',
+            'voice_acting.*' => 'uuid|exists:voice_acting,id',
+            'genres'         => 'nullable|array',
+            'genres.*'       => 'uuid|exists:genres,id',
         ];
     }
 }

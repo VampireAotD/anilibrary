@@ -68,7 +68,7 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
                 'year'     => $anime->year,
                 'status'   => StatusEnum::READY,
                 'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
-                'rating'   => $rating = $this->faker->randomAnimeRating(),
+                'rating'   => $rating   = $this->faker->randomAnimeRating(),
             ]),
         ]);
 

@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'auth'  => [
+            'auth' => [
                 'user' => $request->user()?->load(['roles:name', 'telegramUser:user_id,username']),
             ],
             'flash' => [

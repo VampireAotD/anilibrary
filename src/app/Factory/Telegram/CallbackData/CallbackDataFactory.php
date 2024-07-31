@@ -20,7 +20,7 @@ final readonly class CallbackDataFactory
         $callback = sprintf('command=%s', $dto->queryType->value);
 
         return match (true) {
-            $dto instanceof ViewAnimeCallbackDataDTO  => sprintf(
+            $dto instanceof ViewAnimeCallbackDataDTO => sprintf(
                 '%s&animeId=%s',
                 $callback,
                 $this->encoderService->encodeId($dto->animeId)
