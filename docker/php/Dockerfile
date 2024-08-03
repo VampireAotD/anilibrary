@@ -20,7 +20,7 @@ ARG USER_ID=1000
 RUN apk update \
     && apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git zip unzip supervisor \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS linux-headers brotli-dev pcre-dev pcre2-dev zlib-dev \
-    && pecl install xdebug swoole uv \
+    && pecl install xdebug swoole redis uv \
     && docker-php-ext-install -j$(nproc) \
     pcntl \
     mbstring \
@@ -31,7 +31,7 @@ RUN apk update \
     pdo_mysql \
     zip \
     gmp \
-    && docker-php-ext-enable xdebug swoole \
+    && docker-php-ext-enable xdebug swoole redis \
     && docker-php-source delete \
     && rm -rf /var/cache/apk/* /tmp/* /var/tmp/* \
     && apk del .build-deps

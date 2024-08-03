@@ -25,7 +25,6 @@
         "laravel/tinker": "^2.9.0",
         "nutgram/laravel": "^1.4.1",
         "opcodesio/log-viewer": "^3.10.1",
-        "predis/predis": "^2.2.2",
         "pusher/pusher-php-server": "^7.2.4",
         "spatie/laravel-permission": "^6.9.0",
         "tightenco/ziggy": "^2.2.1",
