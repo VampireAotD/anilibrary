@@ -16,7 +16,7 @@ return new class extends Migration {
             // Values are hardcoded here so that migration would not fail if enum will be deleted.
             $types = ['ТВ Сериал', 'Фильм'];
 
-            $table->enum('type', $types)->after('title');
+            $table->enum('type', $types)->after('title')->index();
             $table->year('year')->after('episodes');
         });
     }

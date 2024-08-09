@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -18,7 +16,7 @@ return new class extends Migration {
             // Values are hardcoded here so that migration would not fail if enum will be deleted.
             $statuses = ['Анонс', 'Онгоинг', 'Вышел'];
 
-            $table->enum('status', $statuses)->after('title')->default('Анонс');
+            $table->enum('status', $statuses)->after('title')->default('Анонс')->index();
             $table->float('rating', precision: 24)->after('status')->default(1);
             $table->string('episodes')->after('rating')->nullable();
         });
@@ -26,8 +24,6 @@ return new class extends Migration {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

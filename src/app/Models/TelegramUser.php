@@ -8,18 +8,20 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @mixin IdeHelperTelegramUser
  */
 class TelegramUser extends Model
 {
-    use HasFactory;
     use HasUuids;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'telegram_id',
         'user_id',
+        'telegram_id',
         'first_name',
         'last_name',
         'username',

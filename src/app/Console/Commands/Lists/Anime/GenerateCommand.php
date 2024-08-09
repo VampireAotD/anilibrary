@@ -40,7 +40,7 @@ final class GenerateCommand extends Command
         }
 
         $animeList = $animeService->all([
-            new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+            new ColumnFilter(['id', 'title', 'type', 'status', 'rating', 'episodes', 'year']),
             new RelationFilter([
                 'urls:anime_id,url',
                 'synonyms:anime_id,name',

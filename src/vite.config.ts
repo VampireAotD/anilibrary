@@ -6,6 +6,9 @@ export default defineConfig({
     server: {
         https: false,
         open: false,
+        hmr: {
+            host: 'localhost',
+        },
     },
     plugins: [
         laravel({

@@ -18,16 +18,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[ObservedBy(AnimeObserver::class)]
 /**
  * @mixin IdeHelperAnime
  */
+#[ObservedBy(AnimeObserver::class)]
 class Anime extends Model
 {
     use HasUuids;
     use HasFactory;
     use Filterable;
+    use SoftDeletes;
 
     protected $fillable = [
         'title',

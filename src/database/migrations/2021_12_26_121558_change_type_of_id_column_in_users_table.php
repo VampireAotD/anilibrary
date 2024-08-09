@@ -12,8 +12,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('animes', function (Blueprint $table) {
-            $table->index('status');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('id');
+            $table->uuid('id')->first()->primary();
         });
     }
 
@@ -22,8 +23,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('animes', function (Blueprint $table) {
-            $table->dropIndex('animes_status_index');
+        Schema::table('users', function (Blueprint $table) {
+            $table->id()->first()->change();
         });
     }
 };

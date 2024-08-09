@@ -10,6 +10,8 @@ use App\Http\Requests\Telegram\AssignRequest;
 use App\Services\TelegramUserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class TelegramController extends Controller
 {
@@ -29,7 +31,16 @@ class TelegramController extends Controller
             $request->get('username'),
         );
 
-        $this->telegramUserService->createAndAttach($dto, $request->user());
+        try {
+            $this->telegramUserService->createAndAttach($request->user(), $dto);
+        } catch (Throwable $e) {
+            Log::error('Failed to assign telegram user', [
+                'exception_trace'   => $e->getTraceAsString(),
+                'exception_message' => $e->getMessage(),
+            ]);
+
+            return back()->withErrors(['message' => $e->getMessage()]);
+        }
 
         return back();
     }
@@ -40,7 +51,7 @@ class TelegramController extends Controller
      */
     public function detach(Request $request): RedirectResponse
     {
-        if (!$request->user()?->telegramUser()?->update(['user_id' => null])) {
+        if (!$request->user()?->telegramUser()?->delete()) {
             return back()->withErrors(['message' => 'Could not revoke Telegram account']);
         }
 

@@ -20,7 +20,7 @@ class RedirectIfHasAssignedUserMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->user()->telegramUser) {
-            return back();
+            return back()->withErrors(['message' => 'You already have assigned Telegram account']);
         }
 
         return $next($request);

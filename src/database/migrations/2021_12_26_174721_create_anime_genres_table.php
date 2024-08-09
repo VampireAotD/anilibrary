@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -18,13 +16,13 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('genre_id')->constrained()->cascadeOnDelete();
+
+            $table->unique(['anime_id', 'genre_id']);
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

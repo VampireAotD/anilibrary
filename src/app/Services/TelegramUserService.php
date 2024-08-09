@@ -25,10 +25,18 @@ final readonly class TelegramUserService
     /**
      * @throws Throwable
      */
-    public function createAndAttach(CreateUserDTO $dto, User $user): TelegramUser
+    public function createAndAttach(User $user, CreateUserDTO $dto): TelegramUser
     {
-        return DB::transaction(function () use ($dto, $user) {
-            $telegramUser = $this->upsert($dto);
+        return DB::transaction(function () use ($dto, $user): TelegramUser {
+            /** @var TelegramUser $telegramUser */
+            $telegramUser = TelegramUser::withTrashed()->updateOrCreate(
+                ['telegram_id' => $dto->telegramId],
+                $dto->toArray()
+            );
+
+            if ($telegramUser->trashed()) {
+                $telegramUser->restore();
+            }
 
             $telegramUser->user()->associate($user)->save();
 

@@ -66,7 +66,7 @@ class GenerateCommandTest extends TestCase
         $this->assertJson($json);
         $this->assertJsonStringEqualsJsonString(
             $this->animeService->all([
-                new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+                new ColumnFilter(['id', 'title', 'type', 'status', 'rating', 'episodes', 'year']),
                 new RelationFilter([
                     'urls:anime_id,url',
                     'synonyms:anime_id,name',

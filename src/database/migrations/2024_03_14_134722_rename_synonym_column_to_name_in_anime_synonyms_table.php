@@ -14,6 +14,7 @@ return new class extends Migration {
     {
         Schema::table('anime_synonyms', function (Blueprint $table) {
             $table->renameColumn('synonym', 'name');
+            $table->renameIndex('anime_synonyms_anime_id_synonym_unique', 'anime_synonyms_anime_id_name_unique');
         });
     }
 
@@ -24,6 +25,7 @@ return new class extends Migration {
     {
         Schema::table('anime_synonyms', function (Blueprint $table) {
             $table->renameColumn('name', 'synonym');
+            $table->renameIndex('anime_synonyms_anime_id_name_unique', 'anime_synonyms_anime_id_synonym_unique');
         });
     }
 };

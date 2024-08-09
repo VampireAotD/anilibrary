@@ -9,22 +9,21 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
         Schema::create('anime_synonyms', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('synonym')->unique();
+            $table->string('synonym');
             $table->timestamps();
+
+            $table->unique(['anime_id', 'synonym']);
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

@@ -22,6 +22,7 @@ use App\Repositories\VoiceActing\VoiceActingRepository;
 use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
@@ -54,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->enforceMorphAliases();
+        Model::shouldBeStrict(!$this->app->isProduction());
     }
 
     private function setUpElasticsearchClient(): void
