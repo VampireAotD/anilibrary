@@ -38,7 +38,8 @@ class ImageServiceTest extends TestCase
         $anime = $this->createAnime();
 
         Cloudinary::shouldReceive('destroy')->never();
-        Cloudinary::shouldReceive('uploadFile->getSecurePath')->once()->andReturn($this->faker->imageUrl);
+        Cloudinary::shouldReceive('uploadFile')->once();
+        Cloudinary::shouldReceive('getSecurePath')->once()->andReturn($this->faker->imageUrl);
 
         $this->imageService->upsert($this->faker->imageUrl, $anime);
     }
@@ -48,7 +49,8 @@ class ImageServiceTest extends TestCase
         $anime = $this->createAnimeWithRelations();
 
         Cloudinary::shouldReceive('destroy')->once();
-        Cloudinary::shouldReceive('uploadFile->getSecurePath')->once()->andReturn($this->faker->imageUrl);
+        Cloudinary::shouldReceive('uploadFile')->once();
+        Cloudinary::shouldReceive('getSecurePath')->once()->andReturn($this->faker->imageUrl);
 
         $this->imageService->upsert($this->faker->imageUrl, $anime);
     }
@@ -79,7 +81,8 @@ class ImageServiceTest extends TestCase
         $this->assertTrue($anime->image->default);
 
         Cloudinary::shouldReceive('destroy')->never();
-        Cloudinary::shouldReceive('uploadFile->getSecurePath')->once()->andReturn($path = $this->faker->imageUrl);
+        Cloudinary::shouldReceive('uploadFile')->once();
+        Cloudinary::shouldReceive('getSecurePath')->once()->andReturn($path = $this->faker->imageUrl);
 
         $this->imageService->upsert($this->faker->randomAnimeImage(), $anime);
 

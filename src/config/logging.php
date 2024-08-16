@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Loggers\Logstash\LogstashHandler;
+use Monolog\Formatter\LogstashFormatter;
 use Monolog\Handler\NullHandler;
+use Monolog\Handler\SocketHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
@@ -55,8 +56,8 @@ return [
     'channels' => [
         'stack' => [
             'driver'            => 'stack',
-            'channels'          => explode(',', env('LOG_STACK', 'single')), // add logstash
-            'ignore_exceptions' => true,
+            'channels'          => explode(',', env('LOG_STACK', 'single')),
+            'ignore_exceptions' => true, // to ignore exceptions if Logstash in unavailable
         ],
 
         'single' => [
@@ -129,9 +130,16 @@ return [
         ],
 
         'logstash' => [
-            'driver'  => 'custom',
-            'via'     => LogstashHandler::class,
-            'address' => env('LOGSTASH_ADDRESS', ''),
+            'driver'       => 'monolog',
+            'level'        => env('LOG_LEVEL', 'debug'),
+            'handler'      => SocketHandler::class,
+            'handler_with' => [
+                'connectionString' => env('LOGSTASH_ADDRESS', ''),
+            ],
+            'formatter'      => LogstashFormatter::class,
+            'formatter_with' => [
+                'applicationName' => env('APP_NAME', 'Anilibrary'),
+            ],
         ],
 
         'nutgram' => [

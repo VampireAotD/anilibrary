@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Telegram;
 
-use App\DTO\Service\Telegram\User\CreateUserDTO;
+use App\DTO\Service\Telegram\User\RegisterTelegramUserDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Telegram\AssignRequest;
 use App\Services\TelegramUserService;
@@ -24,7 +24,7 @@ class TelegramController extends Controller
      */
     public function assign(AssignRequest $request): RedirectResponse
     {
-        $dto = new CreateUserDTO(
+        $dto = new RegisterTelegramUserDTO(
             (int) $request->get('id'),
             $request->get('first_name'),
             $request->get('last_name'),

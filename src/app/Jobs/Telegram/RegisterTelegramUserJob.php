@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Telegram;
 
-use App\DTO\Service\Telegram\User\CreateUserDTO;
+use App\DTO\Service\Telegram\User\RegisterTelegramUserDTO;
 use App\Enums\QueueEnum;
 use App\Services\TelegramUserService;
 use Illuminate\Bus\Queueable;
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class CreateUserJob implements ShouldQueue
+class RegisterTelegramUserJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -23,7 +23,7 @@ class CreateUserJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public readonly CreateUserDTO $dto)
+    public function __construct(public readonly RegisterTelegramUserDTO $dto)
     {
         $this->onQueue(QueueEnum::TELEGRAM_QUEUE->value)->onConnection('redis');
     }

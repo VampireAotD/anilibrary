@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\DTO\Service\Telegram\User\CreateUserDTO;
+use App\DTO\Service\Telegram\User\RegisterTelegramUserDTO;
 use App\Models\TelegramUser;
 use App\Models\User;
 use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;
@@ -17,7 +17,7 @@ final readonly class TelegramUserService
     {
     }
 
-    public function upsert(CreateUserDTO $dto): TelegramUser
+    public function upsert(RegisterTelegramUserDTO $dto): TelegramUser
     {
         return $this->telegramUserRepository->upsert($dto->toArray());
     }
@@ -25,7 +25,7 @@ final readonly class TelegramUserService
     /**
      * @throws Throwable
      */
-    public function createAndAttach(User $user, CreateUserDTO $dto): TelegramUser
+    public function createAndAttach(User $user, RegisterTelegramUserDTO $dto): TelegramUser
     {
         return DB::transaction(function () use ($dto, $user): TelegramUser {
             /** @var TelegramUser $telegramUser */

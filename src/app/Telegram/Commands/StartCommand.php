@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Telegram\Commands;
 
-use App\DTO\Service\Telegram\User\CreateUserDTO;
+use App\DTO\Service\Telegram\User\RegisterTelegramUserDTO;
 use App\Enums\Telegram\Actions\ActionEnum;
 use App\Enums\Telegram\Buttons\CommandButtonEnum;
-use App\Jobs\Telegram\CreateUserJob;
+use App\Jobs\Telegram\RegisterTelegramUserJob;
 use SergiX44\Nutgram\Handlers\Type\Command;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\KeyboardButton;
@@ -24,8 +24,13 @@ final class StartCommand extends Command
         $user = $bot->user();
 
         if ($user && !$user->is_bot) {
-            CreateUserJob::dispatch(
-                new CreateUserDTO($user->id, $user->first_name, $user->last_name ?? 'not set', $user->username)
+            RegisterTelegramUserJob::dispatch(
+                new RegisterTelegramUserDTO(
+                    telegramId: $user->id,
+                    firstName : $user->first_name,
+                    lastName  : $user->last_name,
+                    userName  : $user->username
+                )
             );
         }
 

@@ -147,3 +147,13 @@ nginx:
 +  environment:
 +    LOGSTASH_URL: <your-url>
 ```
+
+Also, **Anilibrary** logs can be send to **Logstash** as well. By default **Logstash** logging is disabled, to enable
+it, set environment variable `LOG_STACK` in `src/.env` like this:
+
+```diff
+# src/.env
+
+- LOG_STACK=daily
++ LOG_STACK=daily,logstash
+```

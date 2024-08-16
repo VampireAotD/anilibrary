@@ -9,7 +9,7 @@ use Illuminate\Contracts\Support\Arrayable;
 /**
  * @template-implements Arrayable<string, mixed>
  */
-final readonly class CreateUserDTO implements Arrayable
+final readonly class RegisterTelegramUserDTO implements Arrayable
 {
     public function __construct(
         public int     $telegramId,

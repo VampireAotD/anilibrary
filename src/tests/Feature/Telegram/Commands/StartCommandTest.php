@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Feature\Telegram\Commands;
 
 use App\Enums\Telegram\Actions\CommandEnum;
-use App\Jobs\Telegram\CreateUserJob;
+use App\Jobs\Telegram\RegisterTelegramUserJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateFakeUpdates;
 use Tests\Concerns\CanCreateMocks;
+use Tests\TestCase;
 
 class StartCommandTest extends TestCase
 {
@@ -34,7 +34,7 @@ class StartCommandTest extends TestCase
             'from' => null,
         ])->reply();
 
-        Bus::assertNotDispatched(CreateUserJob::class);
+        Bus::assertNotDispatched(RegisterTelegramUserJob::class);
         $response->assertReplyMessage(['text' => __('telegram.commands.start.welcome_message')]);
     }
 
@@ -49,7 +49,7 @@ class StartCommandTest extends TestCase
             ],
         ])->reply();
 
-        Bus::assertNotDispatched(CreateUserJob::class);
+        Bus::assertNotDispatched(RegisterTelegramUserJob::class);
         $response->assertReplyMessage(['text' => __('telegram.commands.start.welcome_message')]);
     }
 
@@ -66,8 +66,8 @@ class StartCommandTest extends TestCase
         ])->reply();
 
         Bus::assertDispatched(
-            CreateUserJob::class,
-            fn(CreateUserJob $job) => $job->dto->telegramId === $response->userId()
+            RegisterTelegramUserJob::class,
+            fn(RegisterTelegramUserJob $job) => $job->dto->telegramId === $response->userId()
         );
 
         $response->assertReplyMessage(['text' => __('telegram.commands.start.welcome_message')]);
