@@ -15,10 +15,8 @@ declare global {
         echo: Echo;
     }
 
-    /*eslint-disable*/
-    var route: typeof ziggyRoute;
-    var hasRole: typeof useHasRole;
-    /*eslint-enable*/
+    const route: typeof ziggyRoute;
+    const hasRole: typeof useHasRole;
 }
 
 declare module 'vue' {

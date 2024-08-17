@@ -18,7 +18,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * allows your team to easily build robust real-time web applications.
  */
 
-// @ts-expect-error Need to resolve problem with Pusher instance
 window.pusher = Pusher;
 window.echo = new Echo({
     broadcaster: 'reverb',
