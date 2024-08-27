@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Notifications\Auth\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -55,5 +56,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifyEmailNotification());
+    }
+
+    /**
+     * @psalm-suppress TooManyTemplateParams Suppressed because PHPStan needs description, but Psalm conflicts with it
+     * @return Attribute<bool, never>
+     */
+    protected function hasTemporaryEmail(): Attribute
+    {
+        return Attribute::make(
+            get: fn(): bool => str_ends_with($this->email, config('mail.temporary_domain')),
+        )->shouldCache();
     }
 }

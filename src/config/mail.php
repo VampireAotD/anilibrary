@@ -127,4 +127,13 @@ return [
         ],
     ],
 
+    /*-------------------------------------------------------------------------
+    | Email Domain
+    |--------------------------------------------------------------------------
+    |
+    | Temporary email domain used for registration and verification.
+    |
+    */
+    'temporary_domain' => env('MAIL_TEMPORARY_DOMAIN'),
+
 ];

@@ -4,43 +4,69 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\DTO\Service\Telegram\User\RegisterTelegramUserDTO;
+use App\DTO\Service\Telegram\User\TelegramUserDTO;
+use App\Exceptions\Service\Telegram\TelegramUserException;
 use App\Models\TelegramUser;
 use App\Models\User;
 use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Throwable;
 
 final readonly class TelegramUserService
 {
-    public function __construct(private TelegramUserRepositoryInterface $telegramUserRepository)
-    {
+    public function __construct(
+        private UserRepositoryInterface         $userRepository,
+        private TelegramUserRepositoryInterface $telegramUserRepository
+    ) {
     }
 
-    public function upsert(RegisterTelegramUserDTO $dto): TelegramUser
+    public function generateSignature(array $data = []): string
+    {
+        $token = hash('sha256', config('nutgram.token'), true);
+
+        $signature = collect($data)
+            ->except('hash')
+            ->map(fn(mixed $value, string $key): string => sprintf('%s=%s', $key, $value))
+            ->values()
+            ->sort()
+            ->implode(PHP_EOL);
+
+        return hash_hmac('sha256', $signature, $token);
+    }
+
+    public function upsert(TelegramUserDTO $dto): TelegramUser
     {
         return $this->telegramUserRepository->upsert($dto->toArray());
     }
 
     /**
-     * @throws Throwable
+     * @throws TelegramUserException|Throwable
      */
-    public function createAndAttach(User $user, RegisterTelegramUserDTO $dto): TelegramUser
+    public function register(TelegramUserDTO $dto): TelegramUser
     {
-        return DB::transaction(function () use ($dto, $user): TelegramUser {
-            /** @var TelegramUser $telegramUser */
-            $telegramUser = TelegramUser::withTrashed()->updateOrCreate(
-                ['telegram_id' => $dto->telegramId],
-                $dto->toArray()
-            );
+        if ($this->telegramUserRepository->findByTelegramId($dto->telegramId)) {
+            throw TelegramUserException::userAlreadyRegistered();
+        }
 
-            if ($telegramUser->trashed()) {
-                $telegramUser->restore();
-            }
+        $domain = config('mail.temporary_domain');
 
-            $telegramUser->user()->associate($user)->save();
+        return DB::transaction(function () use ($dto, $domain): TelegramUser {
+            $user = $this->userRepository->upsert([
+                'name'     => $dto->telegramId,
+                'email'    => "$dto->telegramId@$domain",
+                'password' => Str::random(),
+            ]);
 
-            return $telegramUser;
+            $user->markEmailAsVerified();
+
+            return $user->telegramUser()->create($dto->toArray());
         });
+    }
+
+    public function assign(User $user, TelegramUserDTO $dto): void
+    {
+        $user->telegramUser()->updateOrCreate(['telegram_id' => $dto->telegramId], $dto->toArray());
     }
 }

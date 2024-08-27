@@ -3,9 +3,10 @@ import { TelegramLoginWidget } from '@/features/telegram/login-widget';
 import { TelegramUser } from '@/entities/telegram-user';
 import { router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { Button } from '@/shared/ui/button';
+import { useToast } from 'primevue/usetoast';
 
 const page = usePage();
+const toast = useToast();
 const telegramUser = computed(() => page.props.auth.user.telegram_user);
 
 const handleTelegramLogin = (user: TelegramUser) => {
@@ -13,12 +14,14 @@ const handleTelegramLogin = (user: TelegramUser) => {
 
     router.post(route('telegram.assign'), payload, {
         preserveScroll: true,
-    });
-};
-
-const revokeTelegramAccount = () => {
-    router.delete(route('telegram.detach'), {
-        preserveScroll: true,
+        onError: (response) => {
+            toast.add({
+                summary: response?.id,
+                severity: 'error',
+                life: 2000,
+                closable: true,
+            });
+        },
     });
 };
 </script>
@@ -51,14 +54,12 @@ const revokeTelegramAccount = () => {
                         Connected as
                         {{ telegramUser.username ?? telegramUser.telegram_id }}
                     </p>
-
-                    <Button variant="danger" @click="revokeTelegramAccount">
-                        Revoke Telegram account
-                    </Button>
                 </div>
             </div>
         </div>
     </section>
+
+    <Toast position="bottom-center" />
 </template>
 
 <style scoped></style>

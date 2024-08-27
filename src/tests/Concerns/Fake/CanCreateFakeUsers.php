@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Concerns\Fake;
 
 use App\Enums\RoleEnum;
+use App\Models\TelegramUser;
 use App\Models\User;
 
 trait CanCreateFakeUsers
@@ -27,5 +28,14 @@ trait CanCreateFakeUsers
     protected function createAdmin(array $data = []): User
     {
         return $this->createUser($data)->assignRole(RoleEnum::ADMIN);
+    }
+
+    protected function createUserWithTelegramAccount(): User
+    {
+        $user = $this->createUser();
+
+        $user->telegramUser()->save(TelegramUser::factory()->make());
+
+        return $user;
     }
 }

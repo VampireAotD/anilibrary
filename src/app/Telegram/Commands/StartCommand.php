@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Telegram\Commands;
 
-use App\DTO\Service\Telegram\User\RegisterTelegramUserDTO;
+use App\DTO\Service\Telegram\User\TelegramUserDTO;
 use App\Enums\Telegram\Actions\ActionEnum;
 use App\Enums\Telegram\Buttons\CommandButtonEnum;
 use App\Jobs\Telegram\RegisterTelegramUserJob;
@@ -25,11 +25,11 @@ final class StartCommand extends Command
 
         if ($user && !$user->is_bot) {
             RegisterTelegramUserJob::dispatch(
-                new RegisterTelegramUserDTO(
+                new TelegramUserDTO(
                     telegramId: $user->id,
                     firstName : $user->first_name,
                     lastName  : $user->last_name,
-                    userName  : $user->username
+                    username  : $user->username
                 )
             );
         }

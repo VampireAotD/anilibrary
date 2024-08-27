@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware\Telegram;
 
+use App\Services\TelegramUserService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidateSignatureMiddleware
+readonly class ValidateSignatureMiddleware
 {
+    public function __construct(private TelegramUserService $telegramUserService)
+    {
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -22,19 +27,8 @@ class ValidateSignatureMiddleware
         $telegramHash = $request->get('hash');
         abort_if(!$telegramHash, Response::HTTP_BAD_REQUEST, 'Missing Telegram signature');
 
-        $hashedToken = hash('sha256', config('nutgram.token'), true);
-
-        // Transform all request fields into signature
-        $signature = $request->collect()
-                             ->except('hash')
-                             ->map(fn(mixed $value, string $key) => sprintf('%s=%s', $key, $value))
-                             ->values()
-                             ->sort()
-                             ->implode(PHP_EOL);
-
-        $hashedSignature = hash_hmac('sha256', $signature, $hashedToken);
-
-        abort_if(!hash_equals($telegramHash, $hashedSignature), Response::HTTP_FORBIDDEN);
+        $signature = $this->telegramUserService->generateSignature($request->toArray());
+        abort_if(!hash_equals($telegramHash, $signature), Response::HTTP_FORBIDDEN);
 
         return $next($request);
     }

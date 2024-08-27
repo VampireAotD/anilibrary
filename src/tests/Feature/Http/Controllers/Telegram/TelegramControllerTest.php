@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Telegram;
 
 use App\Models\TelegramUser;
+use App\Services\TelegramUserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
@@ -16,18 +17,13 @@ class TelegramControllerTest extends TestCase
     use WithFaker;
     use CanCreateFakeUsers;
 
-    private function createValidSignature(array $data = []): string
+    private TelegramUserService $telegramUserService;
+
+    protected function setUp(): void
     {
-        $hashedToken = hash('sha256', config('nutgram.token'), true);
+        parent::setUp();
 
-        $signature = collect($data)
-            ->except('hash')
-            ->map(fn(mixed $value, string $key) => sprintf('%s=%s', $key, $value))
-            ->values()
-            ->sort()
-            ->implode(PHP_EOL);
-
-        return hash_hmac('sha256', $signature, $hashedToken);
+        $this->telegramUserService = $this->app->make(TelegramUserService::class);
     }
 
     private function getValidTelegramData(): array
@@ -40,15 +36,15 @@ class TelegramControllerTest extends TestCase
             'username'   => $this->faker->userName,
         ];
 
-        return [...$data, 'hash' => $this->createValidSignature($data)];
+        return [...$data, 'hash' => $this->telegramUserService->generateSignature($data)];
     }
 
-    public function testUserCannotConnectToTelegramWithoutTelegramSignature(): void
+    public function testUserCannotAssignTelegramAccountWithoutTelegramSignature(): void
     {
         $this->actingAs($this->createUser())->post(route('telegram.assign'))->assertBadRequest();
     }
 
-    public function testUserCannotConnectToTelegramWithInvalidTelegramSignature(): void
+    public function testUserCannotAssignTelegramAccountWithInvalidTelegramSignature(): void
     {
         $this->actingAs($this->createUser())
              ->post(route('telegram.assign'), ['hash' => $this->faker->word])
@@ -60,6 +56,7 @@ class TelegramControllerTest extends TestCase
         $user = $this->createUser();
         $user->telegramUser()->save(TelegramUser::factory()->make());
 
+        // RedirectIfHasAssignedUserMiddleware is applied to this route, it will handle this case
         $this->actingAs($user)
              ->post(route('telegram.assign'), $this->getValidTelegramData())
              ->assertRedirect()
@@ -75,22 +72,5 @@ class TelegramControllerTest extends TestCase
 
         $user->refresh();
         $this->assertNotNull($user->telegramUser);
-    }
-
-    public function testUserCanDetachHisTelegramAccount(): void
-    {
-        $user = $this->createUser();
-
-        $telegramUser = $user->telegramUser()->save(TelegramUser::factory()->make());
-        $this->assertInstanceOf(TelegramUser::class, $telegramUser);
-        $this->assertEquals($user->id, $telegramUser->user_id);
-
-        $this->actingAs($user)->delete(route('telegram.detach'))->assertRedirect();
-
-        $user->refresh();
-        $telegramUser->refresh();
-
-        $this->assertNull($user->telegramUser);
-        $this->assertSoftDeleted($telegramUser);
     }
 }

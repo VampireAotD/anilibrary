@@ -25,7 +25,7 @@ class AssignRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id'         => 'required|int',
+            'id'         => 'required|int|unique:telegram_users,telegram_id',
             'auth_date'  => 'required|int',
             'hash'       => 'required|string',
             'first_name' => 'nullable|string',
