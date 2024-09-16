@@ -12,8 +12,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('images', function (Blueprint $table) {
-            $table->string('alias')->after('path');
+        Schema::create('has_images', function (Blueprint $table) {
+            $table->foreignUuid('image_id')->constrained();
+            $table->uuidMorphs('model');
+            $table->timestamps();
+
+            $table->primary(['image_id', 'model_id', 'model_type']);
         });
     }
 
@@ -22,8 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('images', function (Blueprint $table) {
-            $table->dropColumn(['alias']);
-        });
+        Schema::dropIfExists('has_images');
     }
 };

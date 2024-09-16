@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\Anime\StatusEnum;
 use App\Enums\Anime\TypeEnum;
 use App\Models\Concerns\Filterable;
+use App\Models\Concerns\HasImage;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeVoiceActing;
 use App\Observers\AnimeObserver;
@@ -17,7 +18,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -28,6 +28,7 @@ class Anime extends Model
 {
     use HasUuids;
     use HasFactory;
+    use HasImage;
     use Filterable;
     use SoftDeletes;
 
@@ -51,13 +52,6 @@ class Anime extends Model
             'type'   => TypeEnum::class,
             'status' => StatusEnum::class,
         ];
-    }
-
-    public function image(): MorphOne
-    {
-        return $this->morphOne(Image::class, 'model')->withDefault([
-            'path' => config('cloudinary.default_image'),
-        ]);
     }
 
     public function urls(): HasMany
@@ -86,11 +80,12 @@ class Anime extends Model
      */
     protected function toTelegramCaption(): Attribute
     {
+        /** @see https://github.com/larastan/larastan/issues/2038 */
         return Attribute::make(
             get: fn(): string => sprintf(
                 "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s",
                 $this->title,
-                $this->status->value,
+                $this->status->value, // @phpstan-ignore-line Ignored because of parser issues
                 $this->episodes,
                 $this->rating,
                 $this->voiceActing->implode('name', ', '),

@@ -64,22 +64,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default folder
-    |--------------------------------------------------------------------------
-    |
-    | Default folder to store media on Cloudinary.
-    |
-    */
-
-    'default_folder' => env('CLOUDINARY_DEFAULT_FOLDER', ''),
-
-    /*
-    |--------------------------------------------------------------------------
     | Default image
     |--------------------------------------------------------------------------
     |
     | Default image url that will be used when no image is provided.
     |
     */
-    'default_image' => env('CLOUDINARY_DEFAULT_IMAGE', ''),
+    'default_image' => env('CLOUDINARY_DEFAULT_IMAGE'),
 ];

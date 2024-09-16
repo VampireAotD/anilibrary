@@ -33,6 +33,6 @@ final class UploadJob implements ShouldQueue
      */
     public function handle(ImageService $imageService): void
     {
-        $imageService->upsert($this->image, $this->anime);
+        $imageService->attachEncodedImageToAnime($this->image, $this->anime);
     }
 }

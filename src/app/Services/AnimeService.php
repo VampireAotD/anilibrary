@@ -104,7 +104,7 @@ final readonly class AnimeService
      */
     public function getTenLatestAnime(): Collection
     {
-        return $this->animeRepository->withFilters([new RelationFilter(['image:model_id,path'])])->getLatestAnime();
+        return $this->animeRepository->withFilters([new RelationFilter(['image:id,path'])])->getLatestAnime();
     }
 
     public function countAnime(): int
@@ -121,7 +121,7 @@ final readonly class AnimeService
         // of Laravel withDefault method on image relation, so here
         // need to check if image has default path then it can be
         // replaced with new one
-        if ($dto->image && $anime->image->default) {
+        if ($dto->image && $anime->image->is_default) {
             UploadJob::dispatch($anime, $dto->image);
         }
 

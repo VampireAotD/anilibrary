@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Feature\Services;
+namespace Tests\Feature\Services;
 
 use App\DTO\Service\Telegram\User\TelegramUserDTO;
 use App\Exceptions\Service\Telegram\TelegramUserException;

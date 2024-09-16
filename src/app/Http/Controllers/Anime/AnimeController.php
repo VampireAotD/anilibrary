@@ -82,7 +82,7 @@ class AnimeController extends Controller
     public function show(Anime $anime): Response
     {
         $anime->load([
-            'image:model_id,path',
+            'image:id,path',
             'urls:anime_id,url',
             'synonyms:anime_id,name',
             'voiceActing:name',

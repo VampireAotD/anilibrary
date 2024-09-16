@@ -44,7 +44,7 @@ trait CanCreateFakeAnime
     {
         $anime = $this->createAnime($data);
 
-        $anime->image()->save(Image::factory()->make());
+        $anime->image()->attach(Image::factory()->create());
         $anime->genres()->save(Genre::factory()->make());
         $anime->voiceActing()->save(VoiceActing::factory()->make());
         $anime->urls()->save(AnimeUrl::factory()->make());

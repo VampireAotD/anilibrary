@@ -20,10 +20,10 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use HasUuids;
     use HasApiTokens;
     use HasFactory;
     use HasRoles;
-    use HasUuids;
     use Notifiable;
 
     protected $fillable = [

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * @mixin IdeHelperImage
@@ -18,23 +18,18 @@ class Image extends Model
     use HasUuids;
     use HasFactory;
 
-    protected $fillable = [
-        'model_type',
-        'model_id',
-        'path',
-        'alias',
-    ];
+    protected $fillable = ['path', 'name', 'hash'];
 
-    public function anime(): MorphTo
+    public function animes(): MorphToMany
     {
-        return $this->morphTo(Anime::class);
+        return $this->morphedByMany(Anime::class, 'model', 'has_images');
     }
 
     /**
      * @psalm-suppress TooManyTemplateParams Suppressed because PHPStan needs description, but Psalm conflicts with it
      * @return Attribute<bool, never>
      */
-    protected function default(): Attribute
+    protected function isDefault(): Attribute
     {
         return Attribute::make(
             get: fn(): bool => $this->path === config('cloudinary.default_image'),

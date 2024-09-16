@@ -284,7 +284,9 @@ return [
     | name of the Relationship, e.g. `'relationName' => RelationShipClass::class`.
     |
     */
-    'additional_relation_types' => [],
+    'additional_relation_types' => [
+        'oneOfMorphToMany' => \App\Database\Relations\OneOfMorphToMany::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -298,7 +300,9 @@ return [
     | e.g. `'relationName' => 'many'`.
     |
     */
-    'additional_relation_return_types' => [],
+    'additional_relation_return_types' => [
+        'oneOfMorphToMany' => 'one',
+    ],
 
     /*
     |--------------------------------------------------------------------------

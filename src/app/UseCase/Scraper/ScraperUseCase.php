@@ -80,7 +80,7 @@ final readonly class ScraperUseCase
                 $anime,
                 new UpsertAnimeDTO(
                     $anime->title,
-                    $anime->type,
+                    $anime->type, // @phpstan-ignore-line Ignored because of parser issues
                     (int) $anime->year,
                     [['url' => $dto->url]],
                     $dto->status,

@@ -8,6 +8,7 @@ use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Support\ServiceProvider;
 use Tests\Helpers\Faker\Providers\AnimeInformationProvider;
+use Tests\Helpers\Faker\Providers\HashProvider;
 
 class FakerServiceProvider extends ServiceProvider
 {
@@ -19,7 +20,9 @@ class FakerServiceProvider extends ServiceProvider
         if ($this->app->environment('testing')) {
             $this->app->singleton(Generator::class, function () {
                 $faker = Factory::create();
+
                 $faker->addProvider(new AnimeInformationProvider($faker));
+                $faker->addProvider(new HashProvider($faker));
 
                 return $faker;
             });

@@ -44,7 +44,7 @@ final class GenerateCommand extends Command
             new RelationFilter([
                 'urls:anime_id,url',
                 'synonyms:anime_id,name',
-                'image:id,model_id,path,alias',
+                'image:id,path,name,hash',
                 'genres:id,name',
                 'voiceActing:id,name',
             ]),
