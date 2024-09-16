@@ -5,26 +5,18 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Invitation;
 
 use App\Mail\Invitation\InvitationMail;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
+use Tests\TestCase;
 
 class InvitationControllerTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
     use CanCreateFakeUsers;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->seed(RoleSeeder::class);
-    }
 
     public function testCannotInteractWithInvitationScreenIfUserIsNotVerified(): void
     {

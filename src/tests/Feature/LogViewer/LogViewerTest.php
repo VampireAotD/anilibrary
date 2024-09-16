@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\LogViewer;
 
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
@@ -15,13 +14,6 @@ class LogViewerTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
     use CanCreateFakeUsers;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->seed(RoleSeeder::class);
-    }
 
     public function testLogViewerDashboardCanBeAccessedOnlyByOwner(): void
     {

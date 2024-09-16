@@ -6,11 +6,10 @@ namespace Tests\Feature\Console\Commands\Setup;
 
 use App\Enums\RoleEnum;
 use App\Repositories\User\UserRepositoryInterface;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
+use Tests\TestCase;
 
 class CreateOwnerCommandTest extends TestCase
 {
@@ -24,7 +23,6 @@ class CreateOwnerCommandTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(RoleSeeder::class);
         $this->userRepository = $this->app->make(UserRepositoryInterface::class);
     }
 

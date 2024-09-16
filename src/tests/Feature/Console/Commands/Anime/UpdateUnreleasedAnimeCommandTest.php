@@ -8,7 +8,6 @@ use App\Console\Commands\Anime\UpdateUnreleasedAnimeCommand;
 use App\Enums\Anime\StatusEnum;
 use App\Mail\Anime\FailedUnreleasedAnimeMail;
 use App\Services\Scraper\Client;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
@@ -24,13 +23,6 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
     use WithFaker;
     use CanCreateFakeUsers;
     use CanCreateFakeAnime;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->seed(RoleSeeder::class);
-    }
 
     public function testCommandWillSendMailWithAnimeInfoAndReasonIfItCouldNotUpdateInfoAndOwnerIsFound(): void
     {

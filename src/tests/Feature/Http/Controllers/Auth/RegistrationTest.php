@@ -6,7 +6,6 @@ namespace Tests\Feature\Http\Controllers\Auth;
 
 use App\Notifications\Auth\VerifyEmailNotification;
 use App\Services\SignedUrlService;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +24,6 @@ class RegistrationTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(RoleSeeder::class);
         $this->signedUrlService = $this->app->make(SignedUrlService::class);
     }
 

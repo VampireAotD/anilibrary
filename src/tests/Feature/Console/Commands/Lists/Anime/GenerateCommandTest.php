@@ -9,7 +9,6 @@ use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
 use App\Mail\AnimeListMail;
 use App\Services\AnimeService;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +28,6 @@ class GenerateCommandTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(RoleSeeder::class);
         $this->animeService = $this->app->make(AnimeService::class);
     }
 

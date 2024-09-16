@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Dashboard;
 
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
@@ -20,8 +19,6 @@ class DashboardControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->seed(RoleSeeder::class);
     }
 
     public function testCannotAccessDashboardUnauthenticated(): void
