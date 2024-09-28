@@ -20,7 +20,7 @@ class UserRepository implements UserRepositoryInterface
         $this->query = User::query();
     }
 
-    public function upsert(array $data): User
+    public function updateOrCreate(array $data): User
     {
         return $this->query->updateOrCreate(['email' => $data['email']], $data);
     }

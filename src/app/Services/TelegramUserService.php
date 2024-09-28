@@ -38,7 +38,7 @@ final readonly class TelegramUserService
 
     public function upsert(TelegramUserDTO $dto): TelegramUser
     {
-        return $this->telegramUserRepository->upsert($dto->toArray());
+        return $this->telegramUserRepository->updateOrCreate($dto->toArray());
     }
 
     /**
@@ -53,7 +53,7 @@ final readonly class TelegramUserService
         $domain = config('mail.temporary_domain');
 
         return DB::transaction(function () use ($dto, $domain): TelegramUser {
-            $user = $this->userRepository->upsert([
+            $user = $this->userRepository->updateOrCreate([
                 'name'     => $dto->telegramId,
                 'email'    => "$dto->telegramId@$domain",
                 'password' => Str::random(),

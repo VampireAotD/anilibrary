@@ -24,7 +24,7 @@ final readonly class ImageService
         }
 
         try {
-            $publicId = sprintf('%s/%s', Str::random(), Str::random());
+            $publicId = sprintf('%s/%s', $anime->id, Str::random());
             $response = cloudinary()->uploadFile(
                 file   : $image,
                 options: [

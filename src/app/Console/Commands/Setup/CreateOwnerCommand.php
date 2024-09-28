@@ -47,7 +47,7 @@ class CreateOwnerCommand extends Command
         $email    = $this->askEmail();
         $password = Str::random();
 
-        $user = $userRepository->upsert([
+        $user = $userRepository->updateOrCreate([
             'name'     => 'owner',
             'email'    => $email,
             'password' => $password,

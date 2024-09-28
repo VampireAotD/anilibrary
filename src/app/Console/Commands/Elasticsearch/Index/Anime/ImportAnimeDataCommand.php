@@ -17,21 +17,21 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\LazyCollection;
 
-class SyncAnimeDataCommand extends Command
+class ImportAnimeDataCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'elasticsearch:sync-anime';
+    protected $signature = 'elasticsearch:import-anime';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sync all anime data into Elasticsearch';
+    protected $description = 'Import all anime data into Elasticsearch';
 
     /**
      * Execute the console command.
@@ -39,10 +39,10 @@ class SyncAnimeDataCommand extends Command
      */
     public function handle(AnimeService $animeService, Client $client): int
     {
-        $this->info('Trying to sync all anime into Elasticsearch index...');
+        $this->info('Importing all anime into Elasticsearch index...');
 
         $animeList = $animeService->all([
-            new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+            new ColumnFilter(['id', 'title', 'type', 'status', 'rating', 'year', 'episodes']),
             new RelationFilter(['synonyms:anime_id,name', 'genres:id,name', 'voiceActing:id,name']),
         ]);
 

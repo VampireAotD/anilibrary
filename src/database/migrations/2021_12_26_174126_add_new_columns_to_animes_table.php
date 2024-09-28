@@ -17,8 +17,8 @@ return new class extends Migration {
             $statuses = ['Анонс', 'Онгоинг', 'Вышел'];
 
             $table->enum('status', $statuses)->after('title')->default('Анонс')->index();
-            $table->float('rating', precision: 24)->after('status')->default(1);
-            $table->string('episodes')->after('rating')->nullable();
+            $table->float('rating', precision: 24)->after('status')->default(0.0);
+            $table->unsignedInteger('episodes')->after('rating')->default(0);
         });
     }
 

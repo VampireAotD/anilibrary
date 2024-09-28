@@ -8,9 +8,7 @@ use App\Models\TelegramUser;
 
 interface TelegramUserRepositoryInterface
 {
-    public function upsert(array $data): TelegramUser;
+    public function updateOrCreate(array $data): TelegramUser;
 
     public function findByTelegramId(int $telegramId): ?TelegramUser;
-
-    public function findByUsername(string $username): ?TelegramUser;
 }

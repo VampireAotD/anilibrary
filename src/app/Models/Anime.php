@@ -71,7 +71,7 @@ class Anime extends Model
 
     public function genres(): BelongsToMany
     {
-        return $this->belongsToMany(Genre::class, AnimeGenre::getTableName())->using(AnimeGenre::class);
+        return $this->belongsToMany(Genre::class)->using(AnimeGenre::class);
     }
 
     /**

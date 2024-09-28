@@ -25,8 +25,10 @@ class IndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page'     => 'nullable|int|gte:1',
-            'per_page' => 'nullable|int',
+            'page'    => 'nullable|integer|gte:1',
+            'perPage' => 'nullable|integer|gte:1',
+            'filters' => 'nullable|array',
+            'sort'    => 'nullable|array',
         ];
     }
 }

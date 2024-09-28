@@ -50,9 +50,11 @@ declare namespace Models {
 
     export interface Anime extends Id, Timestamps, IsDeleted {
         title: string;
+        type: string;
         status: string;
         rating: number;
         episodes: string;
+        year: number;
         genres: Genre[];
         image: Image;
         synonyms: AnimeSynonym[];

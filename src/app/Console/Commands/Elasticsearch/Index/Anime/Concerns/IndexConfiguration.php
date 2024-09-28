@@ -65,14 +65,20 @@ trait IndexConfiguration
                     'type'     => 'text',
                     'analyzer' => 'anime_analyzer',
                 ],
+                'type' => [
+                    'type' => 'keyword',
+                ],
                 'status' => [
                     'type' => 'keyword',
                 ],
                 'rating' => [
-                    'type' => 'keyword',
+                    'type' => 'float',
                 ],
                 'episodes' => [
-                    'type' => 'keyword',
+                    'type' => 'short',
+                ],
+                'year' => [
+                    'type' => 'short',
                 ],
                 'urls.url' => [
                     'type' => 'keyword',
@@ -82,12 +88,10 @@ trait IndexConfiguration
                     'analyzer' => 'anime_analyzer',
                 ],
                 'genres.name' => [
-                    'type'     => 'text',
-                    'analyzer' => 'anime_analyzer',
+                    'type' => 'keyword',
                 ],
                 'voice_acting.name' => [
-                    'type'     => 'text',
-                    'analyzer' => 'anime_analyzer',
+                    'type' => 'keyword',
                 ],
             ],
         ];

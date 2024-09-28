@@ -38,7 +38,7 @@ class UpdateRequest extends FormRequest
             'type'            => ['required', new Enum(TypeEnum::class)],
             'status'          => ['required', new Enum(StatusEnum::class)],
             'year'            => 'required|integer',
-            'episodes'        => 'required|string',
+            'episodes'        => 'required|integer',
             'rating'          => 'required|numeric',
             'image'           => 'nullable|image',
             'urls'            => 'required|array',

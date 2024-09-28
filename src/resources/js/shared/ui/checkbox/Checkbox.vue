@@ -1,23 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-
 type Props = {
-    checked: boolean;
     value?: unknown;
 };
 
-const props = defineProps<Props>();
-const emit = defineEmits<{ 'update:checked': [value: unknown] }>();
+defineProps<Props>();
 
-const proxyChecked = computed({
-    get: () => props.checked,
-    set: (value: unknown) => emit('update:checked', value),
-});
+const model = defineModel<unknown>();
 </script>
 
 <template>
     <input
-        v-model="proxyChecked"
+        v-model="model"
         type="checkbox"
         :value="value"
         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"

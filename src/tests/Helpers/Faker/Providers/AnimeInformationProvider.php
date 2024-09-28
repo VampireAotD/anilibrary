@@ -22,9 +22,9 @@ final class AnimeInformationProvider extends Base
         return $this->generator->randomFloat(1, $min, $max);
     }
 
-    public function randomAnimeEpisodes(): string
+    public function randomAnimeEpisodes(): int
     {
-        return (string) $this->generator->randomNumber();
+        return $this->generator->randomNumber();
     }
 
     public function randomAnimeStatus(): StatusEnum

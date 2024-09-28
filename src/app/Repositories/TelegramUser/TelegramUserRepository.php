@@ -19,7 +19,7 @@ class TelegramUserRepository implements TelegramUserRepositoryInterface
         $this->query = TelegramUser::query();
     }
 
-    public function upsert(array $data): TelegramUser
+    public function updateOrCreate(array $data): TelegramUser
     {
         return $this->query->updateOrCreate(['telegram_id' => $data['telegram_id']], $data);
     }
@@ -27,10 +27,5 @@ class TelegramUserRepository implements TelegramUserRepositoryInterface
     public function findByTelegramId(int $telegramId): ?TelegramUser
     {
         return $this->query->where('telegram_id', $telegramId)->first();
-    }
-
-    public function findByUsername(string $username): ?TelegramUser
-    {
-        return $this->query->where('username', $username)->first();
     }
 }

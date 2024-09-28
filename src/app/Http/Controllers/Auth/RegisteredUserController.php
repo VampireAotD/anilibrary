@@ -36,7 +36,7 @@ class RegisteredUserController extends Controller
      */
     public function store(RegisterUserRequest $request): RedirectResponse
     {
-        $user = $this->userRepository->upsert($request->validated());
+        $user = $this->userRepository->updateOrCreate($request->validated());
 
         event(new Registered($user));
 

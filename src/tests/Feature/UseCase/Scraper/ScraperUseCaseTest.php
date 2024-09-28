@@ -230,7 +230,6 @@ class ScraperUseCaseTest extends TestCase
         $this->assertIsString($anime->id);
         $this->assertNotEmpty($anime->title);
         $this->assertContainsEquals($anime->status, StatusEnum::cases());
-        $this->assertNotEmpty($anime->episodes);
 
         Bus::assertDispatched(UploadJob::class, function (UploadJob $job) use ($image) {
             return $job->image === $image;

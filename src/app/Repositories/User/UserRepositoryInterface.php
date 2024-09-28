@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Repositories\User;
 
 use App\Models\User;
-use App\Repositories\Contracts\Quantity;
+use Countable;
 
-interface UserRepositoryInterface extends Quantity
+interface UserRepositoryInterface extends Countable
 {
-    public function upsert(array $data): User;
+    public function updateOrCreate(array $data): User;
 
     public function findOwner(): ?User;
 

@@ -19,7 +19,7 @@ final readonly class ScrapedDataDTO implements Arrayable, FromArray
         public string     $title,
         public TypeEnum   $type,
         public StatusEnum $status,
-        public string     $episodes,
+        public int        $episodes,
         public float      $rating,
         public int        $year,
         public array      $genres = [],

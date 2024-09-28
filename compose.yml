@@ -146,6 +146,7 @@ services:
       - ./docker/php/supervisor/conf.d/telegram.conf:/etc/supervisor/conf.d/telegram.conf
     networks:
       - local
+      - anilibrary
 
   reverb:
     depends_on:

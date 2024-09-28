@@ -12,7 +12,7 @@ use App\DTO\UseCase\Telegram\Anime\GenerateAnimeSearchResultDTO;
 use App\Enums\Telegram\Callbacks\CallbackDataTypeEnum;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
 use App\Facades\Telegram\State\UserStateFacade;
-use App\Filters\InFilter;
+use App\Filters\WhereInFilter;
 use App\Services\AnimeService;
 use App\Services\Telegram\AnimeMessageService;
 use App\Services\Telegram\EncoderService;
@@ -75,7 +75,7 @@ final readonly class AnimeMessageUseCase
         }
 
         $animeList = $this->animeService->paginate(
-            new AnimePaginationDTO(page: $dto->page, filters: [new InFilter('id', $ids)])
+            new AnimePaginationDTO(page: $dto->page, filters: [new WhereInFilter('id', $ids)])
         );
 
         return $this->animeMessageService->createMessageWithPagination(

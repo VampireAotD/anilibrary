@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('anime_genres', function (Blueprint $table) {
+        Schema::create('anime_genre', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('genre_id')->constrained()->cascadeOnDelete();
@@ -26,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('anime_genres');
+        Schema::dropIfExists('anime_genre');
     }
 };

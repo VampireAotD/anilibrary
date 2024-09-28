@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Anime;
 
-use App\DTO\Service\Anime\AnimePaginationDTO;
 use App\DTO\Service\Anime\UpsertAnimeDTO;
+use App\DTO\Service\Elasticsearch\Anime\AnimePaginationDTO;
 use App\Enums\Anime\StatusEnum;
 use App\Filters\ColumnFilter;
 use App\Http\Controllers\Controller;
@@ -15,6 +15,7 @@ use App\Http\Requests\Anime\UpdateRequest;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use App\Models\Anime;
 use App\Services\AnimeService;
+use App\Services\Elasticsearch\Index\AnimeIndexService;
 use App\Services\GenreService;
 use App\Services\VoiceActingService;
 use Illuminate\Http\RedirectResponse;
@@ -28,7 +29,8 @@ class AnimeController extends Controller
     public function __construct(
         private readonly AnimeService       $animeService,
         private readonly GenreService       $genreService,
-        private readonly VoiceActingService $voiceActingService
+        private readonly VoiceActingService $voiceActingService,
+        private readonly AnimeIndexService  $animeIndexService
     ) {
     }
 
@@ -37,20 +39,18 @@ class AnimeController extends Controller
      */
     public function index(IndexRequest $request): Response
     {
-        $page    = (int) $request->get('page', 1);
-        $perPage = (int) $request->get('per_page', 20);
-
-        $pagination = $this->animeService->paginate(
+        $items = $this->animeIndexService->paginate(
             new AnimePaginationDTO(
-                $page,
-                $perPage,
-                [
-                    new ColumnFilter(['id', 'title', 'episodes', 'rating', 'status']),
-                ]
+                page   : $request->integer('page', 1),
+                perPage: $request->integer('perPage', 20),
+                filters: $request->get('filters', []),
+                sort   : $request->get('sort', [])
             )
         );
 
-        return Inertia::render('Anime/Index', compact('pagination'));
+        $filters = $this->animeIndexService->getFacets();
+
+        return Inertia::render('Anime/Index', compact('items', 'filters'));
     }
 
     /**

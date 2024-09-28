@@ -1,46 +1,133 @@
 <script setup lang="ts">
+import { Head, useForm } from '@inertiajs/vue3';
 import { AuthenticatedLayout } from '@/widgets/layouts';
-import { Head } from '@inertiajs/vue3';
-import { AnimePagination } from '@/entities/anime';
-import { AnimeDataTable } from '@/features/anime/datatable';
-import Button from 'primevue/button';
-import { ref } from 'vue';
+import { AnimeSearchItem } from '@/features/anime/search-item';
+import { ref, watchEffect } from 'vue';
+import { AnimeCheckboxFilter, AnimeRangeFilter } from '@/features/anime/filter';
+import { Models } from '@/types';
 import { AddAnimeOptionModal } from '@/widgets/anime/add-anime-option-modal';
+import Button from 'primevue/button';
 
-defineProps<{ pagination: AnimePagination }>();
+type Props = {
+    items: Models.Anime[];
+    filters: Record<string, Record<string, number>>;
+};
 
+const props = defineProps<Props>();
+const { years, types, statuses, genres, voiceActing } = props.filters;
 const optionModalVisible = ref<boolean>(false);
+
+const form = useForm({
+    page: 1,
+    perPage: 20,
+    filters: {
+        years: {
+            min: years.min,
+            max: years.max,
+        },
+        types: [],
+        statuses: [],
+        genres: [],
+        voiceActing: [],
+    },
+});
+
+const yearsRange = ref([years.min, years.max]);
+
+watchEffect(() => {
+    form.filters.years = {
+        min: yearsRange.value[0],
+        max: yearsRange.value[1],
+    };
+});
+
+const search = () => {
+    form.get(route('anime.index'), {
+        preserveState: true,
+        preserveScroll: true,
+        only: ['items'],
+    });
+};
 </script>
 
 <template>
-    <Head title="Anime" />
+    <Head title="Search anime" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2
-                class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
-            >
-                Anime
-            </h2>
-        </template>
-
-        <div class="sm:p-6 lg:p-8">
-            <div class="bg-white dark:bg-dark shadow mb-2 p-2">
-                <Button
-                    label="Add anime"
-                    icon="pi pi-plus"
-                    severity="success"
-                    @click="optionModalVisible = true"
-                />
-            </div>
-
-            <AnimeDataTable :pagination="pagination" />
-
-            <AddAnimeOptionModal
-                :visible="optionModalVisible"
-                @close="optionModalVisible = false"
+        <div class="bg-white dark:bg-zinc-700 shadow mb-2 p-2">
+            <Button
+                label="Add anime"
+                icon="pi pi-plus"
+                severity="success"
+                @click="optionModalVisible = true"
             />
         </div>
+
+        <section class="grid grid-cols-[75%_25%] gap-2 p-6 mx-auto">
+            <div class="divide-y divide-black-100 dark:divide-gray-100">
+                <AnimeSearchItem v-for="anime in items" :key="anime.id" :anime="anime" />
+            </div>
+
+            <div class="bg-gray-100 dark:bg-zinc-900 p-4">
+                <h2 class="text-lg font-bold mb-4">Фильтры</h2>
+
+                <div class="mb-3">
+                    <AnimeRangeFilter
+                        name="Год выхода"
+                        v-model="yearsRange"
+                        :min="years.min"
+                        :max="years.max"
+                        @change="search"
+                    />
+
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <span>{{ form.filters.years.min }}</span>
+                        <span>{{ form.filters.years.max }}</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <AnimeCheckboxFilter
+                        name="Тип"
+                        v-model="form.filters.types"
+                        :data="types"
+                        @change="search"
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <AnimeCheckboxFilter
+                        name="Статус"
+                        v-model="form.filters.statuses"
+                        :data="statuses"
+                        @change="search"
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <AnimeCheckboxFilter
+                        name="Жанры"
+                        v-model="form.filters.genres"
+                        :data="genres"
+                        @change="search"
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <AnimeCheckboxFilter
+                        name="Озвучка"
+                        v-model="form.filters.voiceActing"
+                        :data="voiceActing"
+                        @change="search"
+                    />
+                </div>
+            </div>
+        </section>
+
+        <AddAnimeOptionModal
+            :visible="optionModalVisible"
+            @close="optionModalVisible = false"
+        />
     </AuthenticatedLayout>
 </template>
 

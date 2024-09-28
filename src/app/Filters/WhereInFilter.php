@@ -7,7 +7,7 @@ namespace App\Filters;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
-final readonly class InFilter implements QueryFilterInterface
+final readonly class WhereInFilter implements QueryFilterInterface
 {
     public function __construct(private string $column, private array $values)
     {

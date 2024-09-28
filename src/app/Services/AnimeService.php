@@ -30,7 +30,7 @@ final readonly class AnimeService
     public function create(UpsertAnimeDTO $dto): Anime
     {
         return DB::transaction(function () use ($dto) {
-            $anime = $this->animeRepository->create($dto->toArray());
+            $anime = $this->animeRepository->updateOrCreate($dto->toArray());
             $this->upsertRelations($anime, $dto);
 
             return $anime;

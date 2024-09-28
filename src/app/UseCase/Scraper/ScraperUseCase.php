@@ -55,7 +55,7 @@ final readonly class ScraperUseCase
             'status'   => ['required', new Enum(StatusEnum::class)],
             'year'     => 'required|integer',
             'image'    => ['nullable', 'string', new EncodedImageRule()],
-            'episodes' => 'nullable|string',
+            'episodes' => 'nullable|integer',
             'rating'   => 'nullable|numeric|gte:0',
         ])->validate();
     }
@@ -86,9 +86,7 @@ final readonly class ScraperUseCase
                     $dto->status,
                     $dto->rating,
                     $dto->episodes,
-                    synonyms   : $dto->synonyms,
-                    voiceActing: $dto->voiceActing,
-                    genres     : $dto->genres
+                    synonyms: $dto->synonyms,
                 )
             );
         }

@@ -9,7 +9,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeElasticResponse;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
 
@@ -19,6 +21,15 @@ class AnimeControllerTest extends TestCase
     use WithFaker;
     use CanCreateFakeAnime;
     use CanCreateFakeUsers;
+    use CanCreateMocks;
+    use CanCreateFakeElasticResponse;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->setUpFakeElasticsearchClient();
+    }
 
     public function testCannotInteractWithAnimeIfUserIsNotLoggedIn(): void
     {
@@ -34,39 +45,38 @@ class AnimeControllerTest extends TestCase
     public function testCanViewIndexPageWithPagination(): void
     {
         $user = $this->createUser();
-        $this->createAnimeCollectionWithRelations(20);
+
+        $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(20));
+        $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
 
         $this->actingAs($user)->get(route('anime.index'))->assertInertia(
             fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('pagination')
-                                     ->has('pagination.next_page_url')
-                                     ->has('pagination.data', 20)
-                                     ->has('pagination.data.0', fn(Assert $page) => $page->etc())
+                                     ->has('items', 20,)
+                                     ->has('filters')
+                                     ->has('items', fn(Assert $page) => $page->etc())
         );
     }
 
     public function testCanChangePaginationPageOnIndexPage(): void
     {
         $user = $this->createUser();
-        $this->createAnimeCollectionWithRelations(30);
+
+        $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(20));
+        $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
+
+        $this->actingAs($user)->get(route('anime.index'))->assertInertia(
+            fn(Assert $page) => $page->component('Anime/Index')
+                                     ->has('items')
+                                     ->has('items', 20)
+        );
+
+        $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(10));
+        $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
 
         $this->actingAs($user)->get(route('anime.index', ['page' => 2]))->assertInertia(
             fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('pagination')
-                                     ->has('pagination.prev_page_url')
-                                     ->has('pagination.data', 10)
-        );
-    }
-
-    public function testCanChangeShownAnimeQuantityOnIndexPage(): void
-    {
-        $user = $this->createUser();
-        $this->createAnimeCollectionWithRelations(30);
-
-        $this->actingAs($user)->get(route('anime.index', ['per_page' => 30]))->assertInertia(
-            fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('pagination')
-                                     ->has('pagination.data', 30)
+                                     ->has('items')
+                                     ->has('items', 10)
         );
     }
 

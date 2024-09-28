@@ -35,7 +35,7 @@ class AnimeRepository implements AnimeRepositoryInterface
         return $this;
     }
 
-    public function create(array $data): Anime
+    public function updateOrCreate(array $data): Anime
     {
         return $this->query->updateOrCreate(['title' => $data['title']], $data);
     }
@@ -60,10 +60,6 @@ class AnimeRepository implements AnimeRepositoryInterface
         ])->first();
     }
 
-    /**
-     * @param string $url
-     * @return Anime|null
-     */
     public function findByUrl(string $url): ?Anime
     {
         /** @psalm-suppress InvalidArgument */
@@ -73,9 +69,6 @@ class AnimeRepository implements AnimeRepositoryInterface
         )->first();
     }
 
-    /**
-     * @return Anime|null
-     */
     public function findRandomAnime(): ?Anime
     {
         return $this->query->inRandomOrder()->limit(1)->first();
@@ -103,7 +96,6 @@ class AnimeRepository implements AnimeRepositoryInterface
     }
 
     /**
-     * @param int $limit
      * @return Collection<int, Anime>
      */
     public function getLatestAnime(int $limit = 10): Collection

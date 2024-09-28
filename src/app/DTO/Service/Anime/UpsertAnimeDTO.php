@@ -14,8 +14,8 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 final readonly class UpsertAnimeDTO implements Arrayable, FromArray
 {
-    public const int    DEFAULT_RATING   = 0;
-    public const string DEFAULT_EPISODES = '0 / ?';
+    public const int      DEFAULT_EPISODES = 0;
+    public const float    DEFAULT_RATING   = 0.0;
 
     /**
      * @param array<array{url: string}>  $urls
@@ -30,7 +30,7 @@ final readonly class UpsertAnimeDTO implements Arrayable, FromArray
         public array      $urls,
         public StatusEnum $status = StatusEnum::ANNOUNCE,
         public float      $rating = self::DEFAULT_RATING,
-        public string     $episodes = self::DEFAULT_EPISODES,
+        public int        $episodes = self::DEFAULT_EPISODES,
         public ?string    $image = null,
         public array      $synonyms = [],
         public array      $voiceActing = [],

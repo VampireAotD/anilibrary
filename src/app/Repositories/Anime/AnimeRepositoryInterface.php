@@ -7,14 +7,14 @@ namespace App\Repositories\Anime;
 use App\Models\Anime;
 use App\Repositories\Contracts\FilterQuery;
 use App\Repositories\Contracts\GetAll;
-use App\Repositories\Contracts\Quantity;
+use Countable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\LazyCollection;
 
-interface AnimeRepositoryInterface extends FilterQuery, Quantity, GetAll
+interface AnimeRepositoryInterface extends FilterQuery, Countable, GetAll
 {
-    public function create(array $data): Anime;
+    public function updateOrCreate(array $data): Anime;
 
     public function findById(string $id): ?Anime;
 
@@ -23,15 +23,8 @@ interface AnimeRepositoryInterface extends FilterQuery, Quantity, GetAll
      */
     public function findSimilar(array $data): ?Anime;
 
-    /**
-     * @param string $url
-     * @return Anime|null
-     */
     public function findByUrl(string $url): ?Anime;
 
-    /**
-     * @return Anime|null
-     */
     public function findRandomAnime(): ?Anime;
 
     public function paginate(int $page, int $perPage = 1): LengthAwarePaginator;
@@ -42,7 +35,6 @@ interface AnimeRepositoryInterface extends FilterQuery, Quantity, GetAll
     public function getUnreleased(): LazyCollection;
 
     /**
-     * @param int $limit
      * @return Collection<int, Anime>
      */
     public function getLatestAnime(int $limit = 10): Collection;
