@@ -8,12 +8,12 @@ type Props = {
     rounded?: boolean;
 };
 
-const props = withDefaults(defineProps<Props>(), {
-    type: 'button',
-    variant: 'primary',
-    size: 'medium',
-    rounded: false,
-});
+const {
+    type = 'button',
+    variant = 'primary',
+    size = 'medium',
+    rounded = false,
+} = defineProps<Props>();
 
 const variants = {
     primary:
@@ -29,15 +29,15 @@ const sizes = {
     large: 'px-5 py-3 text-base',
 };
 
-const variant = computed(() => variants[props.variant]);
-const size = computed(() => sizes[props.size]);
-const rounded = computed(() => (props.rounded ? 'rounded-full' : 'rounded-md'));
+const chosenVariant = computed(() => variants[variant]);
+const chosenSize = computed(() => sizes[size]);
+const isRounded = computed(() => (rounded ? 'rounded-full' : 'rounded-md'));
 </script>
 
 <template>
     <button
         class="inline-flex items-center border font-semibold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150"
-        :class="[variant, size, rounded]"
+        :class="[chosenVariant, chosenSize, isRounded]"
         :type="type"
     >
         <slot />

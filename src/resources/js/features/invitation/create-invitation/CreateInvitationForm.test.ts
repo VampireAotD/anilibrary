@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
-import InvitationForm from './CreateInvitationForm.vue';
 import { describe, expect, it, vitest } from 'vitest';
+
+import InvitationForm from './CreateInvitationForm.vue';
 
 describe('InvitationForm test (CreateInvitationForm.vue)', () => {
     it('Renders correctly', () => {

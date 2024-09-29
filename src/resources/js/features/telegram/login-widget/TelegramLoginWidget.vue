@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
-import { RequestAccess, WidgetSize } from '@/features/telegram/login-widget/model/types';
+
 import { type TelegramUser } from '@/entities/telegram-user';
+import { RequestAccess, WidgetSize } from '@/features/telegram/login-widget/model/types';
 
 type Props = {
     bot: string;

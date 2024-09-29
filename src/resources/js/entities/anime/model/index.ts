@@ -1,5 +1,1 @@
-export {
-    type AnimePagination,
-    type AddedAnimePerDomain,
-    type AddedAnimePerMonth,
-} from './types';
+export { type Anime, type AddedAnimePerDomain, type AddedAnimePerMonth } from './types';

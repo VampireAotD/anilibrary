@@ -1,17 +1,20 @@
-import './bootstrap';
-import '../css/app.css';
-import 'primevue/resources/themes/lara-dark-indigo/theme.css';
-import 'primeicons/primeicons.css';
+import { DefineComponent, createApp, h } from 'vue';
 
-import { createApp, DefineComponent, h } from 'vue';
-import { createInertiaApp } from '@inertiajs/vue3';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { HasRolePlugin } from '@/shared/plugins/user/authorize';
 import PrimeVue from 'primevue/config';
 import Tailwind from 'primevue/passthrough/tailwind';
-import ToastService from 'primevue/toastservice';
+import 'primevue/resources/themes/lara-dark-indigo/theme.css';
 import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+
+import { createInertiaApp } from '@inertiajs/vue3';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import 'primeicons/primeicons.css';
 import { ZiggyVue } from 'ziggy-js';
+
+import { HasRolePlugin } from '@/shared/plugins/user/authorize';
+
+import '../css/app.css';
+import './bootstrap';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Anilibrary';
 

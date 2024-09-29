@@ -51,7 +51,7 @@ class AnimeControllerTest extends TestCase
 
         $this->actingAs($user)->get(route('anime.index'))->assertInertia(
             fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('items', 20,)
+                                     ->has('items', 20)
                                      ->has('filters')
                                      ->has('items', fn(Assert $page) => $page->etc())
         );

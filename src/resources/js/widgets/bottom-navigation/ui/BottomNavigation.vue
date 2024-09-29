@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import { NavigationLink } from '@/features/bottom-navigation/navigation-link';
 import { useHasRole } from '@/shared/plugins/user/authorize';
-import { computed } from 'vue';
 
 const isOwner = useHasRole('owner');
 const gridColumns = computed((): string => (isOwner ? 'grid-cols-4' : 'grid-cols-3'));

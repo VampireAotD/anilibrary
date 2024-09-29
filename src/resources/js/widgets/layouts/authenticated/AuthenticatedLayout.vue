@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { BottomNavigation } from '@/widgets/bottom-navigation';
 import { Footer } from '@/widgets/footer';
 import { Navigation } from '@/widgets/navigation';
-import { BottomNavigation } from '@/widgets/bottom-navigation';
 </script>
 
 <template>

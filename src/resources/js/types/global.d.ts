@@ -1,11 +1,13 @@
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { AxiosInstance } from 'axios';
-import { route as ziggyRoute } from 'ziggy-js';
-import { PageProps as AppPageProps } from './';
-import { useHasRole } from '@/shared/plugins/user/authorize';
-import { onTelegramAuth } from '@/entities/telegram-user';
-import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+import { route as ziggyRoute } from 'ziggy-js';
+
+import { onTelegramAuth } from '@/entities/telegram-user';
+import { useHasRole } from '@/shared/plugins/user/authorize';
+
+import { PageProps as AppPageProps } from './';
 
 declare global {
     interface Window {

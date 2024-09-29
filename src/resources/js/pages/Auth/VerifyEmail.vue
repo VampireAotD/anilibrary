@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { GuestLayout } from '@/widgets/layouts';
-import { Button } from '@/shared/ui/button';
+
 import { Head, Link, useForm } from '@inertiajs/vue3';
+
+import { Button } from '@/shared/ui/button';
+import { GuestLayout } from '@/widgets/layouts';
 
 const props = defineProps<{
     status?: string;

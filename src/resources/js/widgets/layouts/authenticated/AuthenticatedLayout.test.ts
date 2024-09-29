@@ -1,11 +1,14 @@
-import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
 import { config, mount } from '@vue/test-utils';
-import AuthenticatedLayout from './AuthenticatedLayout.vue';
-import { ZiggyVue } from 'ziggy-js';
-import { HasRolePlugin } from '@/shared/plugins/user/authorize';
-import { usePage } from '@inertiajs/vue3';
-import { NavigationLink } from '@/features/navigation/navigation-link';
+import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
+
 import { ZiggyMockConfig } from '@/mocks/ziggy-js';
+import { usePage } from '@inertiajs/vue3';
+import { ZiggyVue } from 'ziggy-js';
+
+import { NavigationLink } from '@/features/navigation/navigation-link';
+import { HasRolePlugin } from '@/shared/plugins/user/authorize';
+
+import AuthenticatedLayout from './AuthenticatedLayout.vue';
 
 vi.mock('@inertiajs/vue3', async () => {
     const actual =

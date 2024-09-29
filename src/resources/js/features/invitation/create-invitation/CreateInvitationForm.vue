@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { useForm } from '@inertiajs/vue3';
+
 import { Button } from '@/shared/ui/button';
 import { ErrorMessage } from '@/shared/ui/error-message';
-import { Label } from '@/shared/ui/label';
 import { TextInput } from '@/shared/ui/input';
-import { useForm } from '@inertiajs/vue3';
+import { Label } from '@/shared/ui/label';
 
 const form = useForm({
     email: '',

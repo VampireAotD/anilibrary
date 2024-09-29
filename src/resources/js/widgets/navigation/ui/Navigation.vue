@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { ComponentPublicInstance, onMounted, onUnmounted, ref } from 'vue';
+
 import { Link } from '@inertiajs/vue3';
+
 import { DropdownLink } from '@/features/navigation/dropdown-link';
 import { NavigationLink } from '@/features/navigation/navigation-link';
-import { ApplicationLogo } from '@/shared/ui/logo';
-import { Dropdown } from '@/shared/ui/dropdown';
-import { ThemeSwitcher } from '@/features/theme-switcher';
 import { SearchButton } from '@/features/navigation/search-button';
 import { SearchModal } from '@/features/navigation/search-modal';
-import { ComponentPublicInstance, onMounted, onUnmounted, ref } from 'vue';
+import { ThemeSwitcher } from '@/features/theme-switcher';
+import { Dropdown } from '@/shared/ui/dropdown';
+import { ApplicationLogo } from '@/shared/ui/logo';
 
 const showSearchModal = ref<boolean>(false);
 const buttonRef = ref<ComponentPublicInstance<HTMLButtonElement> | null>(null);

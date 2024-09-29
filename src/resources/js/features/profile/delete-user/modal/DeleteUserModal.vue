@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { Modal } from '@/shared/ui/modal';
-import { Label } from '@/shared/ui/label';
+import { ref, watchEffect } from 'vue';
+
+import { useForm } from '@inertiajs/vue3';
+
+import { Button } from '@/shared/ui/button';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { TextInput } from '@/shared/ui/input';
-import { Button } from '@/shared/ui/button';
-import { useForm } from '@inertiajs/vue3';
-import { ref, watchEffect } from 'vue';
+import { Label } from '@/shared/ui/label';
+import { Modal } from '@/shared/ui/modal';
 
 type Props = {
     show: boolean;

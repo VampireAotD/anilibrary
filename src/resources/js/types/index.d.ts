@@ -1,19 +1,3 @@
-declare namespace Laravel {
-    export interface Pagination<T> {
-        data: T[];
-        current_page: number;
-        first_page_url: string;
-        last_page_url: string;
-        from: number;
-        last_page: number;
-        per_page: number;
-        next_page_url?: string;
-        prev_page_url?: string;
-        to: number;
-        total: number;
-    }
-}
-
 declare namespace Models {
     export interface Id {
         id: string;
@@ -26,6 +10,10 @@ declare namespace Models {
 
     export interface IsDeleted {
         deleted_at?: string;
+    }
+
+    export interface Role {
+        name: string;
     }
 
     export interface User extends Id, Timestamps {
@@ -42,44 +30,6 @@ declare namespace Models {
         first_name?: string;
         last_name?: string;
         username?: string;
-    }
-
-    export interface Role {
-        name: string;
-    }
-
-    export interface Anime extends Id, Timestamps, IsDeleted {
-        title: string;
-        type: string;
-        status: string;
-        rating: number;
-        episodes: string;
-        year: number;
-        genres: Genre[];
-        image: Image;
-        synonyms: AnimeSynonym[];
-        urls: AnimeUrl[];
-        voice_acting: VoiceActing[];
-    }
-
-    export interface Genre extends Id {
-        name: string;
-    }
-
-    export interface Image extends Id, Timestamps {
-        path: string;
-    }
-
-    export interface AnimeSynonym extends Id {
-        name: string;
-    }
-
-    export interface AnimeUrl extends Id {
-        url: string;
-    }
-
-    export interface VoiceActing extends Id {
-        name: string;
     }
 }
 

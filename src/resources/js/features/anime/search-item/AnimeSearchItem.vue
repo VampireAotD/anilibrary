@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { Models } from '@/types';
 import { computed } from 'vue';
+
 import { Link } from '@inertiajs/vue3';
 
+import { Anime } from '@/entities/anime';
+
 type Props = {
-    anime: Models.Anime;
+    anime: Anime;
 };
 
 const props = defineProps<Props>();

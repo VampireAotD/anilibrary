@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { AuthenticatedLayout } from '@/widgets/layouts';
 import { Head } from '@inertiajs/vue3';
+
+import { DeleteUserForm } from '@/features/profile/delete-user';
+import { IntegrationList } from '@/features/profile/integration-list';
+import { Logout } from '@/features/profile/logout';
 import {
     UpdatePasswordForm,
     UpdateProfileInformationForm,
 } from '@/features/profile/update-profile';
-import { IntegrationList } from '@/features/profile/integration-list';
-import { DeleteUserForm } from '@/features/profile/delete-user';
-import { Logout } from '@/features/profile/logout';
+import { AuthenticatedLayout } from '@/widgets/layouts';
 
 defineProps<{
     mustVerifyEmail?: boolean;

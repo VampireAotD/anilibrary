@@ -13,19 +13,25 @@ const emit = defineEmits<{ change: string[] }>();
 </script>
 
 <template>
-    <h3 class="text-md font-semibold mb-2">{{ name }}</h3>
+    <fieldset>
+        <legend>{{ name }}</legend>
 
-    <div class="flex flex-col max-h-40 overflow-y-auto space-y-2">
-        <label
-            v-for="(counter, value) in data"
-            :key="value"
-            class="inline-flex items-center p-x-2"
-        >
-            <Checkbox v-model="model" :value="value" @change="emit('change', model)" />
+        <div class="flex flex-col max-h-40 overflow-y-auto space-y-2 p-2">
+            <label
+                v-for="(counter, value) in data"
+                :key="value"
+                class="inline-flex items-center"
+            >
+                <Checkbox
+                    v-model="model"
+                    :value="value"
+                    @change="emit('change', model)"
+                />
 
-            <span class="ml-2">{{ value }} ({{ counter }})</span>
-        </label>
-    </div>
+                <span class="ml-2">{{ value }} ({{ counter }})</span>
+            </label>
+        </div>
+    </fieldset>
 </template>
 
 <style scoped></style>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Chart } from '@/shared/ui/chart';
 import { computed } from 'vue';
+
 import { type AddedAnimePerDomain } from '@/entities/anime';
+import { Chart } from '@/shared/ui/chart';
 
 type Props = {
     domainStatistic: AddedAnimePerDomain;

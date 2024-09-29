@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import { StatisticCard } from '@/shared/ui/statistic-card';
 
 type Props = {

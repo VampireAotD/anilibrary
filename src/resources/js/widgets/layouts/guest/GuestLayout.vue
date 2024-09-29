@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ApplicationLogo } from '@/shared/ui/logo';
 import { Link } from '@inertiajs/vue3';
+
+import { ApplicationLogo } from '@/shared/ui/logo';
 </script>
 
 <template>

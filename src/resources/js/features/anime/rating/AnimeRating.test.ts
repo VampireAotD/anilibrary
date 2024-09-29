@@ -1,8 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
-import AnimeRating from './AnimeRating.vue';
-import Rating from 'primevue/rating';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import PrimeVue from 'primevue/config';
+import Rating from 'primevue/rating';
+
+import AnimeRating from './AnimeRating.vue';
 
 describe('AnimeRating test (AnimeRating.vue)', () => {
     let wrapper;

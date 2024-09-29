@@ -1,10 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
-import AddAnimeOptionModal from './AddAnimeOptionModal.vue';
-import { ScrapeAnimeModal } from '@/features/anime/scrape-anime-modal';
-import { CreateAnimeModal } from '@/features/anime/create-anime-modal';
-import ToastService from 'primevue/toastservice';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import PrimeVue from 'primevue/config';
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+
+import { CreateAnimeModal } from '@/features/anime/create-anime-modal';
+import { ScrapeAnimeModal } from '@/features/anime/scrape-anime-modal';
+
+import AddAnimeOptionModal from './AddAnimeOptionModal.vue';
 
 describe('AddAnimeOptionModal test (AddAnimeOptionModal.vue)', () => {
     let wrapper;
@@ -16,6 +20,9 @@ describe('AddAnimeOptionModal test (AddAnimeOptionModal.vue)', () => {
             },
             global: {
                 plugins: [PrimeVue, ToastService],
+                components: {
+                    Toast,
+                },
             },
         });
     });

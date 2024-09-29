@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { Modal } from '@/shared/ui/modal';
-import { Label } from '@/shared/ui/label';
-import { useForm } from '@inertiajs/vue3';
-import { TextInput } from '@/shared/ui/input/text';
-import { ErrorMessage } from '@/shared/ui/error-message';
-import MultiSelect from 'primevue/multiselect';
-import FileUpload, { type FileUploadSelectEvent } from 'primevue/fileupload';
-import { Button } from '@/shared/ui/button';
 import { reactive } from 'vue';
+
+import FileUpload, { type FileUploadSelectEvent } from 'primevue/fileupload';
+import MultiSelect from 'primevue/multiselect';
+
+import { useForm } from '@inertiajs/vue3';
+
+import { Button } from '@/shared/ui/button';
+import { ErrorMessage } from '@/shared/ui/error-message';
+import { TextInput } from '@/shared/ui/input/text';
+import { Label } from '@/shared/ui/label';
+import { Modal } from '@/shared/ui/modal';
 
 type Props = {
     visible: boolean;

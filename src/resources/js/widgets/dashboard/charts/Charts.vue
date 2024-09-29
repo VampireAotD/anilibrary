@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { type AddedAnimePerDomain, type AddedAnimePerMonth } from '@/entities/anime';
 import { CountAnimePerDomain, ParsedMonthlyAnime } from '@/features/dashboard/charts';
 import { SectionTitle } from '@/shared/ui/section-title';
-import { type AddedAnimePerDomain, type AddedAnimePerMonth } from '@/entities/anime';
 
 type Props = {
     animePerMonth: AddedAnimePerMonth;

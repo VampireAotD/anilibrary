@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ErrorMessage } from '@/shared/ui/error-message';
-import { Label } from '@/shared/ui/label';
-import { Button } from '@/shared/ui/button';
-import { TextInput } from '@/shared/ui/input';
-import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+
+import { useForm } from '@inertiajs/vue3';
+
+import { Button } from '@/shared/ui/button';
+import { ErrorMessage } from '@/shared/ui/error-message';
+import { TextInput } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
 
 const passwordInput = ref<HTMLInputElement | null>(null);
 const currentPasswordInput = ref<HTMLInputElement | null>(null);

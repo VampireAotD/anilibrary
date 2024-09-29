@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { GuestLayout } from '@/widgets/layouts';
-import { ErrorMessage } from '@/shared/ui/error-message';
-import { Label } from '@/shared/ui/label';
-import { Button } from '@/shared/ui/button';
-import { TextInput } from '@/shared/ui/input';
 import { Head, useForm } from '@inertiajs/vue3';
+
+import { Button } from '@/shared/ui/button';
 import { Checkbox } from '@/shared/ui/checkbox';
+import { ErrorMessage } from '@/shared/ui/error-message';
+import { TextInput } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+import { GuestLayout } from '@/widgets/layouts';
 
 defineProps<{
     canResetPassword?: boolean;

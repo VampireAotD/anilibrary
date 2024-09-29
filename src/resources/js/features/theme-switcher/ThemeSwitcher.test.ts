@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
+
 import ThemeSwitcher from './ThemeSwitcher.vue';
 
 describe('ThemeSwitcher test (ThemeSwitcher.vue)', () => {

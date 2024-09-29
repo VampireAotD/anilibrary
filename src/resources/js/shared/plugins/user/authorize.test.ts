@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
+
 import { usePage } from '@inertiajs/vue3';
+
 import { useHasRole } from './authorize';
 
 vi.mock('@inertiajs/vue3', async () => {

@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { Modal } from '@/shared/ui/modal';
 import { ref } from 'vue';
-import { ScrapeAnimeModal } from '@/features/anime/scrape-anime-modal';
-import { CreateAnimeModal } from '@/features/anime/create-anime-modal';
+
 import Button from 'primevue/button';
+
+import { CreateAnimeModal } from '@/features/anime/create-anime-modal';
+import { ScrapeAnimeModal } from '@/features/anime/scrape-anime-modal';
+import { Modal } from '@/shared/ui/modal';
 
 type Props = {
     visible: boolean;

@@ -1,8 +1,10 @@
 import { config, mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
-import Footer from './Footer.vue';
-import { ZiggyVue } from 'ziggy-js';
+
 import { ZiggyMockConfig } from '@/mocks/ziggy-js';
+import { ZiggyVue } from 'ziggy-js';
+
+import Footer from './Footer.vue';
 
 describe('Footer test (Footer.vue)', () => {
     it('Renders correctly', () => {

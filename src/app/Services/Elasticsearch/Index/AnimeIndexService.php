@@ -37,8 +37,8 @@ final readonly class AnimeIndexService
                 'body'  => [
                     'query' => [
                         'multi_match' => [
-                            'query'                => $term,
-                            'fields'               => [
+                            'query'  => $term,
+                            'fields' => [
                                 'title^3',
                                 'synonyms.synonym',
                             ],
@@ -75,7 +75,7 @@ final readonly class AnimeIndexService
                             'filter' => $dto->getMappedFilters(),
                         ],
                     ],
-                    'sort'  => $dto->sort,
+                    'sort' => $dto->sort,
                 ],
             ])->asArray();
 
@@ -99,27 +99,27 @@ final readonly class AnimeIndexService
                 'body'  => [
                     'size' => 0,
                     'aggs' => [
-                        'min_year'     => [
+                        'min_year' => [
                             'min' => [
                                 'field' => 'year',
                             ],
                         ],
-                        'max_year'     => [
+                        'max_year' => [
                             'max' => [
                                 'field' => 'year',
                             ],
                         ],
-                        'types'        => [
+                        'types' => [
                             'terms' => [
                                 'field' => 'type',
                             ],
                         ],
-                        'statuses'     => [
+                        'statuses' => [
                             'terms' => [
                                 'field' => 'status',
                             ],
                         ],
-                        'genres'       => [
+                        'genres' => [
                             'terms' => [
                                 'field' => 'genres.name',
                                 'size'  => 50,

@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { AuthenticatedLayout } from '@/widgets/layouts';
 import { computed } from 'vue';
-import { Head } from '@inertiajs/vue3';
-import { Models } from '@/types';
-import { ExternalLink } from '@/shared/ui/external-link';
-import { AnimeRating } from '@/features/anime/rating';
 
-const props = defineProps<{ anime: Models.Anime }>();
+import { Head } from '@inertiajs/vue3';
+
+import { Anime } from '@/entities/anime';
+import { AnimeRating } from '@/features/anime/rating';
+import { ExternalLink } from '@/shared/ui/external-link';
+import { AuthenticatedLayout } from '@/widgets/layouts';
+
+const props = defineProps<{ anime: Anime }>();
 
 const rating = computed(() => props.anime.rating);
 const links = computed(() => props.anime.urls.map((link) => link.url));

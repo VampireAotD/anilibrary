@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { useToast } from 'primevue/usetoast';
+
+import { useForm, usePage } from '@inertiajs/vue3';
+
+import { ScrapeResult } from '@/entities/scraper';
+import { Button } from '@/shared/ui/button';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import { TextInput } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { ErrorMessage } from '@/shared/ui/error-message';
-import { useForm, usePage } from '@inertiajs/vue3';
-import { ScrapeResult } from '@/entities/scraper';
-import { useToast } from 'primevue/usetoast';
 import { Modal } from '@/shared/ui/modal';
-import { Button } from '@/shared/ui/button';
 
 const page = usePage();
 const toast = useToast();

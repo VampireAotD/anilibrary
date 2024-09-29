@@ -1,5 +1,7 @@
 import { Plugin } from 'vue';
+
 import { usePage } from '@inertiajs/vue3';
+
 import { Models } from '@/types';
 
 const useHasRole = (name: string): boolean => {

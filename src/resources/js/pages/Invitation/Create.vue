@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
-import { AuthenticatedLayout } from '@/widgets/layouts';
+
 import { CreateInvitationForm } from '@/features/invitation/create-invitation';
+import { AuthenticatedLayout } from '@/widgets/layouts';
 </script>
 
 <template>

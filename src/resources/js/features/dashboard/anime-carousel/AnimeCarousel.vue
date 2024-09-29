@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import Carousel from 'primevue/carousel';
-import { Link } from '@inertiajs/vue3';
 import { reactive, ref } from 'vue';
-import { SectionTitle } from '@/shared/ui/section-title';
-import { Models } from '@/types';
+
+import Carousel from 'primevue/carousel';
 import DeferredContent from 'primevue/deferredcontent';
+
+import { Link } from '@inertiajs/vue3';
+
+import { Anime } from '@/entities/anime';
+import { SectionTitle } from '@/shared/ui/section-title';
 
 type Props = {
     display: number;
     scroll: number;
-    data: Models.Anime[];
+    data: Anime[];
 };
 
 defineProps<Props>();

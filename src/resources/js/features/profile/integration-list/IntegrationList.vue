@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { TelegramLoginWidget } from '@/features/telegram/login-widget';
-import { TelegramUser } from '@/entities/telegram-user';
-import { router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
+
 import { useToast } from 'primevue/usetoast';
+
+import { router, usePage } from '@inertiajs/vue3';
+
+import { TelegramUser } from '@/entities/telegram-user';
+import { TelegramLoginWidget } from '@/features/telegram/login-widget';
 
 const page = usePage();
 const toast = useToast();

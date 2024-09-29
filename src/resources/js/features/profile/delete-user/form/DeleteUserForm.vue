@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Button } from '@/shared/ui/button';
+
 import { DeleteUserModal } from '@/features/profile/delete-user';
+import { Button } from '@/shared/ui/button';
 
 const confirmingUserDeletion = ref<boolean>(false);
 

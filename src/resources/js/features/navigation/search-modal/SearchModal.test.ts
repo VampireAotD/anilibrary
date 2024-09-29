@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { Modal } from '@/shared/ui/modal';
+import { describe, expect, it } from 'vitest';
+
 import { TextInput } from '@/shared/ui/input';
+import { Modal } from '@/shared/ui/modal';
+
 import SearchModal from './SearchModal.vue';
 
 describe('SearchModal test (SearchModal.vue)', () => {

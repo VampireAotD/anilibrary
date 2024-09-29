@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Chart } from '@/shared/ui/chart';
 import { type AddedAnimePerMonth } from '@/entities/anime';
+import { Chart } from '@/shared/ui/chart';
 
 type Props = {
     monthlyStatistic: AddedAnimePerMonth;

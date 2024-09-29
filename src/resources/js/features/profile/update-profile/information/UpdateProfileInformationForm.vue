@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ErrorMessage } from '@/shared/ui/error-message';
-import { Label } from '@/shared/ui/label';
-import { Button } from '@/shared/ui/button';
-import { TextInput } from '@/shared/ui/input';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+
+import { Button } from '@/shared/ui/button';
+import { ErrorMessage } from '@/shared/ui/error-message';
+import { TextInput } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
 
 defineProps<{
     mustVerifyEmail?: boolean;

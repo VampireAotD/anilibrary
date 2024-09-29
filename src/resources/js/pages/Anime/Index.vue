@@ -1,16 +1,28 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
-import { AuthenticatedLayout } from '@/widgets/layouts';
-import { AnimeSearchItem } from '@/features/anime/search-item';
 import { ref, watchEffect } from 'vue';
-import { AnimeCheckboxFilter, AnimeRangeFilter } from '@/features/anime/filter';
-import { Models } from '@/types';
-import { AddAnimeOptionModal } from '@/widgets/anime/add-anime-option-modal';
+
 import Button from 'primevue/button';
 
+import { Head, useForm } from '@inertiajs/vue3';
+
+import { Anime } from '@/entities/anime';
+import { AnimeCheckboxFilter, AnimeRangeFilter } from '@/features/anime/filter';
+import { AnimeSearchItem } from '@/features/anime/search-item';
+import { AddAnimeOptionModal } from '@/widgets/anime/add-anime-option-modal';
+import { AuthenticatedLayout } from '@/widgets/layouts';
+
 type Props = {
-    items: Models.Anime[];
-    filters: Record<string, Record<string, number>>;
+    items: Anime[];
+    filters: {
+        years: {
+            min: number;
+            max: number;
+        };
+        types: Record<string, number>;
+        statuses: Record<string, number>;
+        genres: Record<string, number>;
+        voiceActing: Record<string, number>;
+    };
 };
 
 const props = defineProps<Props>();
@@ -63,7 +75,7 @@ const search = () => {
             />
         </div>
 
-        <section class="grid grid-cols-[75%_25%] gap-2 p-6 mx-auto">
+        <section class="grid grid-cols-[80%_20%] gap-2 p-6 mx-auto">
             <div class="divide-y divide-black-100 dark:divide-gray-100">
                 <AnimeSearchItem v-for="anime in items" :key="anime.id" :anime="anime" />
             </div>
