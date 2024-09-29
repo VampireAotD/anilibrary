@@ -37,7 +37,7 @@ services:
       - local
 
   redis:
-    image: redis:latest
+    image: redis:${REDIS_VERSION}
     container_name: anilibrary-redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
     healthcheck:

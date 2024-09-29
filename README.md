@@ -60,6 +60,7 @@ This variables will be located in project root `.env` file and are required for 
 | `DB_USER`                | (empty)       | The username for the database connection.                            |
 | `DB_PASSWORD`            | (empty)       | The password for the database connection.                            |
 | `DB_ROOT_PASSWORD`       | (empty)       | The root password for the database connection.                       |
+| `REDIS_VERSION`          | 7.4           | Specifies Redis version.                                             |
 | `REDIS_PORT`             | 6379          | Specifies the port for the Redis connection.                         |
 | `REDIS_PASSWORD`         | (empty)       | The password for the Redis connection.                               |
 
