@@ -11,7 +11,7 @@
     ],
     "importOrder": [
         "^(vue|@vue|vitest)",
-        "^primevue",
+        "^(primevue|@primevue|primeicons)",
         "<THIRD_PARTY_MODULES>",
         "^@/(entities|features|shared|widgets|pages|types)",
         "^[./]"

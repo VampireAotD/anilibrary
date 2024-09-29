@@ -1,14 +1,13 @@
 import { DefineComponent, createApp, h } from 'vue';
 
+import Aura from '@primevue/themes/aura';
+import 'primeicons/primeicons.css';
 import PrimeVue from 'primevue/config';
-import Tailwind from 'primevue/passthrough/tailwind';
-import 'primevue/resources/themes/lara-dark-indigo/theme.css';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import 'primeicons/primeicons.css';
 import { ZiggyVue } from 'ziggy-js';
 
 import { HasRolePlugin } from '@/shared/plugins/user/authorize';
@@ -31,8 +30,10 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(HasRolePlugin)
             .use(PrimeVue, {
+                theme: {
+                    preset: Aura,
+                },
                 ripple: true,
-                pt: Tailwind,
                 ptOptions: { mergeProps: false },
             })
             .use(ToastService)

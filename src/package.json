@@ -44,9 +44,10 @@
         "ziggy-js": "^2.3.0"
     },
     "dependencies": {
+        "@primevue/themes": "^4.0.7",
         "@vueuse/core": "^11.1.0",
         "chart.js": "^4.4.4",
         "primeicons": "^7.0.0",
-        "primevue": "^3.53.0"
+        "primevue": "^4.0.7"
     }
 }
