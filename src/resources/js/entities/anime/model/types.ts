@@ -1,8 +1,9 @@
-import { AnimeSynonym } from '@/entities/anime-synonym';
-import { AnimeUrl } from '@/entities/anime-url';
-import { Genre } from '@/entities/genre';
-import { Image } from '@/entities/image';
-import { VoiceActing } from '@/entities/voice-acting';
+import { type AnimeSynonym } from '@/entities/anime-synonym';
+import { type AnimeUrl } from '@/entities/anime-url';
+import { type Genre } from '@/entities/genre';
+import { type Image } from '@/entities/image';
+import { type CountFilter, type RangeFilter } from '@/entities/search';
+import { type VoiceActing } from '@/entities/voice-acting';
 import { Models } from '@/types';
 
 type Anime = Models.Id &
@@ -25,4 +26,17 @@ type AddedAnimePerDomain = Record<string, number>;
 
 type AddedAnimePerMonth = number[];
 
-export { type Anime, type AddedAnimePerDomain, type AddedAnimePerMonth };
+type AnimeFilters = {
+    years: RangeFilter;
+    types: CountFilter;
+    statuses: CountFilter;
+    genres: CountFilter;
+    voiceActing: CountFilter;
+};
+
+export {
+    type Anime,
+    type AddedAnimePerDomain,
+    type AddedAnimePerMonth,
+    type AnimeFilters,
+};

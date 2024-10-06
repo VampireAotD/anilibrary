@@ -1,11 +1,11 @@
 import { config, mount } from '@vue/test-utils';
 import { afterAll, afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ZiggyMockConfig } from '@/mocks/ziggy-js';
 import { usePage } from '@inertiajs/vue3';
 import { ZiggyVue } from 'ziggy-js';
 
 import { NavigationLink } from '@/features/navigation/navigation-link';
+import { ZiggyMockConfig } from '@/mocks/ziggy-js';
 import { HasRolePlugin } from '@/shared/plugins/user/authorize';
 
 import AuthenticatedLayout from './AuthenticatedLayout.vue';
@@ -55,7 +55,7 @@ describe('AuthenticatedLayout test (AuthenticatedLayout.vue)', () => {
         });
 
         const links = layoutWrapper.findAllComponents(NavigationLink);
-        expect(links.length).toBe(2);
+        expect(links.length).toBe(4); // Home, anime list, random anime and logout
     });
 
     it('Owner must see rendered invitation link', () => {
@@ -71,10 +71,11 @@ describe('AuthenticatedLayout test (AuthenticatedLayout.vue)', () => {
         });
 
         const links = layoutWrapper.findAllComponents(NavigationLink);
-        const invitationLink = links.filter((link) => link.text().match('Invite')).at(0);
+        const invitationLink = links.find(
+            (link) => link.find('a').attributes('title') === 'Invitation'
+        );
 
-        expect(links.length).toBe(3);
+        expect(links.length).toBe(5); // Home, invitation, anime list, random anime and logout
         expect(invitationLink.exists()).toBeTruthy();
-        expect(invitationLink.text()).toContain('Invite');
     });
 });

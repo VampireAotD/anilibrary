@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core';
 
-import Button from 'primevue/button';
+import { Moon, Sun } from 'lucide-vue-next';
+
+import { Button } from '@/shared/ui/button';
 
 const isDark = useDark();
 const toggleDarkMode = useToggle(isDark);
@@ -9,12 +11,14 @@ const toggleDarkMode = useToggle(isDark);
 
 <template>
     <Button
-        class="text-white dark:text-black bg-dark dark:bg-white dark:hover:bg-gray-100"
+        class="text-dark bg-dark dark:bg-white dark:hover:bg-gray-100"
         rounded
-        severity="secondary"
-        :icon="`pi ${isDark ? 'pi-sun' : 'pi-moon'}`"
+        variant="secondary"
         @click="toggleDarkMode()"
-    />
+    >
+        <Sun v-if="isDark" />
+        <Moon v-else />
+    </Button>
 </template>
 
 <style scoped></style>

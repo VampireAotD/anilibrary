@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { type InertiaLinkProps, Link } from '@inertiajs/vue3';
 
-import { Link } from '@inertiajs/vue3';
-
-const props = defineProps<{
-    href: string;
+type Props = InertiaLinkProps & {
     active?: boolean;
-}>();
+};
 
-const classes = computed(() =>
-    props.active
-        ? 'inline-flex items-center px-1 pt-1 border-b-2 border-indigo-400 dark:border-red-500 text-sm font-medium leading-5 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out'
-        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-red-500 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-700 transition duration-150 ease-in-out'
-);
+const props = defineProps<Props>();
 </script>
 
 <template>
-    <Link :href="href" :class="classes">
+    <Link
+        v-bind="props"
+        class="inline-flex justify-center items-center size-8 cursor-pointer rounded-lg ease-in-out"
+        :class="
+            active
+                ? `bg-black dark:bg-gray-100 text-white dark:text-black`
+                : `hover:bg-gray-200 dark:hover:bg-gray-700`
+        "
+    >
         <slot />
     </Link>
 </template>
+
+<style scoped></style>

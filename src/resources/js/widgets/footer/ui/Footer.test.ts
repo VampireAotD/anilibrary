@@ -1,8 +1,9 @@
 import { config, mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 
-import { ZiggyMockConfig } from '@/mocks/ziggy-js';
 import { ZiggyVue } from 'ziggy-js';
+
+import { ZiggyMockConfig } from '@/mocks/ziggy-js';
 
 import Footer from './Footer.vue';
 

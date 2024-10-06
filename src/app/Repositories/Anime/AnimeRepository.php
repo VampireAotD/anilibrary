@@ -90,7 +90,7 @@ class AnimeRepository implements AnimeRepositoryInterface
     /**
      * @return LazyCollection<int, Anime>
      */
-    public function getUnreleased(): LazyCollection
+    public function getUnreleasedAnime(): LazyCollection
     {
         return $this->query->with('urls')->whereNot('status', StatusEnum::READY->value)->lazy();
     }
@@ -101,6 +101,22 @@ class AnimeRepository implements AnimeRepositoryInterface
     public function getLatestAnime(int $limit = 10): Collection
     {
         return $this->query->limit($limit)->latest()->get();
+    }
+
+    /**
+     * @return Collection<int, Anime>
+     */
+    public function getMostPopularAnime(int $limit = 10): Collection
+    {
+        return $this->query->limit($limit)->orderByDesc('rating')->get();
+    }
+
+    /**
+     * @return Collection<int, Anime>
+     */
+    public function getLatestCompletedAnime(int $limit = 10): Collection
+    {
+        return $this->query->limit($limit)->where('status', StatusEnum::READY)->latest()->get();
     }
 
     /**

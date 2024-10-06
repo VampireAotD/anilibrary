@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Dashboard;
 
+use App\Enums\Anime\StatusEnum;
+use App\Models\Anime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
@@ -28,21 +30,15 @@ class DashboardControllerTest extends TestCase
 
     public function testCanViewDashboard(): void
     {
-        $collection = $this->createAnimeCollection(10);
         $owner      = $this->createOwner();
-
-        $this->createAdmin();
+        $collection = $this->createAnimeCollection(10);
+        $completed  = $collection->filter(fn(Anime $anime) => $anime->status === StatusEnum::READY);
 
         $this->actingAs($owner)->get(route('dashboard'))->assertInertia(
             fn(Assert $page) => $page->component('Dashboard/Index')
-                                     ->has('animeCount')
-                                     ->where('animeCount', $collection->count())
-                                     ->has('usersCount')
-                                     ->where('usersCount', 2)
-                                     ->has('animePerMonth')
-                                     ->has('animePerDomain')
-                                     ->has('latestAnime')
-                                     ->where('latestAnime.0.id', $collection->first()->id)
+                                     ->has('latestAnime', $collection->count())
+                                     ->has('completedAnime', $completed->count())
+                                     ->has('mostPopularAnime', $collection->count())
         );
     }
 }

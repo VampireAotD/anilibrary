@@ -13,7 +13,7 @@
         "^(vue|@vue|vitest)",
         "^(primevue|@primevue|primeicons)",
         "<THIRD_PARTY_MODULES>",
-        "^@/(entities|features|shared|widgets|pages|types)",
+        "^@/(pages|widgets|features|entities|shared|types|mocks)",
         "^[./]"
     ],
     "importOrderSeparation": true,

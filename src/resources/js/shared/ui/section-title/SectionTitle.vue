@@ -8,7 +8,7 @@ defineProps<Props>();
 
 <template>
     <div class="px-3 border-l-4 border-black dark:border-red-500">
-        <h3 class="text-black dark:text-white uppercase">
+        <h3 class="text-gray-900 dark:text-white uppercase">
             {{ title }}
         </h3>
     </div>

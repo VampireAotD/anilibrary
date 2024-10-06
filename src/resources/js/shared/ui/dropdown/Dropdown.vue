@@ -1,17 +1,33 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
-type Props = {
-    align?: 'left' | 'right';
-    width?: '48';
-    contentClasses?: string;
-};
+interface Props {
+    align: 'top' | 'bottom' | 'left' | 'right';
+}
 
-const {
-    align = 'right',
-    width = '48',
-    contentClasses = 'py-1 bg-white dark:bg-gray-700',
-} = defineProps<Props>();
+const props = defineProps<Props>();
+
+const open = ref<boolean>(false);
+const dropdownRef = ref<HTMLElement | null>(null);
+
+const dropdownPosition = computed((): string => {
+    switch (props.align) {
+        case 'top':
+            return 'bottom-full left-0';
+        case 'left':
+            return 'right-full top-0';
+        case 'right':
+            return 'left-full top-0';
+        default:
+            return 'top-full left-0';
+    }
+});
+
+const closeOnClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+        open.value = false;
+    }
+};
 
 const closeOnEscape = (e: KeyboardEvent) => {
     if (open.value && e.key === 'Escape') {
@@ -19,36 +35,22 @@ const closeOnEscape = (e: KeyboardEvent) => {
     }
 };
 
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
-onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
-
-const widthClass = computed(() => {
-    return {
-        48: 'w-48',
-    }[width.toString()];
+onMounted(() => {
+    document.addEventListener('click', closeOnClickOutside);
+    document.addEventListener('keydown', closeOnEscape);
 });
 
-const alignmentClasses = computed(() => {
-    if (align === 'left') {
-        return 'origin-top-left left-0';
-    } else if (align === 'right') {
-        return 'origin-top-right right-0';
-    } else {
-        return 'origin-top';
-    }
+onUnmounted(() => {
+    document.removeEventListener('click', closeOnClickOutside);
+    document.removeEventListener('keydown', closeOnEscape);
 });
-
-const open = ref(false);
 </script>
 
 <template>
-    <div class="relative">
+    <div ref="dropdownRef" class="relative inline-block">
         <div @click="open = !open">
             <slot name="trigger" />
         </div>
-
-        <!-- Full Screen Dropdown Overlay -->
-        <div v-show="open" class="fixed inset-0 z-40" @click="open = false"></div>
 
         <transition
             enter-active-class="transition ease-out duration-200"
@@ -59,19 +61,17 @@ const open = ref(false);
             leave-to-class="transform opacity-0 scale-95"
         >
             <div
-                v-show="open"
-                class="absolute z-50 mt-2 rounded-md shadow-lg"
-                :class="[widthClass, alignmentClasses]"
-                style="display: none"
+                v-if="open"
+                :class="dropdownPosition"
+                class="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
                 @click="open = false"
             >
-                <div
-                    class="rounded-md ring-1 ring-black ring-opacity-5"
-                    :class="contentClasses"
-                >
+                <div class="py-1">
                     <slot name="content" />
                 </div>
             </div>
         </transition>
     </div>
 </template>
+
+<style scoped></style>

@@ -9,4 +9,4 @@ use Illuminate\Support\Facades\Schedule;
 
 Schedule::command(GenerateCommand::class)->dailyAt('12:00');
 Schedule::command(ImportAnimeDataCommand::class)->lastDayOfMonth();
-Schedule::command(UpdateUnreleasedAnimeCommand::class)->mondays();
+Schedule::command(UpdateUnreleasedAnimeCommand::class)->mondays()->at('12:00');

@@ -15,6 +15,7 @@
         "@inertiajs/vue3": "^1.2.0",
         "@tailwindcss/forms": "^0.5.9",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+        "@types/qs": "^6.9.16",
         "@vitejs/plugin-vue": "^5.1.4",
         "@vue/eslint-config-prettier": "^9.0.0",
         "@vue/eslint-config-typescript": "^13.0.0",
@@ -44,10 +45,16 @@
         "ziggy-js": "^2.3.0"
     },
     "dependencies": {
-        "@primevue/themes": "^4.0.7",
         "@vueuse/core": "^11.1.0",
         "chart.js": "^4.4.4",
-        "primeicons": "^7.0.0",
-        "primevue": "^4.0.7"
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "embla-carousel-vue": "^8.3.0",
+        "lucide-vue-next": "^0.447.0",
+        "primevue": "^4.0.7",
+        "qs": "^6.13.0",
+        "radix-vue": "^1.9.6",
+        "tailwind-merge": "^2.5.2",
+        "tailwindcss-animate": "^1.0.7"
     }
 }

@@ -1,140 +1,51 @@
 <script setup lang="ts">
-import { ComponentPublicInstance, onMounted, onUnmounted, ref } from 'vue';
+import { Home, LogOut, Mail, Shuffle, Table } from 'lucide-vue-next';
 
-import { Link } from '@inertiajs/vue3';
-
-import { DropdownLink } from '@/features/navigation/dropdown-link';
 import { NavigationLink } from '@/features/navigation/navigation-link';
-import { SearchButton } from '@/features/navigation/search-button';
-import { SearchModal } from '@/features/navigation/search-modal';
-import { ThemeSwitcher } from '@/features/theme-switcher';
-import { Dropdown } from '@/shared/ui/dropdown';
-import { ApplicationLogo } from '@/shared/ui/logo';
-
-const showSearchModal = ref<boolean>(false);
-const buttonRef = ref<ComponentPublicInstance<HTMLButtonElement> | null>(null);
-
-const toggleSearchModalVisibility = () =>
-    (showSearchModal.value = !showSearchModal.value);
-
-const activateSearch = (event: KeyboardEvent) => {
-    if (event.ctrlKey && event.key === 'k') {
-        event.preventDefault();
-
-        buttonRef.value?.$el.click();
-        buttonRef.value?.$el.blur();
-    }
-};
-
-onMounted(() => window.addEventListener('keydown', activateSearch));
-onUnmounted(() => window.removeEventListener('keydown', activateSearch));
 </script>
 
 <template>
-    <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-        <!-- Primary Navigation Menu -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <!-- Logo -->
-                    <div class="shrink-0 flex items-center">
-                        <Link :href="route('dashboard')">
-                            <ApplicationLogo
-                                class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
-                            />
-                        </Link>
-                    </div>
+    <aside
+        class="fixed inset-y-0 left-0 z-10 w-14 hidden sm:flex flex-col justify-between shadow-lg bg-white dark:bg-gray-800"
+    >
+        <!-- Navigation links -->
+        <nav class="flex flex-col items-center gap-4 px-2 sm:py-5">
+            <NavigationLink
+                :href="route('dashboard')"
+                :active="route().current('dashboard')"
+                title="Dashboard"
+            >
+                <Home />
+            </NavigationLink>
 
-                    <!-- Navigation Links -->
-                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <NavigationLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
-                        >
-                            Dashboard
-                        </NavigationLink>
-                    </div>
+            <NavigationLink
+                v-if="hasRole('owner')"
+                :href="route('invitation.create')"
+                :active="route().current('invitation.create')"
+                title="Invitation"
+            >
+                <Mail />
+            </NavigationLink>
 
-                    <div
-                        v-if="hasRole('owner')"
-                        class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex"
-                    >
-                        <NavigationLink
-                            :href="route('invitation.create')"
-                            :active="route().current('invitation.create')"
-                        >
-                            Invite
-                        </NavigationLink>
-                    </div>
+            <NavigationLink
+                :href="route('anime.index')"
+                :active="route().current('anime.index')"
+                title="Anime"
+            >
+                <Table />
+            </NavigationLink>
 
-                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <NavigationLink
-                            :href="route('anime.index')"
-                            :active="route().current('anime.index')"
-                        >
-                            Anime
-                        </NavigationLink>
-                    </div>
-                </div>
+            <NavigationLink href="#" title="Random anime">
+                <Shuffle />
+            </NavigationLink>
+        </nav>
 
-                <div class="flex sm:items-center sm:ml-6">
-                    <div class="flex items-center justify-between">
-                        <SearchButton
-                            ref="buttonRef"
-                            class="mr-3"
-                            @click="toggleSearchModalVisibility"
-                        />
-
-                        <ThemeSwitcher />
-                    </div>
-
-                    <!-- Settings Dropdown -->
-                    <div class="hidden sm:flex ml-3">
-                        <Dropdown align="right" width="48">
-                            <template #trigger>
-                                <span class="inline-flex rounded-md">
-                                    <button
-                                        type="button"
-                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
-                                    >
-                                        {{ $page.props.auth.user.name }}
-
-                                        <svg
-                                            class="ml-2 -mr-0.5 h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                        >
-                                            <path
-                                                fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clip-rule="evenodd"
-                                            />
-                                        </svg>
-                                    </button>
-                                </span>
-                            </template>
-
-                            <template #content>
-                                <DropdownLink :href="route('profile.edit')">
-                                    Profile
-                                </DropdownLink>
-                                <DropdownLink
-                                    :href="route('logout')"
-                                    method="post"
-                                    as="button"
-                                >
-                                    Log Out
-                                </DropdownLink>
-                            </template>
-                        </Dropdown>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <SearchModal :visible="showSearchModal" @closed="toggleSearchModalVisibility" />
+        <nav class="flex flex-col items-center gap-4 px-2 sm:py-5">
+            <NavigationLink :href="route('logout')" method="post" as="button">
+                <LogOut />
+            </NavigationLink>
+        </nav>
+    </aside>
 </template>
 
 <style scoped></style>

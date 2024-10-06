@@ -25,97 +25,74 @@ const voiceActingList = computed((): string =>
     <Head :title="anime.title" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2
-                class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
-            >
-                {{ anime.title }}
-            </h2>
-        </template>
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm">
+            <section class="p-2 body-font">
+                <div class="container mx-auto flex flex-wrap">
+                    <div class="grid grid-cols-1 mb-5">
+                        <div class="px-1 mb-5 lg:mb-0 overflow-hidden">
+                            <img
+                                :src="anime.image.path"
+                                class="w-full sm:w-64 sm:h-80"
+                                :alt="anime.title"
+                            />
+                        </div>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm">
-                    <section class="p-2 text-gray-600 body-font">
-                        <div class="container mx-auto flex flex-wrap">
-                            <div class="grid grid-cols-1 mb-5">
-                                <div class="px-1 mb-5 lg:mb-0 overflow-hidden">
-                                    <img
-                                        :src="anime.image.path"
-                                        class="w-full sm:w-64 sm:h-80"
-                                        :alt="anime.title"
-                                    />
-                                </div>
+                        <div>
+                            <ExternalLink
+                                v-for="(link, key) in links"
+                                :key="key"
+                                text="Смотреть"
+                                :url="link"
+                            />
+                        </div>
+                    </div>
 
-                                <div>
-                                    <ExternalLink
-                                        v-for="(link, key) in links"
-                                        :key="key"
-                                        text="Смотреть"
-                                        :url="link"
-                                    />
-                                </div>
+                    <div
+                        class="flex flex-col flex-wrap h-full lg:w-1/2 lg:pl-12 lg:text-left"
+                    >
+                        <div class="flex flex-col">
+                            <AnimeRating v-model="rating" class="mb-2" />
+
+                            <div class="mb-2">
+                                <h2
+                                    class="text-4xl title-font font-medium mb-1 font-semibold leading-tight"
+                                >
+                                    {{ anime.title }}
+                                </h2>
+
+                                <ul class="list-none text-xs">
+                                    <li v-for="(synonym, key) in synonyms" :key="key">
+                                        {{ synonym }}
+                                    </li>
+                                </ul>
                             </div>
 
-                            <div
-                                class="flex flex-col flex-wrap h-full lg:w-1/2 lg:pl-12 lg:text-left"
-                            >
-                                <div class="flex flex-col">
-                                    <AnimeRating v-model="rating" class="mb-2" />
+                            <hr class="my-4 border-t border-gray-200" />
 
-                                    <div class="mb-2">
-                                        <h2
-                                            class="text-gray-900 text-4xl title-font font-medium mb-1 font-semibold dark:text-gray-200 leading-tight"
-                                        >
-                                            {{ anime.title }}
-                                        </h2>
-
-                                        <ul class="list-none text-xs">
-                                            <li
-                                                v-for="(synonym, key) in synonyms"
-                                                :key="key"
-                                            >
-                                                {{ synonym }}
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <hr class="my-4 border-t border-gray-200" />
-
-                                    <div>
-                                        <dl class="grid grid-cols-2 gap-x-4 gap-y-2">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                Эпизоды
-                                            </dt>
-                                            <dd class="mt-1 text-sm text-gray-900">
-                                                {{ anime.episodes }}
-                                            </dd>
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                Статус
-                                            </dt>
-                                            <dd class="mt-1 text-sm text-gray-900">
-                                                {{ anime.status }}
-                                            </dd>
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                Жанр
-                                            </dt>
-                                            <dd class="mt-1 text-sm text-gray-900">
-                                                {{ genres }}
-                                            </dd>
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                Озвучка
-                                            </dt>
-                                            <dd class="mt-1 text-sm text-gray-900">
-                                                {{ voiceActingList }}
-                                            </dd>
-                                        </dl>
-                                    </div>
-                                </div>
+                            <div>
+                                <dl class="grid grid-cols-2 gap-x-4 gap-y-2">
+                                    <dt class="text-sm font-medium">Эпизоды</dt>
+                                    <dd class="mt-1 text-sm">
+                                        {{ anime.episodes }}
+                                    </dd>
+                                    <dt class="text-sm font-medium">Статус</dt>
+                                    <dd class="mt-1 text-sm">
+                                        {{ anime.status }}
+                                    </dd>
+                                    <dt class="text-sm font-medium">Жанр</dt>
+                                    <dd class="mt-1 text-sm">
+                                        {{ genres }}
+                                    </dd>
+                                    <dt class="text-sm font-medium">Озвучка</dt>
+                                    <dd class="mt-1 text-sm">
+                                        {{ voiceActingList }}
+                                    </dd>
+                                </dl>
                             </div>
                         </div>
-                    </section>
+                    </div>
                 </div>
-            </div>
+            </section>
         </div>
     </AuthenticatedLayout>
 </template>

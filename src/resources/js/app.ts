@@ -1,7 +1,5 @@
 import { DefineComponent, createApp, h } from 'vue';
 
-import Aura from '@primevue/themes/aura';
-import 'primeicons/primeicons.css';
 import PrimeVue from 'primevue/config';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
@@ -29,13 +27,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(HasRolePlugin)
-            .use(PrimeVue, {
-                theme: {
-                    preset: Aura,
-                },
-                ripple: true,
-                ptOptions: { mergeProps: false },
-            })
+            .use(PrimeVue, { unstyled: true })
             .use(ToastService)
             .component('Toast', Toast)
             .mount(el);

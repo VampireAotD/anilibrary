@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import { type CountFilter } from '@/entities/search';
 import { Checkbox } from '@/shared/ui/checkbox';
 
 type Props = {
     name: string;
-    data: Record<string, number>;
+    data: CountFilter;
 };
 
 defineProps<Props>();
 
-const model = defineModel();
-const emit = defineEmits<{ change: string[] }>();
+const model = defineModel<string[]>();
+const emit = defineEmits<{ change: CountFilter }>();
 </script>
 
 <template>
@@ -18,17 +19,13 @@ const emit = defineEmits<{ change: string[] }>();
 
         <div class="flex flex-col max-h-40 overflow-y-auto space-y-2 p-2">
             <label
-                v-for="(counter, value) in data"
+                v-for="(value, key) in data"
                 :key="value"
                 class="inline-flex items-center"
             >
-                <Checkbox
-                    v-model="model"
-                    :value="value"
-                    @change="emit('change', model)"
-                />
+                <Checkbox v-model="model" :value="key" @change="emit('change')" />
 
-                <span class="ml-2">{{ value }} ({{ counter }})</span>
+                <span class="ml-2">{{ key }} ({{ value }})</span>
             </label>
         </div>
     </fieldset>

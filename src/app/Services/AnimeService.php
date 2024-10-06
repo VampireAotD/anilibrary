@@ -86,7 +86,7 @@ final readonly class AnimeService
 
     public function unreleased(): LazyCollection
     {
-        return $this->animeRepository->getUnreleased();
+        return $this->animeRepository->getUnreleasedAnime();
     }
 
     public function getParsedAnimePerMonth(): array
@@ -99,12 +99,19 @@ final readonly class AnimeService
         return array_replace($initial, $perMonth);
     }
 
-    /**
-     * @return Collection<int, Anime>
-     */
     public function getTenLatestAnime(): Collection
     {
         return $this->animeRepository->withFilters([new RelationFilter(['image:id,path'])])->getLatestAnime();
+    }
+
+    public function getTenMostPopularAnime(): Collection
+    {
+        return $this->animeRepository->withFilters([new RelationFilter(['image:id,path'])])->getMostPopularAnime();
+    }
+
+    public function getTenLatestCompletedAnime(): Collection
+    {
+        return $this->animeRepository->withFilters([new RelationFilter(['image:id,path'])])->getLatestCompletedAnime();
     }
 
     public function countAnime(): int

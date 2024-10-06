@@ -1,25 +1,24 @@
 <script setup lang="ts">
 import { BottomNavigation } from '@/widgets/bottom-navigation';
 import { Footer } from '@/widgets/footer';
+import { Header } from '@/widgets/header';
 import { Navigation } from '@/widgets/navigation';
 </script>
 
 <template>
-    <div>
-        <div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
-            <!-- Navigation -->
-            <Navigation />
+    <div class="flex gap-2 w-full min-h-dvh">
+        <!-- Page Navigation -->
+        <Navigation />
 
+        <div class="flex flex-col w-full sm:gap-4 sm:pt-4 sm:pl-14">
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-white dark:bg-gray-800 shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
-                </div>
-            </header>
+            <Header />
 
             <!-- Page Content -->
             <main>
-                <slot />
+                <div class="py-4 sm:px-6 lg:px-6">
+                    <slot />
+                </div>
             </main>
 
             <!-- Page Footer -->
