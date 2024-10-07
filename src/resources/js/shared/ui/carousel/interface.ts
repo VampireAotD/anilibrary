@@ -1,7 +1,6 @@
 import type { HTMLAttributes, UnwrapRef } from 'vue';
 
-import type useEmblaCarousel from 'embla-carousel-vue';
-import type { EmblaCarouselVueType } from 'embla-carousel-vue';
+import useEmblaCarousel, { type EmblaCarouselVueType } from 'embla-carousel-vue';
 
 type CarouselApi = EmblaCarouselVueType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;

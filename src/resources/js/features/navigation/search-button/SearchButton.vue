@@ -25,11 +25,7 @@ onUnmounted(() => window.removeEventListener('keydown', activateSearch));
 </script>
 
 <template>
-    <Button
-        ref="buttonRef"
-        variant="secondary"
-        class="w-36 justify-between outline-none border-none bg-transparent focus:outline-none focus:ring-0 focus:border-none"
-    >
+    <Button ref="buttonRef" variant="outline" class="w-36 justify-between">
         <Search />
         <span>
             <kbd class="text-sm">CTRL + K</kbd>

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import Button from 'primevue/button';
-
 import { CreateAnimeModal } from '@/features/anime/create-anime-modal';
 import { ScrapeAnimeModal } from '@/features/anime/scrape-anime-modal';
+import { Button } from '@/shared/ui/button';
 import { Modal } from '@/shared/ui/modal';
 
 type Props = {
@@ -39,19 +38,13 @@ const toggleCreateModalVisibility = () => {
 
         <template #body>
             <div class="inline-flex gap-4">
-                <Button
-                    severity="info"
-                    label="Scrape"
-                    class="scrape-option"
-                    @click="toggleScrapeModalVisibility"
-                />
+                <Button class="scrape-option" @click="toggleScrapeModalVisibility">
+                    Scrape
+                </Button>
 
-                <Button
-                    severity="help"
-                    label="Create"
-                    class="create-option"
-                    @click="toggleCreateModalVisibility"
-                />
+                <Button class="create-option" @click="toggleCreateModalVisibility">
+                    Create
+                </Button>
             </div>
         </template>
     </Modal>

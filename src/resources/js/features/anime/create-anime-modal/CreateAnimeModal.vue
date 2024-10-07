@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 
-import FileUpload, { type FileUploadSelectEvent } from 'primevue/fileupload';
 import MultiSelect from 'primevue/multiselect';
 
 import { useForm } from '@inertiajs/vue3';
+import { Minus, Plus } from 'lucide-vue-next';
 
 import { Button } from '@/shared/ui/button';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { FileUpload } from '@/shared/ui/file-upload';
 import { TextInput } from '@/shared/ui/input/text';
 import { Label } from '@/shared/ui/label';
 import { Modal } from '@/shared/ui/modal';
@@ -42,7 +43,7 @@ const addSynonym = () => form.synonyms.push({ name: '' });
 
 const removeSynonym = (index: number) => form.synonyms.splice(index, 1);
 
-const addImage = (event: FileUploadSelectEvent) => (form.image = event.files[0]);
+const addImage = (files: File[]) => (form.image = files[0]);
 
 const removeImage = () => (form.image = null);
 
@@ -190,14 +191,14 @@ const createAnime = () => {};
 
                             <aside class="w-3/12 flex gap-4">
                                 <button label="Добавить ссылку" @click="addUrl">
-                                    <i class="pi pi-plus-circle"></i>
+                                    <Plus />
                                 </button>
 
                                 <button
                                     v-if="form.urls.length > 1"
                                     @click="removeUrl(index)"
                                 >
-                                    <i class="pi pi-minus-circle"></i>
+                                    <Minus />
                                 </button>
                             </aside>
                         </div>
@@ -208,8 +209,9 @@ const createAnime = () => {};
                     <div>
                         <span
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                            >Synonyms</span
                         >
+                            Synonyms
+                        </span>
 
                         <div
                             v-for="(synonym, index) in form.synonyms"
@@ -225,14 +227,14 @@ const createAnime = () => {};
 
                             <aside class="w-3/12 flex gap-4">
                                 <button label="Add synonym" @click="addSynonym">
-                                    <i class="pi pi-plus-circle"></i>
+                                    <Plus />
                                 </button>
 
                                 <button
                                     v-if="form.synonyms.length > 1"
                                     @click="removeSynonym(index)"
                                 >
-                                    <i class="pi pi-minus-circle"></i>
+                                    <Minus />
                                 </button>
                             </aside>
                         </div>
@@ -244,17 +246,9 @@ const createAnime = () => {};
                         <FileUpload
                             name="image"
                             accept="image/*"
-                            :file-limit="1"
-                            :show-upload-button="false"
-                            :show-cancel-button="false"
-                            :max-file-size="1000000"
-                            @select="addImage"
-                            @remove="removeImage"
-                        >
-                            <template #empty>
-                                <p>Drag and drop files to here to upload.</p>
-                            </template>
-                        </FileUpload>
+                            @added="addImage"
+                            @removed="removeImage"
+                        />
                     </div>
                 </fieldset>
 

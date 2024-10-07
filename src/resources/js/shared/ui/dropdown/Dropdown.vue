@@ -66,7 +66,7 @@ onUnmounted(() => {
                 class="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
                 @click="open = false"
             >
-                <div class="py-1">
+                <div class="bg-background py-1">
                     <slot name="content" />
                 </div>
             </div>

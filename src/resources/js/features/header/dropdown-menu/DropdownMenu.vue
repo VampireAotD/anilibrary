@@ -9,7 +9,7 @@ import { Dropdown } from '@/shared/ui/dropdown';
 <template>
     <Dropdown align="left" class="text-center">
         <template #trigger>
-            <Button type="button" size="small" variant="secondary" rounded>
+            <Button type="button" size="rounded" variant="outline">
                 <CircleUser />
             </Button>
         </template>

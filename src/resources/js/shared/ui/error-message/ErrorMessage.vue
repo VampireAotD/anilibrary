@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { BadgeInfo } from 'lucide-vue-next';
+
 type Props = {
     message?: string;
 };
@@ -11,7 +13,7 @@ defineProps<Props>();
         <div
             class="flex justify-start justify-items-center gap-1 text-sm text-red-600 dark:text-red-400"
         >
-            <span class="pi pi-info-circle" />
+            <BadgeInfo />
             <span class="leading-none">{{ message }}</span>
         </div>
     </div>
