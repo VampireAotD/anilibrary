@@ -8,15 +8,17 @@ import { AnimeRating } from '@/features/anime/rating';
 import { ExternalLink } from '@/shared/ui/external-link';
 import { AuthenticatedLayout } from '@/widgets/layouts';
 
-const props = defineProps<{ anime: Anime }>();
+type Props = {
+    anime: Anime;
+};
+
+const props = defineProps<Props>();
 
 const rating = computed(() => props.anime.rating);
 const links = computed(() => props.anime.urls.map((link) => link.url));
 const synonyms = computed(() => props.anime.synonyms.map((synonym) => synonym.name));
-const genres = computed((): string =>
-    props.anime.genres.map((genre) => genre.name).join(', ')
-);
-const voiceActingList = computed((): string =>
+const genres = computed(() => props.anime.genres.map((genre) => genre.name).join(', '));
+const voiceActingList = computed(() =>
     props.anime.voice_acting.map((voiceActing) => voiceActing.name).join(', ')
 );
 </script>

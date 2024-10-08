@@ -1,8 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import PrimeVue from 'primevue/config';
-import Rating from 'primevue/rating';
+import { Rating } from '@/shared/ui/rating';
 
 import AnimeRating from './AnimeRating.vue';
 
@@ -12,9 +11,6 @@ describe('AnimeRating test (AnimeRating.vue)', () => {
     beforeEach(() => {
         wrapper = mount(AnimeRating, {
             props: { modelValue: 5 },
-            global: {
-                plugins: [PrimeVue],
-            },
         });
     });
 

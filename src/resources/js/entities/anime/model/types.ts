@@ -1,10 +1,16 @@
-import { type AnimeSynonym } from '@/entities/anime-synonym';
-import { type AnimeUrl } from '@/entities/anime-url';
 import { type Genre } from '@/entities/genre';
 import { type Image } from '@/entities/image';
 import { type CountFilter, type RangeFilter } from '@/entities/search';
 import { type VoiceActing } from '@/entities/voice-acting';
 import { Models } from '@/types';
+
+type AnimeSynonym = Models.Id & {
+    name: string;
+};
+
+type AnimeUrl = Models.Id & {
+    url: string;
+};
 
 type Anime = Models.Id &
     Models.Timestamps &

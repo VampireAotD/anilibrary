@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Rating from 'primevue/rating';
+import { Rating } from '@/shared/ui/rating';
 
 const rating = defineModel<number>();
 </script>
@@ -7,13 +7,8 @@ const rating = defineModel<number>();
 <template>
     <div class="flex gap-2" role="status" aria-live="polite">
         <span id="ratingValue">{{ rating }} / 10</span>
-        <Rating
-            v-model="rating"
-            readonly
-            :stars="10"
-            :cancel="false"
-            aria-labelledby="ratingValue"
-        />
+
+        <Rating v-model="rating" :max-rating="10" readonly />
     </div>
 </template>
 
