@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { useToast } from 'primevue/usetoast';
-
 import { router, usePage } from '@inertiajs/vue3';
 
 import { TelegramUser } from '@/entities/telegram-user';
 import { TelegramLoginWidget } from '@/features/telegram/login-widget';
+import { useToast } from '@/shared/ui/toast';
 
 const page = usePage();
-const toast = useToast();
+const { toast } = useToast();
 const telegramUser = computed(() => page.props.auth.user.telegram_user);
 
 const handleTelegramLogin = (user: TelegramUser) => {
@@ -18,11 +17,9 @@ const handleTelegramLogin = (user: TelegramUser) => {
     router.post(route('telegram.assign'), payload, {
         preserveScroll: true,
         onError: (response) => {
-            toast.add({
-                summary: response?.id,
-                severity: 'error',
-                life: 2000,
-                closable: true,
+            toast({
+                title: response?.message,
+                variant: 'destructive',
             });
         },
     });
@@ -61,8 +58,6 @@ const handleTelegramLogin = (user: TelegramUser) => {
             </div>
         </div>
     </section>
-
-    <Toast position="bottom-center" />
 </template>
 
 <style scoped></style>

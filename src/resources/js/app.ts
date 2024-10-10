@@ -1,8 +1,6 @@
 import { DefineComponent, createApp, h } from 'vue';
 
 import PrimeVue from 'primevue/config';
-import Toast from 'primevue/toast';
-import ToastService from 'primevue/toastservice';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -28,8 +26,6 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(HasRolePlugin)
             .use(PrimeVue, { unstyled: true })
-            .use(ToastService)
-            .component('Toast', Toast)
             .mount(el);
     },
     progress: {

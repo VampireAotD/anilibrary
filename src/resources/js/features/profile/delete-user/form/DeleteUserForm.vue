@@ -24,7 +24,9 @@ const toggleConfirmationModal = () =>
             </p>
         </header>
 
-        <Button variant="danger" @click="toggleConfirmationModal">Delete Account</Button>
+        <Button variant="destructive" @click="toggleConfirmationModal">
+            Delete Account
+        </Button>
 
         <DeleteUserModal
             :show="confirmingUserDeletion"

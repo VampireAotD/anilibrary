@@ -7,7 +7,7 @@ import { Anime } from '@/entities/anime';
 import { AnimeCheckboxFilter, AnimeRangeFilter } from '@/features/anime/filter';
 import { AnimeSearchItem } from '@/features/anime/search-item';
 import { Button } from '@/shared/ui/button';
-import { AddAnimeOptionModal } from '@/widgets/anime/add-anime-option-modal';
+import { AddAnimeModal } from '@/widgets/anime/add-anime-modal';
 import { AuthenticatedLayout } from '@/widgets/layouts';
 
 type Props = {
@@ -66,7 +66,7 @@ const search = () => {
 
     <AuthenticatedLayout>
         <div class="bg-white dark:bg-zinc-700 shadow mb-2 p-2">
-            <Button @click="optionModalVisible = true"> Add anime </Button>
+            <Button @click="optionModalVisible = true">Add anime</Button>
         </div>
 
         <section class="grid grid-cols-[80%_20%] gap-2 p-6 mx-auto">
@@ -130,7 +130,7 @@ const search = () => {
             </div>
         </section>
 
-        <AddAnimeOptionModal
+        <AddAnimeModal
             :visible="optionModalVisible"
             @close="optionModalVisible = false"
         />

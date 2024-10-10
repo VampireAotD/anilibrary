@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Toaster } from '@/shared/ui/toast';
 import { BottomNavigation } from '@/widgets/bottom-navigation';
 import { Footer } from '@/widgets/footer';
 import { Header } from '@/widgets/header';
@@ -26,6 +27,9 @@ import { Navigation } from '@/widgets/navigation';
 
             <!-- Mobile Bottom Navigation -->
             <BottomNavigation />
+
+            <!-- Toast notifications -->
+            <Toaster />
         </div>
     </div>
 </template>
