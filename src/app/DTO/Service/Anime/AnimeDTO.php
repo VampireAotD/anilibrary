@@ -12,11 +12,8 @@ use Illuminate\Contracts\Support\Arrayable;
 /**
  * @template-implements Arrayable<string, mixed>
  */
-final readonly class UpsertAnimeDTO implements Arrayable, FromArray
+final readonly class AnimeDTO implements Arrayable, FromArray
 {
-    public const int      DEFAULT_EPISODES = 0;
-    public const float    DEFAULT_RATING   = 0.0;
-
     /**
      * @param array<array{url: string}>  $urls
      * @param array<array{name: string}> $synonyms
@@ -26,16 +23,36 @@ final readonly class UpsertAnimeDTO implements Arrayable, FromArray
     public function __construct(
         public string     $title,
         public TypeEnum   $type,
+        public StatusEnum $status,
+        public float      $rating,
+        public int        $episodes,
         public int        $year,
         public array      $urls,
-        public StatusEnum $status = StatusEnum::ANNOUNCE,
-        public float      $rating = self::DEFAULT_RATING,
-        public int        $episodes = self::DEFAULT_EPISODES,
         public ?string    $image = null,
         public array      $synonyms = [],
         public array      $voiceActing = [],
         public array      $genres = [],
     ) {
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            $data['title'],
+            TypeEnum::from($data['type']),
+            StatusEnum::from($data['status']),
+            $data['rating'],
+            $data['episodes'],
+            (int) $data['year'],
+            $data['urls'],
+            $data['image'] ?? null,
+            $data['synonyms'] ?? [],
+            $data['voice_acting'] ?? [],
+            $data['genres'] ?? [],
+        );
     }
 
     /**
@@ -53,25 +70,5 @@ final readonly class UpsertAnimeDTO implements Arrayable, FromArray
             'rating'   => $this->rating,
             'episodes' => $this->episodes,
         ];
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    public static function fromArray(array $data): self
-    {
-        return new self(
-            $data['title'],
-            TypeEnum::from($data['type']),
-            (int) $data['year'],
-            $data['urls'],
-            StatusEnum::tryFrom($data['status'] ?? '') ?? StatusEnum::ANNOUNCE->value,
-            $data['rating'] ?? self::DEFAULT_RATING,
-            $data['episodes'] ?? self::DEFAULT_EPISODES,
-            $data['image'] ?? null,
-            $data['synonyms'] ?? [],
-            $data['voice_acting'] ?? [],
-            $data['genres'] ?? [],
-        );
     }
 }

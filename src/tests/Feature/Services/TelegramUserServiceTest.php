@@ -6,7 +6,7 @@ namespace Tests\Feature\Services;
 
 use App\DTO\Service\Telegram\User\TelegramUserDTO;
 use App\Exceptions\Service\Telegram\TelegramUserException;
-use App\Services\TelegramUserService;
+use App\Services\Telegram\TelegramUserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Concerns\Fake\CanCreateFakeUsers;

@@ -7,7 +7,7 @@ namespace App\Jobs\Telegram;
 use App\DTO\Service\Telegram\User\TelegramUserDTO;
 use App\Enums\QueueEnum;
 use App\Exceptions\Service\Telegram\TelegramUserException;
-use App\Services\TelegramUserService;
+use App\Services\Telegram\TelegramUserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

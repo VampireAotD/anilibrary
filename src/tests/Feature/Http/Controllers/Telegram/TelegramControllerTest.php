@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Telegram;
 
 use App\Models\TelegramUser;
-use App\Services\TelegramUserService;
+use App\Services\Telegram\TelegramUserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Concerns\Fake\CanCreateFakeUsers;

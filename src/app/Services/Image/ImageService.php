@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Image;
 
 use App\Models\Anime;
 use App\Models\Image;

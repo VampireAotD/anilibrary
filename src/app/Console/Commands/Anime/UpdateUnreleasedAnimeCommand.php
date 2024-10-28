@@ -6,8 +6,8 @@ namespace App\Console\Commands\Anime;
 
 use App\Mail\Anime\FailedUnreleasedAnimeMail;
 use App\Models\Anime;
-use App\Repositories\User\UserRepositoryInterface;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
+use App\Services\User\UserService;
 use App\UseCase\Scraper\ScraperUseCase;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\RequestException;
@@ -32,9 +32,9 @@ class UpdateUnreleasedAnimeCommand extends Command
     protected $description = 'Update information for unreleased anime';
 
     public function __construct(
-        private readonly AnimeService            $animeService,
-        private readonly ScraperUseCase          $scraperUseCase,
-        private readonly UserRepositoryInterface $userRepository
+        private readonly AnimeService   $animeService,
+        private readonly ScraperUseCase $scraperUseCase,
+        private readonly UserService    $userService
     ) {
         parent::__construct();
     }
@@ -54,7 +54,7 @@ class UpdateUnreleasedAnimeCommand extends Command
             }
         });
 
-        $owner = $this->userRepository->findOwner();
+        $owner = $this->userService->getOwner();
 
         if ($owner && $failedList) {
             Mail::to($owner->email)->queue(new FailedUnreleasedAnimeMail($failedList));

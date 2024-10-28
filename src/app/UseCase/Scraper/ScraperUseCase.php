@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\UseCase\Scraper;
 
+use App\DTO\Service\Anime\AnimeDTO;
 use App\DTO\Service\Anime\FindSimilarAnimeDTO;
-use App\DTO\Service\Anime\UpsertAnimeDTO;
 use App\DTO\Service\Scraper\ScrapedDataDTO;
 use App\Enums\Anime\StatusEnum;
 use App\Enums\Anime\TypeEnum;
 use App\Models\Anime;
 use App\Rules\Scraper\EncodedImageRule;
-use App\Services\AnimeService;
-use App\Services\GenreService;
+use App\Services\Anime\AnimeService;
+use App\Services\Genre\GenreService;
 use App\Services\Scraper\Client;
-use App\Services\VoiceActingService;
+use App\Services\VoiceActing\VoiceActingService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -53,10 +53,10 @@ final readonly class ScraperUseCase
             'title'    => 'required|string',
             'type'     => ['required', new Enum(TypeEnum::class)],
             'status'   => ['required', new Enum(StatusEnum::class)],
+            'rating'   => 'required|numeric|gte:0',
+            'episodes' => 'required|integer',
             'year'     => 'required|integer',
             'image'    => ['nullable', 'string', new EncodedImageRule()],
-            'episodes' => 'nullable|integer',
-            'rating'   => 'nullable|numeric|gte:0',
         ])->validate();
     }
 
@@ -78,15 +78,17 @@ final readonly class ScraperUseCase
         if ($anime) {
             return $this->animeService->update(
                 $anime,
-                new UpsertAnimeDTO(
+                new AnimeDTO(
                     $anime->title,
                     $anime->type, // @phpstan-ignore-line Ignored because of parser issues
-                    (int) $anime->year,
-                    [['url' => $dto->url]],
                     $dto->status,
                     $dto->rating,
                     $dto->episodes,
-                    synonyms: $dto->synonyms,
+                    (int) $anime->year,
+                    [['url' => $dto->url]],
+                    synonyms   : $dto->synonyms,
+                    voiceActing: $dto->voiceActing,
+                    genres     : $dto->genres
                 )
             );
         }
@@ -104,14 +106,14 @@ final readonly class ScraperUseCase
             }
 
             return $this->animeService->create(
-                new UpsertAnimeDTO(
+                new AnimeDTO(
                     $dto->title,
                     $dto->type,
-                    $dto->year,
-                    [['url' => $dto->url]],
                     $dto->status,
                     $dto->rating,
                     $dto->episodes,
+                    $dto->year,
+                    [['url' => $dto->url]],
                     $dto->image,
                     $dto->synonyms,
                     $voiceActingIds,

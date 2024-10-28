@@ -95,7 +95,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "php-http/discovery": false,
+            "php-http/discovery": true,
             "infection/extension-installer": true
         }
     },

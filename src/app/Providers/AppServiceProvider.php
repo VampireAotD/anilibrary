@@ -8,18 +8,6 @@ use App\Models\Anime;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use App\Repositories\Anime\AnimeRepository;
-use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\AnimeUrl\AnimeUrlRepository;
-use App\Repositories\AnimeUrl\AnimeUrlRepositoryInterface;
-use App\Repositories\Genre\GenreRepository;
-use App\Repositories\Genre\GenreRepositoryInterface;
-use App\Repositories\TelegramUser\TelegramUserRepository;
-use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;
-use App\Repositories\User\UserRepository;
-use App\Repositories\User\UserRepositoryInterface;
-use App\Repositories\VoiceActing\VoiceActingRepository;
-use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -29,18 +17,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * @var array<class-string, class-string>
-     */
-    public array $bindings = [
-        TelegramUserRepositoryInterface::class => TelegramUserRepository::class,
-        AnimeRepositoryInterface::class        => AnimeRepository::class,
-        VoiceActingRepositoryInterface::class  => VoiceActingRepository::class,
-        GenreRepositoryInterface::class        => GenreRepository::class,
-        UserRepositoryInterface::class         => UserRepository::class,
-        AnimeUrlRepositoryInterface::class     => AnimeUrlRepository::class,
-    ];
-
     /**
      * Register services.
      */

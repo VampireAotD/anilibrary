@@ -8,7 +8,7 @@ use App\Console\Commands\Lists\Anime\GenerateCommand;
 use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
 use App\Mail\AnimeListMail;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;

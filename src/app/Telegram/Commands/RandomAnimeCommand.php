@@ -7,7 +7,7 @@ namespace App\Telegram\Commands;
 use App\DTO\UseCase\Telegram\Anime\GenerateAnimeMessageDTO;
 use App\Enums\Telegram\Actions\ActionEnum;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
 use App\UseCase\Telegram\AnimeMessageUseCase;
 use Illuminate\Support\Facades\Log;
 use SergiX44\Nutgram\Handlers\Type\Command;

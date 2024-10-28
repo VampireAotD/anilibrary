@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Anime;
 
+use App\DTO\Service\Anime\AnimeDTO;
 use App\DTO\Service\Anime\AnimePaginationDTO;
 use App\DTO\Service\Anime\FindSimilarAnimeDTO;
-use App\DTO\Service\Anime\UpsertAnimeDTO;
+use App\Enums\Anime\StatusEnum;
 use App\Filters\QueryFilterInterface;
-use App\Filters\RelationFilter;
 use App\Jobs\Image\UploadJob;
 use App\Models\Anime;
-use App\Repositories\Anime\AnimeRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -20,17 +20,13 @@ use Throwable;
 
 final readonly class AnimeService
 {
-    public function __construct(private AnimeRepositoryInterface $animeRepository)
-    {
-    }
-
     /**
      * @throws Throwable
      */
-    public function create(UpsertAnimeDTO $dto): Anime
+    public function create(AnimeDTO $dto): Anime
     {
         return DB::transaction(function () use ($dto) {
-            $anime = $this->animeRepository->updateOrCreate($dto->toArray());
+            $anime = $this->updateOrCreate($dto);
             $this->upsertRelations($anime, $dto);
 
             return $anime;
@@ -40,7 +36,7 @@ final readonly class AnimeService
     /**
      * @throws Throwable
      */
-    public function update(Anime $anime, UpsertAnimeDTO $dto): Anime
+    public function update(Anime $anime, AnimeDTO $dto): Anime
     {
         return DB::transaction(function () use ($anime, $dto) {
             $anime->update($dto->toArray());
@@ -52,41 +48,51 @@ final readonly class AnimeService
 
     public function findById(string $id): ?Anime
     {
-        return $this->animeRepository->findById($id);
+        return Anime::find($id);
     }
 
     public function findSimilar(FindSimilarAnimeDTO $dto): ?Anime
     {
-        return $this->animeRepository->findSimilar($dto->toArray());
+        return Anime::query()
+                    ->where(function (Builder $query) use ($dto) {
+                        $query->with('synonyms')
+                              ->whereIn('title', $dto->titles)
+                              ->orWhereHas('synonyms', fn(Builder $query) => $query->whereIn('name', $dto->titles));
+                    })
+                    ->where([
+                        'type' => $dto->type,
+                        'year' => $dto->year,
+                    ])
+                    ->first();
     }
 
     public function findByUrl(string $url): ?Anime
     {
-        return $this->animeRepository->findByUrl($url);
+        return Anime::withWhereHas('urls', fn($query) => $query->where('url', $url))->first();
     }
 
     public function randomAnime(): ?Anime
     {
-        return $this->animeRepository->findRandomAnime();
+        return Anime::inRandomOrder()->limit(1)->first();
     }
 
     /**
-     * @param array<QueryFilterInterface> $filters
-     * @return Collection|LazyCollection<int, Anime>
+     * @param array<int, QueryFilterInterface> $filters
+     * @return LazyCollection<int, Anime>
      */
-    public function all(array $filters = []): Collection | LazyCollection
+    public function all(array $filters = []): LazyCollection
     {
-        return $this->animeRepository->withFilters($filters)->getAll();
+        return Anime::filter($filters)->lazy();
     }
 
     public function paginate(AnimePaginationDTO $dto): LengthAwarePaginator
     {
-        return $this->animeRepository->withFilters($dto->filters)->paginate($dto->page, $dto->perPage);
+        return Anime::filter($dto->filters)->paginate($dto->perPage, page: $dto->page);
     }
 
     public function unreleased(): LazyCollection
     {
-        return $this->animeRepository->getUnreleasedAnime();
+        return Anime::with('urls')->whereNot('status', StatusEnum::READY)->lazy();
     }
 
     public function getParsedAnimePerMonth(): array
@@ -94,32 +100,41 @@ final readonly class AnimeService
         // Initial array of parsed anime per month, where month is a key, and value is a parsed anime count
         $initial = array_fill(0, 12, 0);
 
-        $perMonth = $this->animeRepository->getAddedAnimePerMonth();
+        $perMonth = Anime::query()
+                         ->selectRaw('COUNT(id) as per_month, MONTH(created_at) as month_number')
+                         ->groupBy('month_number')
+                         ->pluck('per_month', 'month_number')
+                         ->toArray();
 
         return array_replace($initial, $perMonth);
     }
 
     public function getTenLatestAnime(): Collection
     {
-        return $this->animeRepository->withFilters([new RelationFilter(['image:id,path'])])->getLatestAnime();
+        return Anime::with('image:id,path')->limit(10)->latest()->get();
     }
 
     public function getTenMostPopularAnime(): Collection
     {
-        return $this->animeRepository->withFilters([new RelationFilter(['image:id,path'])])->getMostPopularAnime();
+        return Anime::with('image:id,path')->limit(10)->latest('rating')->get();
     }
 
     public function getTenLatestCompletedAnime(): Collection
     {
-        return $this->animeRepository->withFilters([new RelationFilter(['image:id,path'])])->getLatestCompletedAnime();
+        return Anime::with('image:id,path')->limit(10)->where('status', StatusEnum::READY)->latest()->get();
     }
 
     public function countAnime(): int
     {
-        return $this->animeRepository->count();
+        return Anime::count();
     }
 
-    private function upsertRelations(Anime $anime, UpsertAnimeDTO $dto): void
+    private function updateOrCreate(AnimeDTO $dto): Anime
+    {
+        return Anime::updateOrCreate(['title' => $dto->title], $dto->toArray());
+    }
+
+    private function upsertRelations(Anime $anime, AnimeDTO $dto): void
     {
         $anime->urls()->upsertRelated($dto->urls, ['url']);
 

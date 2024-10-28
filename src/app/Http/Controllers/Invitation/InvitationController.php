@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Invitation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Invitation\SendInvitationRequest;
 use App\Mail\Invitation\InvitationMail;
-use App\Services\SignedUrlService;
+use App\Services\Url\SignedUrlService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;

@@ -2,24 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Telegram;
 
 use App\DTO\Service\Telegram\User\TelegramUserDTO;
+use App\DTO\Service\User\UserDTO;
 use App\Exceptions\Service\Telegram\TelegramUserException;
 use App\Models\TelegramUser;
 use App\Models\User;
-use App\Repositories\TelegramUser\TelegramUserRepositoryInterface;
-use App\Repositories\User\UserRepositoryInterface;
+use App\Services\User\UserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
 final readonly class TelegramUserService
 {
-    public function __construct(
-        private UserRepositoryInterface         $userRepository,
-        private TelegramUserRepositoryInterface $telegramUserRepository
-    ) {
+    public function __construct(private UserService $userService)
+    {
     }
 
     public function generateSignature(array $data = []): string
@@ -38,7 +36,7 @@ final readonly class TelegramUserService
 
     public function upsert(TelegramUserDTO $dto): TelegramUser
     {
-        return $this->telegramUserRepository->updateOrCreate($dto->toArray());
+        return TelegramUser::updateOrCreate(['telegram_id' => $dto->telegramId], $dto->toArray());
     }
 
     /**
@@ -46,18 +44,20 @@ final readonly class TelegramUserService
      */
     public function register(TelegramUserDTO $dto): TelegramUser
     {
-        if ($this->telegramUserRepository->findByTelegramId($dto->telegramId)) {
+        if (TelegramUser::where('telegram_id', $dto->telegramId)->exists()) {
             throw TelegramUserException::userAlreadyRegistered();
         }
 
         $domain = config('mail.temporary_domain');
 
         return DB::transaction(function () use ($dto, $domain): TelegramUser {
-            $user = $this->userRepository->updateOrCreate([
-                'name'     => $dto->telegramId,
-                'email'    => "$dto->telegramId@$domain",
-                'password' => Str::random(),
-            ]);
+            $user = $this->userService->updateOrCreate(
+                new UserDTO(
+                    name    : (string) $dto->telegramId,
+                    email   : "$dto->telegramId@$domain",
+                    password: Str::random(),
+                )
+            );
 
             $user->markEmailAsVerified();
 

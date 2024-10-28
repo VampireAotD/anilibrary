@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Telegram;
 use App\DTO\Service\Telegram\User\TelegramUserDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Telegram\AssignRequest;
-use App\Services\TelegramUserService;
+use App\Services\Telegram\TelegramUserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Throwable;

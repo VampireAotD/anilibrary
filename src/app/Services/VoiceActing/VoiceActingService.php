@@ -2,36 +2,32 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\VoiceActing;
 
 use App\Filters\QueryFilterInterface;
 use App\Models\VoiceActing;
-use App\Repositories\VoiceActing\VoiceActingRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\LazyCollection;
 
 final readonly class VoiceActingService
 {
-    public function __construct(private VoiceActingRepositoryInterface $voiceActingRepository)
-    {
-    }
-
     /**
-     * @param array<QueryFilterInterface> $filters
+     * @param array<int, QueryFilterInterface> $filters
      * @return LazyCollection<int, VoiceActing>
      */
     public function all(array $filters = []): LazyCollection
     {
-        return $this->voiceActingRepository->withFilters($filters)->getAll();
+        return VoiceActing::filter($filters)->lazy();
     }
 
     /**
      * @param array<array{name: string}> $voiceActing
-     * @return array<string> Array of voice acting ids
+     * @return array<int, string> Array of voice acting ids
      */
     public function sync(array $voiceActing): array
     {
         $names  = collect($voiceActing)->pluck('name');
-        $stored = $this->voiceActingRepository->findByNames($names->toArray());
+        $stored = $this->findByNames($names->toArray());
 
         // Find difference between stored voice acting and new ones
         $newVoiceActing = $names->diff($stored->pluck('name'))->map(
@@ -40,10 +36,18 @@ final readonly class VoiceActingService
 
         // If there is new voice acting - upsert them and get their ids
         if ($newVoiceActing->isNotEmpty()) {
-            $this->voiceActingRepository->upsertMany($newVoiceActing->toArray(), ['name']);
-            $stored = $this->voiceActingRepository->findByNames($names->toArray());
+            VoiceActing::upsert($newVoiceActing->toArray(), ['name']);
+            $stored = $this->findByNames($names->toArray());
         }
 
         return $stored->pluck('id')->toArray();
+    }
+
+    /**
+     * @param array<int, string> $names
+     */
+    private function findByNames(array $names): Collection
+    {
+        return VoiceActing::select(['id', 'name'])->whereIn('name', $names)->get();
     }
 }

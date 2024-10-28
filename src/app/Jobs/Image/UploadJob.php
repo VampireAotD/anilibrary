@@ -6,7 +6,7 @@ namespace App\Jobs\Image;
 
 use App\Enums\QueueEnum;
 use App\Models\Anime;
-use App\Services\ImageService;
+use App\Services\Image\ImageService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

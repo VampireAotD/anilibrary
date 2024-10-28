@@ -8,12 +8,11 @@ use App\Enums\Elasticsearch\IndexEnum;
 use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
 use App\Models\Anime;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\LazyCollection;
 
@@ -49,7 +48,7 @@ class ImportAnimeDataCommand extends Command
         $bar = $this->output->createProgressBar($animeList->count());
 
         /** @psalm-suppress InvalidTemplateParam */
-        $animeList->chunk(100)->each(function (Collection $collection) use ($client, $bar) {
+        $animeList->chunk(100)->each(function (LazyCollection $collection) use ($client, $bar) {
             $batch = ['body' => []];
 
             /** @var LazyCollection<int, Anime> $collection */

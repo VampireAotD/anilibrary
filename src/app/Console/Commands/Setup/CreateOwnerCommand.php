@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Setup;
 
+use App\DTO\Service\User\UserDTO;
 use App\Enums\RoleEnum;
 use App\Models\User;
-use App\Repositories\User\UserRepositoryInterface;
+use App\Services\User\UserService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class CreateOwnerCommand extends Command
 {
@@ -38,23 +41,32 @@ class CreateOwnerCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(UserRepositoryInterface $userRepository): int
+    public function handle(UserService $userService): int
     {
-        if (config('app.env') === 'production' || $userRepository->findOwner()) {
+        if (config('app.env') === 'production' || $userService->getOwner()) {
             return self::INVALID;
         }
 
         $email    = $this->askEmail();
         $password = Str::random();
 
-        $user = $userRepository->updateOrCreate([
-            'name'     => 'owner',
-            'email'    => $email,
-            'password' => $password,
-        ]);
+        try {
+            DB::transaction(function () use ($userService, $email, $password) {
+                $user = $userService->updateOrCreate(
+                    new UserDTO(
+                        name    : 'owner',
+                        email   : $email,
+                        password: $password
+                    )
+                );
 
-        $user->assignRole(RoleEnum::OWNER);
-        $user->markEmailAsVerified();
+                $user->assignRole(RoleEnum::OWNER);
+                $user->markEmailAsVerified();
+            });
+        } catch (Throwable) {
+            $this->error('Failed to create owner');
+            return self::FAILURE;
+        }
 
         $this->info('Owner has been created');
         $this->newLine()->info(sprintf('Credentials - email: %s, password: %s', $email, $password));

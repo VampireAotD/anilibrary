@@ -10,7 +10,7 @@ use App\Enums\Elasticsearch\IndexEnum;
 use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
 use App\Filters\WhereInFilter;
-use App\Repositories\Anime\AnimeRepositoryInterface;
+use App\Services\Anime\AnimeService;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\Log;
 final readonly class AnimeIndexService
 {
     public function __construct(
-        private Client                   $client,
-        private AnimeRepositoryInterface $animeRepository
+        private Client       $client,
+        private AnimeService $animeService
     ) {
     }
 
@@ -81,11 +81,11 @@ final readonly class AnimeIndexService
 
             $ids = Arr::pluck($response['hits']['hits'], '_source.id');
 
-            return $this->animeRepository->withFilters([
+            return $this->animeService->all([
                 new ColumnFilter(['id', 'title', 'type', 'episodes', 'rating', 'status', 'year']),
                 new RelationFilter(['image:id,path', 'synonyms', 'genres:id,name', 'voiceActing:id,name']),
                 new WhereInFilter('id', $ids),
-            ])->getAll()->toArray();
+            ])->toArray();
         } catch (ClientResponseException | ServerResponseException | NoNodeAvailableException $exception) {
             return [];
         }

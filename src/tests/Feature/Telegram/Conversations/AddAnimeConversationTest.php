@@ -125,12 +125,12 @@ class AddAnimeConversationTest extends TestCase
         Http::fake([
             Client::SCRAPE_ENDPOINT => Http::response([
                 'title'    => $title    = $this->faker->sentence,
-                'image'    => $image    = $this->faker->randomAnimeImage(),
                 'type'     => $type     = $this->faker->randomAnimeType(),
-                'year'     => $year     = $this->faker->year,
                 'status'   => $status   = $this->faker->randomAnimeStatus(),
-                'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
                 'rating'   => $rating   = $this->faker->randomAnimeRating(),
+                'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
+                'year'     => $year     = $this->faker->year,
+                'image'    => $image    = $this->faker->randomAnimeImage(),
             ]),
         ]);
 

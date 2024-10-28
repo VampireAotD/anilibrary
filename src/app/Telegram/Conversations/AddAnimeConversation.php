@@ -8,7 +8,7 @@ use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
 use App\Rules\Telegram\SupportedUrlRule;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
 use App\UseCase\Scraper\ScraperUseCase;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;

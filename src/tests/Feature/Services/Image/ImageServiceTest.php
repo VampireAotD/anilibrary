@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Services;
+namespace Tests\Feature\Services\Image;
 
 use App\Models\Image;
-use App\Services\ImageService;
+use App\Services\Image\ImageService;
 use Cloudinary\Api\Exception\ApiError;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Foundation\Testing\RefreshDatabase;

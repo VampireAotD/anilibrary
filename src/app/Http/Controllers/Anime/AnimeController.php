@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Anime;
 
-use App\DTO\Service\Anime\UpsertAnimeDTO;
+use App\DTO\Service\Anime\AnimeDTO;
 use App\DTO\Service\Elasticsearch\Anime\AnimePaginationDTO;
 use App\Enums\Anime\StatusEnum;
 use App\Filters\ColumnFilter;
@@ -14,10 +14,10 @@ use App\Http\Requests\Anime\IndexRequest;
 use App\Http\Requests\Anime\UpdateRequest;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use App\Models\Anime;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
 use App\Services\Elasticsearch\Index\AnimeIndexService;
-use App\Services\GenreService;
-use App\Services\VoiceActingService;
+use App\Services\Genre\GenreService;
+use App\Services\VoiceActing\VoiceActingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -73,7 +73,7 @@ class AnimeController extends Controller
         // For now, you can only add new anime with scraper
         ScrapeAnimeJob::dispatch($request->user()->id, $request->get('url', ''));
 
-        return back()->with(['message' => __('Send request to scraper, you will receive notification about result')]);
+        return back()->with(['message' => __('Request sent to scraper, you will receive notification about results')]);
     }
 
     /**
@@ -106,7 +106,7 @@ class AnimeController extends Controller
     public function update(UpdateRequest $request, Anime $anime): RedirectResponse
     {
         try {
-            $this->animeService->update($anime, UpsertAnimeDTO::fromArray($request->validated()));
+            $this->animeService->update($anime, AnimeDTO::fromArray($request->validated()));
 
             return to_route('anime.show', $anime->id);
         } catch (Throwable $exception) {

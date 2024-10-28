@@ -13,7 +13,7 @@ use App\Enums\Telegram\Callbacks\CallbackDataTypeEnum;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Filters\WhereInFilter;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
 use App\Services\Telegram\AnimeMessageService;
 use App\Services\Telegram\EncoderService;
 

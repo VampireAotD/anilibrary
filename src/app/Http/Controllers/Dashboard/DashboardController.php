@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
 use Inertia\Inertia;
 use Inertia\Response;
 

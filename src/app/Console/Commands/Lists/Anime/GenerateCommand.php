@@ -7,8 +7,8 @@ namespace App\Console\Commands\Lists\Anime;
 use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
 use App\Mail\AnimeListMail;
-use App\Repositories\User\UserRepositoryInterface;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
+use App\Services\User\UserService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -32,9 +32,9 @@ final class GenerateCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(AnimeService $animeService, UserRepositoryInterface $userRepository): int
+    public function handle(AnimeService $animeService, UserService $userService): int
     {
-        if (!$owner = $userRepository->findOwner()) {
+        if (!$owner = $userService->getOwner()) {
             $this->error('Owner not found');
             return self::FAILURE;
         }
