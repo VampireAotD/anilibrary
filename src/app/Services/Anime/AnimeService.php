@@ -7,7 +7,6 @@ namespace App\Services\Anime;
 use App\DTO\Service\Anime\AnimeDTO;
 use App\DTO\Service\Anime\AnimePaginationDTO;
 use App\DTO\Service\Anime\FindSimilarAnimeDTO;
-use App\Enums\Anime\StatusEnum;
 use App\Filters\QueryFilterInterface;
 use App\Jobs\Image\UploadJob;
 use App\Models\Anime;
@@ -92,7 +91,7 @@ final readonly class AnimeService
 
     public function unreleased(): LazyCollection
     {
-        return Anime::with('urls')->whereNot('status', StatusEnum::READY)->lazy();
+        return Anime::unreleased()->with('urls')->lazy();
     }
 
     public function getParsedAnimePerMonth(): array
@@ -100,28 +99,35 @@ final readonly class AnimeService
         // Initial array of parsed anime per month, where month is a key, and value is a parsed anime count
         $initial = array_fill(0, 12, 0);
 
-        $perMonth = Anime::query()
-                         ->selectRaw('COUNT(id) as per_month, MONTH(created_at) as month_number')
-                         ->groupBy('month_number')
+        $perMonth = Anime::countScrapedPerMonth()
                          ->pluck('per_month', 'month_number')
                          ->toArray();
 
         return array_replace($initial, $perMonth);
     }
 
+    /**
+     * @return Collection<int, Anime>
+     */
     public function getTenLatestAnime(): Collection
     {
         return Anime::with('image:id,path')->limit(10)->latest()->get();
     }
 
+    /**
+     * @return Collection<int, Anime>
+     */
     public function getTenMostPopularAnime(): Collection
     {
         return Anime::with('image:id,path')->limit(10)->latest('rating')->get();
     }
 
-    public function getTenLatestCompletedAnime(): Collection
+    /**
+     * @return Collection<int, Anime>
+     */
+    public function getTenLatestReleasedAnime(): Collection
     {
-        return Anime::with('image:id,path')->limit(10)->where('status', StatusEnum::READY)->latest()->get();
+        return Anime::released()->with('image:id,path')->limit(10)->latest()->get();
     }
 
     public function countAnime(): int

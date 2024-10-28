@@ -25,7 +25,7 @@ final readonly class MetricUseCase
             $this->animeService->countAnime(),
             $this->userService->count(),
             $this->animeService->getParsedAnimePerMonth(),
-            $this->animeUrlService->countAnimePerDomain(),
+            $this->animeUrlService->countAnimeByDomain(),
             $this->animeService->getTenLatestAnime(),
         );
     }

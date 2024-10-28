@@ -18,7 +18,7 @@ class DashboardController extends Controller
     public function index(): Response
     {
         $latestAnime      = $this->animeService->getTenLatestAnime();
-        $completedAnime   = $this->animeService->getTenLatestCompletedAnime();
+        $completedAnime   = $this->animeService->getTenLatestReleasedAnime();
         $mostPopularAnime = $this->animeService->getTenMostPopularAnime();
 
         return Inertia::render('Dashboard/Index', compact('latestAnime', 'completedAnime', 'mostPopularAnime'));

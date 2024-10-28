@@ -103,7 +103,7 @@ class AnimeServiceTest extends TestCase
         $dto = new AnimeDTO(
             title   : $anime->title,
             type    : TypeEnum::SHOW,
-            status  : StatusEnum::READY,
+            status  : StatusEnum::RELEASED,
             rating  : $this->faker->randomAnimeRating(),
             episodes: $this->faker->randomAnimeEpisodes(),
             year    : (int) $anime->year,

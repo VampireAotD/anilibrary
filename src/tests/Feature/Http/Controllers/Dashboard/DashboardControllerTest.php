@@ -32,7 +32,7 @@ class DashboardControllerTest extends TestCase
     {
         $owner      = $this->createOwner();
         $collection = $this->createAnimeCollection(10);
-        $completed  = $collection->filter(fn(Anime $anime) => $anime->status === StatusEnum::READY);
+        $completed  = $collection->filter(fn(Anime $anime) => $anime->status === StatusEnum::RELEASED);
 
         $this->actingAs($owner)->get(route('dashboard'))->assertInertia(
             fn(Assert $page) => $page->component('Dashboard/Index')

@@ -58,7 +58,7 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
                 'title'    => $anime->title,
                 'type'     => $anime->type,
                 'year'     => $anime->year,
-                'status'   => StatusEnum::READY,
+                'status'   => StatusEnum::RELEASED,
                 'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
                 'rating'   => $rating   = $this->faker->randomAnimeRating(),
             ]),
@@ -70,7 +70,7 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
 
         $anime->refresh();
 
-        $this->assertEquals(StatusEnum::READY, $anime->status);
+        $this->assertEquals(StatusEnum::RELEASED, $anime->status);
         $this->assertEquals($rating, $anime->rating);
         $this->assertEquals($episodes, $anime->episodes);
     }

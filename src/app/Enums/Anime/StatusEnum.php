@@ -12,5 +12,5 @@ enum StatusEnum: string
 
     case ONGOING  = 'Онгоинг';
     case ANNOUNCE = 'Анонс';
-    case READY    = 'Вышел';
+    case RELEASED = 'Вышел';
 }

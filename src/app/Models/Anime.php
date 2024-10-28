@@ -12,6 +12,7 @@ use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeVoiceActing;
 use App\Observers\AnimeObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -72,6 +73,22 @@ class Anime extends Model
     public function genres(): BelongsToMany
     {
         return $this->belongsToMany(Genre::class)->using(AnimeGenre::class);
+    }
+
+    public function scopeReleased(Builder $query): Builder
+    {
+        return $query->where('status', StatusEnum::RELEASED);
+    }
+
+    public function scopeUnreleased(Builder $query): Builder
+    {
+        return $query->whereNot('status', StatusEnum::RELEASED);
+    }
+
+    public function scopeCountScrapedPerMonth(Builder $query): Builder
+    {
+        return $query->selectRaw('COUNT(id) as per_month, MONTH(created_at) as month_number')
+                     ->groupBy('month_number');
     }
 
     /**
