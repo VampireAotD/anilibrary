@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Notifications\Auth\VerifyEmailNotification;
+use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -22,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasUuids;
     use HasApiTokens;
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
     use HasRoles;
     use Notifiable;

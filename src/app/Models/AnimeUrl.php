@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\AnimeUrlFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AnimeUrl extends Model
 {
     use HasUuids;
+    /** @use HasFactory<AnimeUrlFactory> */
     use HasFactory;
 
     protected $fillable = ['anime_id', 'url'];

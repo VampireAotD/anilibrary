@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Telegram\Callbacks;
 
-use App\DTO\UseCase\Telegram\Anime\GenerateAnimeListDTO;
 use App\Enums\Telegram\Callbacks\CallbackDataTypeEnum;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
 use App\UseCase\Telegram\AnimeMessageUseCase;
@@ -29,9 +28,7 @@ final readonly class AnimeListCallback implements CallbackInterface
         [, $page] = $arguments;
 
         try {
-            $pagination = $this->animeMessageUseCase->generateAnimeList(
-                new GenerateAnimeListDTO((int) $page)
-            );
+            $pagination = $this->animeMessageUseCase->generateAnimeList((int) $page);
 
             $bot->editMessageMedia(
                 new InputMediaPhoto(

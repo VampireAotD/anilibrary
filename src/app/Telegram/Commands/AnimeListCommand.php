@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Telegram\Commands;
 
-use App\DTO\UseCase\Telegram\Anime\GenerateAnimeListDTO;
 use App\Enums\Telegram\Actions\ActionEnum;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
 use App\UseCase\Telegram\AnimeMessageUseCase;
@@ -21,7 +20,7 @@ final class AnimeListCommand extends Command
     public function handle(Nutgram $bot, AnimeMessageUseCase $animeMessageUseCase): void
     {
         try {
-            $pagination = $animeMessageUseCase->generateAnimeList(new GenerateAnimeListDTO());
+            $pagination = $animeMessageUseCase->generateAnimeList();
 
             $bot->sendPhoto(
                 photo       : $pagination->photo,

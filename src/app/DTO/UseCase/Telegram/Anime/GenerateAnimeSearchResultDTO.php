@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\DTO\UseCase\Telegram\Anime;
 
-final readonly class GenerateAnimeSearchResultDTO extends GenerateAnimeListDTO
+final readonly class GenerateAnimeSearchResultDTO
 {
-    public function __construct(public int $userId, int $page = 1)
+    public function __construct(public int $userId, public int $page = 1)
     {
-        parent::__construct($page);
     }
 }

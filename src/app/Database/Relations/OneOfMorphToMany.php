@@ -13,8 +13,9 @@ use Override;
 
 /**
  * @template TRelatedModel of Model
+ * @template TDeclaringModel of Model
  *
- * @extends MorphToMany<TRelatedModel>
+ * @extends MorphToMany<TRelatedModel, TDeclaringModel>
  */
 final class OneOfMorphToMany extends MorphToMany
 {
@@ -47,9 +48,10 @@ final class OneOfMorphToMany extends MorphToMany
 
     /**
      * Get results of the relationship. In the case of `OneOfMorphToMany` it will only get one result.
+     * @phpstan-ignore-next-line Suppressed because of overriding
      */
     #[Override]
-    public function getResults()
+    public function getResults(): ?Model
     {
         return $this->query->first() ?: $this->getDefaultFor($this->parent);
     }

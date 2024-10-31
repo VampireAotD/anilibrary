@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Models\Concerns\Filterable;
 use App\Models\Pivots\AnimeVoiceActing;
+use Database\Factories\VoiceActingFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class VoiceActing extends Model
 {
     use HasUuids;
+    /** @use HasFactory<VoiceActingFactory> */
     use HasFactory;
     use Filterable;
     use SoftDeletes;

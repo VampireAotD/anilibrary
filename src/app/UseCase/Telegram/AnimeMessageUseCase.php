@@ -6,7 +6,6 @@ namespace App\UseCase\Telegram;
 
 use App\DTO\Service\Anime\AnimePaginationDTO;
 use App\DTO\Service\Telegram\Anime\AnimeMessageDTO;
-use App\DTO\UseCase\Telegram\Anime\GenerateAnimeListDTO;
 use App\DTO\UseCase\Telegram\Anime\GenerateAnimeMessageDTO;
 use App\DTO\UseCase\Telegram\Anime\GenerateAnimeSearchResultDTO;
 use App\Enums\Telegram\Callbacks\CallbackDataTypeEnum;
@@ -49,12 +48,12 @@ final readonly class AnimeMessageUseCase
     /**
      * @throws AnimeMessageException
      */
-    public function generateAnimeList(GenerateAnimeListDTO $dto): AnimeMessageDTO
+    public function generateAnimeList(int $page = 1): AnimeMessageDTO
     {
-        $animeList = $this->animeService->paginate(new AnimePaginationDTO($dto->page));
+        $animeList = $this->animeService->paginate(new AnimePaginationDTO($page));
 
         if ($animeList->isEmpty()) {
-            throw AnimeMessageException::couldNotGetDataForPage($dto->page);
+            throw AnimeMessageException::couldNotGetDataForPage($page);
         }
 
         return $this->animeMessageService->createMessageWithPagination(

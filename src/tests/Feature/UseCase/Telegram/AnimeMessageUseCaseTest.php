@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\UseCase\Telegram;
 
-use App\DTO\UseCase\Telegram\Anime\GenerateAnimeListDTO;
 use App\DTO\UseCase\Telegram\Anime\GenerateAnimeMessageDTO;
 use App\DTO\UseCase\Telegram\Anime\GenerateAnimeSearchResultDTO;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
@@ -71,7 +70,7 @@ class AnimeMessageUseCaseTest extends TestCase
 
         // Starting from page 1
         // Message must have only next page button and anime information
-        $message     = $this->animeMessageUseCase->generateAnimeList(new GenerateAnimeListDTO());
+        $message     = $this->animeMessageUseCase->generateAnimeList();
         $replyMarkup = $message->generateReplyMarkup();
 
         $first = $animeList->first();
@@ -89,7 +88,7 @@ class AnimeMessageUseCaseTest extends TestCase
 
         // Imitate next page button press
         // Message must have prev page button, next page button and anime information
-        $message     = $this->animeMessageUseCase->generateAnimeList(new GenerateAnimeListDTO(page: 2));
+        $message     = $this->animeMessageUseCase->generateAnimeList(page: 2);
         $replyMarkup = $message->generateReplyMarkup();
 
         $middle = $animeList->offsetGet(1);
@@ -111,7 +110,7 @@ class AnimeMessageUseCaseTest extends TestCase
 
         // Imitate next page button press
         // Message must have only prev page button and anime information
-        $message     = $this->animeMessageUseCase->generateAnimeList(new GenerateAnimeListDTO(page: 3));
+        $message     = $this->animeMessageUseCase->generateAnimeList(page: 3);
         $replyMarkup = $message->generateReplyMarkup();
 
         $last = $animeList->last();

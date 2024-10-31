@@ -11,6 +11,7 @@ use App\Models\Concerns\HasImage;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeVoiceActing;
 use App\Observers\AnimeObserver;
+use Database\Factories\AnimeFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Anime extends Model
 {
     use HasUuids;
+    /** @use HasFactory<AnimeFactory> */
     use HasFactory;
     use HasImage;
     use Filterable;
