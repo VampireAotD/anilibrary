@@ -26,6 +26,7 @@ defineProps<Props>();
                     <Link :href="route('anime.show', anime.id)">
                         <img
                             class="w-full h-72 rounded-lg object-fit"
+                            loading="lazy"
                             :src="anime.image.path"
                             :alt="anime.title"
                         />

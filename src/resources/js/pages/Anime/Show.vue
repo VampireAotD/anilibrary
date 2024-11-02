@@ -24,7 +24,14 @@ const voiceActingList = computed(() =>
 </script>
 
 <template>
-    <Head :title="anime.title" />
+    <Head>
+        <title>{{ anime.title }}</title>
+        <meta property="og:title" :content="anime.title" />
+        <meta property="og:description" :content="anime.title" />
+        <meta property="og:image" :content="anime.image.path" />
+        <meta property="og:url" :content="route('anime.show', anime.id)" />
+        <meta property="og:type" content="anime" />
+    </Head>
 
     <AuthenticatedLayout>
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm">
@@ -33,8 +40,8 @@ const voiceActingList = computed(() =>
                     <div class="grid grid-cols-1 mb-5">
                         <div class="px-1 mb-5 lg:mb-0 overflow-hidden">
                             <img
-                                :src="anime.image.path"
                                 class="w-full sm:w-64 sm:h-80"
+                                :src="anime.image.path"
                                 :alt="anime.title"
                             />
                         </div>

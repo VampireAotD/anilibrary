@@ -3,8 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Anilibrary - service for scraping anime">
+    <meta name="keywords" content="anilibrary, anime, scraping">
 
     <title inertia>{{ config('app.name', 'anilibrary') }}</title>
+
+    <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Scripts -->
     @routes
