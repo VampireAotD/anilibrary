@@ -52,7 +52,7 @@ watchEffect(() => {
                 v-model="yearsRange"
                 :min="years.min"
                 :max="years.max"
-                @change="emit('updateFilters', data)"
+                @change="emit('updateFilters', $event)"
             />
 
             <div class="flex justify-between text-sm text-gray-600">

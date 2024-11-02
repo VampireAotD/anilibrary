@@ -17,14 +17,7 @@ defineExpose();
 
 <template>
     <label class="block text-sm font-medium text-gray-700 mb-2">{{ name }}</label>
-    <Slider
-        class="w-64"
-        v-model="model"
-        :min="min"
-        :max="max"
-        range
-        @change="emit('change', model)"
-    />
+    <Slider v-model="model" :min="min" :max="max" @change="emit('change', $event)" />
 </template>
 
 <style scoped></style>

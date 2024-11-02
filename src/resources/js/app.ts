@@ -1,7 +1,5 @@
 import { DefineComponent, createApp, h } from 'vue';
 
-import PrimeVue from 'primevue/config';
-
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from 'ziggy-js';
@@ -25,7 +23,6 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(HasRolePlugin)
-            .use(PrimeVue, { unstyled: true })
             .mount(el);
     },
     progress: {
