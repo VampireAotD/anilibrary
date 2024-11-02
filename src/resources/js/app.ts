@@ -4,6 +4,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from 'ziggy-js';
 
+import ripple from '@/shared/directives/ripple';
 import { HasRolePlugin } from '@/shared/plugins/user/authorize';
 
 import '../css/app.css';
@@ -23,6 +24,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(HasRolePlugin)
+            .directive('ripple', ripple)
             .mount(el);
     },
     progress: {

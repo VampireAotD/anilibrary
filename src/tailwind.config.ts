@@ -1,7 +1,7 @@
 import forms from '@tailwindcss/forms';
+import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
 
-/** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ['class'],
 
@@ -79,15 +79,19 @@ export default {
                     from: { height: 'var(--radix-collapsible-content-height)' },
                     to: { height: 0 },
                 },
+                'ripple-animation': {
+                    to: { transform: 'scale(4)', opacity: '0' },
+                },
             },
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',
                 'accordion-up': 'accordion-up 0.2s ease-out',
                 'collapsible-down': 'collapsible-down 0.2s ease-in-out',
                 'collapsible-up': 'collapsible-up 0.2s ease-in-out',
+                ripple: 'ripple-animation 0.6s linear',
             },
         },
     },
 
     plugins: [forms, animate],
-};
+} satisfies Config;
