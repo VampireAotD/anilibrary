@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { reactive, ref, watchEffect } from 'vue';
 
-import { AnimeFilters } from '@/entities/anime';
+import type { CountFilter, RangeFilter } from '@/entities/search';
 import { AnimeCheckboxFilter, AnimeRangeFilter } from '@/features/anime/filter';
 
+type Filters = {
+    years: RangeFilter;
+    types: CountFilter;
+    statuses: CountFilter;
+    genres: CountFilter;
+    voiceActing: CountFilter;
+};
+
 type Props = {
-    filters: AnimeFilters;
+    filters: Filters;
     selectedFilters: {
         years: {
             min: number;
@@ -19,7 +27,7 @@ type Props = {
 };
 
 const props = defineProps<Props>();
-const emit = defineEmits<{ updateFilters: AnimeFilters }>();
+const emit = defineEmits<{ updateFilters: Filters }>();
 
 const { years, types, statuses, genres, voiceActing } = props.filters;
 
