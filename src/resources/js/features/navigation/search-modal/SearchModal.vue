@@ -26,9 +26,9 @@ const query = ref<string>('');
             <TextInput
                 ref="searchInput"
                 v-model="query"
+                class="w-full ring-1"
                 name="search"
                 autofocus
-                class="w-full text-xs ring-1 bg-transparent ring-gray-200 dark:ring-zinc-600 focus:ring-red-300 px-5 text-gray-600 dark:text-white py-3 rounded-full w-full outline-none focus:ring-1"
                 placeholder="Search"
             />
         </template>

@@ -10,7 +10,6 @@ type Props = {
 defineProps<Props>();
 
 const model = defineModel<string[]>();
-const emit = defineEmits<{ change: CountFilter }>();
 </script>
 
 <template>
@@ -23,7 +22,7 @@ const emit = defineEmits<{ change: CountFilter }>();
                 :key="value"
                 class="inline-flex items-center"
             >
-                <Checkbox v-model="model" :value="key" @change="emit('change')" />
+                <Checkbox v-model="model" :value="key" />
 
                 <span class="ml-2">{{ key }} ({{ value }})</span>
             </label>

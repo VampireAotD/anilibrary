@@ -6,7 +6,7 @@ import { NavigationLink } from '@/features/navigation/navigation-link';
 
 <template>
     <aside
-        class="fixed inset-y-0 left-0 z-10 w-14 hidden sm:flex flex-col justify-between shadow-lg bg-white dark:bg-gray-800"
+        class="fixed inset-y-0 left-0 z-10 w-14 hidden sm:flex flex-col justify-between shadow-lg bg-muted"
     >
         <!-- Navigation links -->
         <nav class="flex flex-col items-center gap-4 px-2 sm:py-5">

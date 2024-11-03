@@ -1,40 +1,49 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 
-import BaseModal from './Modal.vue';
+import Modal from './Modal.vue';
 
 const sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'];
 
-describe('BaseModal test (Modal.vue)', () => {
-    it('Should be visible when the visible prop is true', () => {
-        const wrapper = mount(BaseModal, {
-            props: { visible: true },
+describe('Modal test (Modal.vue)', () => {
+    const createWrapper = (props = {}, slots = {}) => {
+        return mount(Modal, {
+            props: {
+                visible: true,
+                ...props,
+            },
+            slots,
         });
+    };
 
-        expect(wrapper.find('.modal-backdrop').isVisible()).toBeTruthy();
-        expect(wrapper.find('.modal-wrapper').isVisible()).toBeTruthy();
+    it('Should be visible when the visible prop is true', async () => {
+        const wrapper = createWrapper();
+
+        await wrapper.vm.$nextTick();
+        const dialog = wrapper.find('dialog');
+        expect(dialog.exists()).toBeTruthy();
+        expect(dialog.element.open).toBeTruthy();
     });
 
-    it('Should be hidden when the visible prop is false', () => {
-        const wrapper = mount(BaseModal, {
-            props: { visible: false },
-        });
+    it('Should be hidden when the visible prop is false', async () => {
+        const wrapper = createWrapper({ visible: false });
 
-        expect(wrapper.find('.modal-backdrop').exists()).toBeFalsy();
-        expect(wrapper.find('.modal-wrapper').exists()).toBeFalsy();
+        await wrapper.vm.$nextTick();
+        const dialog = wrapper.find('dialog');
+        expect(dialog.exists()).toBeTruthy();
+        expect(dialog.element.open).toBeFalsy();
     });
 
     it.each(sizes)('Modal renders with size %s', (size: string) => {
-        const wrapper = mount(BaseModal, {
-            props: { visible: true, size },
-        });
-        expect(wrapper.find('.modal').classes()).toContain(`max-w-${size}`);
+        const wrapper = createWrapper({ size });
+
+        const content = wrapper.find('.modal-content');
+        expect(content.exists()).toBeTruthy();
+        expect(content.classes()).toContain(`max-w-${size}`);
     });
 
     it('Modal will be closed on escape key press if closeOnEscape is true', async () => {
-        const wrapper = mount(BaseModal, {
-            props: { visible: true, closeOnEscape: true },
-        });
+        const wrapper = createWrapper({ closeOnEscape: true });
 
         const modal = wrapper.find('.modal-wrapper');
         expect(modal.isVisible()).toBeTruthy();
@@ -46,9 +55,7 @@ describe('BaseModal test (Modal.vue)', () => {
     });
 
     it('Modal will be closed on outside click if closeOnOutsideClick is true', async () => {
-        const wrapper = mount(BaseModal, {
-            props: { visible: true, closeOnOutsideClick: true },
-        });
+        const wrapper = createWrapper({ closeOnOutsideClick: true });
 
         await wrapper.find('.modal-wrapper').trigger('click');
         expect(wrapper.emitted()).toHaveProperty('click:outside');
@@ -56,14 +63,14 @@ describe('BaseModal test (Modal.vue)', () => {
     });
 
     it('Modal will render content in slots', async () => {
-        const wrapper = mount(BaseModal, {
-            props: { visible: true },
-            slots: {
+        const wrapper = createWrapper(
+            {},
+            {
                 header: '<div>Test Header</div>',
                 body: '<div>Test Body</div>',
                 footer: '<div>Test Footer</div>',
-            },
-        });
+            }
+        );
 
         expect(wrapper.find('header').html()).toContain('<div>Test Header</div>');
         expect(wrapper.find('main').html()).toContain('<div>Test Body</div>');
@@ -71,9 +78,7 @@ describe('BaseModal test (Modal.vue)', () => {
     });
 
     it('Modal will not render close closeButton prop is false', () => {
-        const wrapper = mount(BaseModal, {
-            props: { visible: true, closeButton: false },
-        });
+        const wrapper = createWrapper({ closeButton: false });
 
         expect(wrapper.find('button[aria-label="close"]').exists()).toBeFalsy();
     });

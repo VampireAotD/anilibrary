@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, useTemplateRef, watchEffect } from 'vue';
 
 import { type ModalSize } from './types';
 
@@ -13,7 +13,7 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), { closeButton: true, size: '2xl' });
 const emit = defineEmits<{ close: []; 'click:outside': [] }>();
-const modalRef = ref<HTMLElement | null>(null);
+const modal = useTemplateRef<HTMLDialogElement>('modal');
 
 const modalSize = computed(() => {
     return {
@@ -32,21 +32,36 @@ const modalSize = computed(() => {
 });
 
 const close = () => {
-    if (props.visible) {
+    if (props.visible && modal.value) {
+        modal.value.close();
         emit('close');
     }
 };
+
+const open = () => {
+    if (modal.value) {
+        modal.value.showModal();
+    }
+};
+
 const closeOnEscape = (event: KeyboardEvent) => {
     if (props.closeOnEscape && event.key === 'Escape') {
         close();
     }
 };
+
 const closeOnOutsideClick = () => {
     if (props.closeOnOutsideClick) {
         emit('click:outside');
         close();
     }
 };
+
+watchEffect(() => {
+    if (props.visible) {
+        open();
+    }
+});
 
 onMounted(() => {
     if (props.closeOnEscape) {
@@ -70,18 +85,17 @@ onUnmounted(() => {
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
     >
-        <div
-            v-if="visible"
-            class="modal-backdrop bg-gray-900/50 dark:bg-opacity-80 fixed inset-0 z-50"
+        <dialog
+            ref="modal"
+            class="modal backdrop:bg-black/50 dark:backdrop:bg-opacity-80"
         >
             <div
-                ref="modalRef"
                 class="modal-wrapper overflow-y-auto overflow-x-hidden outline-none fixed top-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center flex"
                 @click.self="closeOnOutsideClick"
             >
-                <div :class="modalSize" class="modal relative p-4 w-full">
+                <div :class="modalSize" class="modal-content w-full p-4">
                     <!-- Modal content -->
-                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
+                    <div class="bg-background rounded-lg shadow">
                         <!-- Modal header -->
                         <header
                             :class="
@@ -92,7 +106,6 @@ onUnmounted(() => {
                             class="p-4 rounded-t flex justify-between items-center"
                         >
                             <slot name="header" />
-
                             <button
                                 v-if="closeButton"
                                 aria-label="close"
@@ -132,7 +145,7 @@ onUnmounted(() => {
                     </div>
                 </div>
             </div>
-        </div>
+        </dialog>
     </transition>
 </template>
 

@@ -10,14 +10,11 @@ type Props = {
 defineProps<Props>();
 
 const model = defineModel<number[]>();
-const emit = defineEmits<{ change: [number[]] }>();
-
-defineExpose();
 </script>
 
 <template>
     <label class="block text-sm font-medium text-gray-700 mb-2">{{ name }}</label>
-    <Slider v-model="model" :min="min" :max="max" @change="emit('change', $event)" />
+    <Slider v-model="model" :min="min" :max="max" />
 </template>
 
 <style scoped></style>

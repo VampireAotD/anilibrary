@@ -11,7 +11,7 @@ import { Navigation } from '@/widgets/navigation';
         <!-- Page Navigation -->
         <Navigation />
 
-        <div class="flex flex-col w-full sm:gap-4 sm:pt-4 sm:pl-14">
+        <div class="flex flex-col w-full sm:pt-4 sm:pl-14">
             <!-- Page Heading -->
             <Header />
 
