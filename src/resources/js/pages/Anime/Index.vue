@@ -65,11 +65,11 @@ onBeforeMount(() => {
     <Head title="Search anime" />
 
     <AuthenticatedLayout>
-        <div class="bg-muted p-4 rounded-lg shadow-lg">
+        <div class="bg-muted p-4 rounded-lg shadow">
             <Button @click="optionModalVisible = true">Add anime</Button>
         </div>
 
-        <section class="grid grid-cols-[80%_20%] gap-2 p-6 mx-auto">
+        <section class="grid grid-cols-[80%_20%] gap-2 p-4 mx-auto">
             <div class="divide-y divide-black-100 dark:divide-gray-100">
                 <AnimeSearchItem v-for="anime in items" :key="anime.id" :anime="anime" />
             </div>

@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/vue3';
 
 import { Anime } from '@/entities/anime';
 import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/carousel';
-import { SectionTitle } from '@/shared/ui/section-title';
+import { Title } from '@/shared/ui/title';
 
 type Props = {
     data: Anime[];
@@ -13,9 +13,9 @@ defineProps<Props>();
 </script>
 
 <template>
-    <SectionTitle title="Recently added anime" class="mb-5" />
+    <Title text="Recently added anime" />
 
-    <Carousel class="bg-white dark:bg-transparent px-4 pt-2">
+    <Carousel class="bg-muted px-4 pt-2 shadow">
         <CarouselContent>
             <CarouselItem
                 v-for="anime in data"

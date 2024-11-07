@@ -18,13 +18,11 @@ defineProps<Props>();
         />
 
         <div class="flex flex-col">
-            <div class="flex items-center">
-                <h3 class="max-w-72 text-gray-900 dark:text-white font-semibold truncate">
-                    {{ anime.title }}
-                </h3>
-            </div>
+            <h3 class="max-w-96 font-semibold truncate">
+                {{ anime.title }}
+            </h3>
 
-            <span class="text-gray-900 dark:text-white text-sm">{{ anime.year }}</span>
+            <span class="text-sm">{{ anime.year }}</span>
         </div>
     </div>
 </template>
