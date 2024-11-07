@@ -13,6 +13,11 @@ describe('Modal test (Modal.vue)', () => {
                 ...props,
             },
             slots,
+            global: {
+                stubs: {
+                    teleport: true,
+                },
+            },
         });
     };
 
@@ -30,8 +35,7 @@ describe('Modal test (Modal.vue)', () => {
 
         await wrapper.vm.$nextTick();
         const dialog = wrapper.find('dialog');
-        expect(dialog.exists()).toBeTruthy();
-        expect(dialog.element.open).toBeFalsy();
+        expect(dialog.exists()).toBeFalsy();
     });
 
     it.each(sizes)('Modal renders with size %s', (size: string) => {

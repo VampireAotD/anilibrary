@@ -32,29 +32,52 @@ const close = () => {
 
 <template>
     <Modal :visible="visible" close-on-escape close-on-outside-click @close="close">
-        <template #header>Choose how to add anime</template>
+        <template #header>
+            <h2 id="modal-title" class="text-lg font-semibold text-foreground">
+                Choose how to add anime
+            </h2>
+        </template>
 
         <template #body>
-            <div class="flex flex-col">
+            <div class="flex flex-col" role="group" aria-label="Anime addition options">
                 <div
                     v-show="!displayCreateForm && !displayScrapeForm"
-                    class="inline-flex gap-4"
+                    class="scrape-options inline-flex gap-4"
+                    role="group"
+                    aria-label="Choose anime addition option"
                 >
-                    <Button class="scrape-option" @click="toggleScrapeFormVisibility">
+                    <Button
+                        class="scrape-option"
+                        @click="toggleScrapeFormVisibility"
+                        aria-controls="scrape-form"
+                    >
                         Scrape
                     </Button>
 
-                    <Button class="create-option" @click="toggleCreateFormVisibility">
+                    <Button
+                        class="create-option"
+                        @click="toggleCreateFormVisibility"
+                        aria-controls="scrape-form"
+                    >
                         Create
                     </Button>
                 </div>
 
-                <ScrapeAnimeForm v-if="displayScrapeForm" @added="close" />
+                <ScrapeAnimeForm
+                    v-if="displayScrapeForm"
+                    @added="close"
+                    id="scrape-form"
+                    role="region"
+                    aria-label="Scrape anime form"
+                />
 
                 <CreateAnimeForm
                     v-if="displayCreateForm"
                     @added="close"
                     @cancel="close"
+                    id="create-form"
+                    role="region"
+                    aria-label="Create anime form"
                 />
             </div>
         </template>

@@ -28,7 +28,7 @@ const toggleSearchModalVisibility = () =>
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink> Test </BreadcrumbLink>
+                        <BreadcrumbLink>Test</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
@@ -50,9 +50,7 @@ const toggleSearchModalVisibility = () =>
         </div>
     </header>
 
-    <Teleport to="body">
-        <SearchModal :visible="showSearchModal" @closed="toggleSearchModalVisibility" />
-    </Teleport>
+    <SearchModal :visible="showSearchModal" @closed="toggleSearchModalVisibility" />
 </template>
 
 <style scoped></style>

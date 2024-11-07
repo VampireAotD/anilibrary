@@ -17,6 +17,9 @@ describe('AddAnimeModal test (AddAnimeModal.vue)', () => {
                 visible: true,
             },
             global: {
+                stubs: {
+                    teleport: true,
+                },
                 components: {
                     Toaster,
                 },
@@ -35,7 +38,7 @@ describe('AddAnimeModal test (AddAnimeModal.vue)', () => {
     });
 
     it('Shows options and hides forms initially', () => {
-        const optionsDiv = wrapper.find('.inline-flex');
+        const optionsDiv = wrapper.find('.scrape-options');
         expect(optionsDiv.exists()).toBeTruthy();
         expect(optionsDiv.isVisible()).toBeTruthy();
 
