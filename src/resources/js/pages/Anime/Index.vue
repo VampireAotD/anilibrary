@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 
 import { Head, useForm } from '@inertiajs/vue3';
 import qs from 'qs';
@@ -18,8 +18,6 @@ type Props = {
 
 const props = defineProps<Props>();
 const optionModalVisible = ref<boolean>(false);
-
-const filters = computed(() => props.filters);
 
 const form = useForm({
     page: 1,

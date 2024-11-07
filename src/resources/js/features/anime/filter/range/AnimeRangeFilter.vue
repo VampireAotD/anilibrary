@@ -13,8 +13,16 @@ const model = defineModel<number[]>();
 </script>
 
 <template>
-    <label class="block text-sm font-medium text-gray-700 mb-2">{{ name }}</label>
-    <Slider v-model="model" :min="min" :max="max" />
+    <fieldset>
+        <legend class="mb-2">{{ name }}</legend>
+
+        <Slider v-model="model" :min="min" :max="max" />
+
+        <div class="flex justify-between text-sm mt-2">
+            <span>{{ model[0] }}</span>
+            <span>{{ model[1] }}</span>
+        </div>
+    </fieldset>
 </template>
 
 <style scoped></style>

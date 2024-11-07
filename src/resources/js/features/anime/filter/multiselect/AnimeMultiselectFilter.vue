@@ -1,15 +1,23 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import { type CountFilter } from '@/entities/search';
-import { Checkbox } from '@/shared/ui/checkbox';
+import { Multiselect } from '@/shared/ui/multiselect';
 
 type Props = {
     name: string;
     data: CountFilter;
 };
 
-defineProps<Props>();
-
+const { name, data } = defineProps<Props>();
 const model = defineModel<string[]>();
+
+const items = computed(() =>
+    Object.entries(data).map(([key, value]) => ({
+        label: `${key} (${value})`,
+        value: key,
+    }))
+);
 </script>
 
 <template>
@@ -17,15 +25,7 @@ const model = defineModel<string[]>();
         <legend>{{ name }}</legend>
 
         <div class="flex flex-col max-h-40 overflow-y-auto space-y-2 p-2">
-            <label
-                v-for="(value, key) in data"
-                :key="value"
-                class="inline-flex items-center"
-            >
-                <Checkbox v-model="model" :value="key" />
-
-                <span class="ml-2">{{ key }} ({{ value }})</span>
-            </label>
+            <Multiselect v-model="model" :items="items" />
         </div>
     </fieldset>
 </template>

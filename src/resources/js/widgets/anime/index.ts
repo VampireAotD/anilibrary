@@ -1,2 +1,2 @@
 export * from './add-anime-modal';
-export * from './search-filters';
+export * from './search-form';
