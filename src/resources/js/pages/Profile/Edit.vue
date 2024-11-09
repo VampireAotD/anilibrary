@@ -21,29 +21,18 @@ defineProps<{
 
     <AuthenticatedLayout>
         <section class="flex flex-col gap-4">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <UpdateProfileInformationForm
-                    :must-verify-email="mustVerifyEmail"
-                    :status="status"
-                    class="max-w-xl"
-                />
-            </div>
+            <UpdateProfileInformationForm
+                :must-verify-email="mustVerifyEmail"
+                :status="status"
+            />
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <UpdatePasswordForm class="max-w-xl" />
-            </div>
+            <UpdatePasswordForm />
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <IntegrationList />
-            </div>
+            <IntegrationList />
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <DeleteUserForm class="max-w-xl" />
-            </div>
+            <DeleteUserForm />
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <Logout />
-            </div>
+            <Logout />
         </section>
     </AuthenticatedLayout>
 </template>

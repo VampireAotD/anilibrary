@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Telegram\State\UserState;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 
 class FacadeServiceProvider extends ServiceProvider
@@ -15,7 +16,9 @@ class FacadeServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        AliasLoader::getInstance([
+            'UserState' => UserStateFacade::class,
+        ]);
     }
 
     /**

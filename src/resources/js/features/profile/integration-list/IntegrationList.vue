@@ -5,6 +5,7 @@ import { router, usePage } from '@inertiajs/vue3';
 
 import { TelegramUser } from '@/entities/telegram-user';
 import { TelegramLoginWidget } from '@/features/telegram/login-widget';
+import { Block } from '@/shared/ui/block';
 import { useToast } from '@/shared/ui/toast';
 
 const page = usePage();
@@ -27,22 +28,18 @@ const handleTelegramLogin = (user: TelegramUser) => {
 </script>
 
 <template>
-    <section>
+    <Block as="section" class="sm:p-8">
         <header>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                Integrations
-            </h2>
+            <h2 class="text-lg font-medium">Integrations</h2>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p class="mt-1 text-sm">
                 Connect your Anilibrary account with other social media
             </p>
         </header>
 
         <div class="mt-4 flex items-center gap-4">
             <div class="p-2 rounded-lg">
-                <h3 class="mb-2 text-md font-medium text-gray-900 dark:text-gray-100">
-                    Telegram
-                </h3>
+                <h3 class="mb-2 text-md font-medium">Telegram</h3>
 
                 <TelegramLoginWidget
                     v-if="!telegramUser"
@@ -57,7 +54,7 @@ const handleTelegramLogin = (user: TelegramUser) => {
                 </div>
             </div>
         </div>
-    </section>
+    </Block>
 </template>
 
 <style scoped></style>

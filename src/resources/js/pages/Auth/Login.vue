@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 import { Button } from '@/shared/ui/button';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { TextInput } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import { Separator } from '@/shared/ui/separator';
 import { GuestLayout } from '@/widgets/layouts';
 
 defineProps<{
@@ -32,7 +33,7 @@ const submit = () => {
     <GuestLayout>
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
         </div>
 
@@ -42,9 +43,9 @@ const submit = () => {
 
                 <TextInput
                     id="email"
-                    v-model="form.email"
                     type="email"
                     class="mt-1 block w-full"
+                    v-model="form.email"
                     required
                     autofocus
                     autocomplete="username"
@@ -58,9 +59,9 @@ const submit = () => {
 
                 <TextInput
                     id="password"
-                    v-model="form.password"
                     type="password"
                     class="mt-1 block w-full"
+                    v-model="form.password"
                     required
                     autocomplete="current-password"
                 />
@@ -68,21 +69,35 @@ const submit = () => {
                 <ErrorMessage class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="block mt-4">
-                <div class="flex items-center">
-                    <Checkbox id="remember" v-model="form.remember" name="remember" />
-                    <label
-                        for="remember"
-                        class="ml-2 text-sm text-gray-600 dark:text-gray-400"
-                        >Remember me</label
-                    >
-                </div>
+            <div class="mt-4 block">
+                <Label class="flex items-center">
+                    <Checkbox name="remember" v-model:checked="form.remember" />
+                    <span class="ms-2 text-sm"> Remember me </span>
+                </Label>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
+            <div class="mt-4 flex items-center justify-between">
+                <div class="flex gap-2">
+                    <Link
+                        v-if="canResetPassword"
+                        :href="route('password.request')"
+                        class="rounded-md text-sm underline focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                    >
+                        Can't log in?
+                    </Link>
+
+                    <Separator orientation="vertical" class="flex h-5 min-h-full" />
+
+                    <Link
+                        :href="route('register')"
+                        class="rounded-md text-sm underline focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                    >
+                        Register
+                    </Link>
+                </div>
+
                 <Button
-                    class="ml-4"
-                    type="submit"
+                    class="ms-4"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >

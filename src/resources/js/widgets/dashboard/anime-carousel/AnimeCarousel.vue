@@ -34,9 +34,7 @@ defineProps<Props>();
 
                     <div class="px-4 py-2">
                         <Link :href="route('anime.show', anime.id)">
-                            <h4
-                                class="text-gray-800 dark:text-white font-bold text-center text-lg mb-1 truncate"
-                            >
+                            <h4 class="font-bold text-center text-lg mb-1 truncate">
                                 {{ anime.title }}
                             </h4>
                         </Link>

@@ -13,7 +13,7 @@ const { name, data } = defineProps<Props>();
 const model = defineModel<string[]>();
 
 const items = computed(() =>
-    Object.entries(data).map(([key, value]) => ({
+    Object.entries(data ?? []).map(([key, value]) => ({
         label: `${key} (${value})`,
         value: key,
     }))

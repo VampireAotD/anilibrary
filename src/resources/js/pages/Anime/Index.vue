@@ -7,7 +7,7 @@ import qs from 'qs';
 import { Anime } from '@/entities/anime';
 import { AnimeSearchItem } from '@/features/anime/search-item';
 import { Button } from '@/shared/ui/button';
-import { AnimeSearchFilters, type Filters } from '@/widgets/anime';
+import { AnimeSearchForm, type Filters } from '@/widgets/anime';
 import { AddAnimeModal } from '@/widgets/anime/add-anime-modal';
 import { AuthenticatedLayout } from '@/widgets/layouts';
 
@@ -24,8 +24,8 @@ const form = useForm({
     perPage: 20,
     filters: {
         years: {
-            min: props.filters.years.min,
-            max: props.filters.years.max,
+            min: props.filters.years?.min,
+            max: props.filters.years?.max,
         },
         types: [],
         statuses: [],
@@ -74,7 +74,7 @@ onBeforeMount(() => {
                 <AnimeSearchItem v-for="anime in items" :key="anime.id" :anime="anime" />
             </div>
 
-            <AnimeSearchFilters
+            <AnimeSearchForm
                 :filters="props.filters"
                 :selected-filters="form.filters"
                 @update-filters="search"
