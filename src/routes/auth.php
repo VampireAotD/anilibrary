@@ -10,17 +10,23 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\RegistrationAccessController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Telegram\TelegramController;
 use Illuminate\Support\Facades\Route;
 
 Route::withoutMiddleware(['auth', 'verified'])->middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-         ->middleware(['signed', 'registration.expired', 'throttle:6,1'])
-         ->name('register');
+    Route::middleware('throttle:6,1')->group(function () {
+        Route::get('register/await', [RegistrationAccessController::class, 'show'])->name('register-access.show');
+        Route::get('register/request', [RegistrationAccessController::class, 'create'])->name('register-access.create');
+        Route::post('register/request', [RegistrationAccessController::class, 'store'])->name('register-access.store');
 
-    Route::post('register', [RegisteredUserController::class, 'store'])
-         ->middleware(['registration.exact', 'throttle:6,1']);
+        Route::get('register', [RegisteredUserController::class, 'create'])
+             ->middleware(['signed', 'registration.has_invitation'])
+             ->name('register');
+
+        Route::post('register', [RegisteredUserController::class, 'store']);
+    });
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 

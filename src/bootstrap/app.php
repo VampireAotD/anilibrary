@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\HandleInertiaRequests;
-use App\Http\Middleware\Registration\ExactEmailMiddleware;
-use App\Http\Middleware\Registration\ExpiredLinkMiddleware;
+use App\Http\Middleware\Invitation\IsPendingInvitationMiddleware;
+use App\Http\Middleware\Invitation\NotDeclinedInvitationMiddleware;
+use App\Http\Middleware\Registration\HasInvitationMiddleware;
 use App\Http\Middleware\Telegram\RedirectIfHasAssignedUserMiddleware;
 use App\Http\Middleware\Telegram\ValidateSignatureMiddleware;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -27,13 +28,14 @@ return Application::configure(basePath: dirname(__DIR__))
                   )
                   ->withMiddleware(function (Middleware $middleware) {
                       $middleware->alias([
-                          'role'                 => RoleMiddleware::class,
-                          'permission'           => PermissionMiddleware::class,
-                          'role_or_permission'   => RoleOrPermissionMiddleware::class,
-                          'telegram.signed'      => ValidateSignatureMiddleware::class,
-                          'telegram.assigned'    => RedirectIfHasAssignedUserMiddleware::class,
-                          'registration.exact'   => ExactEmailMiddleware::class,
-                          'registration.expired' => ExpiredLinkMiddleware::class,
+                          'role'                        => RoleMiddleware::class,
+                          'permission'                  => PermissionMiddleware::class,
+                          'role_or_permission'          => RoleOrPermissionMiddleware::class,
+                          'telegram.signed'             => ValidateSignatureMiddleware::class,
+                          'telegram.assigned'           => RedirectIfHasAssignedUserMiddleware::class,
+                          'registration.has_invitation' => HasInvitationMiddleware::class,
+                          'invitation.is_pending'       => IsPendingInvitationMiddleware::class,
+                          'invitation.not_declined'     => NotDeclinedInvitationMiddleware::class,
                       ]);
 
                       $middleware->web(append: [

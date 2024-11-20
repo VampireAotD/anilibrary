@@ -1,4 +1,14 @@
 declare namespace Models {
+    export interface CursorPagination<T> {
+        data: T[];
+        next_cursor?: string;
+        next_page_url?: string;
+        path: string;
+        per_page: number;
+        prev_cursor?: string;
+        prev_page_url?: string;
+    }
+
     export interface Id {
         id: string;
     }

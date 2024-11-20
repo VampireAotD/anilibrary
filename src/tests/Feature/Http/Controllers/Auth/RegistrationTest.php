@@ -4,19 +4,26 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
+use App\Http\Middleware\Registration\HasInvitationMiddleware;
+use App\Models\Invitation;
 use App\Notifications\Auth\VerifyEmailNotification;
 use App\Services\Url\SignedUrlService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
+use Tests\Concerns\Fake\CanCreateFakeInvitations;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
+    use CanCreateFakeUsers;
+    use CanCreateFakeInvitations;
 
     private SignedUrlService $signedUrlService;
 
@@ -27,87 +34,154 @@ class RegistrationTest extends TestCase
         $this->signedUrlService = $this->app->make(SignedUrlService::class);
     }
 
+    /**
+     * This case is handled by 'signed' middleware.
+     * @see ValidateSignature
+     */
     public function testRegisterScreenCannotBeRenderedIfThereIsNoSignature(): void
     {
         $this->get(route('register'))->assertForbidden();
     }
 
+    /**
+     * This case is handled by 'signed' middleware.
+     * @see ValidateSignature
+     */
     public function testRegistrationScreenCannotBeRenderedIfSignatureIsInvalid(): void
     {
         $this->get(route('register', [
             'expires'   => now()->unix(),
-            'signature' => $this->faker->name,
+            'signature' => Str::random(),
         ]))->assertForbidden();
     }
 
+    /**
+     * This case is handled by 'signed' middleware.
+     * @see ValidateSignature
+     */
     public function testRegistrationScreenCannotBeRenderedIfUrlIsExpired(): void
     {
-        Cache::shouldReceive('add')->andReturnTrue();
+        $invitation = $this->createAcceptedInvitation();
 
-        $url = $this->signedUrlService->createRegistrationLink($this->faker->email);
+        $url = $this->signedUrlService->createRegistrationLink($invitation->id);
 
         $this->travel(config('auth.registration_link_timeout') + 1)->minutes();
 
-        $this->get($url)->assertForbidden();
+        $response = $this->get($url);
+
+        $response->assertForbidden();
+        $response->assertSee('Invalid signature');
     }
 
-    public function testUserCannotRegisterWithUnknownEmail(): void
+    /**
+     * This case is handled by 'registration.has_invitation' middleware.
+     * @see HasInvitationMiddleware
+     */
+    public function testRegistrationScreenCannotBeRenderedIfUserDoesNotHaveInvitation(): void
     {
-        Cache::shouldReceive('has')->andReturnFalse();
+        $url = $this->signedUrlService->createRegistrationLink(Str::random());
 
-        $this->post(route('register'), ['email' => $this->faker->unique()->email])->assertForbidden();
+        $response = $this->get($url);
+
+        $response->assertForbidden();
+        $response->assertSee('Invalid invitation');
+    }
+
+    /**
+     * This case is handled by 'registration.has_invitation' middleware.
+     * @see HasInvitationMiddleware
+     */
+    public function testRegistrationScreenCannotBeRenderedIfInvitationIsNotAccepted(): void
+    {
+        $invitation = $this->createPendingInvitation();
+
+        $url = $this->signedUrlService->createRegistrationLink($invitation->id);
+
+        $response = $this->get($url);
+
+        $response->assertForbidden();
+        $response->assertSee('Invalid invitation');
+
+        $invitation = $this->createDeclinedInvitation();
+
+        $url = $this->signedUrlService->createRegistrationLink($invitation->id);
+
+        $response = $this->get($url);
+
+        $response->assertForbidden();
+        $response->assertSee('Invalid invitation');
+    }
+
+    public function testUserCannotRegisterWithoutInvitation(): void
+    {
+        $this->post(route('register'), [
+            'name'                  => $this->faker->name,
+            'email'                 => $this->faker->unique()->safeEmail,
+            'password'              => $password = Str::random(),
+            'password_confirmation' => $password,
+        ])->assertSessionHasErrors('email');
+    }
+
+    public function testUserCannotRegisterIfEmailIsAlreadyRegistered(): void
+    {
+        $user = $this->createUser();
+
+        $this->post(route('register'), [
+            'name'                  => $this->faker->name,
+            'email'                 => $user->email,
+            'password'              => $password = Str::random(),
+            'password_confirmation' => $password,
+        ])->assertSessionHasErrors('email');
     }
 
     public function testUserCannotRegisterTwoTimesWithSameLink(): void
     {
         Notification::fake();
-        Cache::shouldReceive('add')->once()->andReturnTrue();
-        Cache::shouldReceive('has')->twice()->andReturnTrue();
 
-        $email = $this->faker->unique()->safeEmail();
-        $url   = $this->signedUrlService->createRegistrationLink($email);
+        $invitation = $this->createAcceptedInvitation();
+
+        $url = $this->signedUrlService->createRegistrationLink($invitation->id);
 
         $this->get($url)->assertOk();
 
-        Cache::shouldReceive('delete')->once()->andReturnTrue();
-
         $response = $this->post(route('register'), [
             'name'                  => $this->faker->name,
-            'email'                 => $email,
-            'password'              => 'password',
-            'password_confirmation' => 'password',
+            'email'                 => $invitation->email,
+            'password'              => $password = Str::random(),
+            'password_confirmation' => $password,
         ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertDatabaseMissing(Invitation::class, $invitation->toArray());
 
         Notification::assertCount(1);
         Notification::assertSentTo(auth()->user(), VerifyEmailNotification::class);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
-
         Auth::logout();
         $this->assertFalse(Auth::check());
 
-        Cache::shouldReceive('has')->once()->andReturnFalse();
         $this->get($url)->assertForbidden();
     }
 
     public function testUserCanRegister(): void
     {
         Notification::fake();
-        Cache::shouldReceive('has')->andReturnTrue();
-        Cache::shouldReceive('delete')->andReturnTrue();
+
+        $invitation = $this->createAcceptedInvitation();
 
         $response = $this->post(route('register'), [
             'name'                  => $this->faker->name,
-            'email'                 => $this->faker->unique()->email,
-            'password'              => 'password',
-            'password_confirmation' => 'password',
+            'email'                 => $invitation->email,
+            'password'              => $password = Str::random(),
+            'password_confirmation' => $password,
         ]);
-
-        Notification::assertCount(1);
-        Notification::assertSentTo(auth()->user(), VerifyEmailNotification::class);
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertDatabaseMissing(Invitation::class, $invitation->toArray());
+
+        Notification::assertCount(1);
+        Notification::assertSentTo(auth()->user(), VerifyEmailNotification::class);
     }
 }

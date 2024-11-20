@@ -5,7 +5,11 @@ declare(strict_types=1);
 use App\Http\Controllers\Invitation\InvitationController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('role:owner')->group(function () {
-    Route::get('invitation', [InvitationController::class, 'create'])->name('invitation.create');
-    Route::post('invitation', [InvitationController::class, 'send'])->name('invitation.send');
-});
+Route::apiResource('invitation', InvitationController::class)
+     ->middleware('role:owner')
+     ->except(['show'])
+     ->names([
+         'store'   => 'invitation.send',
+         'update'  => 'invitation.accept',
+         'destroy' => 'invitation.decline',
+     ]);

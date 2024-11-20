@@ -39,7 +39,19 @@ export const ZiggyMockConfig = {
         'password.confirm': { uri: 'confirm-password', methods: ['GET', 'HEAD'] },
         'password.': { uri: 'confirm-password', methods: ['POST'] },
         'password.update': { uri: 'password', methods: ['PUT'] },
-        'invitation.create': { uri: 'invitation', methods: ['GET', 'HEAD'] },
+        'invitation.index': { uri: 'invitation', methods: ['GET', 'HEAD'] },
         'invitation.send': { uri: 'invitation', methods: ['POST'] },
+        'invitation.accept': {
+            uri: 'invitation',
+            methods: ['PUT', 'PATCH'],
+            parameters: ['invitation'],
+            bindings: { invitation: 'id' },
+        },
+        'invitation.decline': {
+            uri: 'invitation',
+            methods: ['DELETE'],
+            parameters: ['invitation'],
+            bindings: { invitation: 'id' },
+        },
     },
 };

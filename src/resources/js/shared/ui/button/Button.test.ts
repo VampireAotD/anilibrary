@@ -41,7 +41,7 @@ describe('Button test (Button.vue)', () => {
             },
         });
         expect(wrapper.classes()).toContain('border');
-        expect(wrapper.classes()).toContain('border-input');
+        expect(wrapper.classes()).toContain('border-border');
         expect(wrapper.classes()).toContain(customClass);
     });
 });

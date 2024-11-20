@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 
 import { Button } from '@/shared/ui/button';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { TextInput } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import { useToast } from '@/shared/ui/toast';
+
+const page = usePage();
+const { toast } = useToast();
+
+const emit = defineEmits<{ sent: [] }>();
 
 const form = useForm({
     email: '',
@@ -13,14 +19,19 @@ const form = useForm({
 const submit = () => {
     form.post(route('invitation.send'), {
         onSuccess: () => {
+            toast({
+                title: page.props.flash.message,
+            });
+
             form.reset();
+            emit('sent');
         },
     });
 };
 </script>
 
 <template>
-    <form class="p-6 text-gray-900 dark:text-gray-100" @submit.prevent="submit">
+    <form @submit.prevent="submit">
         <div>
             <Label for="email" value="Email" />
 
@@ -38,12 +49,10 @@ const submit = () => {
 
         <div class="flex justify-end mt-4">
             <Button
-                class="ml-4"
-                type="submit"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
             >
-                Send invitation
+                Send
             </Button>
         </div>
     </form>

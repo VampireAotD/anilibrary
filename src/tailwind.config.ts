@@ -3,7 +3,7 @@ import type { Config } from 'tailwindcss';
 import animate from 'tailwindcss-animate';
 
 export default {
-    darkMode: ['class'],
+    darkMode: ['selector'],
 
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',

@@ -2,7 +2,7 @@
 import { cn } from '@/shared/helpers/tailwind';
 
 type Props = {
-    as?: 'div' | 'section';
+    as?: 'div' | 'section' | 'article';
 };
 
 const { as = 'div' } = defineProps<Props>();

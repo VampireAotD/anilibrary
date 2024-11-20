@@ -76,7 +76,7 @@ describe('AuthenticatedLayout test (AuthenticatedLayout.vue)', () => {
 
         const links = layoutWrapper.findAllComponents(NavigationLink);
         const invitationLink = links.find(
-            (link) => link.find('a').attributes('title') === 'Invitation'
+            (link) => link.find('a').attributes('title') === 'Invitations'
         );
 
         expect(links.length).toBe(5); // Home, invitation, anime list, random anime and logout

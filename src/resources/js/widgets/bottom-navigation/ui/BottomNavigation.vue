@@ -44,7 +44,7 @@ const gridColumns = computed((): string => (isOwner ? 'grid-cols-4' : 'grid-cols
             <NavigationLink
                 v-if="hasRole('owner')"
                 text="Invitation"
-                :url="route('invitation.create')"
+                :url="route('invitation.index')"
             >
                 <svg
                     class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-red-500"

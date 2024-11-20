@@ -89,7 +89,7 @@ const submit = () => {
                     <Separator orientation="vertical" class="flex h-5 min-h-full" />
 
                     <Link
-                        :href="route('register')"
+                        :href="route('register-access.create')"
                         class="rounded-md text-sm underline focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
                     >
                         Register

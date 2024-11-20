@@ -27,7 +27,6 @@ trait CanCreateFakeAnime
     }
 
     /**
-     * @param int $quantity
      * @return Collection<Anime>
      */
     protected function createAnimeCollection(int $quantity = 1): Collection

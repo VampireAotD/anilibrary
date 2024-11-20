@@ -20,9 +20,9 @@ import { NavigationLink } from '@/features/navigation/navigation-link';
 
             <NavigationLink
                 v-if="hasRole('owner')"
-                :href="route('invitation.create')"
-                :active="route().current('invitation.create')"
-                title="Invitation"
+                :href="route('invitation.index')"
+                :active="route().current('invitation.index')"
+                title="Invitations"
             >
                 <Mail />
             </NavigationLink>

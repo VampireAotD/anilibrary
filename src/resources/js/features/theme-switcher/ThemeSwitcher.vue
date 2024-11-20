@@ -15,5 +15,3 @@ const toggleDarkMode = useToggle(isDark);
         <Moon v-else />
     </Button>
 </template>
-
-<style scoped></style>
