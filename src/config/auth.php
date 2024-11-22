@@ -124,6 +124,8 @@ return [
     |
     */
 
-    'registration_link_timeout' => 30,
+    'registration' => [
+        'expire' => env('AUTH_REGISTRATION_LINK_TIMEOUT', 30),
+    ],
 
 ];

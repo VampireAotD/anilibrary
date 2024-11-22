@@ -18,7 +18,7 @@ use Tests\Concerns\Fake\CanCreateFakeInvitations;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
 
-class RegistrationTest extends TestCase
+class RegistrationControllerTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -65,12 +65,9 @@ class RegistrationTest extends TestCase
 
         $url = $this->signedUrlService->createRegistrationLink($invitation->id);
 
-        $this->travel(config('auth.registration_link_timeout') + 1)->minutes();
+        $this->travel(config('auth.registration.expire') + 1)->minutes();
 
-        $response = $this->get($url);
-
-        $response->assertForbidden();
-        $response->assertSee('Invalid signature');
+        $this->get($url)->assertForbidden()->assertSee('Invalid signature');
     }
 
     /**
@@ -81,10 +78,7 @@ class RegistrationTest extends TestCase
     {
         $url = $this->signedUrlService->createRegistrationLink(Str::random());
 
-        $response = $this->get($url);
-
-        $response->assertForbidden();
-        $response->assertSee('Invalid invitation');
+        $this->get($url)->assertForbidden()->assertSee(__('auth.middleware.invalid_invitation'));
     }
 
     /**
@@ -93,23 +87,22 @@ class RegistrationTest extends TestCase
      */
     public function testRegistrationScreenCannotBeRenderedIfInvitationIsNotAccepted(): void
     {
-        $invitation = $this->createPendingInvitation();
+        $invitations = [$this->createPendingInvitation(), $this->createDeclinedInvitation()];
+
+        foreach ($invitations as $invitation) {
+            $url = $this->signedUrlService->createRegistrationLink($invitation->id);
+
+            $this->get($url)->assertForbidden()->assertSee(__('auth.middleware.invalid_invitation'));
+        }
+    }
+
+    public function testRegistrationScreenCanBeRendered(): void
+    {
+        $invitation = $this->createAcceptedInvitation();
 
         $url = $this->signedUrlService->createRegistrationLink($invitation->id);
 
-        $response = $this->get($url);
-
-        $response->assertForbidden();
-        $response->assertSee('Invalid invitation');
-
-        $invitation = $this->createDeclinedInvitation();
-
-        $url = $this->signedUrlService->createRegistrationLink($invitation->id);
-
-        $response = $this->get($url);
-
-        $response->assertForbidden();
-        $response->assertSee('Invalid invitation');
+        $this->get($url)->assertOk();
     }
 
     public function testUserCannotRegisterWithoutInvitation(): void

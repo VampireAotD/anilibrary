@@ -10,7 +10,7 @@ final readonly class SignedUrlService
 {
     public function createRegistrationLink(string $invitationId): string
     {
-        $expiresAt = now()->addMinutes(config('auth.registration_link_timeout', 30));
+        $expiresAt = now()->addMinutes(config('auth.registration.expire', 30));
 
         return URL::temporarySignedRoute('register', $expiresAt, [
             'invitationId' => $invitationId,

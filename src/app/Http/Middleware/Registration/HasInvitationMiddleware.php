@@ -24,7 +24,7 @@ class HasInvitationMiddleware
             'status' => StatusEnum::ACCEPTED,
         ])->first();
 
-        abort_if(!$invitation, Response::HTTP_FORBIDDEN, 'Invalid invitation');
+        abort_if(!$invitation, Response::HTTP_FORBIDDEN, __('auth.middleware.invalid_invitation'));
 
         $request->merge(['invitation' => $invitation]);
 

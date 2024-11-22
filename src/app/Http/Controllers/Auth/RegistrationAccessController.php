@@ -35,6 +35,6 @@ final class RegistrationAccessController extends Controller
             new InvitationDTO($request->post('email'), StatusEnum::PENDING)
         );
 
-        return to_route('register-access.show');
+        return to_route('registration_access.await');
     }
 }

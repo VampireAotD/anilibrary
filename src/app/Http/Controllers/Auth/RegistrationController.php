@@ -17,7 +17,7 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class RegisteredUserController extends Controller
+class RegistrationController extends Controller
 {
     public function __construct(private readonly UserService $userService)
     {

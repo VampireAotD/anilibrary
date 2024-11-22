@@ -20,38 +20,40 @@ class RegistrationAccessControllerTest extends TestCase
     use CanCreateFakeUsers;
     use CanCreateFakeInvitations;
 
-    public function testRegistrationAccessScreenCanRendered(): void
+    public function testRegistrationAccessScreenCannotBeRenderedForAuthorizedUser(): void
     {
-        $this->get(route('register-access.create'))
-             ->assertOk()
-             ->assertInertia(fn(Assert $page) => $page->component('Auth/RegistrationAccess/Create'));
+        $this->actingAs($this->createUser())->get(route('registration_access.request'))->assertRedirect();
     }
 
-    public function testRegisteredUserCannotAcquireRegistrationAccess(): void
+    public function testRegistrationAccessScreenCanRendered(): void
     {
-        $this->actingAs($this->createUser())->get(route('register-access.create'))->assertRedirect();
+        $this->get(route('registration_access.request'))
+             ->assertOk()
+             ->assertInertia(fn(Assert $page) => $page->component('Auth/RegistrationAccess/Create'));
     }
 
     public function testCannotAcquireRegistrationAccessIfItAlreadyExistsForRequestedEmail(): void
     {
         $invitation = $this->createInvitation(['email' => $this->faker->unique()->email]);
 
-        $this->post(route('register-access.store'), ['email' => $invitation->email])->assertSessionHasErrors('email');
+        $this->post(route('registration_access.acquire'), ['email' => $invitation->email])->assertSessionHasErrors(
+            'email'
+        );
     }
 
     public function testCannotAcquireRegistrationAccessIfUserWithRequestedEmailExists(): void
     {
         $user = $this->createUser();
 
-        $this->post(route('register-access.store'), ['email' => $user->email])->assertSessionHasErrors('email');
+        $this->post(route('registration_access.acquire'), ['email' => $user->email])->assertSessionHasErrors('email');
     }
 
     public function testCanAcquireRegistrationAccess(): void
     {
         $this->assertDatabaseCount(Invitation::class, 0);
 
-        $this->post(route('register-access.store'), ['email' => $email = $this->faker->unique()->email])
-             ->assertRedirectToRoute('register-access.show');
+        $this->post(route('registration_access.acquire'), ['email' => $email = $this->faker->unique()->email])
+             ->assertRedirectToRoute('registration_access.await');
 
         $this->assertDatabaseCount(Invitation::class, 1);
         $this->assertDatabaseHas(Invitation::class, ['email' => $email, 'status' => StatusEnum::PENDING]);

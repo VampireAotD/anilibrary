@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Anime\AnimeController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,13 +18,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::group(['as' => 'profile.'], function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('destroy');
-});
-
-Route::resource('anime', AnimeController::class)->except(['edit', 'destroy']);
-
 require __DIR__ . '/auth.php';
 require __DIR__ . '/invitation.php';
+require __DIR__ . '/anime.php';
+require __DIR__ . '/profile.php';
+require __DIR__ . '/integration.php';

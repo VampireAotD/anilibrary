@@ -16,7 +16,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('register-access.store'));
+    form.post(route('registration_access.acquire'));
 };
 </script>
 
