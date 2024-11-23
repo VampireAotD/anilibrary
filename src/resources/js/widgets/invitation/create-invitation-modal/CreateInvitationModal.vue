@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CreateInvitationForm } from '@/features/invitation/create-invitation';
+import { CreateInvitationForm } from '@/features/invitation/create-invitation-form';
 import { Modal } from '@/shared/ui/modal';
 
 type Props = {

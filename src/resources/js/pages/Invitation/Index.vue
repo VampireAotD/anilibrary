@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 
 import { InvitationPagination, Status } from '@/entities/invitation';
+import { TableAction } from '@/features/invitation/table-action';
 import { Block } from '@/shared/ui/block';
 import { Button } from '@/shared/ui/button';
-import { Dropdown } from '@/shared/ui/dropdown';
 import {
     Table,
     TableBody,
@@ -67,39 +67,13 @@ const canPerformActions = (status: Status) => status === Status.Pending;
                         </TableCell>
 
                         <TableCell v-if="canPerformActions(invitation.status)">
-                            <Dropdown align="left">
-                                <template #trigger>
-                                    <span class="cursor-pointer">...</span>
-                                </template>
-
-                                <template #content>
-                                    <Link
-                                        :href="route('invitation.accept', invitation)"
-                                        preserve-scroll
-                                        method="patch"
-                                        as="button"
-                                        class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
-                                    >
-                                        Accept
-                                    </Link>
-
-                                    <Link
-                                        :href="route('invitation.decline', invitation)"
-                                        preserve-scroll
-                                        method="delete"
-                                        as="button"
-                                        class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
-                                    >
-                                        Decline
-                                    </Link>
-                                </template>
-                            </Dropdown>
+                            <TableAction :invitation="invitation" />
                         </TableCell>
                     </TableRow>
                 </template>
 
                 <TableRow v-else>
-                    <TableCell class="h-24 text-center">
+                    <TableCell :colspan="3" class="h-12 text-center">
                         No pending invitations.
                     </TableCell>
                 </TableRow>

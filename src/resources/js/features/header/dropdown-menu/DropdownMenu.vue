@@ -3,35 +3,41 @@ import { Link } from '@inertiajs/vue3';
 import { CircleUser } from 'lucide-vue-next';
 
 import { Button } from '@/shared/ui/button';
-import { Dropdown } from '@/shared/ui/dropdown';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/shared/ui/dropdown-menu';
 </script>
 
 <template>
-    <Dropdown align="left" class="text-center">
-        <template #trigger>
+    <DropdownMenu>
+        <DropdownMenuTrigger as-child>
             <Button type="button" size="rounded" variant="outline">
                 <CircleUser />
             </Button>
-        </template>
+        </DropdownMenuTrigger>
 
-        <template #content>
-            <Link
-                :href="route('profile.edit')"
-                class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
-            >
-                Profile
-            </Link>
+        <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+                <Link class="block w-full cursor-pointer" :href="route('profile.edit')">
+                    Profile
+                </Link>
+            </DropdownMenuItem>
 
-            <Link
-                :href="route('logout')"
-                class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
-                method="post"
-                as="button"
-            >
-                Log Out
-            </Link>
-        </template>
-    </Dropdown>
+            <DropdownMenuItem>
+                <Link
+                    class="w-full text-start"
+                    :href="route('logout')"
+                    method="post"
+                    as="button"
+                >
+                    Log Out
+                </Link>
+            </DropdownMenuItem>
+        </DropdownMenuContent>
+    </DropdownMenu>
 </template>
 
 <style scoped></style>
