@@ -19,11 +19,17 @@ class AnimeGenre extends Pivot
 
     protected $hidden = ['pivot'];
 
+    /**
+     * @return BelongsTo<Anime, $this>
+     */
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);
     }
 
+    /**
+     * @return BelongsTo<Genre, $this>
+     */
     public function genre(): BelongsTo
     {
         return $this->belongsTo(Genre::class);

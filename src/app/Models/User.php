@@ -50,6 +50,9 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /**
+     * @return HasOne<TelegramUser, $this>
+     */
     public function telegramUser(): HasOne
     {
         return $this->hasOne(TelegramUser::class);

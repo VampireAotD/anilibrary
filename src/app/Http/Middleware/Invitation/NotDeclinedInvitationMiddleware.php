@@ -23,7 +23,7 @@ final class NotDeclinedInvitationMiddleware
         $invitation = $request->route('invitation');
 
         abort_if(
-            $invitation->status === StatusEnum::DECLINED, // @phpstan-ignore-line Ignored because of parser issues
+            $invitation->status === StatusEnum::DECLINED,
             Response::HTTP_BAD_REQUEST,
             'Invitation is already declined'
         );

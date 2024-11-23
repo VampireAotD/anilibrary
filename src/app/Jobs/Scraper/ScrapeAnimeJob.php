@@ -47,6 +47,7 @@ class ScrapeAnimeJob implements ShouldQueue
                     $anime->id
                 )
             );
+            // @phpstan-ignore-next-line https://github.com/larastan/larastan/pull/2051
         } catch (RequestException | ValidationException | Throwable $e) {
             ScrapeAnimeResultEvent::broadcast(
                 new ScrapeAnimeResultDTO(

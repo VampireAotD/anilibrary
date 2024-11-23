@@ -25,7 +25,7 @@ class Invitation extends Model
     protected $fillable = ['email', 'status'];
 
     /**
-     * @return array<string, class-string>
+     * @return array{status: 'App\Enums\Invitation\StatusEnum'}
      */
     protected function casts(): array
     {

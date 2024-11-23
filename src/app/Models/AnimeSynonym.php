@@ -21,6 +21,9 @@ class AnimeSynonym extends Model
 
     protected $fillable = ['anime_id', 'name'];
 
+    /**
+     * @return BelongsTo<Anime, $this>
+     */
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);

@@ -18,6 +18,7 @@ final class ScrapeAnimeChannel
 
     /**
      * Authenticate the user's access to the channel.
+     * @phpstan-ignore-next-line Ignored because of unused return type
      */
     public function join(User $user, string $requestedId): array | bool
     {

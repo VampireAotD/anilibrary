@@ -49,6 +49,7 @@ class UpdateUnreleasedAnimeCommand extends Command
         $this->animeService->unreleased()->each(function (Anime $anime) use (&$failedList) {
             try {
                 $this->scraperUseCase->scrapeByUrl($anime->urls->first()->url);
+                // @phpstan-ignore-next-line https://github.com/larastan/larastan/pull/2051
             } catch (RequestException | ValidationException | Throwable $e) {
                 $failedList[$anime->id] = $e->getMessage();
             }

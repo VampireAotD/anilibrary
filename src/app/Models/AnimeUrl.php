@@ -23,6 +23,9 @@ class AnimeUrl extends Model
 
     protected $fillable = ['anime_id', 'url'];
 
+    /**
+     * @return BelongsTo<Anime, $this>
+     */
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);

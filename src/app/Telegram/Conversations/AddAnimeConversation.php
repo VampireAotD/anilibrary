@@ -60,11 +60,12 @@ final class AddAnimeConversation extends Conversation
 
             $this->sendScrapedMessage($anime);
             $this->end();
+            // @phpstan-ignore-next-line https://github.com/larastan/larastan/pull/2051
         } catch (RequestException | ValidationException | Throwable $exception) {
             Log::error('Add anime conversation', [
-                'exceptionMessage' => $exception->getMessage(),
-                'exceptionTrace'   => $exception->getTraceAsString(),
-                'url'              => $url,
+                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $exception->getTraceAsString(),
+                'url'               => $url,
             ]);
 
             $bot->sendMessage(__('telegram.conversations.add_anime.scrape_failed'));

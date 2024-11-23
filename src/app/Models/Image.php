@@ -22,6 +22,9 @@ class Image extends Model
 
     protected $fillable = ['path', 'name', 'hash'];
 
+    /**
+     * @return MorphToMany<Anime, $this>
+     */
     public function animes(): MorphToMany
     {
         return $this->morphedByMany(Anime::class, 'model', 'has_images');

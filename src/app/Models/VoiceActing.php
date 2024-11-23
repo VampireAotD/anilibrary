@@ -30,6 +30,9 @@ class VoiceActing extends Model
 
     protected $hidden = ['pivot'];
 
+    /**
+     * @return BelongsToMany<Anime, $this>
+     */
     public function anime(): BelongsToMany
     {
         return $this->belongsToMany(Anime::class)->using(AnimeVoiceActing::class);

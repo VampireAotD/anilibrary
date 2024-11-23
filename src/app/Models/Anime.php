@@ -57,21 +57,33 @@ class Anime extends Model
         ];
     }
 
+    /**
+     * @return HasMany<AnimeUrl, $this>
+     */
     public function urls(): HasMany
     {
         return $this->hasMany(AnimeUrl::class);
     }
 
+    /**
+     * @return HasMany<AnimeSynonym, $this>
+     */
     public function synonyms(): HasMany
     {
         return $this->hasMany(AnimeSynonym::class);
     }
 
+    /**
+     * @return BelongsToMany<VoiceActing, $this>
+     */
     public function voiceActing(): BelongsToMany
     {
         return $this->belongsToMany(VoiceActing::class)->using(AnimeVoiceActing::class);
     }
 
+    /**
+     * @return BelongsToMany<Genre, $this>
+     */
     public function genres(): BelongsToMany
     {
         return $this->belongsToMany(Genre::class)->using(AnimeGenre::class);

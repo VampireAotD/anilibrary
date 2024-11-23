@@ -29,6 +29,9 @@ class TelegramUser extends Model
         'username',
     ];
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

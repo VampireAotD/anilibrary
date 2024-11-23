@@ -19,11 +19,17 @@ class AnimeVoiceActing extends Pivot
 
     protected $hidden = ['pivot'];
 
+    /**
+     * @return BelongsTo<Anime, $this>
+     */
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);
     }
 
+    /**
+     * @return BelongsTo<VoiceActing, $this>
+     */
     public function voiceActing(): BelongsTo
     {
         return $this->belongsTo(VoiceActing::class);
