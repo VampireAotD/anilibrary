@@ -1,5 +1,7 @@
 <x-mail::message>
-# Hello, {{ $user->name }}!
+# Hello, {{ $userName }}!
 
-Your Anilibrary account {{ $user->email }} password has been changed.
+Your {{ config('app.name') }} account password has been changed.
+
+If you didn't make this change, please contact our support.
 </x-mail::message>

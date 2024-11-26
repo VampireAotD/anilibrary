@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Anime;
 
-use App\Mail\Anime\FailedUnreleasedAnimeMail;
+use App\Mail\Anime\NotUpdatedAnimeMail;
 use App\Models\Anime;
 use App\Services\Anime\AnimeService;
 use App\Services\User\UserService;
@@ -58,7 +58,7 @@ class UpdateUnreleasedAnimeCommand extends Command
         $owner = $this->userService->getOwner();
 
         if ($owner && $failedList) {
-            Mail::to($owner->email)->queue(new FailedUnreleasedAnimeMail($failedList));
+            Mail::to($owner->email)->queue(new NotUpdatedAnimeMail($failedList));
             $this->warn('Failed to update some anime, mail is queued');
 
             return self::FAILURE;

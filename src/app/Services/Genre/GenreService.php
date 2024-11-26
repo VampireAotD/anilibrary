@@ -30,7 +30,9 @@ final readonly class GenreService
         $stored = $this->findByNames($names->toArray());
 
         // Find difference between stored genres and new ones
-        $newGenres = $names->diff($stored->pluck('name'))->map(fn(string $genre) => ['name' => $genre]);
+        $newGenres = $names->diff($stored->pluck('name'))->map(
+            static fn(string $genre) => ['name' => $genre]
+        );
 
         // If there is new genres - upsert them and get their ids
         if ($newGenres->isNotEmpty()) {

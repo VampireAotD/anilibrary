@@ -45,14 +45,14 @@ class InvitationController extends Controller implements HasMiddleware
                 new InvitationDTO($request->input('email'), StatusEnum::ACCEPTED)
             );
 
-            return back()->with(['message' => 'Invitation sent']);
+            return back()->with(['message' => __('invitation.sent')]);
         } catch (Throwable $exception) {
             Log::error('Error sending invitation', [
                 'exception_message' => $exception->getMessage(),
                 'exception_trace'   => $exception->getTraceAsString(),
             ]);
 
-            return back()->with(['message' => 'Could not create and sent invitation']);
+            return back()->with(['message' => __('invitation.failed_to_create')]);
         }
     }
 
@@ -63,7 +63,7 @@ class InvitationController extends Controller implements HasMiddleware
     {
         $this->invitationService->send($invitation);
 
-        return back()->with(['message' => 'Invitation accepted']);
+        return back()->with(['message' => __('invitation.accepted')]);
     }
 
     /**
@@ -73,7 +73,7 @@ class InvitationController extends Controller implements HasMiddleware
     {
         $this->invitationService->decline($invitation);
 
-        return back()->with(['message' => 'Invitation declined']);
+        return back()->with(['message' => __('invitation.declined')]);
     }
 
     /**

@@ -7,7 +7,8 @@ namespace App\Services\Invitation;
 use App\DTO\Service\Invitation\InvitationDTO;
 use App\Enums\Invitation\StatusEnum;
 use App\Filters\QueryFilterInterface;
-use App\Mail\Invitation\InvitationMail;
+use App\Mail\Invitation\AcceptedInvitationMail;
+use App\Mail\Invitation\DeclinedInvitationMail;
 use App\Models\Invitation;
 use App\Services\Url\SignedUrlService;
 use Illuminate\Contracts\Pagination\CursorPaginator;
@@ -32,7 +33,7 @@ final readonly class InvitationService
 
         $invitation->update(['status' => StatusEnum::ACCEPTED]);
 
-        Mail::to($invitation->email)->queue(new InvitationMail($url));
+        Mail::to($invitation->email)->queue(new AcceptedInvitationMail($url));
     }
 
     /**
@@ -49,9 +50,9 @@ final readonly class InvitationService
 
     public function decline(Invitation $invitation): void
     {
-        // Mail declined message
-
         $invitation->update(['status' => StatusEnum::DECLINED]);
+
+        Mail::to($invitation->email)->queue(new DeclinedInvitationMail());
     }
 
     /**

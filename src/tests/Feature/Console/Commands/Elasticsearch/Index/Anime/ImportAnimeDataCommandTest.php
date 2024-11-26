@@ -33,7 +33,9 @@ class ImportAnimeDataCommandTest extends TestCase
     {
         $animeList = $this->createAnimeCollectionWithRelations(2);
 
-        $items = $animeList->map(fn(Anime $anime) => ['index' => IndexEnum::ANIME_INDEX->value, 'id' => $anime->id]);
+        $items = $animeList->map(
+            static fn(Anime $anime) => ['index' => IndexEnum::ANIME_INDEX->value, 'id' => $anime->id]
+        );
 
         $this->elasticHandler->append(new JsonResponse(['errors' => false, 'items' => $items->toArray()]));
 

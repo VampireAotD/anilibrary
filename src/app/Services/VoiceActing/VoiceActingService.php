@@ -31,7 +31,7 @@ final readonly class VoiceActingService
 
         // Find difference between stored voice acting and new ones
         $newVoiceActing = $names->diff($stored->pluck('name'))->map(
-            fn(string $voiceActing) => ['name' => $voiceActing]
+            static fn(string $voiceActing) => ['name' => $voiceActing]
         );
 
         // If there is new voice acting - upsert them and get their ids

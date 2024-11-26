@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Mail\Invitation;
+namespace App\Mail\List;
 
 use App\Enums\QueueEnum;
 use Illuminate\Bus\Queueable;
@@ -12,7 +12,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class InvitationMail extends Mailable
+final class AnimeListMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -20,7 +20,7 @@ class InvitationMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public readonly string $url)
+    public function __construct()
     {
         $this->onConnection('redis')->onQueue(QueueEnum::MAIL_QUEUE->value);
     }
@@ -31,7 +31,7 @@ class InvitationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Invitation Mail',
+            subject: 'Your anime list',
         );
     }
 
@@ -41,10 +41,7 @@ class InvitationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.invitation.invitation-mail',
-            with    : [
-                'url' => $this->url,
-            ]
+            markdown: 'mail.list.anime-list',
         );
     }
 
@@ -55,6 +52,8 @@ class InvitationMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromStorageDisk('lists', config('lists.anime.file')),
+        ];
     }
 }

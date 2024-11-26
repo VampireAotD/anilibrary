@@ -7,7 +7,8 @@ namespace Tests\Feature\Http\Controllers\Invitation;
 use App\Enums\Invitation\StatusEnum;
 use App\Http\Middleware\Invitation\IsPendingInvitationMiddleware;
 use App\Http\Middleware\Invitation\NotDeclinedInvitationMiddleware;
-use App\Mail\Invitation\InvitationMail;
+use App\Mail\Invitation\AcceptedInvitationMail;
+use App\Mail\Invitation\DeclinedInvitationMail;
 use App\Models\Invitation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -58,11 +59,11 @@ class InvitationControllerTest extends TestCase
         $this->actingAs($this->createOwner())
              ->post(route('invitation.send', ['email' => $email]))
              ->assertRedirect()
-             ->assertSessionHas('message', 'Invitation sent');
+             ->assertSessionHas('message', __('invitation.sent'));
 
         $this->assertDatabaseHas(Invitation::class, ['email' => $email, 'status' => StatusEnum::ACCEPTED]);
 
-        Mail::assertQueued(InvitationMail::class);
+        Mail::assertQueued(AcceptedInvitationMail::class);
     }
 
     /**
@@ -73,10 +74,13 @@ class InvitationControllerTest extends TestCase
     {
         $invitation = $this->createAcceptedInvitation();
 
+        $this->withoutExceptionHandling();
+
+        $this->expectExceptionMessage(__('invitation.cannot_be_accepted'));
+
         $this->actingAs($this->createOwner())
              ->put(route('invitation.accept', ['invitation' => $invitation]))
-             ->assertBadRequest()
-             ->assertSee('Invitation cannot be accepted');
+             ->assertBadRequest();
     }
 
     public function testInvitationCanBeAccepted(): void
@@ -88,10 +92,10 @@ class InvitationControllerTest extends TestCase
         $this->actingAs($this->createOwner())
              ->put(route('invitation.accept', ['invitation' => $invitation]))
              ->assertRedirect()
-             ->assertSessionHas('message', 'Invitation accepted');
+             ->assertSessionHas('message', __('invitation.accepted'));
 
         $this->assertEquals(StatusEnum::ACCEPTED, $invitation->refresh()->status);
-        Mail::assertQueued(InvitationMail::class);
+        Mail::assertQueued(AcceptedInvitationMail::class);
     }
 
     /**
@@ -102,19 +106,29 @@ class InvitationControllerTest extends TestCase
     {
         $invitation = $this->createDeclinedInvitation();
 
+        $this->withoutExceptionHandling();
+
+        $this->expectExceptionMessage(__('invitation.already_declined'));
+
         $this->actingAs($this->createOwner())
              ->delete(route('invitation.decline', ['invitation' => $invitation]))
-             ->assertBadRequest()
-             ->assertSee('123');
+             ->assertBadRequest();
     }
 
     public function testInvitationCanBeDeclined(): void
     {
+        Mail::fake();
+
         $invitation = $this->createPendingInvitation();
 
         $this->actingAs($this->createOwner())
              ->delete(route('invitation.decline', ['invitation' => $invitation]))
              ->assertRedirect()
-             ->assertSessionHas('message', 'Invitation declined');
+             ->assertSessionHas('message', __('invitation.declined'));
+
+        Mail::assertQueued(
+            DeclinedInvitationMail::class,
+            static fn(DeclinedInvitationMail $mail) => $mail->hasTo($invitation->email)
+        );
     }
 }

@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Mail\User;
+namespace App\Mail\Invitation;
 
 use App\Enums\QueueEnum;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
@@ -13,7 +12,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-final class PasswordChangedMail extends Mailable
+final class AcceptedInvitationMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -21,7 +20,7 @@ final class PasswordChangedMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public readonly User $user)
+    public function __construct(public readonly string $url)
     {
         $this->onConnection('redis')->onQueue(QueueEnum::MAIL_QUEUE->value);
     }
@@ -32,7 +31,7 @@ final class PasswordChangedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Password Changed Mail',
+            subject: 'Your invitation has been accepted',
         );
     }
 
@@ -42,10 +41,10 @@ final class PasswordChangedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.user.password-changed',
+            markdown: 'mail.invitation.accepted',
             with    : [
-                'userName' => $this->user->name,
-            ],
+                'url' => $this->url,
+            ]
         );
     }
 

@@ -1,3 +1,3 @@
-@component('mail::message')
+<x-mail::message>
 # Anime list from {{ config('app.name') }}
-@endcomponent
+</x-mail::message>

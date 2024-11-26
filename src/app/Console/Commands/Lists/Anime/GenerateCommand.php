@@ -6,7 +6,7 @@ namespace App\Console\Commands\Lists\Anime;
 
 use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
-use App\Mail\AnimeListMail;
+use App\Mail\List\AnimeListMail;
 use App\Services\Anime\AnimeService;
 use App\Services\User\UserService;
 use Illuminate\Console\Command;

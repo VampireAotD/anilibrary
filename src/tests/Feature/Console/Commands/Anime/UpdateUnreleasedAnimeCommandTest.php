@@ -6,7 +6,7 @@ namespace Tests\Feature\Console\Commands\Anime;
 
 use App\Console\Commands\Anime\UpdateUnreleasedAnimeCommand;
 use App\Enums\Anime\StatusEnum;
-use App\Mail\Anime\FailedUnreleasedAnimeMail;
+use App\Mail\Anime\NotUpdatedAnimeMail;
 use App\Services\Scraper\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -39,8 +39,8 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
              ->assertFailed();
 
         Mail::assertQueued(
-            FailedUnreleasedAnimeMail::class,
-            function (FailedUnreleasedAnimeMail $mail) use ($anime, $owner) {
+            NotUpdatedAnimeMail::class,
+            function (NotUpdatedAnimeMail $mail) use ($anime, $owner) {
                 $this->assertArrayHasKey($anime->id, $mail->failedList);
 
                 return $mail->hasTo($owner->email);

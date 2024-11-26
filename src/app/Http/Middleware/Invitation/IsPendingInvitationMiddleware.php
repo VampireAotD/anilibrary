@@ -25,7 +25,7 @@ final class IsPendingInvitationMiddleware
         abort_if(
             $invitation->status !== StatusEnum::PENDING,
             Response::HTTP_BAD_REQUEST,
-            'Invitation cannot be accepted'
+            __('invitation.cannot_be_accepted')
         );
 
         return $next($request);

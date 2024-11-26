@@ -25,7 +25,7 @@ final class NotDeclinedInvitationMiddleware
         abort_if(
             $invitation->status === StatusEnum::DECLINED,
             Response::HTTP_BAD_REQUEST,
-            'Invitation is already declined'
+            __('invitation.already_declined')
         );
 
         return $next($request);
