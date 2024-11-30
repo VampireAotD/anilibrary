@@ -7,6 +7,7 @@ namespace App\Services\Invitation;
 use App\DTO\Service\Invitation\InvitationDTO;
 use App\Enums\Invitation\StatusEnum;
 use App\Filters\QueryFilterInterface;
+use App\Helpers\Registration;
 use App\Mail\Invitation\AcceptedInvitationMail;
 use App\Mail\Invitation\DeclinedInvitationMail;
 use App\Models\Invitation;
@@ -27,25 +28,14 @@ final readonly class InvitationService
         return Invitation::updateOrCreate(['email' => $dto->email], $dto->toArray());
     }
 
-    public function send(Invitation $invitation): void
+    public function accept(Invitation $invitation): void
     {
-        $url = $this->signedUrlService->createRegistrationLink($invitation->id);
+        $invitation->update([
+            'status'     => StatusEnum::ACCEPTED,
+            'expires_at' => Registration::expirationDate(),
+        ]);
 
-        $invitation->update(['status' => StatusEnum::ACCEPTED]);
-
-        Mail::to($invitation->email)->queue(new AcceptedInvitationMail($url));
-    }
-
-    /**
-     * @throws Throwable
-     */
-    public function createAndSend(InvitationDTO $dto): void
-    {
-        DB::transaction(function () use ($dto) {
-            $invitation = $this->create($dto);
-
-            $this->send($invitation);
-        });
+        $this->send($invitation);
     }
 
     public function decline(Invitation $invitation): void
@@ -53,6 +43,25 @@ final readonly class InvitationService
         $invitation->update(['status' => StatusEnum::DECLINED]);
 
         Mail::to($invitation->email)->queue(new DeclinedInvitationMail());
+    }
+
+    public function resend(Invitation $invitation): void
+    {
+        $invitation->update(['expires_at' => Registration::expirationDate()]);
+
+        $this->send($invitation);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function createAndAccept(InvitationDTO $dto): void
+    {
+        DB::transaction(function () use ($dto) {
+            $invitation = $this->create($dto);
+
+            $this->accept($invitation);
+        });
     }
 
     /**
@@ -72,5 +81,12 @@ final readonly class InvitationService
         }
 
         $query->delete();
+    }
+
+    private function send(Invitation $invitation): void
+    {
+        $url = $this->signedUrlService->createRegistrationLink($invitation->id);
+
+        Mail::to($invitation->email)->queue(new AcceptedInvitationMail($url));
     }
 }

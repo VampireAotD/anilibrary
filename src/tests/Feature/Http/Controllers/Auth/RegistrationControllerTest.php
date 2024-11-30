@@ -10,7 +10,6 @@ use App\Notifications\Auth\VerifyEmailNotification;
 use App\Services\Url\SignedUrlService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -36,7 +35,6 @@ class RegistrationControllerTest extends TestCase
 
     /**
      * This case is handled by 'signed' middleware.
-     * @see ValidateSignature
      */
     public function testRegisterScreenCannotBeRenderedIfThereIsNoSignature(): void
     {
@@ -45,7 +43,6 @@ class RegistrationControllerTest extends TestCase
 
     /**
      * This case is handled by 'signed' middleware.
-     * @see ValidateSignature
      */
     public function testRegistrationScreenCannotBeRenderedIfSignatureIsInvalid(): void
     {
@@ -57,7 +54,6 @@ class RegistrationControllerTest extends TestCase
 
     /**
      * This case is handled by 'signed' middleware.
-     * @see ValidateSignature
      */
     public function testRegistrationScreenCannotBeRenderedIfUrlIsExpired(): void
     {

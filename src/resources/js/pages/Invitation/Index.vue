@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { Head } from '@inertiajs/vue3';
 
-import { InvitationPagination, Status } from '@/entities/invitation';
+import { InvitationPagination } from '@/entities/invitation';
 import { TableAction } from '@/features/invitation/table-action';
 import { Block } from '@/shared/ui/block';
 import { Button } from '@/shared/ui/button';
@@ -29,8 +29,6 @@ const showInvitationModal = ref(false);
 
 const toggleInvitationModal = () =>
     (showInvitationModal.value = !showInvitationModal.value);
-
-const canPerformActions = (status: Status) => status === Status.Pending;
 </script>
 
 <template>
@@ -66,7 +64,7 @@ const canPerformActions = (status: Status) => status === Status.Pending;
                             {{ invitation.status }}
                         </TableCell>
 
-                        <TableCell v-if="canPerformActions(invitation.status)">
+                        <TableCell>
                             <TableAction :invitation="invitation" />
                         </TableCell>
                     </TableRow>

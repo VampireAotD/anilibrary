@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Middleware\Registration;
+namespace App\Http\Middleware\Invitation;
 
 use App\Enums\Invitation\StatusEnum;
 use App\Models\Invitation;
@@ -10,7 +10,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class HasInvitationMiddleware
+final class PendingInvitationMiddleware
 {
     /**
      * Handle an incoming request.
@@ -19,14 +19,14 @@ final class HasInvitationMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $invitation = Invitation::query()->where([
-            'id'     => $request->get('invitationId'),
-            'status' => StatusEnum::ACCEPTED,
-        ])->first();
+        /** @var Invitation $invitation */
+        $invitation = $request->route('invitation');
 
-        abort_if(!$invitation, Response::HTTP_FORBIDDEN, __('auth.middleware.invalid_invitation'));
-
-        $request->merge(['invitation' => $invitation]);
+        abort_if(
+            $invitation->status !== StatusEnum::PENDING,
+            Response::HTTP_BAD_REQUEST,
+            __('invitation.cannot_be_accepted')
+        );
 
         return $next($request);
     }

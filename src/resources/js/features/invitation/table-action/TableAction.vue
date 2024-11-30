@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import { Link } from '@inertiajs/vue3';
 
-import { Invitation } from '@/entities/invitation';
+import { type Invitation, Status } from '@/entities/invitation';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,7 +15,10 @@ type Props = {
     invitation: Invitation;
 };
 
-defineProps<Props>();
+const { invitation } = defineProps<Props>();
+
+const isPending = computed(() => invitation.status === Status.Pending);
+const isAccepted = computed(() => invitation.status === Status.Accepted);
 </script>
 
 <template>
@@ -21,7 +26,7 @@ defineProps<Props>();
         <DropdownMenuTrigger>...</DropdownMenuTrigger>
 
         <DropdownMenuContent align="start">
-            <DropdownMenuItem>
+            <DropdownMenuItem v-if="isPending">
                 <Link
                     :href="route('invitation.accept', invitation)"
                     preserve-scroll
@@ -33,7 +38,19 @@ defineProps<Props>();
                 </Link>
             </DropdownMenuItem>
 
-            <DropdownMenuItem>
+            <DropdownMenuItem v-if="isAccepted">
+                <Link
+                    :href="route('invitation.resend', invitation)"
+                    preserve-scroll
+                    method="post"
+                    as="button"
+                    class="block w-full text-start"
+                >
+                    Resend
+                </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem v-if="isPending">
                 <Link
                     :href="route('invitation.decline', invitation)"
                     preserve-scroll

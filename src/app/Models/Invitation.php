@@ -22,15 +22,16 @@ class Invitation extends Model
     use HasFactory;
     use Filterable;
 
-    protected $fillable = ['email', 'status'];
+    protected $fillable = ['email', 'status', 'expires_at'];
 
     /**
-     * @return array{status: 'App\Enums\Invitation\StatusEnum'}
+     * @return array{status: 'App\Enums\Invitation\StatusEnum', 'expires_at': 'datetime'}
      */
     protected function casts(): array
     {
         return [
-            'status' => StatusEnum::class,
+            'status'     => StatusEnum::class,
+            'expires_at' => 'datetime',
         ];
     }
 

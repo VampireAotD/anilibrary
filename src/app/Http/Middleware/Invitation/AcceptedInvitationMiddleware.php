@@ -10,7 +10,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class IsPendingInvitationMiddleware
+final class AcceptedInvitationMiddleware
 {
     /**
      * Handle an incoming request.
@@ -23,9 +23,9 @@ final class IsPendingInvitationMiddleware
         $invitation = $request->route('invitation');
 
         abort_if(
-            $invitation->status !== StatusEnum::PENDING,
-            Response::HTTP_BAD_REQUEST,
-            __('invitation.cannot_be_accepted')
+            $invitation->status !== StatusEnum::ACCEPTED,
+            Response::HTTP_FORBIDDEN,
+            __('invitation.cannot_resend')
         );
 
         return $next($request);

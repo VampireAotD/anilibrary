@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Invitation;
 
 use App\Enums\Invitation\StatusEnum;
-use App\Http\Middleware\Invitation\IsPendingInvitationMiddleware;
 use App\Http\Middleware\Invitation\NotDeclinedInvitationMiddleware;
+use App\Http\Middleware\Invitation\PendingInvitationMiddleware;
 use App\Mail\Invitation\AcceptedInvitationMail;
 use App\Mail\Invitation\DeclinedInvitationMail;
 use App\Models\Invitation;
@@ -59,7 +59,7 @@ class InvitationControllerTest extends TestCase
         $this->actingAs($this->createOwner())
              ->post(route('invitation.send', ['email' => $email]))
              ->assertRedirect()
-             ->assertSessionHas('message', __('invitation.sent'));
+             ->assertSessionHas('message', __('invitation.accepted'));
 
         $this->assertDatabaseHas(Invitation::class, ['email' => $email, 'status' => StatusEnum::ACCEPTED]);
 
@@ -67,8 +67,8 @@ class InvitationControllerTest extends TestCase
     }
 
     /**
-     * This case is handled by 'invitation.is_pending' middleware.
-     * @see IsPendingInvitationMiddleware
+     * This case is handled by 'invitation.pending' middleware.
+     * @see PendingInvitationMiddleware
      */
     public function testInvitationCannotBeAcceptedIfItIsNotInPendingStatus(): void
     {

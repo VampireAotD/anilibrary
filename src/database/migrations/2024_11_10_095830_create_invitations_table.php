@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('email')->unique();
             $table->enum('status', self::STATUSES)->default('pending');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }

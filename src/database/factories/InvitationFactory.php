@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\Invitation\StatusEnum;
+use App\Helpers\Registration;
 use App\Models\Invitation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,8 +22,9 @@ class InvitationFactory extends Factory
     public function definition(): array
     {
         return [
-            'email'  => $this->faker->unique()->email(),
-            'status' => $this->faker->randomElement(StatusEnum::cases()),
+            'email'      => $this->faker->unique()->email(),
+            'status'     => $this->faker->randomElement(StatusEnum::cases()),
+            'expires_at' => Registration::expirationDate(),
         ];
     }
 

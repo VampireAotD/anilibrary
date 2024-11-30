@@ -41,11 +41,11 @@ class InvitationController extends Controller implements HasMiddleware
     public function store(SendInvitationRequest $request): RedirectResponse
     {
         try {
-            $this->invitationService->createAndSend(
+            $this->invitationService->createAndAccept(
                 new InvitationDTO($request->input('email'), StatusEnum::ACCEPTED)
             );
 
-            return back()->with(['message' => __('invitation.sent')]);
+            return back()->with(['message' => __('invitation.accepted')]);
         } catch (Throwable $exception) {
             Log::error('Error sending invitation', [
                 'exception_message' => $exception->getMessage(),
@@ -59,9 +59,9 @@ class InvitationController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      */
-    public function update(Invitation $invitation)
+    public function update(Invitation $invitation): RedirectResponse
     {
-        $this->invitationService->send($invitation);
+        $this->invitationService->accept($invitation);
 
         return back()->with(['message' => __('invitation.accepted')]);
     }
@@ -69,7 +69,7 @@ class InvitationController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Invitation $invitation)
+    public function destroy(Invitation $invitation): RedirectResponse
     {
         $this->invitationService->decline($invitation);
 
@@ -84,7 +84,7 @@ class InvitationController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('invitation.is_pending', only: ['update']),
+            new Middleware('invitation.pending', only: ['update']),
             new Middleware('invitation.not_declined', only: ['destroy']),
         ];
     }
