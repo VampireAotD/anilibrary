@@ -83,6 +83,17 @@ final readonly class InvitationService
         $query->delete();
     }
 
+    public function deleteExpired(?string $id = null): void
+    {
+        $query = Invitation::expired();
+
+        if ($id) {
+            $query->where('id', $id);
+        }
+
+        $query->delete();
+    }
+
     private function send(Invitation $invitation): void
     {
         $url = $this->signedUrlService->createRegistrationLink($invitation->id);

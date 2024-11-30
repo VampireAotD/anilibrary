@@ -49,4 +49,9 @@ class Invitation extends Model
     {
         return $query->where('status', StatusEnum::DECLINED);
     }
+
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->where('status', StatusEnum::ACCEPTED)->where('expires_at', '<=', now());
+    }
 }

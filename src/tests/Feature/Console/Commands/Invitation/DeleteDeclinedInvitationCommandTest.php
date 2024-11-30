@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Commands\Invitation;
+namespace Tests\Feature\Console\Commands\Invitation;
 
 use App\Console\Commands\Invitation\DeleteDeclinedInvitationCommand;
 use App\Models\Invitation;
@@ -10,12 +10,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\Fake\CanCreateFakeInvitations;
 use Tests\TestCase;
 
-class DeleteDeclinedInvitationCommandTest extends TestCase
+final class DeleteDeclinedInvitationCommandTest extends TestCase
 {
     use RefreshDatabase;
     use CanCreateFakeInvitations;
 
-    public function testWillDeleteDeclinedInvitationsAfterOneYear(): void
+    public function testWillDeleteDeclinedInvitationsOnlyAfterAYear(): void
     {
         $this->createDeclinedInvitation();
 
@@ -30,18 +30,7 @@ class DeleteDeclinedInvitationCommandTest extends TestCase
         $this->assertDatabaseCount(Invitation::class, 4);
     }
 
-    public function testCanDeleteDeclinedInvitationById(): void
-    {
-        $invitation = $this->createDeclinedInvitation();
-
-        $this->travel(1)->year();
-
-        $this->artisan(DeleteDeclinedInvitationCommand::class, ['--id' => $invitation->id])->assertOk();
-
-        $this->assertDatabaseCount(Invitation::class, 0);
-    }
-
-    public function testWillDeleteOnlyDeclinedInvitations(): void
+    public function testCanOnlyDeleteDeclinedInvitations(): void
     {
         $this->createPendingInvitationCollection(quantity: 5);
         $this->createAcceptedInvitationCollection(quantity: 5);
@@ -54,5 +43,16 @@ class DeleteDeclinedInvitationCommandTest extends TestCase
         $this->artisan(DeleteDeclinedInvitationCommand::class)->assertOk();
 
         $this->assertDatabaseCount(Invitation::class, 10);
+    }
+
+    public function testCanDeleteDeclinedInvitationById(): void
+    {
+        $invitation = $this->createDeclinedInvitation();
+
+        $this->travel(1)->year();
+
+        $this->artisan(DeleteDeclinedInvitationCommand::class, ['--id' => $invitation->id])->assertOk();
+
+        $this->assertDatabaseCount(Invitation::class, 0);
     }
 }
