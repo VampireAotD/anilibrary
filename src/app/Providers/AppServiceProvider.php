@@ -13,6 +13,7 @@ use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,9 +32,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureQueries();
+        $this->configureModels();
         $this->enforceMorphAliases();
-        Model::shouldBeStrict(!$this->app->isProduction());
-        Vite::prefetch(concurrency: 3);
+        $this->configureVite();
     }
 
     private function setUpElasticsearchClient(): void
@@ -68,5 +70,20 @@ class AppServiceProvider extends ServiceProvider
             'anime'      => Anime::class,
             'permission' => Permission::class,
         ]);
+    }
+
+    private function configureModels(): void
+    {
+        Model::shouldBeStrict(!$this->app->isProduction());
+    }
+
+    private function configureQueries(): void
+    {
+        DB::prohibitDestructiveCommands($this->app->isProduction());
+    }
+
+    private function configureVite(): void
+    {
+        Vite::prefetch(concurrency: 3);
     }
 }

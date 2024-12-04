@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\HandleInertiaRequests;
-use App\Http\Middleware\Invitation\AcceptedInvitationMiddleware;
+use App\Http\Middleware\Invitation\InvitationHasStatusMiddleware;
 use App\Http\Middleware\Invitation\NotDeclinedInvitationMiddleware;
-use App\Http\Middleware\Invitation\PendingInvitationMiddleware;
 use App\Http\Middleware\Registration\HasInvitationMiddleware;
 use App\Http\Middleware\Telegram\RedirectIfHasAssignedUserMiddleware;
 use App\Http\Middleware\Telegram\ValidateSignatureMiddleware;
@@ -35,8 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
                           'telegram.signed'             => ValidateSignatureMiddleware::class,
                           'telegram.assigned'           => RedirectIfHasAssignedUserMiddleware::class,
                           'registration.has_invitation' => HasInvitationMiddleware::class,
-                          'invitation.pending'          => PendingInvitationMiddleware::class,
-                          'invitation.accepted'         => AcceptedInvitationMiddleware::class,
+                          'invitation.status'           => InvitationHasStatusMiddleware::class,
                           'invitation.not_declined'     => NotDeclinedInvitationMiddleware::class,
                       ]);
 

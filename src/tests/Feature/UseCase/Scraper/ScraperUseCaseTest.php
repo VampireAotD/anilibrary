@@ -140,6 +140,7 @@ class ScraperUseCaseTest extends TestCase
         // Create new synonyms that scraper will return
         $newSynonyms = AnimeSynonym::factory(4)->make()->toArray();
 
+        Bus::fake();
         Http::fake([
             Client::SCRAPE_ENDPOINT => Http::response([
                 'title'    => $this->faker->sentence,
@@ -156,6 +157,8 @@ class ScraperUseCaseTest extends TestCase
         $foundAnime = $this->scraperUseCase->scrapeByUrl($url);
 
         $foundAnime->refresh(); // to reload relations
+
+        Bus::assertDispatched(UpsertAnimeJob::class); // because anime is updated
 
         $this->assertEquals($anime->id, $foundAnime->id);
         $this->assertEquals($anime->title, $foundAnime->title);

@@ -28,6 +28,9 @@ class InvitationFactory extends Factory
         ];
     }
 
+    /**
+     * Indicate that the model's status should be pending.
+     */
     public function pending(): static
     {
         return $this->state(fn(array $attributes) => [
@@ -35,6 +38,9 @@ class InvitationFactory extends Factory
         ]);
     }
 
+    /**
+     * Indicate that the model's status should be accepted.
+     */
     public function accepted(): static
     {
         return $this->state(fn(array $attributes) => [
@@ -42,6 +48,9 @@ class InvitationFactory extends Factory
         ]);
     }
 
+    /**
+     * Indicate that the model's status should be declined.
+     */
     public function declined(): static
     {
         return $this->state(fn(array $attributes) => [

@@ -84,7 +84,7 @@ class InvitationController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('invitation.pending', only: ['update']),
+            new Middleware('invitation.status:pending', only: ['update']),
             new Middleware('invitation.not_declined', only: ['destroy']),
         ];
     }

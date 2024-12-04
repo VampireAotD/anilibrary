@@ -38,7 +38,7 @@ final class ResendInvitationControllerTest extends TestCase
 
         $this->withoutExceptionHandling();
 
-        $this->expectExceptionMessage(__('invitation.cannot_resend'));
+        $this->expectExceptionMessage(__('invitation.invalid_status'));
 
         $this->actingAs($this->createOwner())
              ->post(route('invitation.resend', $invitation))

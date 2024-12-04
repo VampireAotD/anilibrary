@@ -7,7 +7,7 @@ use App\Http\Controllers\Invitation\ResendInvitationController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/invitation/{invitation}/resend', ResendInvitationController::class)
-     ->middleware(['role:owner', 'invitation.accepted', 'throttle:1,1'])
+     ->middleware(['role:owner', 'invitation.status:accepted', 'throttle:1,1'])
      ->name('invitation.resend');
 
 Route::apiResource('invitation', InvitationController::class)

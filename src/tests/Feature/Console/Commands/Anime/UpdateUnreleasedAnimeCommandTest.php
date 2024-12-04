@@ -6,11 +6,13 @@ namespace Tests\Feature\Console\Commands\Anime;
 
 use App\Console\Commands\Anime\UpdateUnreleasedAnimeCommand;
 use App\Enums\Anime\StatusEnum;
+use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Mail\Anime\NotUpdatedAnimeMail;
 use App\Services\Scraper\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
@@ -53,6 +55,7 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
         $this->createOwner();
         $anime = $this->createAnimeWithRelations(['status' => StatusEnum::ANNOUNCE]);
 
+        Bus::fake();
         Http::fake([
             Client::SCRAPE_ENDPOINT => Http::response([
                 'title'    => $anime->title,
@@ -70,6 +73,7 @@ class UpdateUnreleasedAnimeCommandTest extends TestCase
 
         $anime->refresh();
 
+        Bus::assertDispatched(UpsertAnimeJob::class);
         $this->assertEquals(StatusEnum::RELEASED, $anime->status);
         $this->assertEquals($rating, $anime->rating);
         $this->assertEquals($episodes, $anime->episodes);

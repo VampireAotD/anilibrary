@@ -30,12 +30,8 @@ trait CanCreateFakeUsers
         return $this->createUser($data)->assignRole(RoleEnum::ADMIN);
     }
 
-    protected function createUserWithTelegramAccount(): User
+    protected function createUserWithTelegramAccount(array $data = []): User
     {
-        $user = $this->createUser();
-
-        $user->telegramUser()->save(TelegramUser::factory()->make());
-
-        return $user;
+        return User::factory()->has(TelegramUser::factory())->create($data);
     }
 }

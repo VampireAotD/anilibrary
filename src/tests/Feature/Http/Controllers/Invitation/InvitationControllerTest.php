@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers\Invitation;
 
 use App\Enums\Invitation\StatusEnum;
+use App\Http\Middleware\Invitation\InvitationHasStatusMiddleware;
 use App\Http\Middleware\Invitation\NotDeclinedInvitationMiddleware;
-use App\Http\Middleware\Invitation\PendingInvitationMiddleware;
 use App\Mail\Invitation\AcceptedInvitationMail;
 use App\Mail\Invitation\DeclinedInvitationMail;
 use App\Models\Invitation;
@@ -67,20 +67,17 @@ class InvitationControllerTest extends TestCase
     }
 
     /**
-     * This case is handled by 'invitation.pending' middleware.
-     * @see PendingInvitationMiddleware
+     * This case is handled by 'invitation.status:pending' middleware.
+     * @see InvitationHasStatusMiddleware
      */
     public function testInvitationCannotBeAcceptedIfItIsNotInPendingStatus(): void
     {
         $invitation = $this->createAcceptedInvitation();
 
-        $this->withoutExceptionHandling();
-
-        $this->expectExceptionMessage(__('invitation.cannot_be_accepted'));
-
         $this->actingAs($this->createOwner())
              ->put(route('invitation.accept', ['invitation' => $invitation]))
-             ->assertBadRequest();
+             ->assertForbidden()
+             ->assertSee(__('invitation.invalid_status'));
     }
 
     public function testInvitationCanBeAccepted(): void

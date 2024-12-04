@@ -8,8 +8,8 @@ use App\Enums\Telegram\Actions\CommandEnum;
 use App\Jobs\Telegram\RegisterTelegramUserJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Tests\Concerns\CanCreateFakeUpdates;
 use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeUpdates;
 use Tests\TestCase;
 
 class StartCommandTest extends TestCase

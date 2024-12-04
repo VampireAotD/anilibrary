@@ -33,7 +33,7 @@ trait CanCreateFakeElasticResponse
 
     public function createElasticResponseForAnimeFacets(): JsonResponse
     {
-        $animeList = $this->createAnimeCollectionWithRelations(5);
+        $animeList = $this->createAnimeCollectionWithRelations(quantity: 5);
 
         $types = $animeList->pluck('type')->map(
             fn(TypeEnum $type) => ['key' => $type->value, 'doc_count' => 5]

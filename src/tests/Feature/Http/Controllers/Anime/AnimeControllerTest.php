@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Anime;
 
+use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -112,6 +113,8 @@ class AnimeControllerTest extends TestCase
 
     public function testUserCanUpdateAnime(): void
     {
+        Bus::fake();
+
         $user  = $this->createUser();
         $anime = $this->createAnimeWithRelations();
 
@@ -162,6 +165,7 @@ class AnimeControllerTest extends TestCase
 
         $anime->refresh();
 
+        Bus::assertDispatched(UpsertAnimeJob::class); // because anime is updated
         $this->assertEquals(2, $anime->urls->count());
         $this->assertEquals(2, $anime->synonyms->count());
     }
