@@ -51,7 +51,7 @@ final class NotUpdatedAnimeMail extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, Attachment>
+     * @return list<Attachment>
      */
     public function attachments(): array
     {

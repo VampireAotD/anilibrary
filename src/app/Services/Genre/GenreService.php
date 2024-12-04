@@ -12,7 +12,7 @@ use Illuminate\Support\LazyCollection;
 final readonly class GenreService
 {
     /**
-     * @param array<int, QueryFilterInterface> $filters
+     * @param list<QueryFilterInterface> $filters
      * @return LazyCollection<int, Genre>
      */
     public function all(array $filters = []): LazyCollection
@@ -22,7 +22,7 @@ final readonly class GenreService
 
     /**
      * @param array<array{name: string}> $genres
-     * @return array<int, string> Array of genre ids
+     * @return list<string> Array of genre ids
      */
     public function sync(array $genres): array
     {
@@ -44,7 +44,7 @@ final readonly class GenreService
     }
 
     /**
-     * @param array<int, string> $names
+     * @param list<string> $names
      */
     private function findByNames(array $names): Collection
     {

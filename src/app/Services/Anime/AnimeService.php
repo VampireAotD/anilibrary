@@ -76,7 +76,7 @@ final readonly class AnimeService
     }
 
     /**
-     * @param array<int, QueryFilterInterface> $filters
+     * @param list<QueryFilterInterface> $filters
      * @return LazyCollection<int, Anime>
      */
     public function all(array $filters = []): LazyCollection

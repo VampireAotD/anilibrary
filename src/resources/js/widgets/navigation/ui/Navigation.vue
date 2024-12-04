@@ -35,7 +35,7 @@ import { NavigationLink } from '@/features/navigation/navigation-link';
                 <Table />
             </NavigationLink>
 
-            <NavigationLink href="#" title="Random anime">
+            <NavigationLink :href="route('anime.random')" title="Random anime">
                 <Shuffle />
             </NavigationLink>
         </nav>

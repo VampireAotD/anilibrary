@@ -12,7 +12,7 @@ use Illuminate\Support\LazyCollection;
 final readonly class VoiceActingService
 {
     /**
-     * @param array<int, QueryFilterInterface> $filters
+     * @param list<QueryFilterInterface> $filters
      * @return LazyCollection<int, VoiceActing>
      */
     public function all(array $filters = []): LazyCollection
@@ -22,7 +22,7 @@ final readonly class VoiceActingService
 
     /**
      * @param array<array{name: string}> $voiceActing
-     * @return array<int, string> Array of voice acting ids
+     * @return list<string> Array of voice acting ids
      */
     public function sync(array $voiceActing): array
     {
@@ -44,7 +44,7 @@ final readonly class VoiceActingService
     }
 
     /**
-     * @param array<int, string> $names
+     * @param list<string> $names
      */
     private function findByNames(array $names): Collection
     {
