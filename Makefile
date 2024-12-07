@@ -86,3 +86,7 @@ eslint-check: ## Run eslint.
 .PHONY: eslint-fix
 eslint-fix: ## Fix eslint errors.
 	$(frontend) lint-fix
+
+.PHONY: ziggy-generate
+ziggy-generate: ## Generate Ziggy routes for frontend tests.
+	$(compose) exec app ./artisan ziggy:generate --types

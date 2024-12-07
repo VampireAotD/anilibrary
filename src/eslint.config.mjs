@@ -15,7 +15,8 @@ export default [
     ignores: [
       '**/node_modules',
       'public/build',
-      '**/vendor'
+      '**/vendor',
+      'resources/js/ziggy.js',
     ],
   },
 

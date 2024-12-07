@@ -1,16 +1,10 @@
-import { config, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
-
-import { ZiggyVue } from 'ziggy-js';
-
-import { ZiggyMockConfig } from '@/mocks/ziggy-js';
 
 import Footer from './Footer.vue';
 
 describe('Footer test (Footer.vue)', () => {
     it('Renders correctly', () => {
-        config.global.plugins = [[ZiggyVue, ZiggyMockConfig]];
-
         const wrapper = mount(Footer);
 
         expect(wrapper.exists()).toBeTruthy();
