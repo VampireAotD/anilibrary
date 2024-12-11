@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Pivots\UserAnimeList;
 use App\Notifications\Auth\VerifyEmailNotification;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,6 +58,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function telegramUser(): HasOne
     {
         return $this->hasOne(TelegramUser::class);
+    }
+
+    /**
+     * @return BelongsToMany<Anime, $this>
+     */
+    public function animeList(): BelongsToMany
+    {
+        return $this->belongsToMany(Anime::class, UserAnimeList::class)
+                    ->withPivot(['status', 'rating', 'episodes'])
+                    ->withTimestamps();
     }
 
     public function sendEmailVerificationNotification(): void

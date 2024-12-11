@@ -10,6 +10,7 @@ use App\Models\Concerns\Filterable;
 use App\Models\Concerns\HasImage;
 use App\Models\Pivots\AnimeGenre;
 use App\Models\Pivots\AnimeVoiceActing;
+use App\Models\Pivots\UserAnimeList;
 use App\Observers\AnimeObserver;
 use Database\Factories\AnimeFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -87,6 +88,14 @@ class Anime extends Model
     public function genres(): BelongsToMany
     {
         return $this->belongsToMany(Genre::class)->using(AnimeGenre::class);
+    }
+
+    /**
+     * @return BelongsToMany<User, $this>
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, UserAnimeList::class)->withTimestamps();
     }
 
     public function scopeReleased(Builder $query): Builder
