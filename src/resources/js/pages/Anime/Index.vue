@@ -6,7 +6,16 @@ import qs from 'qs';
 
 import { Anime } from '@/entities/anime';
 import { AnimeSearchItem } from '@/features/anime/search-item';
+import { Block } from '@/shared/ui/block';
 import { Button } from '@/shared/ui/button';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/shared/ui/sheet';
 import { AnimeSearchForm, type Filters } from '@/widgets/anime';
 import { AddAnimeModal } from '@/widgets/anime/add-anime-modal';
 import { AuthenticatedLayout } from '@/widgets/layouts';
@@ -65,16 +74,37 @@ onBeforeMount(() => {
     <Head title="Search anime" />
 
     <AuthenticatedLayout>
-        <div class="bg-muted p-4 rounded-lg shadow">
-            <Button @click="optionModalVisible = true">Add anime</Button>
-        </div>
+        <Block class="flex gap-2">
+            <Button v-if="hasRole('owner')" @click="optionModalVisible = true"
+                >Add anime</Button
+            >
+            <Sheet>
+                <SheetTrigger as-child>
+                    <Button class="lg:hidden">Filters</Button>
+                </SheetTrigger>
+                <SheetContent>
+                    <SheetHeader>
+                        <SheetTitle> Anime search filters </SheetTitle>
+                        <SheetDescription> Find your desired anime </SheetDescription>
+                    </SheetHeader>
 
-        <section class="grid grid-cols-[80%_20%] gap-2 p-4 mx-auto">
-            <div class="divide-y divide-black-100 dark:divide-gray-100">
+                    <AnimeSearchForm
+                        class="bg-transparent p-0 lg:hidden"
+                        :filters="props.filters"
+                        :selected-filters="form.filters"
+                        @update-filters="search"
+                    />
+                </SheetContent>
+            </Sheet>
+        </Block>
+
+        <section class="grid lg:grid-cols-[8fr_2fr] mt-2 mx-auto">
+            <div class="flex flex-col gap-2">
                 <AnimeSearchItem v-for="anime in items" :key="anime.id" :anime="anime" />
             </div>
 
             <AnimeSearchForm
+                class="hidden lg:block"
                 :filters="props.filters"
                 :selected-filters="form.filters"
                 @update-filters="search"

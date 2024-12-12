@@ -22,9 +22,9 @@ const toggleSearchModalVisibility = () =>
 
 <template>
     <header
-        class="sticky top-0 z-30 flex justify-between h-14 gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+        class="sticky top-0 z-30 flex justify-between h-14 border-b-2 bg-muted px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
     >
-        <div class="hidden md:flex">
+        <div class="hidden md:flex md:items-center">
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -38,15 +38,17 @@ const toggleSearchModalVisibility = () =>
             </Breadcrumb>
         </div>
 
-        <div class="flex justify-between gap-4 flex-1 md:grow-0">
+        <div class="flex justify-between items-center gap-4 flex-1 md:grow-0">
             <SearchButton
                 @click="toggleSearchModalVisibility"
                 @search="showSearchModal = true"
             />
 
-            <ThemeSwitcher />
+            <nav class="flex items-center gap-2">
+                <ThemeSwitcher />
 
-            <DropdownMenu />
+                <DropdownMenu />
+            </nav>
         </div>
     </header>
 

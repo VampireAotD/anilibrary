@@ -16,7 +16,7 @@ const genres = computed(() => props.anime.genres.map((genre) => genre.name).join
 </script>
 
 <template>
-    <div class="flex justify-between gap-x-6 py-5 shadow-md">
+    <article class="flex justify-between px-4 shadow-md">
         <div class="flex min-w-0 gap-x-4">
             <img
                 class="w-32 flex-none bg-gray-50"
@@ -28,18 +28,18 @@ const genres = computed(() => props.anime.genres.map((genre) => genre.name).join
                 <Link
                     :href="route('anime.show', anime.id)"
                     target="_blank"
-                    class="text-sm font-semibold leading-6"
+                    class="text-sm text-wrap font-semibold leading-6"
                 >
                     {{ anime.title }}
                 </Link>
                 <p class="truncate text-xs leading-5">{{ firstSynonym }}</p>
-                <p class="mt-1 truncate text-xs leading-4">
+                <p class="mt-1 truncate text-xs leading-4 text-wrap">
                     {{ anime.year }} / {{ anime.type }} / {{ anime.status }} /
                     {{ genres }}
                 </p>
             </div>
         </div>
-    </div>
+    </article>
 </template>
 
 <style scoped></style>

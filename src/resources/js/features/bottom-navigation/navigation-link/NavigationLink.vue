@@ -1,26 +1,19 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { type InertiaLinkProps, Link } from '@inertiajs/vue3';
 
-type Props = {
-    url: string;
-    text: string;
+type Props = InertiaLinkProps & {
+    active?: boolean;
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
 </script>
 
 <template>
     <Link
-        :href="url"
-        class="inline-flex flex-col items-center justify-center px-5 border-gray-400 border-x hover:bg-gray-50 dark:hover:bg-gray-800 group dark:border-gray-600"
+        v-bind="props"
+        class="inline-flex items-center justify-center cursor-pointer text-center"
     >
         <slot />
-
-        <span
-            class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-red-500"
-        >
-            {{ text }}
-        </span>
     </Link>
 </template>
 

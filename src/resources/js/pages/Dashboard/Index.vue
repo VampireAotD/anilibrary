@@ -22,7 +22,7 @@ defineProps<Props>();
         <section class="flex flex-col gap-4">
             <AnimeCarousel :data="latestAnime" />
 
-            <section class="grid grid-cols-2 gap-4">
+            <section class="grid sm:grid-cols-2 gap-4">
                 <AnimeList title="Completed" :data="completedAnime" />
                 <AnimeList title="Most popular" :data="mostPopularAnime" />
             </section>

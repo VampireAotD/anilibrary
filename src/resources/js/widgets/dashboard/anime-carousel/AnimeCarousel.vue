@@ -20,12 +20,12 @@ defineProps<Props>();
             <CarouselItem
                 v-for="anime in data"
                 :key="anime.id"
-                class="sm:basis-1/3 lg:basis-1/6"
+                class="basis-1/2 sm:basis-1/3 md:basis-1/4 xl:basis-1/6"
             >
                 <div>
                     <Link :href="route('anime.show', anime.id)">
                         <img
-                            class="w-full h-72 rounded-lg object-fit"
+                            class="w-full h-52 sm:h-72 rounded-lg object-fit"
                             loading="lazy"
                             :src="anime.image.path"
                             :alt="anime.title"

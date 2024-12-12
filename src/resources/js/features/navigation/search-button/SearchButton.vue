@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ComponentPublicInstance, onMounted, onUnmounted, useTemplateRef } from 'vue';
 
-import { Search } from 'lucide-vue-next';
-
 import { Button } from '@/shared/ui/button';
 
 const emit = defineEmits<{ search: [] }>();
@@ -25,11 +23,18 @@ onUnmounted(() => window.removeEventListener('keydown', activateSearch));
 </script>
 
 <template>
-    <Button ref="searchButton" variant="outline" class="w-36 justify-between">
-        <Search />
-        <span>
-            <kbd class="text-sm">CTRL + K</kbd>
-        </span>
+    <Button
+        ref="searchButton"
+        variant="outline"
+        class="p-5 sm:p-3 relative h-8 w-full justify-start rounded-[0.5rem] text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-40 lg:w-56 xl:w-64"
+    >
+        <span class="inline-flex">Search anime...</span>
+        <kbd
+            class="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex"
+        >
+            <span class="text-xs">⌘</span>
+            K
+        </kbd>
     </Button>
 </template>
 
