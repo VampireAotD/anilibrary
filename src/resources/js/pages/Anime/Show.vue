@@ -3,7 +3,9 @@ import { computed } from 'vue';
 
 import { Head } from '@inertiajs/vue3';
 
-import { Anime } from '@/entities/anime';
+import type { Anime } from '@/entities/anime';
+import { type AnimeListEntry, Status } from '@/entities/anime-list';
+import { AnimeListEntryControl } from '@/features/anime/list-entry-control';
 import { AnimeRating } from '@/features/anime/rating';
 import { Badge } from '@/shared/ui/badge';
 import { Block } from '@/shared/ui/block';
@@ -12,6 +14,8 @@ import { AuthenticatedLayout } from '@/widgets/layouts';
 
 type Props = {
     anime: Anime;
+    animeListEntry?: AnimeListEntry;
+    animeListStatuses: Status[];
 };
 
 const props = defineProps<Props>();
@@ -60,12 +64,12 @@ const voiceActingList = computed(() =>
                                 />
                             </div>
 
-                            <div>
-                                <AnimeRating v-model="rating" class="mb-4" />
+                            <div class="flex flex-col gap-2">
+                                <AnimeRating v-model="rating" />
 
-                                <h1 class="text-4xl font-bold mb-2">{{ anime.title }}</h1>
+                                <h1 class="text-4xl font-bold">{{ anime.title }}</h1>
 
-                                <div class="space-y-1 mb-4">
+                                <div class="space-y-1">
                                     <p
                                         v-for="(synonym, key) in synonyms"
                                         :key="key"
@@ -75,7 +79,7 @@ const voiceActingList = computed(() =>
                                     </p>
                                 </div>
 
-                                <div class="flex flex-wrap gap-2 mb-6">
+                                <div class="flex flex-wrap gap-2">
                                     <Badge
                                         v-for="genre in genres"
                                         :key="genre"
@@ -85,12 +89,20 @@ const voiceActingList = computed(() =>
                                     </Badge>
                                 </div>
 
-                                <div class="flex flex-wrap gap-3">
+                                <div>
+                                    <AnimeListEntryControl
+                                        :anime-id="anime.id"
+                                        :entry="animeListEntry"
+                                        :statuses="animeListStatuses"
+                                    />
+                                </div>
+
+                                <div>
                                     <ExternalLink
                                         v-for="(link, key) in links"
                                         :key="key"
                                         :url="link"
-                                        text="Смотреть"
+                                        text="Watch"
                                         class="px-6 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition inline-flex items-center gap-2"
                                     />
                                 </div>
@@ -102,28 +114,28 @@ const voiceActingList = computed(() =>
 
             <Block as="section" class="rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
-                    <h2 class="text-xl font-semibold mb-4">Информация</h2>
+                    <h2 class="text-xl font-semibold mb-4">Information</h2>
 
                     <dl
                         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"
                     >
                         <div class="space-y-1">
                             <dt class="text-sm text-gray-500 dark:text-gray-400">
-                                Эпизоды
+                                Episodes
                             </dt>
                             <dd class="text-base font-medium">{{ anime.episodes }}</dd>
                         </div>
 
                         <div class="space-y-1">
                             <dt class="text-sm text-gray-500 dark:text-gray-400">
-                                Статус
+                                Status
                             </dt>
                             <dd class="text-base font-medium">{{ anime.status }}</dd>
                         </div>
 
                         <div class="space-y-1">
                             <dt class="text-sm text-gray-500 dark:text-gray-400">
-                                Озвучка
+                                Voice acting
                             </dt>
                             <dd class="text-base font-medium">
                                 <div class="flex flex-wrap gap-1">
@@ -143,7 +155,7 @@ const voiceActingList = computed(() =>
 
             <Block as="section" class="rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6">
-                    <h2 class="text-xl font-semibold mb-4">Описание</h2>
+                    <h2 class="text-xl font-semibold mb-4">Description</h2>
 
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 </div>
@@ -152,8 +164,4 @@ const voiceActingList = computed(() =>
     </AuthenticatedLayout>
 </template>
 
-<style scoped>
-.external-link-wrapper {
-    @apply inline-block;
-}
-</style>
+<style scoped></style>

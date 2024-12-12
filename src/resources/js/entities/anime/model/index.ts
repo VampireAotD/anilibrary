@@ -1,1 +1,1 @@
-export { type Anime, type AnimeFilters } from './types';
+export { type Anime } from './types';

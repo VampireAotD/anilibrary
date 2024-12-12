@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Anime;
 use App\DTO\Service\Anime\AnimeDTO;
 use App\DTO\Service\Elasticsearch\Anime\AnimePaginationDTO;
 use App\Enums\Anime\StatusEnum;
+use App\Enums\UserAnimeList\StatusEnum as AnimeListStatusEnum;
 use App\Filters\ColumnFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Anime\CreateRequest;
@@ -17,20 +18,23 @@ use App\Models\Anime;
 use App\Services\Anime\AnimeService;
 use App\Services\Elasticsearch\Index\AnimeIndexService;
 use App\Services\Genre\GenreService;
+use App\Services\User\UserAnimeListService;
 use App\Services\VoiceActing\VoiceActingService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
 
-class AnimeController extends Controller
+final class AnimeController extends Controller
 {
     public function __construct(
-        private readonly AnimeService       $animeService,
-        private readonly GenreService       $genreService,
-        private readonly VoiceActingService $voiceActingService,
-        private readonly AnimeIndexService  $animeIndexService
+        private readonly AnimeService         $animeService,
+        private readonly GenreService         $genreService,
+        private readonly VoiceActingService   $voiceActingService,
+        private readonly AnimeIndexService    $animeIndexService,
+        private readonly UserAnimeListService $userAnimeListService
     ) {
     }
 
@@ -79,7 +83,7 @@ class AnimeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Anime $anime): Response
+    public function show(Request $request, Anime $anime): Response
     {
         $anime->load([
             'image:id,path',
@@ -89,7 +93,10 @@ class AnimeController extends Controller
             'genres:name',
         ]);
 
-        return Inertia::render('Anime/Show', compact('anime'));
+        $animeListEntry    = $this->userAnimeListService->findById($request->user(), $anime->id);
+        $animeListStatuses = AnimeListStatusEnum::cases();
+
+        return Inertia::render('Anime/Show', compact('anime', 'animeListEntry', 'animeListStatuses'));
     }
 
     /**

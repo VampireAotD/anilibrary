@@ -10,7 +10,7 @@ FROM node:${NODE_VERSION}-alpine AS node
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_VERSION}
 
-FROM composer:${COMPOSER_VERSION} as composer
+FROM composer:${COMPOSER_VERSION} AS composer
 
 FROM php:${PHP_VERSION}-cli-alpine
 

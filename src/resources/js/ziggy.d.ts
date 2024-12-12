@@ -228,6 +228,22 @@ declare module 'ziggy-js' {
                 binding: 'id';
             },
         ];
+        'anime-list.index': [];
+        'anime-list.store': [];
+        'anime-list.update': [
+            {
+                name: 'anime';
+                required: true;
+                binding: 'id';
+            },
+        ];
+        'anime-list.destroy': [
+            {
+                name: 'anime';
+                required: true;
+                binding: 'id';
+            },
+        ];
         'profile.edit': [];
         'profile.update': [];
         'profile.destroy': [];
