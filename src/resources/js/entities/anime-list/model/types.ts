@@ -14,4 +14,18 @@ type AnimeListEntry = {
 
 type AnimeList = AnimeListEntry[];
 
-export { Status, type AnimeListEntry, type AnimeList };
+type AnimeListEntryStatistic = {
+    status: Status;
+    user_count: number;
+    percentage: number;
+};
+
+type AnimeListStatistics = AnimeListEntryStatistic[];
+
+export {
+    Status,
+    type AnimeListEntry,
+    type AnimeList,
+    type AnimeListEntryStatistic,
+    type AnimeListStatistics,
+};

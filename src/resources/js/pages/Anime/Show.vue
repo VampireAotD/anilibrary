@@ -4,8 +4,13 @@ import { computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
 
 import type { Anime } from '@/entities/anime';
-import { type AnimeListEntry, Status } from '@/entities/anime-list';
+import {
+    type AnimeListEntry,
+    type AnimeListStatistics,
+    Status,
+} from '@/entities/anime-list';
 import { AnimeListEntryControl } from '@/features/anime/list-entry-control';
+import { AnimeListStatistic } from '@/features/anime/list-statistic';
 import { AnimeRating } from '@/features/anime/rating';
 import { Badge } from '@/shared/ui/badge';
 import { Block } from '@/shared/ui/block';
@@ -15,6 +20,7 @@ import { AuthenticatedLayout } from '@/widgets/layouts';
 type Props = {
     anime: Anime;
     animeListEntry?: AnimeListEntry;
+    animeListStatistic: AnimeListStatistics;
     animeListStatuses: Status[];
 };
 
@@ -89,13 +95,15 @@ const voiceActingList = computed(() =>
                                     </Badge>
                                 </div>
 
-                                <div>
-                                    <AnimeListEntryControl
-                                        :anime-id="anime.id"
-                                        :entry="animeListEntry"
-                                        :statuses="animeListStatuses"
-                                    />
-                                </div>
+                                <AnimeListEntryControl
+                                    :anime-id="anime.id"
+                                    :entry="animeListEntry"
+                                    :statuses="animeListStatuses"
+                                />
+
+                                <AnimeListStatistic
+                                    :anime-list-statistic="animeListStatistic"
+                                />
 
                                 <div>
                                     <ExternalLink

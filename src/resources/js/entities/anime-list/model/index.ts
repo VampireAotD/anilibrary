@@ -1,1 +1,7 @@
-export { Status, type AnimeList, type AnimeListEntry } from './types';
+export {
+    Status,
+    type AnimeList,
+    type AnimeListEntry,
+    type AnimeListEntryStatistic,
+    type AnimeListStatistics,
+} from './types';

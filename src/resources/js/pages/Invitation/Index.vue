@@ -44,9 +44,9 @@ const toggleInvitationModal = () =>
 
             <TableHeader>
                 <TableRow>
-                    <TableHead> Email</TableHead>
+                    <TableHead>Email</TableHead>
 
-                    <TableHead> Status</TableHead>
+                    <TableHead>Status</TableHead>
                 </TableRow>
             </TableHeader>
 

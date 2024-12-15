@@ -93,10 +93,14 @@ final class AnimeController extends Controller
             'genres:name',
         ]);
 
-        $animeListEntry    = $this->userAnimeListService->findById($request->user(), $anime->id);
-        $animeListStatuses = AnimeListStatusEnum::cases();
+        $animeListEntry     = $this->userAnimeListService->findById($request->user(), $anime->id);
+        $animeListStatuses  = AnimeListStatusEnum::cases();
+        $animeListStatistic = $this->userAnimeListService->animeStatistics($anime->id);
 
-        return Inertia::render('Anime/Show', compact('anime', 'animeListEntry', 'animeListStatuses'));
+        return Inertia::render(
+            'Anime/Show',
+            compact('anime', 'animeListEntry', 'animeListStatuses', 'animeListStatistic')
+        );
     }
 
     /**
