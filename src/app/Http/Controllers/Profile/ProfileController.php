@@ -14,13 +14,15 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ProfileController extends Controller
+final class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): Response
     {
+        $request->user()->load('telegramUser:user_id,username');
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status'          => session('status'),

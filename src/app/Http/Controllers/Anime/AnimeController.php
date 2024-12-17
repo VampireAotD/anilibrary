@@ -43,24 +43,23 @@ final class AnimeController extends Controller
      */
     public function index(IndexRequest $request): Response
     {
-        $items = $this->animeIndexService->paginate(
-            new AnimePaginationDTO(
-                page   : $request->integer('page', 1),
-                perPage: $request->integer('perPage', 20),
-                filters: $request->get('filters', []),
-                sort   : $request->get('sort', [])
-            )
-        );
-
-        $filters = $this->animeIndexService->getFacets();
-
-        return Inertia::render('Anime/Index', compact('items', 'filters'));
+        return Inertia::render('Anime/Index', [
+            'items' => Inertia::defer(fn() => $this->animeIndexService->paginate(
+                new AnimePaginationDTO(
+                    page   : $request->integer('page', 1),
+                    perPage: $request->integer('perPage', 20),
+                    filters: $request->get('filters', []),
+                    sort   : $request->get('sort', [])
+                )
+            )),
+            'filters' => Inertia::defer(fn() => $this->animeIndexService->getFacets()),
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
         $statuses    = StatusEnum::values();
         $genres      = $this->genreService->all([new ColumnFilter(['name'])])->pluck('name')->toArray();
@@ -85,22 +84,20 @@ final class AnimeController extends Controller
      */
     public function show(Request $request, Anime $anime): Response
     {
-        $anime->load([
-            'image:id,path',
-            'urls:anime_id,url',
-            'synonyms:anime_id,name',
-            'voiceActing:name',
-            'genres:name',
+        return Inertia::render('Anime/Show', [
+            'anime' => $anime->load([
+                'image:id,path',
+                'urls:anime_id,url',
+                'synonyms:anime_id,name',
+                'voiceActing:name',
+                'genres:name',
+            ]),
+            'animeListStatuses' => AnimeListStatusEnum::cases(),
+            'animeListEntry'    => Inertia::defer(
+                fn() => $this->userAnimeListService->findById($request->user(), $anime->id)
+            ),
+            'animeListStatistic' => Inertia::defer(fn() => $this->userAnimeListService->animeStatistics($anime->id)),
         ]);
-
-        $animeListEntry     = $this->userAnimeListService->findById($request->user(), $anime->id);
-        $animeListStatuses  = AnimeListStatusEnum::cases();
-        $animeListStatistic = $this->userAnimeListService->animeStatistics($anime->id);
-
-        return Inertia::render(
-            'Anime/Show',
-            compact('anime', 'animeListEntry', 'animeListStatuses', 'animeListStatistic')
-        );
     }
 
     /**

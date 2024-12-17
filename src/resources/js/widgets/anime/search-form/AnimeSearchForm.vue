@@ -7,15 +7,15 @@ import { Block } from '@/shared/ui/block';
 import type { Filters, SelectedFilters } from './types';
 
 type Props = {
-    filters: Filters;
-    selectedFilters: SelectedFilters;
+    title?: string;
+    filters?: Filters;
+    selectedFilters?: SelectedFilters;
 };
 
 const props = defineProps<Props>();
 const emit = defineEmits<{ updateFilters: [filters: SelectedFilters] }>();
 
-const { years, types, statuses, genres, voiceActing } = props.filters;
-const yearsRange = ref([years?.min, years?.max]);
+const yearsRange = ref([props.filters?.years?.min, props.filters?.years?.max]);
 const data = reactive({ ...props.selectedFilters });
 
 watchEffect(() => {
@@ -31,34 +31,44 @@ watch(data, (updated: SelectedFilters) => {
 </script>
 
 <template>
-    <Block class="max-h-max">
+    <Block v-if="filters?.length" class="max-h-max">
         <form class="flex flex-col gap-4">
-            <h2 class="text-lg font-bold">Фильтры</h2>
+            <h2 v-if="title" class="text-lg font-bold">{{ title }}</h2>
 
             <AnimeRangeFilter
                 name="Год выхода"
                 v-model="yearsRange"
-                :min="years?.min ?? 0"
-                :max="years?.max ?? 0"
+                :min="props.filters?.years?.min ?? 0"
+                :max="props.filters?.years?.max ?? 0"
             />
 
-            <AnimeMultiselectFilter name="Тип" v-model="data.types" :data="types" />
+            <AnimeMultiselectFilter
+                name="Тип"
+                v-model="data.types"
+                :data="props.filters?.types"
+            />
 
             <AnimeMultiselectFilter
                 name="Статус"
                 v-model="data.statuses"
-                :data="statuses"
+                :data="props.filters?.statuses"
             />
 
-            <AnimeMultiselectFilter name="Жанры" v-model="data.genres" :data="genres" />
+            <AnimeMultiselectFilter
+                name="Жанры"
+                v-model="data.genres"
+                :data="props.filters?.genres"
+            />
 
             <AnimeMultiselectFilter
                 name="Озвучка"
                 v-model="data.voiceActing"
-                :data="voiceActing"
+                :data="props.filters?.voiceActing"
             />
         </form>
     </Block>
+
+    <p v-else class="p-2 text-center">Filters are unavailable</p>
 </template>
 
 <style scoped></style>

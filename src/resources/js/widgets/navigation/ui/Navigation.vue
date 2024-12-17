@@ -14,6 +14,7 @@ import { NavigationLink } from '@/features/navigation/navigation-link';
                 :href="route('dashboard')"
                 :active="route().current('dashboard')"
                 title="Dashboard"
+                async
             >
                 <Home />
             </NavigationLink>
@@ -23,6 +24,7 @@ import { NavigationLink } from '@/features/navigation/navigation-link';
                 :href="route('invitation.index')"
                 :active="route().current('invitation.index')"
                 title="Invitations"
+                async
             >
                 <Mail />
             </NavigationLink>
@@ -31,11 +33,13 @@ import { NavigationLink } from '@/features/navigation/navigation-link';
                 :href="route('anime.index')"
                 :active="route().current('anime.index')"
                 title="Anime"
+                async
+                prefetch
             >
                 <Table />
             </NavigationLink>
 
-            <NavigationLink :href="route('anime.random')" title="Random anime">
+            <NavigationLink :href="route('anime.random')" title="Random anime" async>
                 <Shuffle />
             </NavigationLink>
         </nav>

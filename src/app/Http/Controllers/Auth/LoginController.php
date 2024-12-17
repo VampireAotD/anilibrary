@@ -52,6 +52,8 @@ final class LoginController extends Controller
 
         $request->session()->regenerateToken();
 
+        Inertia::clearHistory();
+
         return redirect('/');
     }
 }

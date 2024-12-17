@@ -50,11 +50,9 @@ class AnimeControllerTest extends TestCase
         $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(20));
         $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
 
+        // TODO Assert other props if Inertia will support deferred props
         $this->actingAs($user)->get(route('anime.index'))->assertInertia(
             fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('items', 20)
-                                     ->has('filters')
-                                     ->has('items', fn(Assert $page) => $page->etc())
         );
     }
 
@@ -65,19 +63,17 @@ class AnimeControllerTest extends TestCase
         $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(20));
         $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
 
+        // TODO Assert other props if Inertia will support deferred props
         $this->actingAs($user)->get(route('anime.index'))->assertInertia(
             fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('items')
-                                     ->has('items', 20)
         );
 
         $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(10));
         $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
 
+        // TODO Assert other props if Inertia will support deferred props
         $this->actingAs($user)->get(route('anime.index', ['page' => 2]))->assertInertia(
             fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('items')
-                                     ->has('items', 10)
         );
     }
 

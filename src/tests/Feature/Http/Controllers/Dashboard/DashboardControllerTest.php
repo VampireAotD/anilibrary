@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Dashboard;
 
-use App\Enums\Anime\StatusEnum;
-use App\Models\Anime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
@@ -18,11 +16,6 @@ class DashboardControllerTest extends TestCase
     use CanCreateFakeUsers;
     use CanCreateFakeAnime;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testCannotAccessDashboardUnauthenticated(): void
     {
         $this->get(route('dashboard'))->assertRedirectToRoute('login');
@@ -32,13 +25,10 @@ class DashboardControllerTest extends TestCase
     {
         $owner      = $this->createOwner();
         $collection = $this->createAnimeCollection(10);
-        $completed  = $collection->filter(fn(Anime $anime) => $anime->status === StatusEnum::RELEASED);
 
+        // TODO Assert other props if Inertia will support deferred props
         $this->actingAs($owner)->get(route('dashboard'))->assertInertia(
-            fn(Assert $page) => $page->component('Dashboard/Index')
-                                     ->has('latestAnime', $collection->count())
-                                     ->has('completedAnime', $completed->count())
-                                     ->has('mostPopularAnime', $collection->count())
+            fn(Assert $page) => $page->component('Dashboard/Index')->has('latestAnime', $collection->count())
         );
     }
 }

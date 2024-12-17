@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { Head } from '@inertiajs/vue3';
+import { Deferred, Head } from '@inertiajs/vue3';
+import { Loader2 } from 'lucide-vue-next';
 
 import type { Anime } from '@/entities/anime';
 import {
@@ -20,7 +21,7 @@ import { AuthenticatedLayout } from '@/widgets/layouts';
 type Props = {
     anime: Anime;
     animeListEntry?: AnimeListEntry;
-    animeListStatistic: AnimeListStatistics;
+    animeListStatistic?: AnimeListStatistics;
     animeListStatuses: Status[];
 };
 
@@ -95,15 +96,23 @@ const voiceActingList = computed(() =>
                                     </Badge>
                                 </div>
 
-                                <AnimeListEntryControl
-                                    :anime-id="anime.id"
-                                    :entry="animeListEntry"
-                                    :statuses="animeListStatuses"
-                                />
+                                <Deferred
+                                    :data="['animeListEntry', 'animeListStatistic']"
+                                >
+                                    <template #fallback>
+                                        <Loader2 class="animate-spin" />
+                                    </template>
 
-                                <AnimeListStatistic
-                                    :anime-list-statistic="animeListStatistic"
-                                />
+                                    <AnimeListEntryControl
+                                        :anime-id="anime.id"
+                                        :entry="animeListEntry"
+                                        :statuses="animeListStatuses"
+                                    />
+
+                                    <AnimeListStatistic
+                                        :anime-list-statistic="animeListStatistic"
+                                    />
+                                </Deferred>
 
                                 <div>
                                     <ExternalLink

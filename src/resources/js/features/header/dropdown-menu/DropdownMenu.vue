@@ -14,7 +14,7 @@ import {
 <template>
     <DropdownMenu>
         <DropdownMenuTrigger as-child>
-            <Button type="button" size="rounded" variant="outline">
+            <Button class="size-8" type="button" size="rounded" variant="outline">
                 <CircleUser />
             </Button>
         </DropdownMenuTrigger>

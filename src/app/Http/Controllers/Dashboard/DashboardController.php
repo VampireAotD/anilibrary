@@ -9,18 +9,18 @@ use App\Services\Anime\AnimeService;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class DashboardController extends Controller
+final class DashboardController extends Controller
 {
     public function __construct(private readonly AnimeService $animeService)
     {
     }
 
-    public function index(): Response
+    public function __invoke(): Response
     {
-        $latestAnime      = $this->animeService->getTenLatestAnime();
-        $completedAnime   = $this->animeService->getTenLatestReleasedAnime();
-        $mostPopularAnime = $this->animeService->getTenMostPopularAnime();
-
-        return Inertia::render('Dashboard/Index', compact('latestAnime', 'completedAnime', 'mostPopularAnime'));
+        return Inertia::render('Dashboard/Index', [
+            'latestAnime'      => $this->animeService->getTenLatestAnime(),
+            'completedAnime'   => Inertia::defer(fn() => $this->animeService->getTenLatestReleasedAnime(), 'lists'),
+            'mostPopularAnime' => Inertia::defer(fn() => $this->animeService->getTenMostPopularAnime(), 'lists'),
+        ]);
     }
 }

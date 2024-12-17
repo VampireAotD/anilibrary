@@ -25,6 +25,7 @@ const form = useForm({
 
 const submit = () => {
     form.put(route('anime-list.update', animeId), {
+        only: ['entry'],
         preserveScroll: true,
     });
 };

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
 
-import { Head, useForm } from '@inertiajs/vue3';
+import { Deferred, Head, useForm } from '@inertiajs/vue3';
+import { Loader2 } from 'lucide-vue-next';
 import qs from 'qs';
 
-import { Anime } from '@/entities/anime';
-import { AnimeSearchItem } from '@/features/anime/search-item';
+import type { Anime } from '@/entities/anime';
 import { Block } from '@/shared/ui/block';
 import { Button } from '@/shared/ui/button';
 import {
@@ -18,11 +18,12 @@ import {
 } from '@/shared/ui/sheet';
 import { AnimeSearchForm, type Filters } from '@/widgets/anime';
 import { AddAnimeModal } from '@/widgets/anime/add-anime-modal';
+import { AnimeSearchItems } from '@/widgets/anime/search-items';
 import { AuthenticatedLayout } from '@/widgets/layouts';
 
 type Props = {
-    items: Anime[];
-    filters: Filters;
+    items?: Anime[];
+    filters?: Filters;
 };
 
 const props = defineProps<Props>();
@@ -33,8 +34,8 @@ const form = useForm({
     perPage: 20,
     filters: {
         years: {
-            min: props.filters.years?.min,
-            max: props.filters.years?.max,
+            min: props.filters?.years?.min,
+            max: props.filters?.years?.max,
         },
         types: [],
         statuses: [],
@@ -74,41 +75,52 @@ onBeforeMount(() => {
     <Head title="Search anime" />
 
     <AuthenticatedLayout>
-        <Block class="flex gap-2">
-            <Button v-if="hasRole('owner')" @click="optionModalVisible = true"
-                >Add anime</Button
-            >
+        <Block as="section" class="flex gap-2">
+            <Button v-if="hasRole('owner')" @click="optionModalVisible = true">
+                Add anime
+            </Button>
+
             <Sheet>
                 <SheetTrigger as-child>
                     <Button class="lg:hidden">Filters</Button>
                 </SheetTrigger>
                 <SheetContent>
                     <SheetHeader>
-                        <SheetTitle> Anime search filters </SheetTitle>
-                        <SheetDescription> Find your desired anime </SheetDescription>
+                        <SheetTitle> Anime search filters</SheetTitle>
+                        <SheetDescription> Find your desired anime</SheetDescription>
                     </SheetHeader>
 
-                    <AnimeSearchForm
-                        class="bg-transparent p-0 lg:hidden"
-                        :filters="props.filters"
-                        :selected-filters="form.filters"
-                        @update-filters="search"
-                    />
+                    <Deferred data="filters">
+                        <template #fallback>
+                            <Loader2 class="animate-spin" />
+                        </template>
+
+                        <AnimeSearchForm
+                            class="bg-transparent p-0 lg:hidden"
+                            :filters="props.filters"
+                            :selected-filters="form.filters"
+                            @update-filters="search"
+                        />
+                    </Deferred>
                 </SheetContent>
             </Sheet>
         </Block>
 
-        <section class="grid lg:grid-cols-[8fr_2fr] mt-2 mx-auto">
-            <div class="flex flex-col gap-2">
-                <AnimeSearchItem v-for="anime in items" :key="anime.id" :anime="anime" />
-            </div>
+        <section class="grid lg:grid-cols-[8fr_2fr] items-center mt-2 text-center">
+            <Deferred :data="['items', 'filters']">
+                <template #fallback>
+                    <Loader2 class="animate-spin" />
+                </template>
 
-            <AnimeSearchForm
-                class="hidden lg:block"
-                :filters="props.filters"
-                :selected-filters="form.filters"
-                @update-filters="search"
-            />
+                <AnimeSearchItems :items="items" />
+
+                <AnimeSearchForm
+                    class="hidden lg:block"
+                    :filters="props.filters"
+                    :selected-filters="form.filters"
+                    @update-filters="search"
+                />
+            </Deferred>
         </section>
 
         <AddAnimeModal
