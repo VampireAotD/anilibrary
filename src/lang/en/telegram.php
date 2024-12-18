@@ -45,4 +45,7 @@ return [
         ],
     ],
 
+    'captions' => [
+        'anime' => "Title: :title\nStatus: :status\nEpisodes: :episodes\nRating: :rating\nVoice Acting: :voiceacting\nGenres: :genres",
+    ],
 ];

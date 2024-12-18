@@ -4,62 +4,49 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Telegram\Commands;
 
-use App\DTO\Factory\Telegram\CallbackData\PaginationCallbackDataDTO;
 use App\Enums\Telegram\Actions\CommandEnum;
-use App\Factory\Telegram\CallbackData\CallbackDataFactory;
-use App\Models\Anime;
+use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Feature\Telegram\Callbacks\AnimeListCallbackTest;
+use Tests\TestCase;
 
-class AnimeListCommandTest extends TestCase
+final class AnimeListCommandTest extends TestCase
 {
     use RefreshDatabase;
-    use WithFaker;
     use CanCreateMocks;
     use CanCreateFakeAnime;
-
-    private CallbackDataFactory $callbackDataFactory;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->setUpFakeBot();
-        $this->callbackDataFactory = $this->app->make(CallbackDataFactory::class);
     }
 
-    public function testCanGenerateAnimeList(): void
+    public function testWillNotRespondWithAnimeListIfDatabaseIsEmpty(): void
     {
-        $animeList = $this->createAnimeCollectionWithRelations(2);
-
-        $firstPageData = $animeList->first();
-        $lastPageData  = $animeList->last();
-
-        $this->assertInstanceOf(Anime::class, $firstPageData);
-        $this->assertInstanceOf(Anime::class, $lastPageData);
-
-        $secondPageCallback = $this->callbackDataFactory->resolve(new PaginationCallbackDataDTO(2));
-
-        // After pressing button or using command bot must render anime with pagination
-        // After pressing pagination button callback must render next page
         $this->bot->hearText(CommandEnum::ANIME_LIST_COMMAND->value)
                   ->reply()
                   ->assertReplyMessage([
-                      'photo'   => $firstPageData->image->path,
-                      'caption' => $firstPageData->to_telegram_caption,
-                  ])
-                  ->hearCallbackQueryData($secondPageCallback)
+                      'text' => __('telegram.callbacks.anime_list.render_error'),
+                  ]);
+    }
+
+    /**
+     * This case only checks that command renders first page of a list. To check pagination
+     * @see AnimeListCallbackTest
+     */
+    public function testCanRespondWithAnimeList(): void
+    {
+        $anime = $this->createAnimeWithRelations();
+
+        $this->bot->hearText(CommandEnum::ANIME_LIST_COMMAND->value)
                   ->reply()
                   ->assertReplyMessage([
-                      'media' => json_encode([
-                          'type'        => 'photo',
-                          'media'       => $lastPageData->image->path,
-                          'caption'     => $lastPageData->to_telegram_caption,
-                          'has_spoiler' => false,
-                      ]),
+                      'photo'   => $anime->image->path,
+                      'caption' => (string) AnimeCaptionText::fromAnime($anime),
                   ]);
     }
 }

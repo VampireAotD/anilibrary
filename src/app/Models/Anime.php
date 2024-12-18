@@ -15,7 +15,6 @@ use App\Observers\AnimeObserver;
 use Database\Factories\AnimeFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -112,25 +111,5 @@ class Anime extends Model
     {
         return $query->selectRaw('COUNT(id) as per_month, MONTH(created_at) as month_number')
                      ->groupBy('month_number');
-    }
-
-    /**
-     * @psalm-suppress TooManyTemplateParams
-     * @return Attribute<string, never>
-     */
-    protected function toTelegramCaption(): Attribute
-    {
-        /** @see https://github.com/larastan/larastan/issues/2038 */
-        return Attribute::make(
-            get: fn(): string => sprintf(
-                "Название: %s\nСтатус: %s\nЭпизоды: %s\nОценка: %s\nОзвучки: %s\nЖанры: %s",
-                $this->title,
-                $this->status->value, // @phpstan-ignore-line Ignored because of parser issues
-                $this->episodes,
-                $this->rating,
-                $this->voiceActing->implode('name', ', '),
-                $this->genres->implode('name', ', '),
-            )
-        )->shouldCache();
     }
 }

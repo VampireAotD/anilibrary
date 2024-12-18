@@ -6,16 +6,15 @@ namespace Tests\Feature\Telegram\Commands;
 
 use App\Enums\Telegram\Actions\CommandEnum;
 use App\Enums\Telegram\Buttons\CommandButtonEnum;
+use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\TestCase;
 
-class RandomAnimeCommandTest extends TestCase
+final class RandomAnimeCommandTest extends TestCase
 {
     use RefreshDatabase;
-    use WithFaker;
     use CanCreateMocks;
     use CanCreateFakeAnime;
 
@@ -26,27 +25,27 @@ class RandomAnimeCommandTest extends TestCase
         $this->setUpFakeBot();
     }
 
-    public function testHandlerWillRespondWithTextMessageIfDatabaseIsEmpty(): void
+    public function testWillRespondWithErrorMessageIfDatabaseIsEmpty(): void
     {
         $this->bot->hearText(CommandEnum::RANDOM_ANIME_COMMAND->value)->reply()->assertReplyMessage(
             ['text' => __('telegram.commands.random_anime.unable_to_find_anime')]
         );
     }
 
-    public function testCommandWillRespondWhenButtonIsPressed(): void
+    public function testWillRespondWithErrorMessageWhenButtonIsPressedAndDatabaseIsEmpty(): void
     {
         $this->bot->hearText(CommandButtonEnum::RANDOM_ANIME_BUTTON->value)->reply()->assertReplyMessage(
             ['text' => __('telegram.commands.random_anime.unable_to_find_anime')]
         );
     }
 
-    public function testCommandWillSendMessageWithAnimeData(): void
+    public function testWillRespondWithAnimeMessage(): void
     {
         $anime = $this->createAnimeWithRelations();
 
         $this->bot->hearText(CommandEnum::RANDOM_ANIME_COMMAND->value)->reply()->assertReplyMessage([
             'photo'   => $anime->image->path,
-            'caption' => $anime->to_telegram_caption,
+            'caption' => (string) AnimeCaptionText::fromAnime($anime),
         ]);
     }
 }

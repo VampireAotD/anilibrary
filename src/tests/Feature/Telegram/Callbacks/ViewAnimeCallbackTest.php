@@ -6,13 +6,14 @@ namespace Tests\Feature\Telegram\Callbacks;
 
 use App\DTO\Factory\Telegram\CallbackData\ViewAnimeCallbackDataDTO;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
+use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\TestCase;
 
-class ViewAnimeCallbackTest extends TestCase
+final class ViewAnimeCallbackTest extends TestCase
 {
     use RefreshDatabase;
     use CanCreateMocks;
@@ -28,7 +29,7 @@ class ViewAnimeCallbackTest extends TestCase
         $this->callbackDataFactory = $this->app->make(CallbackDataFactory::class);
     }
 
-    public function testCallbackWillRespondWithFailureMessageItCouldNotMakeInlineMessageForCallbackData(): void
+    public function testWillRespondWithErrorMessageIfAnimeDoesNotExist(): void
     {
         // Create callback data for non-existing anime
         $callbackData = $this->callbackDataFactory->resolve(new ViewAnimeCallbackDataDTO(Str::uuid()->toString()));
@@ -38,14 +39,14 @@ class ViewAnimeCallbackTest extends TestCase
         ]);
     }
 
-    public function testCallbackWillRespondWithInlineAnimeMessage(): void
+    public function testWillRespondWithAnimeMessage(): void
     {
         $anime        = $this->createAnimeWithRelations();
         $callbackData = $this->callbackDataFactory->resolve(new ViewAnimeCallbackDataDTO($anime->id));
 
         $this->bot->hearCallbackQueryData($callbackData)->reply()->assertReplyMessage([
             'photo'   => $anime->image->path,
-            'caption' => $anime->to_telegram_caption,
+            'caption' => (string) AnimeCaptionText::fromAnime($anime),
         ]);
     }
 }

@@ -32,6 +32,8 @@ final class AnimeListCommand extends Command
                 'exception_message' => $exception->getMessage(),
                 'exception_trace'   => $exception->getTraceAsString(),
             ]);
+
+            $bot->sendMessage(text: __('telegram.callbacks.anime_list.render_error'));
         }
     }
 }

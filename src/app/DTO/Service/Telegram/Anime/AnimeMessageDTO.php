@@ -8,31 +8,43 @@ use App\DTO\Service\Telegram\Keyboard\InlineKeyboardButtonDTO;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 
-final class AnimeMessageDTO
+final readonly class AnimeMessageDTO
 {
+    /**
+     * @param list<InlineKeyboardButtonDTO>|list<list<InlineKeyboardButtonDTO>> $inlineKeyboardButtons
+     */
     public function __construct(
-        public readonly string $photo,
-        public readonly string $caption,
-        /** @var InlineKeyboardButtonDTO[] */
-        private array          $inlineKeyboardButtons = [],
+        public string $photo,
+        public string $caption,
+        private array $inlineKeyboardButtons = [],
     ) {
-    }
-
-    public function addButton(InlineKeyboardButtonDTO $dto): void
-    {
-        $this->inlineKeyboardButtons[] = $dto;
     }
 
     public function generateReplyMarkup(): InlineKeyboardMarkup
     {
         $markup = InlineKeyboardMarkup::make();
 
-        foreach ($this->inlineKeyboardButtons as $keyboardButton) {
+        foreach ($this->inlineKeyboardButtons as $button) {
+            if (is_array($button)) {
+                $row = [];
+
+                foreach ($button as $keyboardButton) {
+                    $row[] = InlineKeyboardButton::make(
+                        text         : $keyboardButton->text,
+                        url          : $keyboardButton->url,
+                        callback_data: $keyboardButton->callbackData
+                    );
+                }
+
+                $markup->addRow(...$row);
+                continue;
+            }
+
             $markup->addRow(
                 InlineKeyboardButton::make(
-                    text         : $keyboardButton->text,
-                    url          : $keyboardButton->url,
-                    callback_data: $keyboardButton->callbackData
+                    text         : $button->text,
+                    url          : $button->url,
+                    callback_data: $button->callbackData
                 )
             );
         }

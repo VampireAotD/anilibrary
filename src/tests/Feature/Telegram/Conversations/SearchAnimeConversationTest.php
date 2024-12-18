@@ -7,6 +7,7 @@ namespace Tests\Feature\Telegram\Conversations;
 use App\Enums\Telegram\Actions\CommandEnum;
 use App\Facades\Telegram\State\UserStateFacade;
 use App\Models\Anime;
+use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Concerns\CanCreateMocks;
@@ -14,7 +15,7 @@ use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
 
-class SearchAnimeConversationTest extends TestCase
+final class SearchAnimeConversationTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -67,7 +68,6 @@ class SearchAnimeConversationTest extends TestCase
         UserStateFacade::shouldReceive('saveSearchResultPreview')->once();
 
         $anime = $animeList->first();
-        $this->assertInstanceOf(Anime::class, $anime);
 
         $this->bot->willStartConversation()
                   ->hearText(CommandEnum::SEARCH_ANIME_COMMAND->value)
@@ -77,7 +77,7 @@ class SearchAnimeConversationTest extends TestCase
                   ->reply()
                   ->assertReplyMessage([
                       'photo'   => $anime->image->path,
-                      'caption' => $anime->to_telegram_caption,
+                      'caption' => (string) AnimeCaptionText::fromAnime($anime),
                   ]);
     }
 
@@ -109,7 +109,6 @@ class SearchAnimeConversationTest extends TestCase
         UserStateFacade::shouldReceive('saveSearchResultPreview')->once();
 
         $anime = $animeList->first();
-        $this->assertInstanceOf(Anime::class, $anime);
 
         $this->bot->willStartConversation()
                   ->hearText(CommandEnum::SEARCH_ANIME_COMMAND->value)

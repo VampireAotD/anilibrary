@@ -144,7 +144,6 @@ class AddAnimeConversationTest extends TestCase
                   ->assertReplyMessage(['text' => __('telegram.conversations.add_anime.scrape_has_ended')]);
 
         $anime = Anime::query()->first();
-        $this->assertInstanceOf(Anime::class, $anime);
 
         Bus::assertDispatched(UpsertAnimeJob::class);
         Bus::assertDispatched(UploadJob::class, fn(UploadJob $job): bool => $job->image === $image);

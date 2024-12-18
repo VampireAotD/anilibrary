@@ -8,9 +8,9 @@ use App\DTO\UseCase\Telegram\Anime\GenerateAnimeMessageDTO;
 use App\DTO\UseCase\Telegram\Anime\GenerateAnimeSearchResultDTO;
 use App\Exceptions\UseCase\Telegram\AnimeMessageException;
 use App\Facades\Telegram\State\UserStateFacade;
-use App\Models\Anime;
 use App\Services\Telegram\EncoderService;
 use App\UseCase\Telegram\AnimeMessageUseCase;
+use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
@@ -18,7 +18,7 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\TestCase;
 
-class AnimeMessageUseCaseTest extends TestCase
+final class AnimeMessageUseCaseTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -52,7 +52,7 @@ class AnimeMessageUseCaseTest extends TestCase
         $replyMarkup = $message->generateReplyMarkup();
 
         $this->assertEquals($anime->image->path, $message->photo);
-        $this->assertEquals($anime->to_telegram_caption, $message->caption);
+        $this->assertEquals((string) AnimeCaptionText::fromAnime($anime), $message->caption);
         $this->assertNotEmpty($replyMarkup->inline_keyboard);
 
         $row = $replyMarkup->inline_keyboard[0]; // Message has only one row, but can have multiple buttons
@@ -66,7 +66,7 @@ class AnimeMessageUseCaseTest extends TestCase
 
     public function testCanGenerateAnimeListMessage(): void
     {
-        $animeList = $this->createAnimeCollectionWithRelations(3);
+        $animeList = $this->createAnimeCollectionWithRelations(quantity: 3);
 
         // Starting from page 1
         // Message must have only next page button and anime information
@@ -74,9 +74,8 @@ class AnimeMessageUseCaseTest extends TestCase
         $replyMarkup = $message->generateReplyMarkup();
 
         $first = $animeList->first();
-        $this->assertInstanceOf(Anime::class, $first);
         $this->assertEquals($first->image->path, $message->photo);
-        $this->assertEquals($first->to_telegram_caption, $message->caption);
+        $this->assertEquals((string) AnimeCaptionText::fromAnime($first), $message->caption);
 
         $keyboard = $replyMarkup->inline_keyboard;
         $this->assertNotEmpty($keyboard);
@@ -92,19 +91,18 @@ class AnimeMessageUseCaseTest extends TestCase
         $replyMarkup = $message->generateReplyMarkup();
 
         $middle = $animeList->offsetGet(1);
-        $this->assertInstanceOf(Anime::class, $middle);
         $this->assertEquals($middle->image->path, $message->photo);
-        $this->assertEquals($middle->to_telegram_caption, $message->caption);
+        $this->assertEquals((string) AnimeCaptionText::fromAnime($middle), $message->caption);
 
         $keyboard = $replyMarkup->inline_keyboard;
         $this->assertNotEmpty($keyboard);
-        $this->assertCount(3, $keyboard); // Keyboard must have 3 rows: one for urls, others for controls
+        $this->assertCount(2, $keyboard); // Keyboard must have 2 rows: one for urls, others for controls
 
         $prevPage = $keyboard[1][0]; // Prev page button from first row
         $this->assertInstanceOf(InlineKeyboardButton::class, $prevPage);
         $this->assertEquals('<', $prevPage->text);
 
-        $nextPage = $keyboard[2][0]; // Next page button from second row
+        $nextPage = $keyboard[1][1]; // Next page button from second row
         $this->assertInstanceOf(InlineKeyboardButton::class, $nextPage);
         $this->assertEquals('>', $nextPage->text);
 
@@ -114,9 +112,8 @@ class AnimeMessageUseCaseTest extends TestCase
         $replyMarkup = $message->generateReplyMarkup();
 
         $last = $animeList->last();
-        $this->assertInstanceOf(Anime::class, $last);
         $this->assertEquals($last->image->path, $message->photo);
-        $this->assertEquals($last->to_telegram_caption, $message->caption);
+        $this->assertEquals((string) AnimeCaptionText::fromAnime($last), $message->caption);
 
         $keyboard = $replyMarkup->inline_keyboard;
         $this->assertNotEmpty($keyboard);
@@ -141,7 +138,7 @@ class AnimeMessageUseCaseTest extends TestCase
 
     public function testWillCreateSearchCaptionIfThereIsSearchResults(): void
     {
-        $animeList = $this->createAnimeCollectionWithRelations(2);
+        $animeList = $this->createAnimeCollectionWithRelations(quantity: 2);
 
         UserStateFacade::shouldReceive('getSearchResult')->once()->andReturn(
             $animeList->pluck('id')->toArray()
@@ -153,8 +150,7 @@ class AnimeMessageUseCaseTest extends TestCase
 
         $anime = $animeList->first();
 
-        $this->assertInstanceOf(Anime::class, $anime);
         $this->assertEquals($anime->image->path, $message->photo);
-        $this->assertEquals($anime->to_telegram_caption, $message->caption);
+        $this->assertEquals((string) AnimeCaptionText::fromAnime($anime), $message->caption);
     }
 }

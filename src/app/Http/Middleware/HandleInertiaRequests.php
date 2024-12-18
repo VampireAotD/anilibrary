@@ -6,7 +6,6 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -39,10 +38,6 @@ class HandleInertiaRequests extends Middleware
             ],
             'flash' => [
                 'message' => fn() => $request->session()->get('message'),
-            ],
-            'ziggy' => fn() => [
-                ...(new Ziggy())->toArray(),
-                'location' => $request->url(),
             ],
         ];
     }

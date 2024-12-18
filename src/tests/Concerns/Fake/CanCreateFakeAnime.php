@@ -31,7 +31,7 @@ trait CanCreateFakeAnime
     }
 
     /**
-     * @return Collection<Anime>
+     * @return Collection<int, Anime>
      */
     protected function createAnimeCollection(int $quantity = 1): Collection
     {
@@ -39,7 +39,7 @@ trait CanCreateFakeAnime
     }
 
     /**
-     * @return Collection<Anime>
+     * @return Collection<int, Anime>
      */
     protected function createAnimeCollectionWithRelations(int $quantity = 1): Collection
     {

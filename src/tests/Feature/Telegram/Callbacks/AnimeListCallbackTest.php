@@ -7,12 +7,14 @@ namespace Tests\Feature\Telegram\Callbacks;
 use App\DTO\Factory\Telegram\CallbackData\PaginationCallbackDataDTO;
 use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\Models\Anime;
+use App\ValueObject\Telegram\Anime\AnimeCaptionText;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\TestCase;
 
-class AnimeListCallbackTest extends TestCase
+final class AnimeListCallbackTest extends TestCase
 {
     use RefreshDatabase;
     use CanCreateMocks;
@@ -28,7 +30,7 @@ class AnimeListCallbackTest extends TestCase
         $this->callbackDataFactory = $this->app->make(CallbackDataFactory::class);
     }
 
-    public function testCallbackWillNotRenderAnimeListIfDatabaseIsEmpty(): void
+    public function testWillNotRespondWithAnimeListIfDatabaseIsEmpty(): void
     {
         $callbackData = $this->callbackDataFactory->resolve(new PaginationCallbackDataDTO());
 
@@ -37,64 +39,70 @@ class AnimeListCallbackTest extends TestCase
                   ->assertReplyMessage(['text' => __('telegram.callbacks.anime_list.render_error')]);
     }
 
-    public function testCallbackWillRenderAnimeList(): void
+    public function testWillSwitchAnimeListPage(): void
     {
-        $anime        = $this->createAnimeWithRelations();
-        $callbackData = $this->callbackDataFactory->resolve(new PaginationCallbackDataDTO());
+        /** @var Collection<int, Anime> $list */
+        $list       = $this->createAnimeCollectionWithRelations(quantity: 2);
+        $firstPage  = $this->callbackDataFactory->resolve(new PaginationCallbackDataDTO());
+        $secondPage = $this->callbackDataFactory->resolve(new PaginationCallbackDataDTO(2));
 
-        $reply = [
-            'type'        => 'photo',
-            'media'       => $anime->image->path,
-            'caption'     => $anime->to_telegram_caption,
-            'has_spoiler' => false,
-        ];
+        $firstAnime = $list->first();
+        $lastAnime  = $list->last();
 
-        $this->bot->hearCallbackQueryData($callbackData)
-                  ->reply()
-                  ->assertReplyMessage([
-                      'media' => json_encode($reply),
-                  ]);
-    }
-
-    public function testCallbackWillRenderAnimeListWithPagination(): void
-    {
-        $animeCollection = $this->createAnimeCollectionWithRelations(quantity: 2);
-        $firstPage       = $this->callbackDataFactory->resolve(new PaginationCallbackDataDTO());
-        $secondPage      = $this->callbackDataFactory->resolve(new PaginationCallbackDataDTO(2));
-
-        $anime = $animeCollection->first();
-        $this->assertInstanceOf(Anime::class, $anime);
-
-        $media = [
-            'type'        => 'photo',
-            'media'       => $anime->image->path,
-            'caption'     => $anime->to_telegram_caption,
-            'has_spoiler' => false,
-        ];
-
-        $replyMarkup = [
-            'inline_keyboard' => [
-                [
-                    [
-                        'text' => $anime->urls->first()->domain,
-                        'url'  => $anime->urls->first()->url,
-                    ],
-                ],
-                [
-
-                    [
-                        'text'          => '>',
-                        'callback_data' => $secondPage,
-                    ],
-                ],
-            ],
-        ];
-
+        // First page render
         $this->bot->hearCallbackQueryData($firstPage)
                   ->reply()
                   ->assertReplyMessage([
-                      'media'        => json_encode($media),
-                      'reply_markup' => json_encode($replyMarkup),
+                      'media' => json_encode([
+                          'type'        => 'photo',
+                          'media'       => $firstAnime->image->path,
+                          'caption'     => (string) AnimeCaptionText::fromAnime($firstAnime),
+                          'has_spoiler' => false,
+                      ]),
+                      'reply_markup' => json_encode([
+                          'inline_keyboard' => [
+                              [
+                                  [
+                                      'text' => $firstAnime->urls->first()->domain,
+                                      'url'  => $firstAnime->urls->first()->url,
+                                  ],
+                              ],
+                              [
+                                  [
+                                      'text'          => '>',
+                                      'callback_data' => $secondPage,
+                                  ],
+                              ],
+                          ],
+                      ]),
+                  ]);
+
+        // Second page render
+        $this->bot->hearCallbackQueryData($secondPage)
+                  ->reply()
+                  ->assertReplyMessage([
+                      'media' => json_encode([
+                          'type'        => 'photo',
+                          'media'       => $lastAnime->image->path,
+                          'caption'     => (string) AnimeCaptionText::fromAnime($lastAnime),
+                          'has_spoiler' => false,
+                      ]),
+                      'reply_markup' => json_encode([
+                          'inline_keyboard' => [
+                              [
+                                  [
+                                      'text' => $lastAnime->urls->first()->domain,
+                                      'url'  => $lastAnime->urls->first()->url,
+                                  ],
+                              ],
+                              [
+                                  [
+                                      'text'          => '<',
+                                      'callback_data' => $firstPage,
+                                  ],
+                              ],
+                          ],
+                      ]),
                   ]);
     }
 }
