@@ -41,6 +41,12 @@ declare namespace Models {
         last_name?: string;
         username?: string;
     }
+
+    export interface Breadcrumb {
+        title: string;
+        url?: string;
+        is_current_page?: boolean;
+    }
 }
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
@@ -50,4 +56,5 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     flash: {
         message?: string;
     };
+    breadcrumbs?: Models.Breadcrumb[];
 };

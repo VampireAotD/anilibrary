@@ -15,7 +15,7 @@ class VoiceActingSeeder extends Seeder
      */
     public function run(): void
     {
-        $voiceActing = array_map(fn(string $voiceActing) => ['name' => $voiceActing], VoiceActingEnum::values());
+        $voiceActing = array_map(static fn(string $voiceActing) => ['name' => $voiceActing], VoiceActingEnum::values());
 
         VoiceActing::query()->upsert($voiceActing, ['name']);
     }

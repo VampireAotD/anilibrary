@@ -3,8 +3,7 @@ import { Deferred, Head } from '@inertiajs/vue3';
 import { Loader2 } from 'lucide-vue-next';
 
 import { type Anime } from '@/entities/anime';
-import { AnimeCarousel } from '@/widgets/dashboard/anime-carousel';
-import { AnimeList } from '@/widgets/dashboard/anime-list';
+import { AnimeCarousel, AnimeList, SiteDescription } from '@/widgets/dashboard';
 import { AuthenticatedLayout } from '@/widgets/layouts';
 
 type Props = {
@@ -21,6 +20,8 @@ defineProps<Props>();
 
     <AuthenticatedLayout>
         <section class="flex flex-col gap-4">
+            <SiteDescription />
+
             <AnimeCarousel :data="latestAnime" />
 
             <Deferred :data="['completedAnime', 'mostPopularAnime']">

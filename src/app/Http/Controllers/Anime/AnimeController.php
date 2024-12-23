@@ -92,7 +92,7 @@ final class AnimeController extends Controller
                 'voiceActing:name',
                 'genres:name',
             ]),
-            'animeListStatuses' => AnimeListStatusEnum::cases(),
+            'animeListStatuses' => AnimeListStatusEnum::labels(),
             'animeListEntry'    => Inertia::defer(
                 fn() => $this->userAnimeListService->findById($request->user(), $anime->id)
             ),

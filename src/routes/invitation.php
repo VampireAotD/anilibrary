@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Invitation\InvitationController;
 use App\Http\Controllers\Invitation\ResendInvitationController;
+use Glhd\Gretel\Routing\ResourceBreadcrumbs;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/invitation/{invitation}/resend', ResendInvitationController::class)
@@ -17,4 +18,5 @@ Route::apiResource('invitation', InvitationController::class)
          'store'   => 'invitation.send',
          'update'  => 'invitation.accept',
          'destroy' => 'invitation.decline',
-     ]);
+     ])
+     ->breadcrumbs(static fn(ResourceBreadcrumbs $breadcrumbs) => $breadcrumbs->index('Invitations', 'dashboard'));

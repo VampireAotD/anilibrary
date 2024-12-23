@@ -42,8 +42,12 @@ const submit = () => {
                 <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem v-for="status in statuses" :key="status" :value="status">
-                    {{ status }}
+                <SelectItem
+                    v-for="(index, status) in statuses"
+                    :key="index"
+                    :value="status"
+                >
+                    {{ index }}
                 </SelectItem>
             </SelectContent>
         </Select>

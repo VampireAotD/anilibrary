@@ -23,7 +23,7 @@ defineProps<Props>();
                 class="basis-1/2 sm:basis-1/3 md:basis-1/4 xl:basis-1/6"
             >
                 <div>
-                    <Link :href="route('anime.show', anime.id)">
+                    <Link :href="route('anime.show', anime)">
                         <img
                             class="w-full h-52 sm:h-72 rounded-lg object-fit"
                             loading="lazy"
