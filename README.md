@@ -2,14 +2,13 @@
   <img src="art/logo.svg" alt="Anilibrary logo" style="width: 75%">
 </p>
 
-Application for scraping anime data from different supported sites
-
 [![Frontend build](https://github.com/VampireAotD/anilibrary/actions/workflows/frontend-build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/frontend-build.yml)
 [![Backend build](https://github.com/VampireAotD/anilibrary/actions/workflows/backend-build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/backend-build.yml)
 
-:warning: This project has a lot more to improve, for example: code base, working with other services, frontend part,
-and, in time, it all **will be improved**, but for now, **Anilibrary is not considered stable, breaking changes will
-occur, so for now - it need to be used for development purposes only!**
+> [!WARNING]
+> This project has a lot more to improve, for example: code base, working with other services, frontend part,
+> and, in time, it all **will be improved**, but for now, **Anilibrary is not considered stable, breaking changes will
+> occur, so for now - it need to be used for development purposes only!**
 
 ---
 
@@ -119,10 +118,18 @@ To do that you can use different commands, for example, to run static analysis u
 make phpstan
 ```
 
+```sh
+make eslint-check
+```
+
 To ensure that project has same code style use:
 
 ```sh
 make pint
+```
+
+```sh
+make prettier-fix
 ```
 
 To make life easier and automatically run all this commands for you before commit, **Git hooks** are used. To run them,
