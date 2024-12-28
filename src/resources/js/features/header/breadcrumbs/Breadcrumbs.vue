@@ -10,7 +10,7 @@ import {
 </script>
 
 <template>
-    <div class="hidden md:flex md:items-center">
+    <div v-if="$page.props.breadcrumbs.length" class="hidden md:flex md:items-center">
         <Breadcrumb>
             <BreadcrumbList>
                 <template v-for="(crumb, index) in $page.props.breadcrumbs" :key="index">

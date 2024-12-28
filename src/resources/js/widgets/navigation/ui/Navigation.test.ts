@@ -4,21 +4,21 @@ import { afterAll, describe, expect, it, vi } from 'vitest';
 import { usePage } from '@inertiajs/vue3';
 
 import { NavigationLink } from '@/features/navigation/navigation-link';
-import Ripple from '@/shared/directives/ripple';
 import { HasRolePlugin } from '@/shared/plugins/user/authorize';
+import { Models } from '@/types';
 
-import AuthenticatedLayout from './AuthenticatedLayout.vue';
+import Navigation from './Navigation.vue';
 
-vi.mock('@inertiajs/vue3', async () => {
-    const actual =
-        await vi.importActual<typeof import('@inertiajs/vue3')>('@inertiajs/vue3');
+vi.mock('@inertiajs/vue3', async (importOriginal) => {
     return {
-        ...actual,
+        ...(await importOriginal<typeof import('@inertiajs/vue3')>()),
         usePage: vi.fn(),
     };
 });
 
-const addRole = (role: object) => {
+afterAll(() => vi.clearAllMocks());
+
+const addRole = (role: Models.Role) => {
     vi.mocked(usePage).mockReturnValue({
         props: {
             auth: {
@@ -30,16 +30,13 @@ const addRole = (role: object) => {
     });
 };
 
-afterAll(() => vi.clearAllMocks());
-
-describe('AuthenticatedLayout test (AuthenticatedLayout.vue)', () => {
-    config.global.directives = { ripple: Ripple };
+describe('Navigation test (Navigation.vue)', () => {
     config.global.plugins = [HasRolePlugin];
 
     it('Invitation link must not be rendered if user is not owner', () => {
         addRole({ name: 'admin' });
 
-        const wrapper = mount(AuthenticatedLayout);
+        const wrapper = mount(Navigation);
 
         const links = wrapper.findAllComponents(NavigationLink);
 
@@ -49,7 +46,7 @@ describe('AuthenticatedLayout test (AuthenticatedLayout.vue)', () => {
     it('Owner must see rendered invitation link', () => {
         addRole({ name: 'owner' });
 
-        const wrapper = mount(AuthenticatedLayout);
+        const wrapper = mount(Navigation);
 
         const links = wrapper.findAllComponents(NavigationLink);
 

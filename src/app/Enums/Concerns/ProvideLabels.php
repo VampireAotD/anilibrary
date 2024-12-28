@@ -16,7 +16,7 @@ trait ProvideLabels
         $labels = [];
 
         foreach (self::cases() as $case) {
-            $labels[$case->value] = $case->label();
+            $labels[$case->value ?? $case->name] = $case->label();
         }
 
         return $labels;

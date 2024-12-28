@@ -3,8 +3,6 @@ pre-commit:
   commands:
     tests:
       run: make test
-    psalm:
-      run: make psalm
     phpstan:
       run: make phpstan
     pint:

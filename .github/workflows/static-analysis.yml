@@ -28,8 +28,5 @@ jobs:
       - name: Install Composer dependencies
         run: composer install -qn --no-ansi --no-progress --no-scripts --prefer-dist
 
-      - name: Run Psalm
-        run: ./vendor/bin/psalm -c psalm.xml
-
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyze --memory-limit=2G

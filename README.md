@@ -116,10 +116,6 @@ Before commiting use must ensure that project is tested, passed all static check
 To do that you can use different commands, for example, to run static analysis use:
 
 ```sh
-make psalm
-```
-
-```sh
 make phpstan
 ```
 

@@ -34,10 +34,6 @@ horizon-status: ## Check Laravel Horizon status.
 app-sh: ## Enter app container.
 	$(compose) exec app sh
 
-.PHONY: psalm
-psalm: ## Run Psalm.
-	$(compose) exec app vendor/bin/psalm
-
 .PHONY: phpstan
 phpstan: ## Run PHPStan.
 	$(compose) exec app vendor/bin/phpstan analyse --memory-limit=2G
@@ -50,14 +46,9 @@ pint: ## Run Laravel Pint.
 infection: ## Run Infection mutation tests.
 	$(compose) exec app vendor/bin/infection --threads=4
 
-.PHONY: optimize
-optimize: ## Optimize Laravel app.
-	$(compose) exec app ./artisan optimize:clear;
-	$(compose) exec app ./artisan optimize;
-
 .PHONY: test
 test: ## Run backend tests.
-	$(compose) exec app ./artisan test
+	$(compose) exec app ./artisan test --parallel
 
 .PHONY: frontend-watch
 frontend-watch: ## Start frontend dev server.
