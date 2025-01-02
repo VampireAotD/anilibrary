@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services\Anime;
 
-use App\DTO\Service\Anime\AnimeDTO;
 use App\DTO\Service\Anime\AnimePaginationDTO;
+use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\DTO\Service\Anime\FindSimilarAnimeDTO;
+use App\DTO\Service\Anime\UpdateAnimeDTO;
 use App\Filters\QueryFilterInterface;
 use App\Jobs\Image\UploadJob;
 use App\Models\Anime;
@@ -22,10 +23,10 @@ final readonly class AnimeService
     /**
      * @throws Throwable
      */
-    public function create(AnimeDTO $dto): Anime
+    public function create(CreateAnimeDTO $dto): Anime
     {
         return DB::transaction(function () use ($dto) {
-            $anime = $this->updateOrCreate($dto);
+            $anime = Anime::updateOrCreate(['title' => $dto->title], $dto->toArray());
             $this->upsertRelations($anime, $dto);
 
             return $anime;
@@ -35,7 +36,7 @@ final readonly class AnimeService
     /**
      * @throws Throwable
      */
-    public function update(Anime $anime, AnimeDTO $dto): Anime
+    public function update(Anime $anime, UpdateAnimeDTO $dto): Anime
     {
         return DB::transaction(function () use ($anime, $dto) {
             $anime->update($dto->toArray());
@@ -84,16 +85,25 @@ final readonly class AnimeService
         return Anime::filter($filters)->lazy();
     }
 
+    /**
+     * @return LengthAwarePaginator<Anime>
+     */
     public function paginate(AnimePaginationDTO $dto): LengthAwarePaginator
     {
         return Anime::filter($dto->filters)->paginate($dto->perPage, page: $dto->page);
     }
 
+    /**
+     * @return LazyCollection<int, Anime>
+     */
     public function unreleased(): LazyCollection
     {
         return Anime::unreleased()->with('urls')->lazy();
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getParsedAnimePerMonth(): array
     {
         // Initial array of parsed anime per month, where month is a key, and value is a parsed anime count
@@ -135,12 +145,7 @@ final readonly class AnimeService
         return Anime::count();
     }
 
-    private function updateOrCreate(AnimeDTO $dto): Anime
-    {
-        return Anime::updateOrCreate(['title' => $dto->title], $dto->toArray());
-    }
-
-    private function upsertRelations(Anime $anime, AnimeDTO $dto): void
+    private function upsertRelations(Anime $anime, CreateAnimeDTO | UpdateAnimeDTO $dto): void
     {
         $anime->urls()->upsertRelated($dto->urls, ['url']);
 

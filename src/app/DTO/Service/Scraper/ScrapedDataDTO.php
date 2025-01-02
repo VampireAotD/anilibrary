@@ -14,6 +14,11 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 final readonly class ScrapedDataDTO implements Arrayable, FromArray
 {
+    /**
+     * @param list<array{name: string}> $genres
+     * @param list<array{name: string}> $voiceActing
+     * @param list<array{name: string}> $synonyms
+     */
     public function __construct(
         public string     $url,
         public string     $title,

@@ -8,6 +8,9 @@ use UnitEnum;
 
 trait ProvideValues
 {
+    /**
+     * @return list<string>
+     */
     public static function values(): array
     {
         return array_map(static fn(UnitEnum $unitEnum) => $unitEnum->value, self::cases());

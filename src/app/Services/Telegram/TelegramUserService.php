@@ -20,6 +20,9 @@ final readonly class TelegramUserService
     {
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function generateSignature(array $data = []): string
     {
         $token = hash('sha256', config('nutgram.token'), true);

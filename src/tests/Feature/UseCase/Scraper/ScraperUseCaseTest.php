@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\UseCase\Scraper;
 
 use App\Enums\Anime\StatusEnum;
+use App\Enums\Anime\TypeEnum;
 use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Jobs\Image\UploadJob;
 use App\Models\AnimeSynonym;
-use App\Models\AnimeUrl;
 use App\Models\Genre;
 use App\Models\VoiceActing;
 use App\Services\Scraper\Client;
@@ -129,7 +129,51 @@ class ScraperUseCaseTest extends TestCase
         $this->scraperUseCase->scrapeByUrl($this->faker->url);
     }
 
-    public function testCanFindSimilarAnimeAfterScrapeRequest(): void
+    #[DataProvider('validImageProvider')]
+    public function testCanCreateAnime(string $image): void
+    {
+        $genres      = Genre::factory(count: 5)->make();
+        $synonyms    = AnimeSynonym::factory(count: 5)->make();
+        $voiceActing = VoiceActing::factory(count: 5)->make();
+
+        Bus::fake();
+        Http::fake([
+            Client::SCRAPE_ENDPOINT => Http::response([
+                'title'       => $this->faker->sentence,
+                'image'       => $image,
+                'year'        => $this->faker->year,
+                'type'        => $this->faker->randomAnimeType(),
+                'status'      => $this->faker->randomAnimeStatus(),
+                'episodes'    => $this->faker->randomAnimeEpisodes(),
+                'rating'      => $this->faker->randomAnimeRating(),
+                'synonyms'    => $synonyms->select('name')->toArray(),
+                'voiceActing' => $voiceActing->select('name')->toArray(),
+                'genres'      => $genres->select('name')->toArray(),
+            ]),
+        ]);
+
+        $url   = $this->faker->url;
+        $anime = $this->scraperUseCase->scrapeByUrl($url);
+
+        Bus::assertDispatched(UpsertAnimeJob::class);
+        Bus::assertDispatched(UploadJob::class, static fn(UploadJob $job) => $job->image === $image);
+
+        $this->assertTrue(Str::isUuid($anime->id));
+        $this->assertNotEmpty($anime->title);
+        $this->assertContainsEquals($anime->type, TypeEnum::cases());
+        $this->assertContainsEquals($anime->status, StatusEnum::cases());
+        $this->assertIsInt($anime->episodes);
+        $this->assertIsFloat($anime->rating);
+        $this->assertIsInt($anime->year);
+
+        $this->assertNotEmpty($anime->image);
+        $this->assertContainsEquals($url, $anime->urls->pluck('url'));
+        $this->assertNotEmpty($anime->genres->pluck('name')->intersect($genres->pluck('name')));
+        $this->assertNotEmpty($anime->synonyms->pluck('name')->intersect($synonyms->pluck('name')));
+        $this->assertNotEmpty($anime->voiceActing->pluck('name')->intersect($voiceActing->pluck('name')));
+    }
+
+    public function testCanFindAndUpdateSimilarAnime(): void
     {
         $anime = $this->createAnimeWithRelations();
 
@@ -137,47 +181,45 @@ class ScraperUseCaseTest extends TestCase
         $this->assertCount(1, $anime->urls);
         $this->assertCount(1, $anime->synonyms);
 
-        // Create new synonyms that scraper will return
-        $newSynonyms = AnimeSynonym::factory(4)->make()->toArray();
+        $genres      = Genre::factory(count: 4)->make();
+        $synonyms    = AnimeSynonym::factory(count: 4)->make();
+        $voiceActing = VoiceActing::factory(count: 4)->make();
 
         Bus::fake();
         Http::fake([
             Client::SCRAPE_ENDPOINT => Http::response([
-                'title'    => $this->faker->sentence,
-                'year'     => $anime->year,
-                'type'     => $anime->type,
-                'status'   => $status   = $this->faker->randomAnimeStatus(),
-                'episodes' => $episodes = $this->faker->randomAnimeEpisodes(),
-                'rating'   => $rating   = $this->faker->randomAnimeRating(),
-                'synonyms' => array_merge($anime->synonyms->select('name')->toArray(), $newSynonyms),
+                'title'       => $this->faker->sentence,
+                'year'        => $anime->year,
+                'type'        => $anime->type,
+                'status'      => $status   = $this->faker->randomAnimeStatus(),
+                'episodes'    => $episodes = $this->faker->randomAnimeEpisodes(),
+                'rating'      => $this->faker->randomAnimeRating(),
+                'synonyms'    => $anime->synonyms->concat($synonyms)->select('name'),
+                'genres'      => $anime->genres->concat($genres)->select('name'),
+                'voiceActing' => $anime->voiceActing->concat($voiceActing)->select('name'),
             ]),
         ]);
 
         $url        = $this->faker->url;
         $foundAnime = $this->scraperUseCase->scrapeByUrl($url);
 
-        $foundAnime->refresh(); // to reload relations
-
         Bus::assertDispatched(UpsertAnimeJob::class); // because anime is updated
 
-        $this->assertEquals($anime->id, $foundAnime->id);
-        $this->assertEquals($anime->title, $foundAnime->title);
-        $this->assertEquals($anime->image, $foundAnime->image);
-        $this->assertEquals($anime->genres->toArray(), $foundAnime->genres->toArray());
-        $this->assertEquals($anime->voiceActing->toArray(), $foundAnime->voiceActing->toArray());
-
-        // Ensure that only status, episodes and rating have been updated
+        // Ensure that only status, episodes and relations have been updated
         $this->assertEquals($foundAnime->status, $status);
         $this->assertEquals($foundAnime->episodes, $episodes);
-        $this->assertEquals($foundAnime->rating, $rating);
 
-        // Ensure that new relations have been created
         $this->assertCount(2, $foundAnime->urls);
-        $this->assertTrue($foundAnime->urls->intersect($anime->urls)->isNotEmpty());
         $this->assertContainsEquals($url, $foundAnime->urls->pluck('url'));
 
         $this->assertCount(5, $foundAnime->synonyms);
-        $this->assertTrue($foundAnime->synonyms->intersect($anime->synonyms)->isNotEmpty());
+        $this->assertNotEmpty($foundAnime->synonyms->pluck('name')->intersect($synonyms->pluck('name')));
+
+        $this->assertCount(5, $foundAnime->genres);
+        $this->assertNotEmpty($foundAnime->genres->pluck('name')->intersect($genres->pluck('name')));
+
+        $this->assertCount(5, $foundAnime->voiceActing);
+        $this->assertNotEmpty($foundAnime->voiceActing->pluck('name')->intersect($voiceActing->pluck('name')));
     }
 
     public function testWillNotUpdateImageIfAnimeAlreadyHasOne(): void
@@ -204,57 +246,5 @@ class ScraperUseCaseTest extends TestCase
         Bus::assertNotDispatched(UploadJob::class);
 
         $this->assertEquals($anime->image, $foundAnime->image);
-    }
-
-    #[DataProvider('validImageProvider')]
-    public function testCanCreateAnime(string $image): void
-    {
-        Bus::fake();
-        Http::fake([
-            Client::SCRAPE_ENDPOINT => Http::response([
-                'title'       => $this->faker->sentence,
-                'image'       => $image,
-                'year'        => $this->faker->year,
-                'type'        => $this->faker->randomAnimeType(),
-                'status'      => $this->faker->randomAnimeStatus(),
-                'episodes'    => $this->faker->randomAnimeEpisodes(),
-                'rating'      => $this->faker->randomAnimeRating(),
-                'genres'      => Genre::factory(5)->make()->toArray(),
-                'voiceActing' => VoiceActing::factory(5)->make()->toArray(),
-                'synonyms'    => AnimeSynonym::factory(5)->make()->toArray(),
-            ]),
-        ]);
-
-        $url   = $this->faker->url;
-        $anime = $this->scraperUseCase->scrapeByUrl($url);
-
-        $anime->refresh(); // to reload relations
-
-        $this->assertIsString($anime->id);
-        $this->assertNotEmpty($anime->title);
-        $this->assertContainsEquals($anime->status, StatusEnum::cases());
-
-        Bus::assertDispatched(UploadJob::class, function (UploadJob $job) use ($image) {
-            return $job->image === $image;
-        });
-
-        $this->assertTrue($anime->voiceActing->isNotEmpty());
-        $this->assertInstanceOf(VoiceActing::class, $anime->voiceActing->first());
-        $this->assertNotEmpty($anime->voiceActing->first()->name);
-
-        $this->assertTrue($anime->genres->isNotEmpty());
-        $this->assertInstanceOf(Genre::class, $anime->genres->first());
-        $this->assertNotEmpty($anime->genres->first()->name);
-
-        $this->assertTrue($anime->urls->isNotEmpty());
-        $this->assertInstanceOf(AnimeUrl::class, $anime->urls->first());
-        $this->assertNotEmpty($anime->urls->first()->url);
-        $this->assertContainsEquals($url, $anime->urls->pluck('url'));
-
-        $this->assertTrue($anime->synonyms->isNotEmpty());
-        $this->assertInstanceOf(AnimeSynonym::class, $anime->synonyms->first());
-        $this->assertNotEmpty($anime->synonyms->first()->name);
-
-        Bus::assertDispatched(UpsertAnimeJob::class);
     }
 }

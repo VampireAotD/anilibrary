@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Pipeline;
 trait Filterable
 {
     /**
-     * @param Builder                     $builder
-     * @param array<QueryFilterInterface> $filters
-     * @return Builder
+     * @param Builder<$this>             $builder
+     * @param list<QueryFilterInterface> $filters
+     * @return Builder<$this>
      */
     public function scopeFilter(Builder $builder, array $filters): Builder
     {

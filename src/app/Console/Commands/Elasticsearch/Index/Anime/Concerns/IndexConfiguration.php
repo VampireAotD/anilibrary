@@ -6,6 +6,9 @@ namespace App\Console\Commands\Elasticsearch\Index\Anime\Concerns;
 
 trait IndexConfiguration
 {
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     protected function getIndexSettings(): array
     {
         return [
@@ -57,6 +60,9 @@ trait IndexConfiguration
         ];
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     protected function getIndexMappings(): array
     {
         return [

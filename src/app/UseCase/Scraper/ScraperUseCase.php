@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\UseCase\Scraper;
 
-use App\DTO\Service\Anime\AnimeDTO;
+use App\DTO\Service\Anime\CreateAnimeDTO;
 use App\DTO\Service\Anime\FindSimilarAnimeDTO;
+use App\DTO\Service\Anime\UpdateAnimeDTO;
 use App\DTO\Service\Scraper\ScrapedDataDTO;
 use App\Enums\Anime\StatusEnum;
 use App\Enums\Anime\TypeEnum;
@@ -45,6 +46,7 @@ final readonly class ScraperUseCase
     }
 
     /**
+     * @param array<string, mixed> $data
      * @throws ValidationException
      */
     private function validateResponse(array $data): void
@@ -76,50 +78,52 @@ final readonly class ScraperUseCase
         );
 
         if ($anime) {
-            return $this->animeService->update(
-                $anime,
-                new AnimeDTO(
-                    $anime->title,
-                    $anime->type, // @phpstan-ignore-line Ignored because of parser issues
-                    $dto->status,
-                    $dto->rating,
-                    $dto->episodes,
-                    (int) $anime->year,
-                    [['url' => $dto->url]],
-                    synonyms   : $dto->synonyms,
-                    voiceActing: $dto->voiceActing,
-                    genres     : $dto->genres
-                )
-            );
+            return DB::transaction(function () use ($anime, $dto): Anime {
+                [$genres, $voiceActing] = $this->syncVoiceActingAndGenres($dto);
+
+                return $this->animeService->update(
+                    $anime,
+                    new UpdateAnimeDTO(
+                        status     : $dto->status,
+                        episodes   : $dto->episodes,
+                        urls       : [['url' => $dto->url]],
+                        synonyms   : $dto->synonyms,
+                        voiceActing: $voiceActing,
+                        genres     : $genres
+                    )
+                );
+            });
         }
 
         return DB::transaction(function () use ($dto): Anime {
-            $genreIds       = [];
-            $voiceActingIds = [];
-
-            if ($dto->genres) {
-                $genreIds = $this->genreService->sync($dto->genres);
-            }
-
-            if ($dto->voiceActing) {
-                $voiceActingIds = $this->voiceActingService->sync($dto->voiceActing);
-            }
+            [$genres, $voiceActing] = $this->syncVoiceActingAndGenres($dto);
 
             return $this->animeService->create(
-                new AnimeDTO(
-                    $dto->title,
-                    $dto->type,
-                    $dto->status,
-                    $dto->rating,
-                    $dto->episodes,
-                    $dto->year,
-                    [['url' => $dto->url]],
-                    $dto->image,
-                    $dto->synonyms,
-                    $voiceActingIds,
-                    $genreIds
+                new CreateAnimeDTO(
+                    title      : $dto->title,
+                    year       : $dto->year,
+                    urls       : [['url' => $dto->url]],
+                    type       : $dto->type,
+                    status     : $dto->status,
+                    rating     : $dto->rating,
+                    episodes   : $dto->episodes,
+                    image      : $dto->image,
+                    synonyms   : $dto->synonyms,
+                    voiceActing: $voiceActing,
+                    genres     : $genres
                 )
             );
         });
+    }
+
+    /**
+     * @return list<list<string>>
+     */
+    private function syncVoiceActingAndGenres(ScrapedDataDTO $dto): array
+    {
+        return [
+            $this->genreService->sync($dto->genres),
+            $this->voiceActingService->sync($dto->voiceActing),
+        ];
     }
 }

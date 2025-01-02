@@ -28,7 +28,6 @@ class MacroServiceProvider extends ServiceProvider
         HasMany::macro(
             'upsertRelated',
             function (array $values, array | string $uniqueBy, array | null $update = null): int {
-                /** @var HasMany $this */
                 data_set($values, '*.' . $this->getForeignKeyName(), $this->getParentKey());
                 return $this->getRelated()->upsert($values, $uniqueBy, $update);
             }

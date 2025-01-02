@@ -30,7 +30,7 @@ trait HasOneOfMorphToManyRelation
      * @param string|null                 $relatedKey
      * @param string|null                 $relation
      * @param bool                        $inverse
-     * @return OneOfMorphToMany
+     * @return OneOfMorphToMany<TRelatedModel, $this>
      */
     public function oneOfMorphToMany(
         $related,
@@ -59,6 +59,7 @@ trait HasOneOfMorphToManyRelation
             $table = implode('', $words) . Str::plural($lastWord);
         }
 
+        // @phpstan-ignore return.type (Suppressed because of overriding)
         return new OneOfMorphToMany(
             query          : $instance->newQuery(),
             parent         : $this,

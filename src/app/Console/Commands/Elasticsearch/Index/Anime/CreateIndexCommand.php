@@ -9,7 +9,7 @@ use App\Enums\Elasticsearch\IndexEnum;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
-class CreateIndexCommand extends Command
+final class CreateIndexCommand extends Command
 {
     use IndexConfiguration;
 

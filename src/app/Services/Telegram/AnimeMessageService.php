@@ -47,6 +47,9 @@ final readonly class AnimeMessageService
         );
     }
 
+    /**
+     * @return list<InlineKeyboardButtonDTO>
+     */
     private function generateExternalLinks(Anime $anime): array
     {
         return $anime->urls->map(
@@ -56,6 +59,7 @@ final readonly class AnimeMessageService
 
     /**
      * @param LengthAwarePaginator<Anime> $paginator
+     * @return list<InlineKeyboardButtonDTO>
      */
     private function generatePagination(
         LengthAwarePaginator $paginator,

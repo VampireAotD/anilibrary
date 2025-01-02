@@ -35,21 +35,37 @@ class Invitation extends Model
         ];
     }
 
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
     public function scopePending(Builder $query): Builder
     {
         return $query->where('status', StatusEnum::PENDING);
     }
 
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
     public function scopeAccepted(Builder $query): Builder
     {
         return $query->where('status', StatusEnum::ACCEPTED);
     }
 
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
     public function scopeDeclined(Builder $query): Builder
     {
         return $query->where('status', StatusEnum::DECLINED);
     }
 
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
     public function scopeExpired(Builder $query): Builder
     {
         return $query->where('status', StatusEnum::ACCEPTED)->where('expires_at', '<=', now());

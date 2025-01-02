@@ -31,6 +31,10 @@ class AnimeUrl extends Model
         return $this->belongsTo(Anime::class);
     }
 
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
     public function scopeCountByDomain(Builder $query): Builder
     {
         return $query->selectRaw("SUBSTRING_INDEX(url, '/', 3) as domain, COUNT(url) as anime")

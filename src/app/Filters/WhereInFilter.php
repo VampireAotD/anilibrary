@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 final readonly class WhereInFilter implements QueryFilterInterface
 {
+    /**
+     * @param list<mixed> $values
+     */
     public function __construct(private string $column, private array $values)
     {
     }

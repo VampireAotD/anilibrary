@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 final readonly class ColumnFilter implements QueryFilterInterface
 {
+    /**
+     * @param list<string> $columns
+     */
     public function __construct(private array $columns = ['*'])
     {
     }

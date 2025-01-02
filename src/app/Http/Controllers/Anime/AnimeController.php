@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Anime;
 
-use App\DTO\Service\Anime\AnimeDTO;
+use App\DTO\Service\Anime\UpdateAnimeDTO;
 use App\DTO\Service\Elasticsearch\Anime\AnimePaginationDTO;
 use App\Enums\Anime\StatusEnum;
 use App\Enums\UserAnimeList\StatusEnum as AnimeListStatusEnum;
@@ -103,7 +103,7 @@ final class AnimeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Anime $anime)
+    public function edit(Anime $anime): void
     {
         //
     }
@@ -114,7 +114,7 @@ final class AnimeController extends Controller
     public function update(UpdateRequest $request, Anime $anime): RedirectResponse
     {
         try {
-            $this->animeService->update($anime, AnimeDTO::fromArray($request->validated()));
+            $this->animeService->update($anime, UpdateAnimeDTO::fromArray($request->validated()));
 
             return to_route('anime.show', $anime->id);
         } catch (Throwable $exception) {
@@ -130,7 +130,7 @@ final class AnimeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Anime $anime)
+    public function destroy(Anime $anime): void
     {
         //
     }

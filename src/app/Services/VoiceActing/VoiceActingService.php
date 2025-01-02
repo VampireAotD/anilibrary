@@ -21,7 +21,7 @@ final readonly class VoiceActingService
     }
 
     /**
-     * @param array<array{name: string}> $voiceActing
+     * @param list<array{name: string}> $voiceActing
      * @return list<string> Array of voice acting ids
      */
     public function sync(array $voiceActing): array
@@ -45,6 +45,7 @@ final readonly class VoiceActingService
 
     /**
      * @param list<string> $names
+     * @return Collection<int, VoiceActing>
      */
     private function findByNames(array $names): Collection
     {

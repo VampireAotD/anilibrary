@@ -97,16 +97,28 @@ class Anime extends Model
         return $this->belongsToMany(User::class, UserAnimeList::class)->withTimestamps();
     }
 
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
     public function scopeReleased(Builder $query): Builder
     {
         return $query->where('status', StatusEnum::RELEASED);
     }
 
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
     public function scopeUnreleased(Builder $query): Builder
     {
         return $query->whereNot('status', StatusEnum::RELEASED);
     }
 
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
     public function scopeCountScrapedPerMonth(Builder $query): Builder
     {
         return $query->selectRaw('COUNT(id) as per_month, MONTH(created_at) as month_number')

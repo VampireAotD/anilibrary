@@ -8,7 +8,7 @@ use SergiX44\Nutgram\Nutgram;
 
 final class BotAccessMiddleware
 {
-    public function __invoke(Nutgram $bot, $next): void
+    public function __invoke(Nutgram $bot, mixed $next): void
     {
         $whitelist = explode(',', config('nutgram.whitelist', ''));
 

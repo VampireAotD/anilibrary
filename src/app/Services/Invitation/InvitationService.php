@@ -65,7 +65,8 @@ final readonly class InvitationService
     }
 
     /**
-     * @param array<QueryFilterInterface> $filters
+     * @param list<QueryFilterInterface> $filters
+     * @return CursorPaginator<Invitation>
      */
     public function paginate(array $filters = []): CursorPaginator
     {

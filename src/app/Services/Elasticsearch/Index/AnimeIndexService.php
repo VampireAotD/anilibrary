@@ -10,6 +10,7 @@ use App\Enums\Elasticsearch\IndexEnum;
 use App\Filters\ColumnFilter;
 use App\Filters\RelationFilter;
 use App\Filters\WhereInFilter;
+use App\Models\Anime;
 use App\Services\Anime\AnimeService;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
@@ -28,6 +29,7 @@ final readonly class AnimeIndexService
 
     /**
      * @psalm-suppress InvalidArgument
+     * @return array<string, mixed>
      */
     public function multiMatchSearch(string $term): array
     {
@@ -62,6 +64,9 @@ final readonly class AnimeIndexService
         }
     }
 
+    /**
+     * @return list<Anime>
+     */
     public function paginate(AnimePaginationDTO $dto): array
     {
         try {
@@ -91,6 +96,9 @@ final readonly class AnimeIndexService
         }
     }
 
+    /**
+     * @return array<string, array<string, int>>
+     */
     public function getFacets(): array
     {
         try {
@@ -134,7 +142,7 @@ final readonly class AnimeIndexService
                 ],
             ])->asArray();
 
-            return AnimeFacetDTO::fromArray($facets)->toArray();
+            return AnimeFacetDTO::fromArray($facets['aggregations'])->toArray();
         } catch (ClientResponseException | ServerResponseException | NoNodeAvailableException $exception) {
             Log::error('Elasticsearch anime index facets', [
                 'exception_trace'   => $exception->getTraceAsString(),

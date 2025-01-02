@@ -19,6 +19,7 @@ final class NotUpdatedAnimeMail extends Mailable
 
     /**
      * Create a new message instance.
+     * @param array<string, string> $failedList
      */
     public function __construct(public readonly array $failedList)
     {

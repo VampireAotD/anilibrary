@@ -18,6 +18,9 @@ trait HasImage
 {
     use HasOneOfMorphToManyRelation;
 
+    /**
+     * @return OneOfMorphToMany<Image, $this>
+     */
     public function image(): OneOfMorphToMany
     {
         return $this->oneOfMorphToMany(Image::class, 'model', 'has_images')->withTimestamps()->withDefault([

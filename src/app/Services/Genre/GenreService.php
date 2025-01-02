@@ -21,7 +21,7 @@ final readonly class GenreService
     }
 
     /**
-     * @param array<array{name: string}> $genres
+     * @param list<array{name: string}> $genres
      * @return list<string> Array of genre ids
      */
     public function sync(array $genres): array
@@ -45,6 +45,7 @@ final readonly class GenreService
 
     /**
      * @param list<string> $names
+     * @return Collection<int, Genre>
      */
     private function findByNames(array $names): Collection
     {

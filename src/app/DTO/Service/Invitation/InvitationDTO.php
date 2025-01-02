@@ -7,6 +7,9 @@ namespace App\DTO\Service\Invitation;
 use App\Enums\Invitation\StatusEnum;
 use Illuminate\Contracts\Support\Arrayable;
 
+/**
+ * @template-implements Arrayable<string, mixed>
+ */
 final readonly class InvitationDTO implements Arrayable
 {
     public function __construct(

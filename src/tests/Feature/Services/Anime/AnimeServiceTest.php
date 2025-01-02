@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Services\Anime;
 
-use App\DTO\Service\Anime\AnimeDTO;
+use App\DTO\Service\Anime\CreateAnimeDTO;
+use App\DTO\Service\Anime\UpdateAnimeDTO;
 use App\Enums\Anime\StatusEnum;
 use App\Enums\Anime\TypeEnum;
 use App\Jobs\Image\UploadJob;
@@ -37,14 +38,14 @@ class AnimeServiceTest extends TestCase
 
         $this->assertDatabaseEmpty(Anime::class);
 
-        $dto = new AnimeDTO(
+        $dto = new CreateAnimeDTO(
             title   : $this->faker->title,
+            year    : (int) $this->faker->year,
+            urls    : [['url' => $this->faker->url]],
             type    : $this->faker->randomAnimeType(),
             status  : $this->faker->randomAnimeStatus(),
             rating  : $this->faker->randomAnimeRating(),
             episodes: $this->faker->randomAnimeEpisodes(),
-            year    : (int) $this->faker->year,
-            urls    : [['url' => $this->faker->url]],
             image   : $this->faker->randomAnimeImage()
         );
 
@@ -66,14 +67,14 @@ class AnimeServiceTest extends TestCase
 
         $this->assertDatabaseEmpty(Anime::class);
 
-        $dto = new AnimeDTO(
+        $dto = new CreateAnimeDTO(
             title   : $this->faker->title,
+            year    : (int) $this->faker->year,
+            urls    : [['url' => $this->faker->url]],
             type    : $this->faker->randomAnimeType(),
             status  : $this->faker->randomAnimeStatus(),
             rating  : $this->faker->randomAnimeRating(),
             episodes: $this->faker->randomAnimeEpisodes(),
-            year    : (int) $this->faker->year,
-            urls    : [['url' => $this->faker->url]],
         );
 
         $anime = $this->animeService->create($dto);
@@ -100,7 +101,7 @@ class AnimeServiceTest extends TestCase
             'status' => StatusEnum::ONGOING,
         ]);
 
-        $dto = new AnimeDTO(
+        $dto = new UpdateAnimeDTO(
             title   : $anime->title,
             type    : TypeEnum::SHOW,
             status  : StatusEnum::RELEASED,

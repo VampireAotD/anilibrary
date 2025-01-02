@@ -8,6 +8,9 @@ use App\DTO\Contracts\FromArray;
 use Illuminate\Contracts\Support\Arrayable;
 use SensitiveParameter;
 
+/**
+ * @template-implements Arrayable<string, mixed>
+ */
 final readonly class UserDTO implements Arrayable, FromArray
 {
     public function __construct(

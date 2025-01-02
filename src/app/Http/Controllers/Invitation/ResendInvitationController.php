@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Invitation;
 use App\Http\Controllers\Controller;
 use App\Models\Invitation;
 use App\Services\Invitation\InvitationService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 final class ResendInvitationController extends Controller
@@ -18,7 +19,7 @@ final class ResendInvitationController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, Invitation $invitation)
+    public function __invoke(Request $request, Invitation $invitation): RedirectResponse
     {
         $this->invitationService->resend($invitation);
 

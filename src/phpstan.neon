@@ -4,7 +4,7 @@ includes:
 parameters:
     paths:
         - app/
-    level: 5
+    level: 6
     noEnvCallsOutsideOfConfig: true
     checkModelAppends: true
     ignoreErrors: # https://github.com/larastan/larastan/issues/555#issuecomment-1013604870

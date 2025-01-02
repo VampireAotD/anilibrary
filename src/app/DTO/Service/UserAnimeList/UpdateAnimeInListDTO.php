@@ -8,6 +8,9 @@ use App\Enums\UserAnimeList\StatusEnum;
 use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
 
+/**
+ * @template-implements Arrayable<string, mixed>
+ */
 final readonly class UpdateAnimeInListDTO implements Arrayable
 {
     public function __construct(

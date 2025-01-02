@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 final readonly class RelationFilter implements QueryFilterInterface
 {
+    /**
+     * @param list<string> $relations
+     */
     public function __construct(private array $relations = [])
     {
     }
