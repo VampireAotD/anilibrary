@@ -13,11 +13,11 @@ final class JsonResponse extends GuzzleResponse
     private const array ES_HEADERS = [Elasticsearch::HEADER_CHECK => Elasticsearch::PRODUCT_NAME];
 
     public function __construct(
-        array  $body = [],
-        int    $status = Response::HTTP_OK,
-        array  $headers = [],
-        string $version = '1.1',
-        string $reason = null
+        array   $body = [],
+        int     $status = Response::HTTP_OK,
+        array   $headers = [],
+        string  $version = '1.1',
+        ?string $reason = null
     ) {
         $headers = array_merge(self::ES_HEADERS, ['Content-Type' => 'application/json'], $headers);
 

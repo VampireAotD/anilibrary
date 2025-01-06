@@ -32,7 +32,7 @@ final class RegistrationAccessController extends Controller
     public function store(AcquireRegistrationAccessRequest $request): RedirectResponse
     {
         $this->invitationService->create(
-            new InvitationDTO($request->post('email'), StatusEnum::PENDING)
+            new InvitationDTO($request->get('email'), StatusEnum::PENDING)
         );
 
         return to_route('registration_access.await');

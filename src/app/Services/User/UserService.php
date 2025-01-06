@@ -9,6 +9,7 @@ use App\Enums\RoleEnum;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 final readonly class UserService
 {
@@ -17,6 +18,9 @@ final readonly class UserService
         return User::updateOrCreate(['email' => $dto->email], $dto->toArray());
     }
 
+    /**
+     * @throws Throwable
+     */
     public function register(UserDTO $dto): User
     {
         return DB::transaction(function () use ($dto): User {

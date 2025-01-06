@@ -34,6 +34,7 @@ final class UserAnimeListService
         );
 
         // Not using model directly because of Model::shouldBeStrict()
+        /** @var array{status: string, user_count: int, percentage: float} */
         return DB::table(UserAnimeList::class)
                  ->fromSub(
                      $subQuery->leftJoin(

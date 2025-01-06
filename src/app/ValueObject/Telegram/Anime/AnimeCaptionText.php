@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\ValueObject\Telegram\Anime;
 
 use App\Models\Anime;
+use Stringable;
 
-final readonly class AnimeCaptionText implements \Stringable
+final readonly class AnimeCaptionText implements Stringable
 {
     public function __construct(public Anime $anime)
     {

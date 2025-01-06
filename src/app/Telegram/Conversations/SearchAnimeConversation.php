@@ -47,6 +47,7 @@ final class SearchAnimeConversation extends Conversation
                 $bot->deleteMessage($userId, (int) $messageId);
             }
 
+            /** @var list<string> $ids */
             $ids = Arr::pluck($animeList, '_source.id');
             UserStateFacade::saveSearchResult($userId, $ids);
 

@@ -52,6 +52,7 @@ final readonly class AnimeMessageService
      */
     private function generateExternalLinks(Anime $anime): array
     {
+        /** @var list<InlineKeyboardButtonDTO> */
         return $anime->urls->map(
             static fn(AnimeUrl $url) => new InlineKeyboardButtonDTO($url->domain, $url->url)
         )->toArray();

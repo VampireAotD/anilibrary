@@ -41,11 +41,12 @@ final class StartCommand extends Command
     }
 
     /**
-     * @param array<CommandButtonEnum> $buttons
+     * @param list<CommandButtonEnum> $buttons
+     * @param positive-int            $buttonsPerRow
      */
     private function createReplyMarkup(array $buttons, int $buttonsPerRow = 2): ReplyKeyboardMarkup
     {
-        $markup       = ReplyKeyboardMarkup::make(true);
+        $markup       = ReplyKeyboardMarkup::make(resize_keyboard: true);
         $buttonChunks = array_chunk($buttons, $buttonsPerRow);
 
         foreach ($buttonChunks as $chunk) {

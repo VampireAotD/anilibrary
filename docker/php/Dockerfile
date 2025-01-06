@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG PHP_VERSION=8.3.13
+ARG PHP_VERSION=8.3.15
 ARG COMPOSER_VERSION=2.8.3
 ARG NODE_VERSION=22.11
 ARG PNPM_VERSION=9.15.0
@@ -16,10 +16,13 @@ FROM php:${PHP_VERSION}-cli-alpine
 
 ARG GROUP_ID=1000
 ARG USER_ID=1000
+ARG XDEBUG_VERSION=3.4.0
+ARG SWOOLE_VERSION=6.0.0
+ARG PHPREDIS_VERSION=6.1.0
 
 RUN apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git zip unzip supervisor \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS linux-headers brotli-dev pcre-dev pcre2-dev zlib-dev \
-    && pecl install xdebug swoole redis uv \
+    && pecl install xdebug-${XDEBUG_VERSION} swoole-${SWOOLE_VERSION} redis-${PHPREDIS_VERSION} uv \
     && docker-php-ext-install -j$(nproc) \
     pcntl \
     mbstring \
@@ -45,7 +48,6 @@ COPY --link ./supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 
 COPY --link --from=composer /usr/bin/composer /usr/local/bin/composer
 
-COPY --link --from=node /usr/lib /usr/lib
 COPY --link --from=node /usr/local/lib /usr/local/lib
 COPY --link --from=node /usr/local/include /usr/local/include
 COPY --link --from=node /usr/local/bin /usr/local/bin

@@ -9,7 +9,7 @@ use App\Filters\QueryFilterInterface;
 final readonly class AnimePaginationDTO
 {
     /**
-     * @param array<QueryFilterInterface> $filters
+     * @param list<QueryFilterInterface> $filters
      */
     public function __construct(
         public int   $page,
