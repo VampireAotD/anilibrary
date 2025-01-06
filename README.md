@@ -2,8 +2,8 @@
   <img src="art/logo.svg" alt="Anilibrary logo" style="width: 75%">
 </p>
 
-[![Frontend build](https://github.com/VampireAotD/anilibrary/actions/workflows/frontend-build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/frontend-build.yml)
-[![Backend build](https://github.com/VampireAotD/anilibrary/actions/workflows/backend-build.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/backend-build.yml)
+[![Frontend tests](https://github.com/VampireAotD/anilibrary/actions/workflows/frontend-tests.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/frontend-tests.yml)
+[![Backend tests](https://github.com/VampireAotD/anilibrary/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/VampireAotD/anilibrary/actions/workflows/backend-tests.yml)
 
 > [!WARNING]
 > This project has a lot more to improve, for example: code base, working with other services, frontend part,
