@@ -9,23 +9,20 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
         Schema::create('anime_voice_acting', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('anime_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('voice_acting_id')->constrained('voice_acting')
-                  ->cascadeOnDelete();
+            $table->foreignUuid('voice_acting_id')->constrained('voice_acting')->cascadeOnDelete();
+
+            $table->unique(['anime_id', 'voice_acting_id']);
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

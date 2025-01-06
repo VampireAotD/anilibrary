@@ -1,10 +1,11 @@
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+    - vendor/larastan/larastan/extension.neon
 
 parameters:
     paths:
         - app/
-    level: 5
-    excludePaths:
-        - ./app/Providers/MacroServiceProvider.php
-        - ./app/Telegram/State/UserState.php
+    level: 6
+    noEnvCallsOutsideOfConfig: true
+    checkModelAppends: true
+    ignoreErrors: # https://github.com/larastan/larastan/issues/555#issuecomment-1013604870
+            - '#PHPDoc tag @mixin contains unknown class App\\Models#'

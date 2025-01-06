@@ -1,0 +1,49 @@
+name: Backend tests
+
+on: [ push, pull_request ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: src
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: anilibrary-testing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: src/vendor
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: xdebug
+          coverage: xdebug
+
+      - name: Install Composer dependencies
+        run: composer install -qn --no-ansi --no-progress --prefer-dist
+
+      - name: Run tests
+        env:
+          DB_HOST: 127.0.0.1
+        run: php artisan test --parallel --coverage

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
+use App\Broadcasting\Scraper\ScrapeAnimeChannel;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -16,6 +16,4 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('scraper.{id}', function (User $user, string $requestedId) {
-    return $user->id === $requestedId;
-});
+Broadcast::channel('scrape.anime.{id}', ScrapeAnimeChannel::class);

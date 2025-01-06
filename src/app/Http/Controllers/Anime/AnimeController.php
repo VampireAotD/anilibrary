@@ -4,28 +4,37 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Anime;
 
-use App\DTO\Service\Anime\UpsertAnimeDTO;
+use App\DTO\Service\Anime\UpdateAnimeDTO;
+use App\DTO\Service\Elasticsearch\Anime\AnimePaginationDTO;
+use App\Enums\Anime\StatusEnum;
+use App\Enums\UserAnimeList\StatusEnum as AnimeListStatusEnum;
+use App\Filters\ColumnFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Anime\CreateRequest;
 use App\Http\Requests\Anime\IndexRequest;
 use App\Http\Requests\Anime\UpdateRequest;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use App\Models\Anime;
-use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\ColumnFilter;
-use App\Repositories\Filters\RelationFilter;
-use App\Repositories\Params\PaginationParams;
-use App\Services\AnimeService;
+use App\Services\Anime\AnimeService;
+use App\Services\Elasticsearch\Index\AnimeIndexService;
+use App\Services\Genre\GenreService;
+use App\Services\User\UserAnimeListService;
+use App\Services\VoiceActing\VoiceActingService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
 
-class AnimeController extends Controller
+final class AnimeController extends Controller
 {
     public function __construct(
-        private readonly AnimeRepositoryInterface $animeRepository,
-        private readonly AnimeService             $animeService,
+        private readonly AnimeService         $animeService,
+        private readonly GenreService         $genreService,
+        private readonly VoiceActingService   $voiceActingService,
+        private readonly AnimeIndexService    $animeIndexService,
+        private readonly UserAnimeListService $userAnimeListService
     ) {
     }
 
@@ -34,24 +43,29 @@ class AnimeController extends Controller
      */
     public function index(IndexRequest $request): Response
     {
-        $page    = (int) $request->get('page', 1);
-        $perPage = (int) $request->get('per_page', 20);
-
-        $filter     = new PaginationParams($page, $perPage);
-        $pagination = $this->animeRepository->withFilters([
-            new ColumnFilter(['id', 'title', 'episodes', 'rating', 'status']),
-            new RelationFilter(['image:model_id,path']),
-        ])->paginate($filter);
-
-        return Inertia::render('Anime/Index', compact('pagination'));
+        return Inertia::render('Anime/Index', [
+            'items' => Inertia::defer(fn() => $this->animeIndexService->paginate(
+                new AnimePaginationDTO(
+                    page   : $request->integer('page', 1),
+                    perPage: $request->integer('perPage', 20),
+                    filters: $request->get('filters', []),
+                    sort   : $request->get('sort', [])
+                )
+            )),
+            'filters' => Inertia::defer(fn() => $this->animeIndexService->getFacets()),
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        //
+        $statuses    = StatusEnum::values();
+        $genres      = $this->genreService->all([new ColumnFilter(['name'])])->pluck('name')->toArray();
+        $voiceActing = $this->voiceActingService->all([new ColumnFilter(['name'])])->pluck('name')->toArray();
+
+        return Inertia::render('Anime/Create', compact('statuses', 'genres', 'voiceActing'));
     }
 
     /**
@@ -62,29 +76,34 @@ class AnimeController extends Controller
         // For now, you can only add new anime with scraper
         ScrapeAnimeJob::dispatch($request->user()->id, $request->get('url', ''));
 
-        return back()->with(['message' => __('Send request to scraper, you will receive notification about result')]);
+        return back()->with(['message' => __('Request sent to scraper, you will receive notification about results')]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Anime $anime): Response
+    public function show(Request $request, Anime $anime): Response
     {
-        $anime->load([
-            'image:model_id,path',
-            'urls:anime_id,url',
-            'synonyms:anime_id,synonym',
-            'voiceActing:name',
-            'genres:name',
+        return Inertia::render('Anime/Show', [
+            'anime' => $anime->load([
+                'image:id,path',
+                'urls:anime_id,url',
+                'synonyms:anime_id,name',
+                'voiceActing:name',
+                'genres:name',
+            ]),
+            'animeListStatuses' => AnimeListStatusEnum::labels(),
+            'animeListEntry'    => Inertia::defer(
+                fn() => $this->userAnimeListService->findById($request->user(), $anime->id)
+            ),
+            'animeListStatistic' => Inertia::defer(fn() => $this->userAnimeListService->animeStatistics($anime->id)),
         ]);
-
-        return Inertia::render('Anime/Show', compact('anime'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Anime $anime)
+    public function edit(Anime $anime): void
     {
         //
     }
@@ -95,11 +114,11 @@ class AnimeController extends Controller
     public function update(UpdateRequest $request, Anime $anime): RedirectResponse
     {
         try {
-            $this->animeService->update($anime, UpsertAnimeDTO::fromArray($request->validated()));
+            $this->animeService->update($anime, UpdateAnimeDTO::fromArray($request->validated()));
 
             return to_route('anime.show', $anime->id);
         } catch (Throwable $exception) {
-            logger()->error('Updating anime', [
+            Log::error('Updating anime', [
                 'exception_trace'   => $exception->getTraceAsString(),
                 'exception_message' => $exception->getMessage(),
             ]);
@@ -111,7 +130,7 @@ class AnimeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Anime $anime)
+    public function destroy(Anime $anime): void
     {
         //
     }

@@ -1,6 +1,12 @@
 {
   "preset": "psr12",
   "rules": {
+    "binary_operator_spaces": {
+      "operators": {
+        "=": "align_single_space_minimal",
+        "=>": "align_single_space_minimal"
+      }
+    },
     "blank_lines_before_namespace": true,
     "blank_line_after_namespace": true,
     "blank_line_after_opening_tag": true,

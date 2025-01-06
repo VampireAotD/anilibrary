@@ -6,7 +6,7 @@ namespace Tests\Feature\Http\Controllers\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeUsers;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 
 class PasswordConfirmationTest extends TestCase
 {

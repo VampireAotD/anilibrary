@@ -1,40 +1,61 @@
-FROM php:8.2-fpm
+# syntax=docker/dockerfile:1
 
-COPY ./conf.d /usr/local/etc/php/conf.d
+ARG PHP_VERSION=8.3.15
+ARG COMPOSER_VERSION=2.8.3
+ARG NODE_VERSION=22.11
+ARG PNPM_VERSION=9.15.0
 
-# Configure current user
-ARG GROUP_ID
-ARG USER_ID
+FROM node:${NODE_VERSION}-alpine AS node
 
-# Add current user to container
-RUN groupadd -g ${GROUP_ID} user \
-    && useradd -u ${USER_ID} -g user -m user \
-    && usermod -p "*" user
+RUN --mount=type=cache,target=/root/.npm \
+    npm install -g pnpm@${PNPM_VERSION}
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libzip-dev \
-    locales \
+FROM composer:${COMPOSER_VERSION} AS composer
+
+FROM php:${PHP_VERSION}-cli-alpine
+
+ARG GROUP_ID=1000
+ARG USER_ID=1000
+ARG XDEBUG_VERSION=3.4.0
+ARG SWOOLE_VERSION=6.0.0
+ARG PHPREDIS_VERSION=6.1.0
+
+RUN apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git zip unzip supervisor \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS linux-headers brotli-dev pcre-dev pcre2-dev zlib-dev \
+    && pecl install xdebug-${XDEBUG_VERSION} swoole-${SWOOLE_VERSION} redis-${PHPREDIS_VERSION} uv \
+    && docker-php-ext-install -j$(nproc) \
+    pcntl \
+    mbstring \
+    bcmath \
+    sockets \
+    opcache \
+    exif \
+    pdo_mysql \
     zip \
-    unzip \
-    git \
-    curl \
-    libgmp-dev \
-    supervisor \
-    && pecl install xdebug
+    gmp \
+    && docker-php-ext-enable xdebug swoole redis \
+    && docker-php-source delete \
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/* \
+    && apk del .build-deps
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN addgroup -g ${GROUP_ID} anilibrary \
+    && adduser -u ${USER_ID} -D -S -G anilibrary anilibrary
 
-# Install extensions
-RUN docker-php-ext-install pdo_mysql zip exif pcntl bcmath gmp opcache
+USER anilibrary
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --link ./php.ini /usr/local/etc/php/php.ini
+COPY --link ./supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 
-# Set user
-USER user
+COPY --link --from=composer /usr/bin/composer /usr/local/bin/composer
 
-# Set workdir
+COPY --link --from=node /usr/local/lib /usr/local/lib
+COPY --link --from=node /usr/local/include /usr/local/include
+COPY --link --from=node /usr/local/bin /usr/local/bin
+
 WORKDIR /anilibrary
+
+EXPOSE 5173
+EXPOSE 8000
+EXPOSE 8080
+
+ENTRYPOINT ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]

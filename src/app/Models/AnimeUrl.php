@@ -4,52 +4,51 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\AnimeUrlFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\AnimeUrl
- *
- * @property string                          $anime_id
- * @property string                          $url
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Anime          $anime
- * @property-read Attribute                  $toTelegramKeyboardButton
- * @method static \Database\Factories\AnimeUrlFactory            factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl query()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl whereAnimeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeUrl whereUrl($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperAnimeUrl
  */
 class AnimeUrl extends Model
 {
+    use HasUuids;
+    /** @use HasFactory<AnimeUrlFactory> */
     use HasFactory;
 
     protected $fillable = ['anime_id', 'url'];
 
     /**
-     * @return BelongsTo
+     * @return BelongsTo<Anime, $this>
      */
     public function anime(): BelongsTo
     {
         return $this->belongsTo(Anime::class);
     }
 
-    public function toTelegramKeyboardButton(): Attribute
+    /**
+     * @param Builder<$this> $query
+     * @return Builder<$this>
+     */
+    public function scopeCountByDomain(Builder $query): Builder
+    {
+        return $query->selectRaw("SUBSTRING_INDEX(url, '/', 3) as domain, COUNT(url) as anime")
+                     ->groupBy('domain');
+    }
+
+    /**
+     * @psalm-suppress TooManyTemplateParams
+     * @return Attribute<string, never>
+     */
+    protected function domain(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                $domain = parse_url($this->url)['host'] ?? '';
-
-                return ['text' => $domain, 'url' => $this->url];
-            }
-        );
+            get: fn(): string => parse_url($this->url)['host'] ?? '',
+        )->shouldCache();
     }
 }

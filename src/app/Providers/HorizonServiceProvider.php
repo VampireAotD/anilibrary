@@ -12,7 +12,7 @@ use Laravel\Horizon\HorizonApplicationServiceProvider;
 class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
     /**
-     * Bootstrap any application services.
+     * Register services.
      */
     public function boot(): void
     {
@@ -26,6 +26,6 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      */
     protected function gate(): void
     {
-        Gate::define('viewHorizon', fn(User $user) => $user->hasRole(RoleEnum::OWNER->value));
+        Gate::define('viewHorizon', fn(User $user) => $user->hasRole(RoleEnum::OWNER));
     }
 }

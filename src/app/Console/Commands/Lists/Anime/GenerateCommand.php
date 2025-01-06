@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Lists\Anime;
 
-use App\Mail\AnimeListMail;
-use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\ColumnFilter;
-use App\Repositories\Filters\RelationFilter;
-use App\Repositories\User\UserRepositoryInterface;
+use App\Filters\ColumnFilter;
+use App\Filters\RelationFilter;
+use App\Mail\List\AnimeListMail;
+use App\Services\Anime\AnimeService;
+use App\Services\User\UserService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * Class GenerateCommand
- * @package App\Console\Commands\Lists\Anime
- */
-class GenerateCommand extends Command
+final class GenerateCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -36,23 +32,23 @@ class GenerateCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(AnimeRepositoryInterface $animeRepository, UserRepositoryInterface $userRepository): int
+    public function handle(AnimeService $animeService, UserService $userService): int
     {
-        if (!$owner = $userRepository->findOwner()) {
+        if (!$owner = $userService->getOwner()) {
             $this->error('Owner not found');
-            return Command::FAILURE;
+            return self::FAILURE;
         }
 
-        $animeList = $animeRepository->withFilters([
-            new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+        $animeList = $animeService->all([
+            new ColumnFilter(['id', 'title', 'type', 'status', 'rating', 'episodes', 'year']),
             new RelationFilter([
                 'urls:anime_id,url',
-                'synonyms:anime_id,synonym',
-                'image:id,model_id,path,alias',
+                'synonyms:anime_id,name',
+                'image:id,path,name,hash',
                 'genres:id,name',
                 'voiceActing:id,name',
             ]),
-        ])->getAll();
+        ]);
 
         Storage::disk('lists')->put(config('lists.anime.file'), $animeList->toJson(JSON_PRETTY_PRINT));
 
@@ -60,6 +56,6 @@ class GenerateCommand extends Command
 
         $this->info('Anime list successfully generated');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

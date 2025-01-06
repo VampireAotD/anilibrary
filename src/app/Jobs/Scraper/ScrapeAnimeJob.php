@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Jobs\Scraper;
 
-use App\DTO\Events\Pusher\ScrapeResultDTO;
-use App\Enums\Events\Pusher\ScrapeResultTypeEnum;
+use App\DTO\Events\Scraper\ScrapeAnimeResultDTO;
+use App\Enums\Events\Scraper\ScrapeResultTypeEnum;
 use App\Enums\QueueEnum;
-use App\Events\Pusher\ScrapeResultEvent;
-use App\UseCase\Scraper\AnimeUseCase;
+use App\Events\Scraper\ScrapeAnimeResultEvent;
+use App\UseCase\Scraper\ScraperUseCase;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,26 +30,27 @@ class ScrapeAnimeJob implements ShouldQueue
      */
     public function __construct(public readonly string $userId, public readonly string $url)
     {
-        $this->onConnection('redis')->onQueue(QueueEnum::SCRAPE_ANIME_QUEUE->value);
+        $this->onConnection('redis')->onQueue(QueueEnum::SCRAPER_QUEUE->value);
     }
 
     /**
      * Execute the job.
      */
-    public function handle(AnimeUseCase $animeUseCase): void
+    public function handle(ScraperUseCase $scraperUseCase): void
     {
         try {
-            $anime = $animeUseCase->scrapeAndCreateAnime($this->url);
-            ScrapeResultEvent::broadcast(
-                new ScrapeResultDTO(
+            $anime = $scraperUseCase->scrapeByUrl($this->url);
+            ScrapeAnimeResultEvent::broadcast(
+                new ScrapeAnimeResultDTO(
                     $this->userId,
                     ScrapeResultTypeEnum::SUCCESS,
                     $anime->id
                 )
             );
+            // @phpstan-ignore-next-line https://github.com/larastan/larastan/pull/2051
         } catch (RequestException | ValidationException | Throwable $e) {
-            ScrapeResultEvent::broadcast(
-                new ScrapeResultDTO(
+            ScrapeAnimeResultEvent::broadcast(
+                new ScrapeAnimeResultDTO(
                     $this->userId,
                     ScrapeResultTypeEnum::ERROR,
                     $e->getMessage()

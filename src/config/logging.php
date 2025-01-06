@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Loggers\Logstash\LogstashHandler;
+use Monolog\Formatter\LogstashFormatter;
 use Monolog\Handler\NullHandler;
+use Monolog\Handler\SocketHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
@@ -14,9 +15,9 @@ return [
     | Default Log Channel
     |--------------------------------------------------------------------------
     |
-    | This option defines the default log channel that gets used when writing
-    | messages to the logs. The name specified in this option should match
-    | one of the channels defined in the "channels" configuration array.
+    | This option defines the default log channel that is utilized to write
+    | messages to your logs. The value provided here should match one of
+    | the channels present in the list of "channels" configured below.
     |
     */
 
@@ -35,7 +36,7 @@ return [
 
     'deprecations' => [
         'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
-        'trace'   => false,
+        'trace'   => env('LOG_DEPRECATIONS_TRACE', false),
     ],
 
     /*
@@ -43,21 +44,20 @@ return [
     | Log Channels
     |--------------------------------------------------------------------------
     |
-    | Here you may configure the log channels for your application. Out of
-    | the box, Laravel uses the Monolog PHP logging library. This gives
-    | you a variety of powerful log handlers / formatters to utilize.
+    | Here you may configure the log channels for your application. Laravel
+    | utilizes the Monolog PHP logging library, which includes a variety
+    | of powerful log handlers and formatters that you're free to use.
     |
     | Available Drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "monolog",
-    |                    "custom", "stack"
+    |                    "errorlog", "monolog", "custom", "stack"
     |
     */
 
     'channels' => [
         'stack' => [
             'driver'            => 'stack',
-            'channels'          => ['single', 'logstash'],
-            'ignore_exceptions' => true,
+            'channels'          => explode(',', env('LOG_STACK', 'single')),
+            'ignore_exceptions' => true, // to ignore exceptions if Logstash in unavailable
         ],
 
         'single' => [
@@ -71,15 +71,15 @@ return [
             'driver'               => 'daily',
             'path'                 => storage_path('logs/laravel.log'),
             'level'                => env('LOG_LEVEL', 'debug'),
-            'days'                 => 14,
+            'days'                 => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
         ],
 
         'slack' => [
             'driver'               => 'slack',
             'url'                  => env('LOG_SLACK_WEBHOOK_URL'),
-            'username'             => 'Laravel Log',
-            'emoji'                => ':boom:',
+            'username'             => env('LOG_SLACK_USERNAME', 'Laravel Log'),
+            'emoji'                => env('LOG_SLACK_EMOJI', ':boom:'),
             'level'                => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,
         ],
@@ -93,15 +93,15 @@ return [
                 'port'             => env('PAPERTRAIL_PORT'),
                 'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
-            'processors'   => [PsrLogMessageProcessor::class],
+            'processors' => [PsrLogMessageProcessor::class],
         ],
 
         'stderr' => [
-            'driver'     => 'monolog',
-            'level'      => env('LOG_LEVEL', 'debug'),
-            'handler'    => StreamHandler::class,
-            'formatter'  => env('LOG_STDERR_FORMATTER'),
-            'with'       => [
+            'driver'    => 'monolog',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'handler'   => StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'with'      => [
                 'stream' => 'php://stderr',
             ],
             'processors' => [PsrLogMessageProcessor::class],
@@ -110,7 +110,7 @@ return [
         'syslog' => [
             'driver'               => 'syslog',
             'level'                => env('LOG_LEVEL', 'debug'),
-            'facility'             => LOG_USER,
+            'facility'             => env('LOG_SYSLOG_FACILITY', LOG_USER),
             'replace_placeholders' => true,
         ],
 
@@ -130,10 +130,29 @@ return [
         ],
 
         'logstash' => [
-            'driver'  => 'custom',
-            'via'     => LogstashHandler::class,
-            'address' => env('LOGSTASH_ADDRESS', ''),
+            'driver'       => 'monolog',
+            'level'        => env('LOG_LEVEL', 'debug'),
+            'handler'      => SocketHandler::class,
+            'handler_with' => [
+                'connectionString' => env('LOGSTASH_ADDRESS', ''),
+            ],
+            'formatter'      => LogstashFormatter::class,
+            'formatter_with' => [
+                'applicationName' => env('APP_NAME', 'Anilibrary'),
+            ],
         ],
+
+        'nutgram' => [
+            'driver'    => 'monolog',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'handler'   => StreamHandler::class,
+            'formatter' => Nutgram\Laravel\Log\NutgramFormatter::class,
+            'with'      => [
+                'stream' => 'php://stderr',
+            ],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
     ],
 
 ];

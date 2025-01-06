@@ -11,8 +11,6 @@ class MacroServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -21,19 +19,15 @@ class MacroServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot(): void
     {
         /**
-         * @see            https://github.com/laravel/framework/pull/40057
-         * @psalm-suppress UndefinedMethod
+         * @see https://github.com/laravel/framework/pull/40057
          */
         HasMany::macro(
             'upsertRelated',
             function (array $values, array | string $uniqueBy, array | null $update = null): int {
-                /** @var $this HasMany */
                 data_set($values, '*.' . $this->getForeignKeyName(), $this->getParentKey());
                 return $this->getRelated()->upsert($values, $uniqueBy, $update);
             }

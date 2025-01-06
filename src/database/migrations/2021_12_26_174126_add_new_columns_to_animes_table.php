@@ -2,30 +2,28 @@
 
 declare(strict_types=1);
 
-use App\Enums\AnimeStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    private const array STATUSES = ['Анонс', 'Онгоинг', 'Вышел'];
+
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
         Schema::table('animes', function (Blueprint $table) {
-            $table->enum('status', AnimeStatusEnum::values())->after('title')->default(AnimeStatusEnum::ANNOUNCE->value);
-            $table->float('rating')->after('status')->default(1);
-            $table->string('episodes')->after('rating')->nullable();
+            // Values are hardcoded here so that migration would not fail if enum will be deleted.
+            $table->enum('status', self::STATUSES)->after('title')->default('Анонс')->index();
+            $table->float('rating', precision: 24)->after('status')->default(0.0);
+            $table->unsignedInteger('episodes')->after('rating')->default(0);
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

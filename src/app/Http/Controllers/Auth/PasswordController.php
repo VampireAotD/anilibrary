@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\User\PasswordChangedEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +25,8 @@ class PasswordController extends Controller
         $request->user()->update([
             'password' => $validated['password'],
         ]);
+
+        PasswordChangedEvent::dispatch($request->user());
 
         return back();
     }

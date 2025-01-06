@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers\Anime;
 
-use App\Enums\AnimeStatusEnum;
+use App\Jobs\Elasticsearch\UpsertAnimeJob;
 use App\Jobs\Scraper\ScrapeAnimeJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeElasticResponse;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeAnime;
-use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class AnimeControllerTest extends TestCase
 {
@@ -20,6 +22,15 @@ class AnimeControllerTest extends TestCase
     use WithFaker;
     use CanCreateFakeAnime;
     use CanCreateFakeUsers;
+    use CanCreateMocks;
+    use CanCreateFakeElasticResponse;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->setUpFakeElasticsearchClient();
+    }
 
     public function testCannotInteractWithAnimeIfUserIsNotLoggedIn(): void
     {
@@ -35,39 +46,34 @@ class AnimeControllerTest extends TestCase
     public function testCanViewIndexPageWithPagination(): void
     {
         $user = $this->createUser();
-        $this->createAnimeCollectionWithRelations(20);
 
+        $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(20));
+        $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
+
+        // TODO Assert other props if Inertia will support deferred props
         $this->actingAs($user)->get(route('anime.index'))->assertInertia(
             fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('pagination')
-                                     ->has('pagination.next_page_url')
-                                     ->has('pagination.data', 20)
-                                     ->has('pagination.data.0', fn(Assert $page) => $page->has('image')->etc())
         );
     }
 
     public function testCanChangePaginationPageOnIndexPage(): void
     {
         $user = $this->createUser();
-        $this->createAnimeCollectionWithRelations(30);
 
+        $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(20));
+        $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
+
+        // TODO Assert other props if Inertia will support deferred props
+        $this->actingAs($user)->get(route('anime.index'))->assertInertia(
+            fn(Assert $page) => $page->component('Anime/Index')
+        );
+
+        $this->elasticHandler->append($this->createElasticResponseForAnimeWithRelations(10));
+        $this->elasticHandler->append($this->createElasticResponseForAnimeFacets());
+
+        // TODO Assert other props if Inertia will support deferred props
         $this->actingAs($user)->get(route('anime.index', ['page' => 2]))->assertInertia(
             fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('pagination')
-                                     ->has('pagination.prev_page_url')
-                                     ->has('pagination.data', 10)
-        );
-    }
-
-    public function testCanChangeShownAnimeQuantityOnIndexPage(): void
-    {
-        $user = $this->createUser();
-        $this->createAnimeCollectionWithRelations(30);
-
-        $this->actingAs($user)->get(route('anime.index', ['per_page' => 30]))->assertInertia(
-            fn(Assert $page) => $page->component('Anime/Index')
-                                     ->has('pagination')
-                                     ->has('pagination.data', 30)
         );
     }
 
@@ -103,25 +109,50 @@ class AnimeControllerTest extends TestCase
 
     public function testUserCanUpdateAnime(): void
     {
+        Bus::fake();
+
         $user  = $this->createUser();
         $anime = $this->createAnimeWithRelations();
 
         $this->assertEquals(1, $anime->urls->count());
         $this->assertEquals(1, $anime->synonyms->count());
 
+        $generatedUrls = [
+            [
+                'url' => $url = $this->faker->url,
+            ],
+            [
+                'url' => $url,
+            ],
+            [
+                'url' => $url,
+            ],
+        ];
+
+        $generatedSynonyms = [
+            [
+                'name' => $synonym = $this->faker->name,
+            ],
+            [
+                'name' => $synonym,
+            ],
+            [
+                'name' => $synonym,
+            ],
+        ];
+
         // For updating anime upsertRelated is used, so even if the same data will be sent multiple times
         // they will be created only one time, other times they will be just updated
-        $urls     = array_merge($anime->urls->pluck('url')->toArray(), [$url = fake()->url, $url, $url]);
-        $synonyms = array_merge(
-            $anime->synonyms->pluck('synonym')->toArray(),
-            [$synonym = fake()->name, $synonym, $synonym]
-        );
+        $urls     = array_merge($anime->urls->select('url')->toArray(), $generatedUrls);
+        $synonyms = array_merge($anime->synonyms->select('name')->toArray(), $generatedSynonyms);
 
         $this->actingAs($user)->put(route('anime.update', [$anime->id]), [
             'title'        => $anime->title,
-            'status'       => $this->faker->randomElement(AnimeStatusEnum::values()),
+            'type'         => $this->faker->randomAnimeType()->value,
+            'year'         => $this->faker->year,
+            'status'       => $this->faker->randomAnimeStatus()->value,
             'episodes'     => $anime->episodes,
-            'rating'       => $this->faker->randomNumber(),
+            'rating'       => $this->faker->randomAnimeRating(),
             'urls'         => $urls,
             'synonyms'     => $synonyms,
             'voice_acting' => $anime->voiceActing->pluck('id')->toArray(),
@@ -130,6 +161,7 @@ class AnimeControllerTest extends TestCase
 
         $anime->refresh();
 
+        Bus::assertDispatched(UpsertAnimeJob::class); // because anime is updated
         $this->assertEquals(2, $anime->urls->count());
         $this->assertEquals(2, $anime->synonyms->count());
     }

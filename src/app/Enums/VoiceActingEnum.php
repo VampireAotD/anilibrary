@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use App\Enums\Traits\CanProvideCasesValues;
+use App\Enums\Concerns\ProvideValues;
 
-/**
- * Enum VoiceActingEnum
- * @package App\Enums
- */
 enum VoiceActingEnum: string
 {
-    use CanProvideCasesValues;
+    use ProvideValues;
 
     case ANIDUB      = 'AniDUB';
     case ANILIBRIA   = 'AniLibria';

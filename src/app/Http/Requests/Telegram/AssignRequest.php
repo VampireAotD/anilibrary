@@ -20,12 +20,12 @@ class AssignRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, ValidationRule|list<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'id'         => 'required|int',
+            'id'         => 'required|int|unique:telegram_users,telegram_id',
             'auth_date'  => 'required|int',
             'hash'       => 'required|string',
             'first_name' => 'nullable|string',

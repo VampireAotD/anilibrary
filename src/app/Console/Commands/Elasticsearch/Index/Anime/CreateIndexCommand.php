@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Elasticsearch\Index\Anime;
 
-use App\Console\Commands\Elasticsearch\Index\Anime\Traits\IndexConfigurationTrait;
+use App\Console\Commands\Elasticsearch\Index\Anime\Concerns\IndexConfiguration;
 use App\Enums\Elasticsearch\IndexEnum;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Console\Command;
 
-class CreateIndexCommand extends Command
+final class CreateIndexCommand extends Command
 {
-    use IndexConfigurationTrait;
+    use IndexConfiguration;
 
     /**
      * The name and signature of the console command.
@@ -33,10 +33,10 @@ class CreateIndexCommand extends Command
      */
     public function handle(Client $client): int
     {
-        if ($client->indices()->exists(['index' => IndexEnum::ANIME_INDEX->value])->asBool()) {
+        if ($client->indices()->exists(['index' => [IndexEnum::ANIME_INDEX->value]])->asBool()) {
             $this->warn('Index already exists!');
 
-            return Command::FAILURE;
+            return self::INVALID;
         }
 
         $client->indices()->create([
@@ -49,6 +49,6 @@ class CreateIndexCommand extends Command
 
         $this->info('Successfully created index');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

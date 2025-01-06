@@ -6,7 +6,6 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Tightenco\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -34,16 +33,13 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'auth'  => [
-                'user' => $request->user()?->load(['roles:name', 'telegramUser:user_id,username']),
+            'auth' => [
+                'user' => $request->user()?->load(['roles:name']),
             ],
             'flash' => [
                 'message' => fn() => $request->session()->get('message'),
             ],
-            'ziggy' => fn() => [
-                ...(new Ziggy())->toArray(),
-                'location' => $request->url(),
-            ],
+            'breadcrumbs' => $request->route()->breadcrumbs()->jsonSerialize(),
         ];
     }
 }

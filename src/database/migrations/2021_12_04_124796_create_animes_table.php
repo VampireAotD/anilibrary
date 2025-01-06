@@ -9,19 +9,13 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
         Schema::create('animes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('title');
+            $table->string('title')->unique();
             $table->string('url');
-            $table->foreignUuid('favourite_voice_acting')
-                  ->nullable()
-                  ->constrained('voice_acting')
-                  ->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,8 +23,6 @@ return new class extends Migration {
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

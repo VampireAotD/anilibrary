@@ -1,0 +1,9 @@
+pre-commit:
+  parallel: true
+  commands:
+    tests:
+      run: make test
+    phpstan:
+      run: make phpstan
+    pint:
+      run: make pint

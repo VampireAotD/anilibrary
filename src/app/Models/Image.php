@@ -4,52 +4,40 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\ImageFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
- * App\Models\Image
- *
- * @property string                          $id
- * @property string                          $model_type
- * @property string                          $model_id
- * @property string                          $path
- * @property string                          $alias
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Model|\Eloquent            $anime
- * @method static \Database\Factories\ImageFactory            factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Image newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Image newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Image query()
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereAlias($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereModelId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereModelType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image wherePath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperImage
  */
 class Image extends Model
 {
-    use HasFactory;
     use HasUuids;
+    /** @use HasFactory<ImageFactory> */
+    use HasFactory;
 
-    protected $fillable = [
-        'model_type',
-        'model_id',
-        'path',
-        'alias',
-    ];
+    protected $fillable = ['path', 'name', 'hash'];
 
     /**
-     * @return MorphTo
+     * @return MorphToMany<Anime, $this>
      */
-    public function anime(): MorphTo
+    public function animes(): MorphToMany
     {
-        return $this->morphTo(Anime::class);
+        return $this->morphedByMany(Anime::class, 'model', 'has_images');
+    }
+
+    /**
+     * @psalm-suppress TooManyTemplateParams Suppressed because PHPStan needs description, but Psalm conflicts with it
+     * @return Attribute<bool, never>
+     */
+    protected function isDefault(): Attribute
+    {
+        return Attribute::make(
+            get: fn(): bool => $this->path === config('cloudinary.default_image'),
+        )->shouldCache();
     }
 }

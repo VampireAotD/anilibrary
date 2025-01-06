@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enums\AnimeStatusEnum;
 use App\Models\Anime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,10 +20,12 @@ class AnimeFactory extends Factory
     public function definition(): array
     {
         return [
-            'title'    => $this->faker->title,
-            'status'   => $this->faker->randomElement(AnimeStatusEnum::values()),
-            'episodes' => (string) $this->faker->randomNumber(),
-            'rating'   => $this->faker->randomFloat(),
+            'title'    => $this->faker->unique()->sentence,
+            'type'     => $this->faker->randomAnimeType(),
+            'status'   => $this->faker->randomAnimeStatus(),
+            'episodes' => $this->faker->randomAnimeEpisodes(),
+            'rating'   => $this->faker->randomAnimeRating(),
+            'year'     => $this->faker->year,
         ];
     }
 }

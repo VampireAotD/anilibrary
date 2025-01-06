@@ -4,26 +4,34 @@ declare(strict_types=1);
 
 namespace App\Models\Pivots;
 
+use App\Models\Anime;
+use App\Models\VoiceActing;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * App\Models\Pivots\AnimeVoiceActing
- *
- * @property string $id
- * @property string $anime_id
- * @property string $voice_acting_id
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing query()
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing whereAnimeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AnimeVoiceActing whereVoiceActingId($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperAnimeVoiceActing
  */
 class AnimeVoiceActing extends Pivot
 {
     use HasUuids;
 
     protected $hidden = ['pivot'];
+
+    /**
+     * @return BelongsTo<Anime, $this>
+     */
+    public function anime(): BelongsTo
+    {
+        return $this->belongsTo(Anime::class);
+    }
+
+    /**
+     * @return BelongsTo<VoiceActing, $this>
+     */
+    public function voiceActing(): BelongsTo
+    {
+        return $this->belongsTo(VoiceActing::class);
+    }
 }

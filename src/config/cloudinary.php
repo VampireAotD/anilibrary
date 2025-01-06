@@ -12,11 +12,21 @@ declare(strict_types=1);
 return [
     /*
     |--------------------------------------------------------------------------
+    | Cloudinary URL
+    |--------------------------------------------------------------------------
+    |
+    | URL that used for uploading media files to Cloudinary.
+    |
+    */
+    'cloud_url' => env('CLOUDINARY_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Cloudinary Configuration
     |--------------------------------------------------------------------------
     |
     | An HTTP or HTTPS URL to notify your application (a webhook) when the process of uploads, deletes, and any API
-    | that accepts notification_url has completed.
+    | that accepts `notification_url` has completed.
     |
     |
     */
@@ -24,32 +34,41 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Cloudinary Configuration
+    | Upload preset
     |--------------------------------------------------------------------------
     |
-    | Here you may configure your Cloudinary settings. Cloudinary is a cloud hosted
-    | media management service for all file uploads, storage, delivery and transformation needs.
+    | Upload preset From Cloudinary dashboard.
     |
     */
-    'cloud_url'        => env('CLOUDINARY_URL'),
+    'upload_preset' => env('CLOUDINARY_UPLOAD_PRESET'),
 
     /*
     |--------------------------------------------------------------------------
-    | Cloudinary Configuration
+    | Upload route
     |--------------------------------------------------------------------------
     |
-    | Upload Preset From Cloudinary Dashboard
+    | Route to get `cloud_image_url` from Blade Upload Widget.
     |
     */
-    'upload_preset'    => env('CLOUDINARY_UPLOAD_PRESET'),
+    'upload_route' => env('CLOUDINARY_UPLOAD_ROUTE'),
 
     /*
     |--------------------------------------------------------------------------
-    | Cloudinary Configuration
+    | Upload action
     |--------------------------------------------------------------------------
     |
-    | Default image url to store anime
+    | Controller action to get `cloud_image_url` from Blade Upload Widget.
     |
     */
-    'default_image'    => env('CLOUDINARY_DEFAULT_IMAGE', ''),
+    'upload_action' => env('CLOUDINARY_UPLOAD_ACTION'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default image
+    |--------------------------------------------------------------------------
+    |
+    | Default image url that will be used when no image is provided.
+    |
+    */
+    'default_image' => env('CLOUDINARY_DEFAULT_IMAGE'),
 ];

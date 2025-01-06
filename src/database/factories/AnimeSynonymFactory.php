@@ -20,7 +20,7 @@ class AnimeSynonymFactory extends Factory
     public function definition(): array
     {
         return [
-            'synonym' => $this->faker->unique()->word,
+            'name' => $this->faker->unique()->word,
         ];
     }
 }

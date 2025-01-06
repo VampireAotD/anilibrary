@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Lists\Anime;
 
 use App\Console\Commands\Lists\Anime\GenerateCommand;
-use App\Mail\AnimeListMail;
-use App\Repositories\Anime\AnimeRepositoryInterface;
-use App\Repositories\Filters\ColumnFilter;
-use App\Repositories\Filters\RelationFilter;
-use Database\Seeders\RoleSeeder;
+use App\Filters\ColumnFilter;
+use App\Filters\RelationFilter;
+use App\Mail\List\AnimeListMail;
+use App\Services\Anime\AnimeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
-use Tests\Traits\Fake\CanCreateFakeAnime;
-use Tests\Traits\Fake\CanCreateFakeUsers;
 
 class GenerateCommandTest extends TestCase
 {
@@ -23,14 +22,13 @@ class GenerateCommandTest extends TestCase
     use CanCreateFakeUsers;
     use CanCreateFakeAnime;
 
-    private AnimeRepositoryInterface $animeRepository;
+    private AnimeService $animeService;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(RoleSeeder::class);
-        $this->animeRepository = $this->app->make(AnimeRepositoryInterface::class);
+        $this->animeService = $this->app->make(AnimeService::class);
     }
 
     public function testCommandWillNotGenerateAnimeListIfOwnerNotExist(): void
@@ -53,28 +51,25 @@ class GenerateCommandTest extends TestCase
         $listFile = config('lists.anime.file');
 
         Storage::disk('lists')->assertExists($listFile);
-        Mail::assertQueued(AnimeListMail::class, function (AnimeListMail $mail) use ($listFile, $owner) {
-            $mail->build();
-
-            return $mail->hasFrom(config('mail.from.address')) &&
-                   $mail->hasTo($owner->email) &&
-                   $mail->hasAttachmentFromStorageDisk('lists', $listFile);
+        Mail::assertQueued(AnimeListMail::class, static function (AnimeListMail $mail) use ($owner) {
+            // cannot test properly because of https://github.com/laravel/framework/discussions/47777
+            return $mail->hasTo($owner->email);
         });
 
         $json = Storage::disk('lists')->get($listFile);
 
         $this->assertJson($json);
         $this->assertJsonStringEqualsJsonString(
-            $this->animeRepository->withFilters([
-                new ColumnFilter(['id', 'title', 'status', 'rating', 'episodes']),
+            $this->animeService->all([
+                new ColumnFilter(['id', 'title', 'type', 'status', 'rating', 'episodes', 'year']),
                 new RelationFilter([
                     'urls:anime_id,url',
-                    'synonyms:anime_id,synonym',
-                    'image:id,model_id,path,alias',
+                    'synonyms:anime_id,name',
+                    'image:id,path,name,hash',
                     'genres:id,name',
                     'voiceActing:id,name',
                 ]),
-            ])->getAll()->toJson(JSON_PRETTY_PRINT),
+            ])->toJson(JSON_PRETTY_PRINT),
             $json
         );
 

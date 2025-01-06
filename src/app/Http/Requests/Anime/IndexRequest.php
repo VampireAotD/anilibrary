@@ -20,13 +20,15 @@ class IndexRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, ValidationRule|list<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'page'     => 'nullable|int|gte:1',
-            'per_page' => 'nullable|int',
+            'page'    => 'nullable|integer|gte:1',
+            'perPage' => 'nullable|integer|gte:1',
+            'filters' => 'nullable|array',
+            'sort'    => 'nullable|array',
         ];
     }
 }

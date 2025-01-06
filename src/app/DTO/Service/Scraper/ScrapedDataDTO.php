@@ -4,29 +4,54 @@ declare(strict_types=1);
 
 namespace App\DTO\Service\Scraper;
 
+use App\DTO\Contracts\FromArray;
+use App\Enums\Anime\StatusEnum;
+use App\Enums\Anime\TypeEnum;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
- * Class ScrapedDataDTO
  * @template-implements Arrayable<string, mixed>
- * @package App\DTO\Service\Scraper
  */
-readonly class ScrapedDataDTO implements Arrayable
+final readonly class ScrapedDataDTO implements Arrayable, FromArray
 {
-    public ?string $image;
-
+    /**
+     * @param list<array{name: string}> $genres
+     * @param list<array{name: string}> $voiceActing
+     * @param list<array{name: string}> $synonyms
+     */
     public function __construct(
-        public string $url,
-        public string $status,
-        public string $episodes,
-        public float  $rating,
-        public string $title = '',
-        public array  $genres = [],
-        public array  $voiceActing = [],
-        public array  $synonyms = [],
-        ?string       $image = null,
+        public string     $url,
+        public string     $title,
+        public TypeEnum   $type,
+        public StatusEnum $status,
+        public int        $episodes,
+        public float      $rating,
+        public int        $year,
+        public array      $genres = [],
+        public array      $voiceActing = [],
+        public array      $synonyms = [],
+        public ?string    $image = null,
     ) {
-        $this->image = $image ?? config('cloudinary.default_image');
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            $data['url'],
+            $data['title'],
+            TypeEnum::from($data['type']),
+            StatusEnum::from($data['status']),
+            $data['episodes'],
+            $data['rating'],
+            (int) $data['year'],
+            $data['genres'] ?? [],
+            $data['voiceActing'] ?? [],
+            $data['synonyms'] ?? [],
+            $data['image'] ?? null,
+        );
     }
 
     /**

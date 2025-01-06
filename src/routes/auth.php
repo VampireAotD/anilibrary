@@ -2,41 +2,60 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegistrationAccessController;
+use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\Telegram\TelegramController;
 use Illuminate\Support\Facades\Route;
 
 Route::withoutMiddleware(['auth', 'verified'])->middleware('guest')->group(function () {
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-         ->name('login');
+    Route::group(
+        [
+            'as'         => 'registration_access.',
+            'prefix'     => 'register',
+            'controller' => RegistrationAccessController::class,
+            'middleware' => 'throttle:6,1',
+        ],
+        function () {
+            Route::get('await', 'show')->name('await');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+            Route::get('request', 'create')->name('request');
 
-    Route::get('register', [RegisteredUserController::class, 'create'])
-         ->middleware(['signed', 'registration.expired', 'throttle:6,1'])
-         ->name('register');
+            Route::post('request', 'store')->name('acquire');
+        }
+    );
 
-    Route::post('register', [RegisteredUserController::class, 'store'])
-         ->middleware(['registration.exact', 'throttle:6,1']);
-});
+    Route::controller(RegistrationController::class)->group(function () {
+        Route::get('register', 'create')
+             ->middleware(['signed', 'registration.has_invitation'])
+             ->name('register');
 
-Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-     ->name('logout')
-     ->withoutMiddleware('verified');
+        Route::post('register', 'store');
+    })->middleware('throttle:6,1');
 
-Route::group(['name' => 'telegram', 'as' => 'telegram.', 'prefix' => 'telegram'], function () {
-    Route::middleware(['telegram.signed', 'telegram.assigned'])
-         ->post('assign', [TelegramController::class, 'assign'])
-         ->name('assign');
+    Route::controller(LoginController::class)->group(function () {
+        Route::get('login', 'create')->name('login');
 
-    Route::delete('detach', [TelegramController::class, 'detach'])
-         ->name('detach');
+        Route::post('login', 'store');
+    });
+
+    Route::controller(PasswordResetLinkController::class)->group(function () {
+        Route::get('forgot-password', 'create')->name('password.request');
+
+        Route::post('forgot-password', 'store')->name('password.email');
+    });
+
+    Route::controller(NewPasswordController::class)->group(function () {
+        Route::get('reset-password/{token}', 'create')->name('password.reset');
+
+        Route::post('reset-password', 'store')->name('password.store');
+    });
 });
 
 Route::group(
@@ -58,11 +77,14 @@ Route::group(
     }
 );
 
-Route::group(['name' => 'password', 'as' => 'password.'], function () {
-    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-         ->name('confirm');
+Route::controller(ConfirmablePasswordController::class)->group(function () {
+    Route::get('confirm-password', 'show')->name('password.confirm');
 
-    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
-
-    Route::put('password', [PasswordController::class, 'update'])->name('update');
+    Route::post('confirm-password', 'store');
 });
+
+Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+Route::post('logout', [LoginController::class, 'destroy'])
+     ->withoutMiddleware('verified')
+     ->name('logout');

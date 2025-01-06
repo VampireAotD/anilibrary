@@ -4,23 +4,32 @@ declare(strict_types=1);
 
 namespace App\Services\Elasticsearch\Index;
 
+use App\DTO\Service\Elasticsearch\Anime\AnimeFacetDTO;
+use App\DTO\Service\Elasticsearch\Anime\AnimePaginationDTO;
 use App\Enums\Elasticsearch\IndexEnum;
+use App\Filters\ColumnFilter;
+use App\Filters\RelationFilter;
+use App\Filters\WhereInFilter;
+use App\Models\Anime;
+use App\Services\Anime\AnimeService;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
+use Elastic\Transport\Exception\NoNodeAvailableException;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
-/**
- * Class AnimeIndexService
- * @package App\Services\Elasticsearch\Index
- */
 final readonly class AnimeIndexService
 {
-    public function __construct(public Client $client)
-    {
+    public function __construct(
+        private Client       $client,
+        private AnimeService $animeService
+    ) {
     }
 
     /**
      * @psalm-suppress InvalidArgument
+     * @return array<string, mixed>
      */
     public function multiMatchSearch(string $term): array
     {
@@ -30,15 +39,10 @@ final readonly class AnimeIndexService
                 'body'  => [
                     'query' => [
                         'multi_match' => [
-                            'query'                => $term,
-                            'fields'               => [
-                                'title^8',
-                                'status',
-                                'rating',
-                                'episodes',
-                                'synonyms.synonym^5',
-                                'genres.name^4',
-                                'voice_acting.name',
+                            'query'  => $term,
+                            'fields' => [
+                                'title^3',
+                                'synonyms.synonym',
                             ],
                             'type'                 => 'most_fields',
                             'analyzer'             => 'anime_analyzer',
@@ -50,10 +54,99 @@ final readonly class AnimeIndexService
                     ],
                 ],
             ])->asArray();
-        } catch (ClientResponseException | ServerResponseException $e) {
-            logger()->error('Elasticsearch anime index multi match', [
-                'exception_trace'   => $e->getTraceAsString(),
-                'exception_message' => $e->getMessage(),
+        } catch (ClientResponseException | ServerResponseException | NoNodeAvailableException $exception) {
+            Log::error('Elasticsearch anime index multi match', [
+                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $exception->getMessage(),
+            ]);
+
+            return [];
+        }
+    }
+
+    /**
+     * @return list<Anime>
+     */
+    public function paginate(AnimePaginationDTO $dto): array
+    {
+        try {
+            $response = $this->client->search([
+                'index' => IndexEnum::ANIME_INDEX->value,
+                'body'  => [
+                    'from'  => ($dto->page - 1) * $dto->perPage,
+                    'size'  => $dto->perPage,
+                    'query' => [
+                        'bool' => [
+                            'filter' => $dto->getMappedFilters(),
+                        ],
+                    ],
+                    'sort' => $dto->sort,
+                ],
+            ])->asArray();
+
+            $ids = Arr::pluck($response['hits']['hits'], '_source.id');
+
+            return $this->animeService->all([
+                new ColumnFilter(['id', 'title', 'type', 'episodes', 'rating', 'status', 'year']),
+                new RelationFilter(['image:id,path', 'synonyms', 'genres:id,name', 'voiceActing:id,name']),
+                new WhereInFilter('id', $ids),
+            ])->toArray();
+        } catch (ClientResponseException | ServerResponseException | NoNodeAvailableException $exception) {
+            return [];
+        }
+    }
+
+    /**
+     * @return array<string, array<string, int>>
+     */
+    public function getFacets(): array
+    {
+        try {
+            $facets = $this->client->search([
+                'index' => IndexEnum::ANIME_INDEX->value,
+                'body'  => [
+                    'size' => 0,
+                    'aggs' => [
+                        'min_year' => [
+                            'min' => [
+                                'field' => 'year',
+                            ],
+                        ],
+                        'max_year' => [
+                            'max' => [
+                                'field' => 'year',
+                            ],
+                        ],
+                        'types' => [
+                            'terms' => [
+                                'field' => 'type',
+                            ],
+                        ],
+                        'statuses' => [
+                            'terms' => [
+                                'field' => 'status',
+                            ],
+                        ],
+                        'genres' => [
+                            'terms' => [
+                                'field' => 'genres.name',
+                                'size'  => 50,
+                            ],
+                        ],
+                        'voice_acting' => [
+                            'terms' => [
+                                'field' => 'voice_acting.name',
+                            ],
+                        ],
+                    ],
+                ],
+            ])->asArray();
+
+            return AnimeFacetDTO::fromArray($facets['aggregations'])->toArray();
+        } catch (ClientResponseException | ServerResponseException | NoNodeAvailableException $exception) {
+            Log::error('Elasticsearch anime index facets', [
+                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $exception->getMessage(),
             ]);
 
             return [];

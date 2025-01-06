@@ -2,45 +2,53 @@
 
 declare(strict_types=1);
 
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| The first thing we will do is create a new Laravel application instance
-| which serves as the "glue" for all the components of Laravel, and is
-| the IoC container for the system binding all of the various parts.
-|
-*/
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\Invitation\InvitationHasStatusMiddleware;
+use App\Http\Middleware\Invitation\NotDeclinedInvitationMiddleware;
+use App\Http\Middleware\Registration\HasInvitationMiddleware;
+use App\Http\Middleware\Telegram\RedirectIfHasAssignedUserMiddleware;
+use App\Http\Middleware\Telegram\ValidateSignatureMiddleware;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
-$app = new Illuminate\Foundation\Application($_ENV['APP_BASE_PATH'] ?? dirname(__DIR__));
+return Application::configure(basePath: dirname(__DIR__))
+                  ->withRouting(
+                      web     : __DIR__ . '/../routes/web.php',
+                      commands: __DIR__ . '/../routes/console.php',
+                      channels: __DIR__ . '/../routes/channels.php',
+                      health  : '/up',
+                  )
+                  ->withMiddleware(function (Middleware $middleware) {
+                      $middleware->alias([
+                          'role'                        => RoleMiddleware::class,
+                          'permission'                  => PermissionMiddleware::class,
+                          'role_or_permission'          => RoleOrPermissionMiddleware::class,
+                          'telegram.signed'             => ValidateSignatureMiddleware::class,
+                          'telegram.assigned'           => RedirectIfHasAssignedUserMiddleware::class,
+                          'registration.has_invitation' => HasInvitationMiddleware::class,
+                          'invitation.status'           => InvitationHasStatusMiddleware::class,
+                          'invitation.not_declined'     => NotDeclinedInvitationMiddleware::class,
+                      ]);
 
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
+                      $middleware->web(append: [
+                          HandleInertiaRequests::class,
+                          AddLinkHeadersForPreloadedAssets::class,
+                          Authenticate::class,
+                          EnsureEmailIsVerified::class,
+                      ]);
 
-$app->singleton(Illuminate\Contracts\Http\Kernel::class, App\Http\Kernel::class);
-
-$app->singleton(Illuminate\Contracts\Console\Kernel::class, App\Console\Kernel::class);
-
-$app->singleton(Illuminate\Contracts\Debug\ExceptionHandler::class, App\Exceptions\Handler::class);
-
-/*
-|--------------------------------------------------------------------------
-| Return The Application
-|--------------------------------------------------------------------------
-|
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
-*/
-
-return $app;
+                      $middleware->api(prepend: [
+                          ThrottleRequests::class . ':api',
+                      ]);
+                  })
+                  ->withExceptions(function (Exceptions $exceptions) {
+                      //
+                  })->create();

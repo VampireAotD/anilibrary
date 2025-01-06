@@ -4,71 +4,59 @@ declare(strict_types=1);
 
 namespace App\Telegram\Commands;
 
-use App\DTO\Service\Telegram\CreateUserDTO;
-use App\Enums\Telegram\Commands\CommandEnum;
-use App\Enums\Telegram\Commands\StartCommandEnum;
-use App\Jobs\Telegram\CreateUserJob;
-use GuzzleHttp\Promise\PromiseInterface;
-use WeStacks\TeleBot\Handlers\CommandHandler;
-use WeStacks\TeleBot\Objects\Message;
+use App\DTO\Service\Telegram\User\TelegramUserDTO;
+use App\Enums\Telegram\Actions\ActionEnum;
+use App\Enums\Telegram\Buttons\CommandButtonEnum;
+use App\Jobs\Telegram\RegisterTelegramUserJob;
+use SergiX44\Nutgram\Handlers\Type\Command;
+use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\KeyboardButton;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardMarkup;
 
-/**
- * Class StartCommand
- * @package App\Console\Commands\Telegram
- */
-class StartCommand extends CommandHandler
+final class StartCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string[]
-     */
-    protected static $aliases = ['/start', '/s'];
+    protected string $command = ActionEnum::START_COMMAND->value;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected static $description = 'Send "/start" or "/s" to get description of what this bot can do';
+    protected ?string $description = 'Send "/start" to get description of what this bot can do.';
 
-    /**
-     * @return Message|PromiseInterface
-     */
-    public function handle(): Message | PromiseInterface
+    public function handle(Nutgram $bot): void
     {
-        $user = $this->update->user();
+        $user = $bot->user();
 
         if ($user && !$user->is_bot) {
-            /** @phpstan-ignore-next-line */
-            $dto = new CreateUserDTO($user->id, $user?->first_name, $user?->last_name ?? 'not set', $user?->username);
-
-            CreateUserJob::dispatch($dto);
+            RegisterTelegramUserJob::dispatch(
+                new TelegramUserDTO(
+                    telegramId: $user->id,
+                    firstName : $user->first_name,
+                    lastName  : $user->last_name,
+                    username  : $user->username
+                )
+            );
         }
 
-        return $this->sendMessage([
-            'text'         => StartCommandEnum::WELCOME_MESSAGE->value,
-            'reply_markup' => [
-                'keyboard'        => [
-                    [
-                        [
-                            'text' => CommandEnum::ADD_ANIME_BUTTON->value,
-                        ],
-                        [
-                            'text' => CommandEnum::RANDOM_ANIME_BUTTON->value,
-                        ],
-                    ],
-                    [
-                        [
-                            'text' => CommandEnum::ANIME_LIST_BUTTON->value,
-                        ],
-                        [
-                            'text' => CommandEnum::ANIME_SEARCH_BUTTON->value,
-                        ],
-                    ],
-                ],
-                'resize_keyboard' => true,
-            ],
-        ]);
+        $bot->sendMessage(
+            text        : __('telegram.commands.start.welcome_message'),
+            reply_markup: $this->createReplyMarkup(CommandButtonEnum::cases())
+        );
+    }
+
+    /**
+     * @param list<CommandButtonEnum> $buttons
+     * @param positive-int            $buttonsPerRow
+     */
+    private function createReplyMarkup(array $buttons, int $buttonsPerRow = 2): ReplyKeyboardMarkup
+    {
+        $markup       = ReplyKeyboardMarkup::make(resize_keyboard: true);
+        $buttonChunks = array_chunk($buttons, $buttonsPerRow);
+
+        foreach ($buttonChunks as $chunk) {
+            $row = array_map(function ($buttonEnum) {
+                return KeyboardButton::make($buttonEnum->value);
+            }, $chunk);
+
+            $markup->addRow(...$row);
+        }
+
+        return $markup;
     }
 }

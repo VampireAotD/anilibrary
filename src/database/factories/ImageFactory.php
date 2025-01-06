@@ -20,8 +20,9 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            'alias' => $this->faker->sentence,
-            'path'  => $this->faker->imageUrl,
+            'path' => $this->faker->imageUrl,
+            'name' => $this->faker->word,
+            'hash' => $this->faker->sha512(),
         ];
     }
 }

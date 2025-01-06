@@ -4,34 +4,25 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\Filterable;
+use App\Models\Pivots\AnimeVoiceActing;
+use Database\Factories\VoiceActingFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\VoiceActing
- *
- * @property string                                                            $id
- * @property string                                                            $name
- * @property \Illuminate\Support\Carbon|null                                   $created_at
- * @property \Illuminate\Support\Carbon|null                                   $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Anime[] $anime
- * @property-read int|null                                                     $anime_count
- * @method static \Database\Factories\VoiceActingFactory            factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing query()
- * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|VoiceActing whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin IdeHelperVoiceActing
  */
 class VoiceActing extends Model
 {
-    use HasFactory;
     use HasUuids;
+    /** @use HasFactory<VoiceActingFactory> */
+    use HasFactory;
+    use Filterable;
+    use SoftDeletes;
 
     protected $table = 'voice_acting';
 
@@ -40,10 +31,10 @@ class VoiceActing extends Model
     protected $hidden = ['pivot'];
 
     /**
-     * @return HasMany
+     * @return BelongsToMany<Anime, $this>
      */
-    public function anime(): HasMany
+    public function anime(): BelongsToMany
     {
-        return $this->hasMany(Anime::class);
+        return $this->belongsToMany(Anime::class)->using(AnimeVoiceActing::class);
     }
 }

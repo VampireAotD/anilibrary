@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Anime\AnimeController;
-use App\Http\Controllers\Profile\ProfileController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,17 +16,10 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
-
-Route::group(['as' => 'profile.'], function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('destroy');
-});
-
-Route::resource('anime', AnimeController::class)->only(['index', 'show', 'store', 'update']);
+Route::get('/', DashboardController::class)->name('dashboard')->breadcrumb('Home');
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/invitation.php';
+require __DIR__ . '/anime.php';
+require __DIR__ . '/profile.php';
+require __DIR__ . '/integration.php';
