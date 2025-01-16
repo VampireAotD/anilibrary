@@ -16,6 +16,7 @@ FROM php:${PHP_VERSION}-cli-alpine
 
 ARG GROUP_ID=1000
 ARG USER_ID=1000
+ARG USER=anilibrary
 ARG XDEBUG_VERSION=3.4.0
 ARG SWOOLE_VERSION=6.0.0
 ARG PHPREDIS_VERSION=6.1.0
@@ -38,10 +39,14 @@ RUN apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git
     && rm -rf /var/cache/apk/* /tmp/* /var/tmp/* \
     && apk del .build-deps
 
-RUN addgroup -g ${GROUP_ID} anilibrary \
-    && adduser -u ${USER_ID} -D -S -G anilibrary anilibrary
+RUN addgroup -g ${GROUP_ID} ${USER} \
+    && adduser -u ${USER_ID} -D -S -G ${USER} ${USER}
 
-USER anilibrary
+RUN mkdir -p /var/run/supervisor /var/log/supervisor \
+    && chown -R ${USER}:${USER} /var/run /var/log \
+    && chmod -R a+rw /var/run /var/log
+
+USER ${USER}
 
 COPY --link ./php.ini /usr/local/etc/php/php.ini
 COPY --link ./supervisor/supervisord.conf /etc/supervisor/supervisord.conf

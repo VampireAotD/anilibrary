@@ -4,7 +4,6 @@
 **/.vscode
 **/.github
 **/art
-**/docker
 **/scripts
 **/.dockerignore
 **/.pnpm-store
@@ -12,7 +11,7 @@
 **/mutation
 **/storage
 **/vendor
-**/.env*
+**/.env.*
 **/.gitignore
 **/.gitattributes
 **/compose*.y*ml
