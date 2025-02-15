@@ -24,7 +24,7 @@ final class RandomAnimeCommand extends Command
         try {
             $randomAnime = $animeService->randomAnime();
 
-            if (!$randomAnime) {
+            if (is_null($randomAnime)) {
                 $bot->sendMessage(__('telegram.commands.random_anime.unable_to_find_anime'));
                 return;
             }

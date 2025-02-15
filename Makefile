@@ -38,13 +38,25 @@ app-sh: ## Enter app container.
 phpstan: ## Run PHPStan.
 	$(compose) exec app vendor/bin/phpstan analyse --memory-limit=2G
 
-.PHONY: pint
-pint: ## Run Laravel Pint.
+.PHONY: pint-check
+pint-check: ## Run Laravel Pint in test mode.
+	$(compose) exec app vendor/bin/pint --config pint.json --test
+
+.PHONY: pint-fix
+pint-fix: ## Run Laravel Pint to fix code.
 	$(compose) exec app vendor/bin/pint --config pint.json
 
 .PHONY: infection
 infection: ## Run Infection mutation tests.
 	$(compose) exec app vendor/bin/infection --threads=4
+
+.PHONY: rector-check
+rector-check: ## Run Rector in dry-run mode.
+	$(compose) exec app vendor/bin/rector process --dry-run
+
+.PHONY: rector-fix
+rector-fix: ## Run Rector to fix code.
+	$(compose) exec app vendor/bin/rector process
 
 .PHONY: test
 test: ## Run backend tests.

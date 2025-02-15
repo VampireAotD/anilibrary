@@ -50,7 +50,9 @@ final class AddAnimeConversation extends Conversation
         }
 
         try {
-            if ($anime = $this->animeService->findByUrl($url)) {
+            $anime = $this->animeService->findByUrl($url);
+
+            if (!is_null($anime)) {
                 $this->sendScrapedMessage($anime);
                 $this->end();
                 return;

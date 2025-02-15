@@ -201,7 +201,7 @@ class ScraperUseCaseTest extends TestCase
         ]);
 
         $url        = $this->faker->url;
-        $foundAnime = $this->scraperUseCase->scrapeByUrl($url);
+        $foundAnime = $this->scraperUseCase->scrapeByUrl($url)->refresh();
 
         Bus::assertDispatched(UpsertAnimeJob::class); // because anime is updated
 

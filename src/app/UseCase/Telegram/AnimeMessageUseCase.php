@@ -38,7 +38,7 @@ final readonly class AnimeMessageUseCase
 
         $anime = $this->animeService->findById($id);
 
-        if (!$anime) {
+        if (is_null($anime)) {
             throw AnimeMessageException::animeNotFound($dto->animeId);
         }
 
@@ -69,7 +69,7 @@ final readonly class AnimeMessageUseCase
     {
         $ids = UserStateFacade::getSearchResult($dto->userId);
 
-        if (!$ids) {
+        if ($ids === []) {
             throw AnimeMessageException::noSearchResultsAvailable();
         }
 

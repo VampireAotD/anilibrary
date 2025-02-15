@@ -34,7 +34,9 @@ final class GenerateCommand extends Command
      */
     public function handle(AnimeService $animeService, UserService $userService): int
     {
-        if (!$owner = $userService->getOwner()) {
+        $owner = $userService->getOwner();
+
+        if (is_null($owner)) {
             $this->error('Owner not found');
             return self::FAILURE;
         }
