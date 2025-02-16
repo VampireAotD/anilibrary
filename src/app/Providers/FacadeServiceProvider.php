@@ -14,6 +14,7 @@ class FacadeServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
         AliasLoader::getInstance([

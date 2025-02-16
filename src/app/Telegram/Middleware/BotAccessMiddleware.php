@@ -10,7 +10,7 @@ final class BotAccessMiddleware
 {
     public function __invoke(Nutgram $bot, mixed $next): void
     {
-        $whitelist = explode(',', config('nutgram.whitelist', ''));
+        $whitelist = explode(',', (string) config('nutgram.whitelist', ''));
 
         if (!in_array((string) $bot->userId(), $whitelist, true)) {
             $bot->sendMessage(__('telegram.middleware.access_denied'));

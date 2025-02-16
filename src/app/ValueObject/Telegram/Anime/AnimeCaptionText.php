@@ -23,7 +23,7 @@ final readonly class AnimeCaptionText implements Stringable
      */
     public function __toString(): string
     {
-        return __('telegram.captions.anime', [
+        return (string) __('telegram.captions.anime', [
             'title'       => $this->anime->title,
             'status'      => $this->anime->status->value, // @phpstan-ignore-line Ignored because of parser issues
             'episodes'    => $this->anime->episodes,

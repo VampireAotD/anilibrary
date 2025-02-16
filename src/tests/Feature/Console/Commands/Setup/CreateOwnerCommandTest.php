@@ -20,6 +20,7 @@ class CreateOwnerCommandTest extends TestCase
 
     private UserService $userService;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

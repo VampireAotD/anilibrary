@@ -22,6 +22,7 @@ final class AnimeListCallbackTest extends TestCase
 
     private CallbackDataFactory $callbackDataFactory;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

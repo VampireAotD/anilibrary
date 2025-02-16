@@ -82,7 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected function hasTemporaryEmail(): Attribute
     {
         return Attribute::make(
-            get: fn(): bool => str_ends_with($this->email, config('mail.temporary_domain')),
+            get: fn(): bool => str_ends_with($this->email, (string) config('mail.temporary_domain')),
         )->shouldCache();
     }
 }

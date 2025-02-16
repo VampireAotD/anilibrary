@@ -14,6 +14,7 @@ class LogViewerServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
         //
@@ -24,8 +25,6 @@ class LogViewerServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('viewLogViewer', function (?User $user) {
-            return $user->hasRole(RoleEnum::OWNER);
-        });
+        Gate::define('viewLogViewer', static fn(?User $user) => $user->hasRole(RoleEnum::OWNER));
     }
 }

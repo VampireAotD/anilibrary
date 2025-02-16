@@ -38,6 +38,7 @@ class ScraperUseCaseTest extends TestCase
 
     private ScraperUseCase $scraperUseCase;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

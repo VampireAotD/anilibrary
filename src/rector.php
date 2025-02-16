@@ -6,6 +6,7 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
+use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\ValueObject\PhpVersion;
 use RectorLaravel\Rector\PropertyFetch\ReplaceFakerInstanceWithHelperRector;
@@ -26,8 +27,10 @@ return RectorConfig::configure()
                        RemoveUnusedPrivatePropertyRector::class,
                    ])
                    ->withSets([
+                       LevelSetList::UP_TO_PHP_83,
                        LaravelLevelSetList::UP_TO_LARAVEL_110,
                        SetList::CODE_QUALITY,
+                       SetList::EARLY_RETURN,
                    ])
                    ->withSkip([
                        CompactToVariablesRector::class,

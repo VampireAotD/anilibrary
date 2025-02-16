@@ -27,6 +27,7 @@ final class AnimeMessageUseCaseTest extends TestCase
     private EncoderService      $encoderService;
     private AnimeMessageUseCase $animeMessageUseCase;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

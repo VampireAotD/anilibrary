@@ -23,7 +23,7 @@ final class RandomAnimeControllerTest extends TestCase
 
         $response = $this->actingAs($this->createUser())->get(route('anime.random'));
 
-        $animeId = last(explode('/', $response->headers->get('Location')));
+        $animeId = last(explode('/', (string) $response->headers->get('Location')));
 
         $response->assertRedirectToRoute('anime.show', $animeId);
     }

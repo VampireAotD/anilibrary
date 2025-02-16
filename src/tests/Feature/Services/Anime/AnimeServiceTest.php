@@ -25,6 +25,7 @@ class AnimeServiceTest extends TestCase
 
     private AnimeService $animeService;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

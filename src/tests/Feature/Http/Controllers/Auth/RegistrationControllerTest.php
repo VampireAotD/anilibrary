@@ -26,6 +26,7 @@ class RegistrationControllerTest extends TestCase
 
     private SignedUrlService $signedUrlService;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -20,6 +20,7 @@ class ClientTest extends TestCase
 
     protected Client $client;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,9 +30,7 @@ class ClientTest extends TestCase
 
     public function testServiceWillThrowRequestExceptionOnFailure(): void
     {
-        Http::fake(function () {
-            return Http::response(['error' => 'Invalid URL'], Response::HTTP_NOT_FOUND);
-        });
+        Http::fake(static fn() => Http::response(['error' => 'Invalid URL'], Response::HTTP_NOT_FOUND));
 
         $this->expectException(RequestException::class);
         $this->client->scrapeByUrl($this->faker->url);

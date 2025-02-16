@@ -16,7 +16,7 @@ final readonly class ImageService
     {
         $content = preg_replace('#data:image/\w+;base64,#', '', $image);
 
-        $hash = hash('sha512', base64_decode($content));
+        $hash = hash('sha512', base64_decode((string) $content));
 
         if ($duplicate = Image::query()->where('hash', $hash)->first()) {
             $anime->attachImage($duplicate);

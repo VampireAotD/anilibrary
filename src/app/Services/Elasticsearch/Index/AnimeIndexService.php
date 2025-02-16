@@ -91,7 +91,7 @@ final readonly class AnimeIndexService
                 new RelationFilter(['image:id,path', 'synonyms', 'genres:id,name', 'voiceActing:id,name']),
                 new WhereInFilter('id', $ids),
             ])->toArray();
-        } catch (ClientResponseException | ServerResponseException | NoNodeAvailableException $exception) {
+        } catch (ClientResponseException | ServerResponseException | NoNodeAvailableException) {
             return [];
         }
     }

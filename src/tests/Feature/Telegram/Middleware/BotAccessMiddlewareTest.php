@@ -15,6 +15,7 @@ class BotAccessMiddlewareTest extends TestCase
     use CanCreateMocks;
     use CanCreateFakeUpdates;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,7 +39,7 @@ class BotAccessMiddlewareTest extends TestCase
     {
         // Using loop here instead of dataProvider because it seems that if config() is used
         // inside dataProvider, test that uses it cannot be found
-        $whitelist = explode(',', config('nutgram.whitelist', ''));
+        $whitelist = explode(',', (string) config('nutgram.whitelist', ''));
 
         $bot = $this->bot;
         $bot->middleware(BotAccessMiddleware::class);

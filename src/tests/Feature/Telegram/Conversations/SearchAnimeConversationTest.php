@@ -22,6 +22,7 @@ final class SearchAnimeConversationTest extends TestCase
     use CanCreateMocks;
     use CanCreateFakeAnime;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

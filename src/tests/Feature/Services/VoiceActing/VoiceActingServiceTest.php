@@ -19,6 +19,7 @@ class VoiceActingServiceTest extends TestCase
     private int                $voiceActingCount;
     private VoiceActingService $voiceActingService;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

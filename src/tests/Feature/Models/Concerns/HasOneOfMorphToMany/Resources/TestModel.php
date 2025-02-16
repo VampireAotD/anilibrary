@@ -31,6 +31,7 @@ class TestModel extends Model
         ]);
     }
 
+    #[\Override]
     protected static function booted(): void
     {
         parent::booted();
