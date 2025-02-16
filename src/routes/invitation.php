@@ -13,6 +13,8 @@ Route::post('/invitation/{invitation}/resend', ResendInvitationController::class
 
 Route::apiResource('invitation', InvitationController::class)
      ->middleware('role:owner')
+     ->middlewareFor(methods: 'update', middleware: 'invitation.status:pending')
+     ->middlewareFor(methods: 'destroy', middleware: 'invitation.not_declined')
      ->except(['show'])
      ->names([
          'store'   => 'invitation.send',

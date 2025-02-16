@@ -11,14 +11,12 @@ use App\Http\Requests\Invitation\SendInvitationRequest;
 use App\Models\Invitation;
 use App\Services\Invitation\InvitationService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
 
-class InvitationController extends Controller implements HasMiddleware
+class InvitationController extends Controller
 {
     public function __construct(
         private readonly InvitationService $invitationService
@@ -74,18 +72,5 @@ class InvitationController extends Controller implements HasMiddleware
         $this->invitationService->decline($invitation);
 
         return back()->with(['message' => __('invitation.declined')]);
-    }
-
-    /**
-     * Get the middleware that should be assigned to the controller.
-     *
-     * @return Middleware[]
-     */
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('invitation.status:pending', only: ['update']),
-            new Middleware('invitation.not_declined', only: ['destroy']),
-        ];
     }
 }
