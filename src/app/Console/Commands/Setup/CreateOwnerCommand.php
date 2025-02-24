@@ -85,8 +85,8 @@ class CreateOwnerCommand extends Command
             )->validated();
 
             return $validated['email'];
-        } catch (ValidationException $exception) {
-            $this->warn($exception->getMessage());
+        } catch (ValidationException $validationException) {
+            $this->warn($validationException->getMessage());
 
             return '';
         }

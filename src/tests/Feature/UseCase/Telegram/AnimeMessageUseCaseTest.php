@@ -24,7 +24,8 @@ final class AnimeMessageUseCaseTest extends TestCase
     use WithFaker;
     use CanCreateFakeAnime;
 
-    private EncoderService      $encoderService;
+    private EncoderService $encoderService;
+
     private AnimeMessageUseCase $animeMessageUseCase;
 
     #[\Override]

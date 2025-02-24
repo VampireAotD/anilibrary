@@ -16,7 +16,8 @@ class VoiceActingServiceTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    private int                $voiceActingCount;
+    private int $voiceActingCount;
+
     private VoiceActingService $voiceActingService;
 
     #[\Override]

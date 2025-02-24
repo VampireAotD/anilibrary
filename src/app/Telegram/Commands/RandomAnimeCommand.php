@@ -37,10 +37,10 @@ final class RandomAnimeCommand extends Command
                 photo  : $message->photo,
                 caption: $message->caption,
             );
-        } catch (AnimeMessageException $exception) {
+        } catch (AnimeMessageException $animeMessageException) {
             Log::error('Random anime command', [
-                'exception_message' => $exception->getMessage(),
-                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $animeMessageException->getMessage(),
+                'exception_trace'   => $animeMessageException->getTraceAsString(),
             ]);
         }
     }

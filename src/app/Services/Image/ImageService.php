@@ -47,11 +47,11 @@ final readonly class ImageService
             }
 
             $anime->attachImage($image);
-        } catch (ApiError $exception) {
+        } catch (ApiError $apiError) {
             Log::error('Failed to upload image', [
                 'anime'             => $anime->id,
-                'exception_trace'   => $exception->getTraceAsString(),
-                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $apiError->getTraceAsString(),
+                'exception_message' => $apiError->getMessage(),
             ]);
         }
     }

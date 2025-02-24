@@ -64,10 +64,10 @@ final class SearchAnimeConversation extends Conversation
 
             UserStateFacade::saveSearchResultPreview($userId, $message->message_id);
             $this->end();
-        } catch (AnimeMessageException $exception) {
+        } catch (AnimeMessageException $animeMessageException) {
             Log::error('Anime search conversation', [
-                'exception_message' => $exception->getMessage(),
-                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $animeMessageException->getMessage(),
+                'exception_trace'   => $animeMessageException->getTraceAsString(),
             ]);
 
             $bot->sendMessage(__('telegram.conversations.search_anime.no_results'));

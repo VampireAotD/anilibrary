@@ -44,10 +44,10 @@ class InvitationController extends Controller
             );
 
             return back()->with(['message' => __('invitation.accepted')]);
-        } catch (Throwable $exception) {
+        } catch (Throwable $throwable) {
             Log::error('Error sending invitation', [
-                'exception_message' => $exception->getMessage(),
-                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $throwable->getMessage(),
+                'exception_trace'   => $throwable->getTraceAsString(),
             ]);
 
             return back()->with(['message' => __('invitation.failed_to_create')]);

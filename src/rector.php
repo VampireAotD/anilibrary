@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
+use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 use Rector\Set\ValueObject\LevelSetList;
@@ -30,12 +31,14 @@ return RectorConfig::configure()
                        LevelSetList::UP_TO_PHP_83,
                        LaravelLevelSetList::UP_TO_LARAVEL_110,
                        SetList::CODE_QUALITY,
+                       SetList::CODING_STYLE,
                        SetList::EARLY_RETURN,
                        SetList::STRICT_BOOLEANS,
                    ])
                    ->withSkip([
                        CompactToVariablesRector::class,
                        ReplaceFakerInstanceWithHelperRector::class,
+                       MakeInheritedMethodVisibilitySameAsParentRector::class,
 
                        '*/Models/Concerns/HasOneOfMorphToManyRelation.php',
                    ]);

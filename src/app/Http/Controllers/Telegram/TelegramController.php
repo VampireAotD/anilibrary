@@ -27,13 +27,13 @@ class TelegramController extends Controller
             $this->telegramUserService->assign($request->user(), TelegramUserDTO::fromArray($request->validated()));
 
             return back();
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             Log::error('Failed to assign telegram user', [
-                'exception_trace'   => $e->getTraceAsString(),
-                'exception_message' => $e->getMessage(),
+                'exception_trace'   => $throwable->getTraceAsString(),
+                'exception_message' => $throwable->getMessage(),
             ]);
 
-            return back()->withErrors(['message' => $e->getMessage()]);
+            return back()->withErrors(['message' => $throwable->getMessage()]);
         }
     }
 }

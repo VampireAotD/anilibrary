@@ -57,7 +57,7 @@ final readonly class TelegramUserService
             $user = $this->userService->updateOrCreate(
                 new UserDTO(
                     name    : (string) $dto->telegramId,
-                    email   : "$dto->telegramId@$domain",
+                    email   : sprintf('%d@%s', $dto->telegramId, $domain),
                     password: Str::random(),
                 )
             );
