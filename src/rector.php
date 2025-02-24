@@ -31,8 +31,11 @@ return RectorConfig::configure()
                        LaravelLevelSetList::UP_TO_LARAVEL_110,
                        SetList::CODE_QUALITY,
                        SetList::EARLY_RETURN,
+                       SetList::STRICT_BOOLEANS,
                    ])
                    ->withSkip([
                        CompactToVariablesRector::class,
                        ReplaceFakerInstanceWithHelperRector::class,
+
+                       '*/Models/Concerns/HasOneOfMorphToManyRelation.php',
                    ]);

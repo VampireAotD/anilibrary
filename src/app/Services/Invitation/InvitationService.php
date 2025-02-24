@@ -77,7 +77,7 @@ final readonly class InvitationService
     {
         $query = Invitation::declined()->where('created_at', '<=', now()->subYear());
 
-        if ($id) {
+        if (!is_null($id)) {
             $query->where('id', $id);
         }
 
@@ -88,7 +88,7 @@ final readonly class InvitationService
     {
         $query = Invitation::expired();
 
-        if ($id) {
+        if (!is_null($id)) {
             $query->where('id', $id);
         }
 

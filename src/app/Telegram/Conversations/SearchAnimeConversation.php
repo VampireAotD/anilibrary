@@ -42,7 +42,8 @@ final class SearchAnimeConversation extends Conversation
             }
 
             // Remove previous search results
-            if ($messageId = UserStateFacade::getSearchResultPreview($userId)) {
+            $messageId = UserStateFacade::getSearchResultPreview($userId);
+            if (!is_null($messageId)) {
                 UserStateFacade::removeSearchResultPreview($userId);
                 $bot->deleteMessage($userId, (int) $messageId);
             }

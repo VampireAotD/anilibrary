@@ -18,7 +18,7 @@ final readonly class RelationFilter implements QueryFilterInterface
 
     public function filter(Builder $builder, Closure $next): Builder
     {
-        if ($this->relations) {
+        if ($this->relations !== []) {
             $builder->with($this->relations);
         }
 
