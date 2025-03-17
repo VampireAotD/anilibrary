@@ -78,6 +78,7 @@ services:
     container_name: anilibrary
     environment:
       XDEBUG_MODE: ${XDEBUG_MODE}
+      PHP_IDE_CONFIG: ${PHP_IDE_CONFIG}
     extra_hosts:
       - "host.docker.internal:host-gateway" # for xdebug
     healthcheck:
