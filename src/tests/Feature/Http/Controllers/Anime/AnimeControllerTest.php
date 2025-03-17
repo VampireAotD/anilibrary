@@ -25,6 +25,7 @@ class AnimeControllerTest extends TestCase
     use CanCreateMocks;
     use CanCreateFakeElasticResponse;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

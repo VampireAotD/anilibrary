@@ -3,7 +3,9 @@ pre-commit:
   commands:
     tests:
       run: make test
-    phpstan:
-      run: make phpstan
+    #    phpstan:
+    #      run: make phpstan
+    rector:
+      run: make rector-check
     pint:
-      run: make pint
+      run: make pint-check

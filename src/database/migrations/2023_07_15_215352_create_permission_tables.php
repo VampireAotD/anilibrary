@@ -26,6 +26,7 @@ return new class extends Migration {
                 'Error: config/permission.php not loaded. Run [php artisan config:clear] and try again.'
             );
         }
+
         if ($teams && empty($columnNames['team_foreign_key'] ?? null)) {
             throw new Exception(
                 'Error: team_foreign_key on config/permission.php not loaded. Run [php artisan config:clear] and try again.'
@@ -47,6 +48,7 @@ return new class extends Migration {
                 $table->uuid($columnNames['team_foreign_key'])->nullable();
                 $table->index($columnNames['team_foreign_key'], 'roles_team_foreign_key_index');
             }
+
             $table->string('name', 125);
             $table->string('guard_name', 125);
             $table->timestamps();

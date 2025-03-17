@@ -20,6 +20,7 @@ class TelegramUserServiceTest extends TestCase
 
     private TelegramUserService $telegramUserService;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

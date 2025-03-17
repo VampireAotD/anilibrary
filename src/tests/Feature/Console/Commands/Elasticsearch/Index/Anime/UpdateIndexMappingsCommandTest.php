@@ -13,6 +13,7 @@ class UpdateIndexMappingsCommandTest extends TestCase
 {
     use CanCreateMocks;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

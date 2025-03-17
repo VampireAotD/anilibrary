@@ -18,6 +18,7 @@ class StartCommandTest extends TestCase
     use CanCreateMocks;
     use CanCreateFakeUpdates;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

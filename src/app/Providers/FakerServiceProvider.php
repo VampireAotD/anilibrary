@@ -15,6 +15,7 @@ class FakerServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
+    #[\Override]
     public function register(): void
     {
         if ($this->app->environment('testing')) {

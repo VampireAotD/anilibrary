@@ -24,6 +24,7 @@ class GenerateCommandTest extends TestCase
 
     private AnimeService $animeService;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,10 +52,8 @@ class GenerateCommandTest extends TestCase
         $listFile = config('lists.anime.file');
 
         Storage::disk('lists')->assertExists($listFile);
-        Mail::assertQueued(AnimeListMail::class, static function (AnimeListMail $mail) use ($owner) {
-            // cannot test properly because of https://github.com/laravel/framework/discussions/47777
-            return $mail->hasTo($owner->email);
-        });
+        // cannot test properly because of https://github.com/laravel/framework/discussions/47777
+        Mail::assertQueued(AnimeListMail::class, static fn(AnimeListMail $mail) => $mail->hasTo($owner->email));
 
         $json = Storage::disk('lists')->get($listFile);
 

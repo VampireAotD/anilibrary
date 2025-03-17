@@ -6,7 +6,8 @@ namespace App\DTO\Service\Elasticsearch\Anime;
 
 final readonly class AnimePaginationDTO
 {
-    public const int DEFAULT_PAGE      = 1;
+    public const int DEFAULT_PAGE = 1;
+
     public const int DEFAULT_PAGE_SIZE = 20;
 
     /**

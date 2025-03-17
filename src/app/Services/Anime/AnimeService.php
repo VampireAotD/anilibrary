@@ -158,15 +158,15 @@ final readonly class AnimeService
             UploadJob::dispatch($anime, $dto->image);
         }
 
-        if ($dto->synonyms) {
+        if ($dto->synonyms !== []) {
             $anime->synonyms()->upsertRelated($dto->synonyms, ['name']);
         }
 
-        if ($dto->genres) {
+        if ($dto->genres !== []) {
             $anime->genres()->syncWithoutDetaching($dto->genres);
         }
 
-        if ($dto->voiceActing) {
+        if ($dto->voiceActing !== []) {
             $anime->voiceActing()->syncWithoutDetaching($dto->voiceActing);
         }
     }

@@ -77,7 +77,7 @@ final readonly class ScraperUseCase
             )
         );
 
-        if ($anime) {
+        if (!is_null($anime)) {
             return DB::transaction(function () use ($anime, $dto): Anime {
                 [$genres, $voiceActing] = $this->syncVoiceActingAndGenres($dto);
 

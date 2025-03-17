@@ -19,7 +19,7 @@ final class SupportedUrlRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!preg_match('#(animego\.org|animevost\.org)#mi', $value)) {
+        if (in_array(preg_match('#(animego\.org|animevost\.org)#mi', (string) $value), [0, false], true)) {
             $fail(__('validation.telegram.url'));
         }
     }

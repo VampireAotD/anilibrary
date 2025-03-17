@@ -42,7 +42,8 @@ final class SearchAnimeConversation extends Conversation
             }
 
             // Remove previous search results
-            if ($messageId = UserStateFacade::getSearchResultPreview($userId)) {
+            $messageId = UserStateFacade::getSearchResultPreview($userId);
+            if (!is_null($messageId)) {
                 UserStateFacade::removeSearchResultPreview($userId);
                 $bot->deleteMessage($userId, (int) $messageId);
             }
@@ -63,10 +64,10 @@ final class SearchAnimeConversation extends Conversation
 
             UserStateFacade::saveSearchResultPreview($userId, $message->message_id);
             $this->end();
-        } catch (AnimeMessageException $exception) {
+        } catch (AnimeMessageException $animeMessageException) {
             Log::error('Anime search conversation', [
-                'exception_message' => $exception->getMessage(),
-                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $animeMessageException->getMessage(),
+                'exception_trace'   => $animeMessageException->getTraceAsString(),
             ]);
 
             $bot->sendMessage(__('telegram.conversations.search_anime.no_results'));

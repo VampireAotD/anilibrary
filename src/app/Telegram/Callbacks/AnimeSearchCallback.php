@@ -21,7 +21,7 @@ final readonly class AnimeSearchCallback implements CallbackInterface
     public static function command(): string
     {
         $command = CallbackDataTypeEnum::SEARCH_LIST->value;
-        return "command=({$command})&page=(\d+)";
+        return sprintf('command=(%s)&page=(\d+)', $command);
     }
 
     public function __invoke(Nutgram $bot, string ...$arguments): void
@@ -43,10 +43,10 @@ final readonly class AnimeSearchCallback implements CallbackInterface
                 ),
                 reply_markup: $pagination->generateReplyMarkup(),
             );
-        } catch (AnimeMessageException $exception) {
+        } catch (AnimeMessageException $animeMessageException) {
             Log::error('Anime search callback', [
-                'exception_message' => $exception->getMessage(),
-                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $animeMessageException->getMessage(),
+                'exception_trace'   => $animeMessageException->getTraceAsString(),
             ]);
 
             $bot->sendMessage(__('telegram.callbacks.anime_search.render_error'));

@@ -20,7 +20,7 @@ final readonly class ViewAnimeCallback implements CallbackInterface
     public static function command(): string
     {
         $command = CallbackDataTypeEnum::VIEW_ANIME->value;
-        return "command=($command)&animeId=(\w+)";
+        return sprintf('command=(%s)&animeId=(\w+)', $command);
     }
 
     public function __invoke(Nutgram $bot, string ...$arguments): void
@@ -36,10 +36,10 @@ final readonly class ViewAnimeCallback implements CallbackInterface
                 photo  : $message->photo,
                 caption: $message->caption,
             );
-        } catch (AnimeMessageException $exception) {
+        } catch (AnimeMessageException $animeMessageException) {
             Log::error('View anime callback', [
-                'exception_message' => $exception->getMessage(),
-                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $animeMessageException->getMessage(),
+                'exception_trace'   => $animeMessageException->getTraceAsString(),
             ]);
 
             $bot->sendMessage(__('telegram.callbacks.view_anime.render_error'));

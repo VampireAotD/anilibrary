@@ -27,10 +27,10 @@ final class AnimeListCommand extends Command
                 caption     : $pagination->caption,
                 reply_markup: $pagination->generateReplyMarkup(),
             );
-        } catch (AnimeMessageException $exception) {
+        } catch (AnimeMessageException $animeMessageException) {
             Log::error('Anime list command', [
-                'exception_message' => $exception->getMessage(),
-                'exception_trace'   => $exception->getTraceAsString(),
+                'exception_message' => $animeMessageException->getMessage(),
+                'exception_trace'   => $animeMessageException->getTraceAsString(),
             ]);
 
             $bot->sendMessage(text: __('telegram.callbacks.anime_list.render_error'));

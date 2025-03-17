@@ -117,13 +117,13 @@ final class AnimeController extends Controller
             $this->animeService->update($anime, UpdateAnimeDTO::fromArray($request->validated()));
 
             return to_route('anime.show', $anime->id);
-        } catch (Throwable $exception) {
+        } catch (Throwable $throwable) {
             Log::error('Updating anime', [
-                'exception_trace'   => $exception->getTraceAsString(),
-                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $throwable->getTraceAsString(),
+                'exception_message' => $throwable->getMessage(),
             ]);
 
-            return back()->withErrors(['message' => $exception->getMessage()]);
+            return back()->withErrors(['message' => $throwable->getMessage()]);
         }
     }
 

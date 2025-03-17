@@ -21,7 +21,8 @@ class UserAnimeList extends Pivot
     use HasFactory;
 
     public $incrementing = false;
-    protected $fillable  = ['user_id', 'anime_id', 'status', 'rating', 'episodes'];
+
+    protected $fillable = ['user_id', 'anime_id', 'status', 'rating', 'episodes'];
 
     /**
      * @return array<string, class-string>

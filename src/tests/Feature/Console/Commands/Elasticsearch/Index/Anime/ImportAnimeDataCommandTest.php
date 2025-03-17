@@ -19,6 +19,7 @@ class ImportAnimeDataCommandTest extends TestCase
     use CanCreateFakeAnime;
     use CanCreateMocks;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -16,7 +16,7 @@ final readonly class ImageService
     {
         $content = preg_replace('#data:image/\w+;base64,#', '', $image);
 
-        $hash = hash('sha512', base64_decode($content));
+        $hash = hash('sha512', base64_decode((string) $content));
 
         if ($duplicate = Image::query()->where('hash', $hash)->first()) {
             $anime->attachImage($duplicate);
@@ -47,11 +47,11 @@ final readonly class ImageService
             }
 
             $anime->attachImage($image);
-        } catch (ApiError $exception) {
+        } catch (ApiError $apiError) {
             Log::error('Failed to upload image', [
                 'anime'             => $anime->id,
-                'exception_trace'   => $exception->getTraceAsString(),
-                'exception_message' => $exception->getMessage(),
+                'exception_trace'   => $apiError->getTraceAsString(),
+                'exception_message' => $apiError->getMessage(),
             ]);
         }
     }

@@ -21,6 +21,7 @@ final class ViewAnimeCallbackTest extends TestCase
 
     private CallbackDataFactory $callbackDataFactory;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

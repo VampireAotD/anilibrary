@@ -25,7 +25,7 @@ final readonly class TelegramUserService
      */
     public function generateSignature(array $data = []): string
     {
-        $token = hash('sha256', config('nutgram.token'), true);
+        $token = hash('sha256', (string) config('nutgram.token'), true);
 
         $signature = collect($data)
             ->except('hash')
@@ -57,7 +57,7 @@ final readonly class TelegramUserService
             $user = $this->userService->updateOrCreate(
                 new UserDTO(
                     name    : (string) $dto->telegramId,
-                    email   : "$dto->telegramId@$domain",
+                    email   : sprintf('%d@%s', $dto->telegramId, $domain),
                     password: Str::random(),
                 )
             );

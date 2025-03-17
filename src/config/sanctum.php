@@ -18,7 +18,7 @@ return [
 
     'stateful' => explode(
         ',',
-        env(
+        (string) env(
             'SANCTUM_STATEFUL_DOMAINS',
             sprintf(
                 '%s%s',

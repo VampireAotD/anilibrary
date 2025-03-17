@@ -17,6 +17,7 @@ class GenreServiceTest extends TestCase
 
     private GenreService $genreService;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

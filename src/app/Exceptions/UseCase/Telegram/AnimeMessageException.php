@@ -10,12 +10,12 @@ final class AnimeMessageException extends Exception
 {
     public static function animeNotFound(string $id): AnimeMessageException
     {
-        return new AnimeMessageException("Anime with id $id not found");
+        return new AnimeMessageException(sprintf('Anime with id %s not found', $id));
     }
 
     public static function couldNotGetDataForPage(int $page): AnimeMessageException
     {
-        return new AnimeMessageException("Could not get page $page");
+        return new AnimeMessageException('Could not get page ' . $page);
     }
 
     public static function noSearchResultsAvailable(): AnimeMessageException

@@ -50,9 +50,7 @@ final class StartCommand extends Command
         $buttonChunks = array_chunk($buttons, $buttonsPerRow);
 
         foreach ($buttonChunks as $chunk) {
-            $row = array_map(function ($buttonEnum) {
-                return KeyboardButton::make($buttonEnum->value);
-            }, $chunk);
+            $row = array_map(static fn($buttonEnum) => KeyboardButton::make($buttonEnum->value), $chunk);
 
             $markup->addRow(...$row);
         }

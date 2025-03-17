@@ -19,6 +19,7 @@ use SergiX44\Nutgram\Testing\FakeNutgram;
 trait CanCreateMocks
 {
     protected FakeNutgram $bot;
+
     protected MockHandler $elasticHandler;
 
     protected function setUpFakeBot(): void

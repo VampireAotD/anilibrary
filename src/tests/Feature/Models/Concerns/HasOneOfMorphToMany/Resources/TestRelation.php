@@ -22,6 +22,7 @@ class TestRelation extends Model
         return $this->morphToMany(TestModel::class, 'test_model', 'has_test_relations');
     }
 
+    #[\Override]
     protected static function booted(): void
     {
         parent::booted();

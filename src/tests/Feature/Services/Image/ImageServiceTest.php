@@ -24,6 +24,7 @@ class ImageServiceTest extends TestCase
 
     protected ImageService $imageService;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

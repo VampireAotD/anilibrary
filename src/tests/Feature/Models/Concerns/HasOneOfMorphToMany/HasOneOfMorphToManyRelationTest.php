@@ -13,6 +13,7 @@ use Tests\TestCase;
 
 class HasOneOfMorphToManyRelationTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
