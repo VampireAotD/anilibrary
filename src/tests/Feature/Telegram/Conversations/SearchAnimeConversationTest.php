@@ -10,8 +10,9 @@ use App\Models\Anime;
 use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeElasticClient;
+use Tests\Concerns\Fake\CanCreateFakeTelegramBot;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
 
@@ -19,7 +20,8 @@ final class SearchAnimeConversationTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
-    use CanCreateMocks;
+    use CanCreateFakeTelegramBot;
+    use CanCreateFakeElasticClient;
     use CanCreateFakeAnime;
 
     #[\Override]

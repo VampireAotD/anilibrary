@@ -16,17 +16,15 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
-use Tests\Concerns\Fake\CanCreateFakeUpdates;
+use Tests\Concerns\Fake\CanCreateFakeTelegramBot;
 use Tests\TestCase;
 
 class AddAnimeConversationTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
-    use CanCreateMocks;
-    use CanCreateFakeUpdates;
+    use CanCreateFakeTelegramBot;
     use CanCreateFakeAnime;
 
     private CallbackDataFactory $callbackDataFactory;

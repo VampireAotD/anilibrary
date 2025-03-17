@@ -7,15 +7,15 @@ namespace Tests\Feature\Telegram\Commands;
 use App\Enums\Telegram\Actions\CommandEnum;
 use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeTelegramBot;
 use Tests\Feature\Telegram\Callbacks\AnimeListCallbackTest;
 use Tests\TestCase;
 
 final class AnimeListCommandTest extends TestCase
 {
     use RefreshDatabase;
-    use CanCreateMocks;
+    use CanCreateFakeTelegramBot;
     use CanCreateFakeAnime;
 
     #[\Override]

@@ -7,19 +7,18 @@ namespace Tests\Feature\Services\Image;
 use App\Models\Image;
 use App\Services\Image\ImageService;
 use Cloudinary\Api\Exception\ApiError;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Log;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Mocks\CanCreateCloudinaryMock;
 use Tests\TestCase;
 
 class ImageServiceTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
-    use CanCreateMocks;
+    use CanCreateCloudinaryMock;
     use CanCreateFakeAnime;
 
     protected ImageService $imageService;
@@ -68,12 +67,13 @@ class ImageServiceTest extends TestCase
         // Create anime with no image
         $anime = $this->createAnime();
 
-        Cloudinary::shouldReceive('destroy')->never();
-        Cloudinary::shouldReceive('uploadFile')->once();
-        Cloudinary::shouldReceive([
-            'getSecurePath' => $this->faker->imageUrl,
-            'getPublicId'   => $this->faker->word,
-        ])->once();
+        $this->uploadApi->expects($this->never())->method('destroy');
+        $this->uploadApi->expects($this->once())->method('upload')->willReturn(
+            $this->createCloudinaryApiResponse([
+                'public_id'  => $this->faker->word,
+                'secure_url' => $this->faker->imageUrl,
+            ])
+        );
 
         $this->imageService->attachEncodedImageToAnime($this->faker->randomAnimeImage(), $anime);
     }
@@ -82,12 +82,13 @@ class ImageServiceTest extends TestCase
     {
         $anime = $this->createAnimeWithRelations();
 
-        Cloudinary::shouldReceive('destroy')->once();
-        Cloudinary::shouldReceive('uploadFile')->once();
-        Cloudinary::shouldReceive([
-            'getSecurePath' => $this->faker->imageUrl,
-            'getPublicId'   => $this->faker->word,
-        ])->once();
+        $this->uploadApi->expects($this->once())->method('destroy');
+        $this->uploadApi->expects($this->once())->method('upload')->willReturn(
+            $this->createCloudinaryApiResponse([
+                'public_id'  => $this->faker->word,
+                'secure_url' => $this->faker->imageUrl,
+            ])
+        );
 
         $this->imageService->attachEncodedImageToAnime($this->faker->randomAnimeImage(), $anime);
     }
@@ -97,8 +98,8 @@ class ImageServiceTest extends TestCase
         $anime     = $this->createAnime();
         $exception = new ApiError('test');
 
-        Cloudinary::shouldReceive('destroy')->never();
-        Cloudinary::shouldReceive('uploadFile')->once()->andThrow($exception);
+        $this->uploadApi->expects($this->never())->method('destroy');
+        $this->uploadApi->expects($this->once())->method('upload')->willThrowException($exception);
 
         Log::shouldReceive('error')->once()->with('Failed to upload image', [
             'anime'             => $anime->id,
@@ -117,12 +118,13 @@ class ImageServiceTest extends TestCase
         $this->assertNotNull($anime->image);
         $this->assertTrue($anime->image->is_default);
 
-        Cloudinary::shouldReceive('destroy')->never();
-        Cloudinary::shouldReceive('uploadFile')->once();
-        Cloudinary::shouldReceive([
-            'getSecurePath' => $path = $this->faker->imageUrl,
-            'getPublicId'   => $this->faker->word,
-        ])->once();
+        $this->uploadApi->expects($this->never())->method('destroy');
+        $this->uploadApi->expects($this->once())->method('upload')->willReturn(
+            $this->createCloudinaryApiResponse([
+                'public_id'  => $this->faker->word,
+                'secure_url' => $path = $this->faker->imageUrl,
+            ])
+        );
 
         $this->imageService->attachEncodedImageToAnime($this->faker->randomAnimeImage(), $anime);
 

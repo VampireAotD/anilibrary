@@ -25,7 +25,7 @@ final readonly class ImageService
 
         try {
             $publicId = sprintf('%s/%s', $anime->id, Str::random());
-            $response = cloudinary()->uploadFile(
+            $response = cloudinary()->uploadApi()->upload(
                 file   : $image,
                 options: [
                     'public_id'     => $publicId,
@@ -34,8 +34,8 @@ final readonly class ImageService
             );
 
             $image = Image::query()->create([
-                'path' => $response->getSecurePath(),
-                'name' => $response->getPublicId(),
+                'path' => $response->offsetGet('secure_url'),
+                'name' => $response->offsetGet('public_id'),
                 'hash' => $hash,
             ]);
 
@@ -43,7 +43,7 @@ final readonly class ImageService
             // have a default image path, so need to check if it is an
             // actual image in DB and delete it if it is
             if (!$anime->image->is_default) {
-                cloudinary()->destroy($anime->image->name);
+                cloudinary()->uploadApi()->destroy($anime->image->name);
             }
 
             $anime->attachImage($image);

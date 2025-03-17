@@ -8,14 +8,14 @@ use App\Enums\Telegram\Actions\CommandEnum;
 use App\Enums\Telegram\Buttons\CommandButtonEnum;
 use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeTelegramBot;
 use Tests\TestCase;
 
 final class RandomAnimeCommandTest extends TestCase
 {
     use RefreshDatabase;
-    use CanCreateMocks;
+    use CanCreateFakeTelegramBot;
     use CanCreateFakeAnime;
 
     #[\Override]

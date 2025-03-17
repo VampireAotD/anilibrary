@@ -6,13 +6,13 @@ namespace Tests\Feature\Console\Commands\Elasticsearch\Index\Anime;
 
 use App\Enums\Elasticsearch\IndexEnum;
 use Illuminate\Http\Response;
-use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeElasticClient;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
 
 class CreateIndexCommandTest extends TestCase
 {
-    use CanCreateMocks;
+    use CanCreateFakeElasticClient;
 
     #[\Override]
     protected function setUp(): void

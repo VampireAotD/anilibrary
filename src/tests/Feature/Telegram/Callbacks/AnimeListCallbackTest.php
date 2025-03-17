@@ -10,14 +10,14 @@ use App\Models\Anime;
 use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeTelegramBot;
 use Tests\TestCase;
 
 final class AnimeListCallbackTest extends TestCase
 {
     use RefreshDatabase;
-    use CanCreateMocks;
+    use CanCreateFakeTelegramBot;
     use CanCreateFakeAnime;
 
     private CallbackDataFactory $callbackDataFactory;
