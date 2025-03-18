@@ -10,9 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Bus;
 use Inertia\Testing\AssertableInertia as Assert;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
-use Tests\Concerns\Fake\CanCreateFakeElasticResponse;
+use Tests\Concerns\Fake\CanCreateFakeElasticClient;
 use Tests\Concerns\Fake\CanCreateFakeUsers;
 use Tests\TestCase;
 
@@ -22,8 +21,7 @@ class AnimeControllerTest extends TestCase
     use WithFaker;
     use CanCreateFakeAnime;
     use CanCreateFakeUsers;
-    use CanCreateMocks;
-    use CanCreateFakeElasticResponse;
+    use CanCreateFakeElasticClient;
 
     #[\Override]
     protected function setUp(): void
@@ -82,12 +80,9 @@ class AnimeControllerTest extends TestCase
     {
         Bus::fake();
 
-        $this->actingAs($this->createUser())
-             ->post(
-                 route('anime.store'),
-                 ['url' => 'https://animego.org/anime/blich-tysyacheletnyaya-krovavaya-voyna-2129']
-             )
-             ->assertRedirect();
+        $url = 'https://animego.org/anime/blich-tysyacheletnyaya-krovavaya-voyna-2129';
+
+        $this->actingAs($this->createUser())->post(route('anime.store'), compact('url'))->assertRedirect();
 
         Bus::assertDispatched(ScrapeAnimeJob::class);
     }

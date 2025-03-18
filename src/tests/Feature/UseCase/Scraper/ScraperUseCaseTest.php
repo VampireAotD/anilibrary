@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
 use Tests\TestCase;
 
@@ -34,7 +33,6 @@ class ScraperUseCaseTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
     use CanCreateFakeAnime;
-    use CanCreateMocks;
 
     private ScraperUseCase $scraperUseCase;
 

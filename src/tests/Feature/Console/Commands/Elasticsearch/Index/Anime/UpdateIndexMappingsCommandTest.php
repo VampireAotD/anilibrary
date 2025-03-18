@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Feature\Console\Commands\Elasticsearch\Index\Anime;
 
 use App\Enums\Elasticsearch\IndexEnum;
-use Tests\Concerns\CanCreateMocks;
+use Tests\Concerns\Fake\CanCreateFakeElasticClient;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
 
 class UpdateIndexMappingsCommandTest extends TestCase
 {
-    use CanCreateMocks;
+    use CanCreateFakeElasticClient;
 
     #[\Override]
     protected function setUp(): void

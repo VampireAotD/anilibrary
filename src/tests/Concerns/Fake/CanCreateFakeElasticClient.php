@@ -9,17 +9,46 @@ use App\Enums\Anime\TypeEnum;
 use App\Models\Anime;
 use App\Models\Genre;
 use App\Models\VoiceActing;
+use Elastic\Elasticsearch\Client as ElasticsearchClient;
+use Elastic\Elasticsearch\ClientBuilder;
+use Elastic\Elasticsearch\Exception\AuthenticationException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use Tests\Helpers\Elasticsearch\JsonResponse;
+use Tests\TestCase;
 
-trait CanCreateFakeElasticResponse
+/**
+ * @mixin TestCase
+ */
+trait CanCreateFakeElasticClient
 {
     use CanCreateFakeAnime;
 
-    public function createElasticResponseForAnimeWithRelations(int $quantity = 1): JsonResponse
+    protected MockHandler $elasticHandler;
+
+    /**
+     * @throws AuthenticationException
+     */
+    protected function setUpFakeElasticsearchClient(): void
+    {
+        $this->elasticHandler = new MockHandler();
+
+        $handlerStack = HandlerStack::create($this->elasticHandler);
+
+        $client = new Client(['handler' => $handlerStack]);
+
+        $this->app->instance(
+            ElasticsearchClient::class,
+            ClientBuilder::create()->setHttpClient($client)->build()
+        );
+    }
+
+    protected function createElasticResponseForAnimeWithRelations(int $quantity = 1): JsonResponse
     {
         $animeList = $this->createAnimeCollectionWithRelations($quantity);
 
-        $elasticCollection = $animeList->map(fn(Anime $anime) => ['_source' => ['id' => $anime->id]]);
+        $elasticCollection = $animeList->map(static fn(Anime $anime) => ['_source' => ['id' => $anime->id]]);
 
         return new JsonResponse([
             'hits' => [
@@ -31,24 +60,27 @@ trait CanCreateFakeElasticResponse
         ]);
     }
 
-    public function createElasticResponseForAnimeFacets(): JsonResponse
+    protected function createElasticResponseForAnimeFacets(): JsonResponse
     {
         $animeList = $this->createAnimeCollectionWithRelations(quantity: 5);
 
         $types = $animeList->pluck('type')->map(
-            fn(TypeEnum $type) => ['key' => $type->value, 'doc_count' => 5]
+            static fn(TypeEnum $type) => ['key' => $type->value, 'doc_count' => 5]
         )->toArray();
 
         $statuses = $animeList->pluck('status')->map(
-            fn(StatusEnum $status) => ['key' => $status->value, 'doc_count' => 5]
+            static fn(StatusEnum $status) => ['key' => $status->value, 'doc_count' => 5]
         )->toArray();
 
         $voiceActing = VoiceActing::query()->withCount('anime')->get()->map(
-            fn(VoiceActing $voiceActing) => ['key' => $voiceActing->name, 'doc_count' => $voiceActing->anime_count]
+            static fn(VoiceActing $voiceActing) => [
+                'key'       => $voiceActing->name,
+                'doc_count' => $voiceActing->anime_count,
+            ]
         )->toArray();
 
         $genres = Genre::query()->withCount('anime')->get()->map(
-            fn(Genre $genre) => ['key' => $genre->name, 'doc_count' => $genre->anime_count]
+            static fn(Genre $genre) => ['key' => $genre->name, 'doc_count' => $genre->anime_count]
         )->toArray();
 
         return new JsonResponse([

@@ -8,15 +8,13 @@ use App\Enums\Telegram\Actions\CommandEnum;
 use App\Jobs\Telegram\RegisterTelegramUserJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Tests\Concerns\CanCreateMocks;
-use Tests\Concerns\Fake\CanCreateFakeUpdates;
+use Tests\Concerns\Fake\CanCreateFakeTelegramBot;
 use Tests\TestCase;
 
 class StartCommandTest extends TestCase
 {
     use RefreshDatabase;
-    use CanCreateMocks;
-    use CanCreateFakeUpdates;
+    use CanCreateFakeTelegramBot;
 
     #[\Override]
     protected function setUp(): void

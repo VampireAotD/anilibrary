@@ -9,14 +9,14 @@ use App\Factory\Telegram\CallbackData\CallbackDataFactory;
 use App\ValueObject\Telegram\Anime\AnimeCaptionText;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeTelegramBot;
 use Tests\TestCase;
 
 final class ViewAnimeCallbackTest extends TestCase
 {
     use RefreshDatabase;
-    use CanCreateMocks;
+    use CanCreateFakeTelegramBot;
     use CanCreateFakeAnime;
 
     private CallbackDataFactory $callbackDataFactory;

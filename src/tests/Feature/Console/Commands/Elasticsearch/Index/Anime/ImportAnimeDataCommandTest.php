@@ -8,8 +8,8 @@ use App\Console\Commands\Elasticsearch\Index\Anime\ImportAnimeDataCommand;
 use App\Enums\Elasticsearch\IndexEnum;
 use App\Models\Anime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Concerns\CanCreateMocks;
 use Tests\Concerns\Fake\CanCreateFakeAnime;
+use Tests\Concerns\Fake\CanCreateFakeElasticClient;
 use Tests\Helpers\Elasticsearch\JsonResponse;
 use Tests\TestCase;
 
@@ -17,7 +17,7 @@ class ImportAnimeDataCommandTest extends TestCase
 {
     use RefreshDatabase;
     use CanCreateFakeAnime;
-    use CanCreateMocks;
+    use CanCreateFakeElasticClient;
 
     #[\Override]
     protected function setUp(): void
