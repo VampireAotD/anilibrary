@@ -6,7 +6,7 @@ import {
     type HoverCardContentProps,
     HoverCardPortal,
     useForwardProps,
-} from 'radix-vue';
+} from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

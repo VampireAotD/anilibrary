@@ -7,7 +7,7 @@ import {
     SelectTrigger,
     type SelectTriggerProps,
     useForwardProps,
-} from 'radix-vue';
+} from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

@@ -6,7 +6,7 @@ import {
     type ComboboxRootEmits,
     type ComboboxRootProps,
     useForwardPropsEmits,
-} from 'radix-vue';
+} from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

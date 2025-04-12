@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type HTMLAttributes, computed } from 'vue';
 
-import { DialogTitle, type DialogTitleProps } from 'radix-vue';
+import { DialogTitle, type DialogTitleProps } from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

@@ -6,7 +6,7 @@ import {
     SelectScrollDownButton,
     type SelectScrollDownButtonProps,
     useForwardProps,
-} from 'radix-vue';
+} from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

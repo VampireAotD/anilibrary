@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type HTMLAttributes, computed } from 'vue';
 
-import { DropdownMenuItem, type DropdownMenuItemProps, useForwardProps } from 'radix-vue';
+import { DropdownMenuItem, type DropdownMenuItemProps, useForwardProps } from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

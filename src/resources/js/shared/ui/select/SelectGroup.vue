@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type HTMLAttributes, computed } from 'vue';
 
-import { SelectGroup, type SelectGroupProps } from 'radix-vue';
+import { SelectGroup, type SelectGroupProps } from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

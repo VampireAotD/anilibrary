@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type HTMLAttributes, computed } from 'vue';
 
-import { ProgressIndicator, ProgressRoot, type ProgressRootProps } from 'radix-vue';
+import { ProgressIndicator, ProgressRoot, type ProgressRootProps } from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

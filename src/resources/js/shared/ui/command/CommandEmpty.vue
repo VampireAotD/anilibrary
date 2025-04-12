@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type HTMLAttributes, computed } from 'vue';
 
-import { ComboboxEmpty, type ComboboxEmptyProps } from 'radix-vue';
+import { ComboboxEmpty, type ComboboxEmptyProps } from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

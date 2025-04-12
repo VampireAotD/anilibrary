@@ -2,7 +2,7 @@
 import { type HTMLAttributes, computed } from 'vue';
 
 import { X } from 'lucide-vue-next';
-import { ToastClose, type ToastCloseProps } from 'radix-vue';
+import { ToastClose, type ToastCloseProps } from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

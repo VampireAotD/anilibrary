@@ -6,7 +6,7 @@ import {
     type DropdownMenuSubContentEmits,
     type DropdownMenuSubContentProps,
     useForwardPropsEmits,
-} from 'radix-vue';
+} from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

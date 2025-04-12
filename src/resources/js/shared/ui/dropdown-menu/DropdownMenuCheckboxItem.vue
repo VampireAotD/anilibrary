@@ -8,7 +8,7 @@ import {
     type DropdownMenuCheckboxItemProps,
     DropdownMenuItemIndicator,
     useForwardPropsEmits,
-} from 'radix-vue';
+} from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

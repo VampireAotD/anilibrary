@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type HTMLAttributes, computed } from 'vue';
 
-import { ComboboxGroup, type ComboboxGroupProps, ComboboxLabel } from 'radix-vue';
+import { ComboboxGroup, type ComboboxGroupProps, ComboboxLabel } from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 

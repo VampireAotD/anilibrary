@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { ToastRoot, type ToastRootEmits, useForwardPropsEmits } from 'radix-vue';
+import { ToastRoot, type ToastRootEmits, useForwardPropsEmits } from 'reka-ui';
 
 import { cn } from '@/shared/helpers/tailwind';
 
