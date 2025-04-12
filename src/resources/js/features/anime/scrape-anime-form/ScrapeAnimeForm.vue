@@ -7,10 +7,11 @@ import { ErrorMessage } from '@/shared/ui/error-message';
 import { TextInput } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { useToast } from '@/shared/ui/toast';
+import type { SharedData } from '@/types';
 
 const emit = defineEmits<{ added: [url: string] }>();
 
-const page = usePage();
+const page = usePage<SharedData>();
 const { toast } = useToast();
 
 const form = useForm({

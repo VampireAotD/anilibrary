@@ -20,7 +20,7 @@ const delegatedProps = computed(() => {
         v-bind="delegatedProps"
         :class="
             cn(
-                'fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:top-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col md:max-w-[420px]',
+                'fixed top-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:top-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col md:max-w-[420px]',
                 props.class
             )
         "

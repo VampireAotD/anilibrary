@@ -56,7 +56,7 @@ const voiceActingList = computed(() =>
                         :alt="anime.title"
                     />
                     <div
-                        class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"
+                        class="absolute inset-0 bg-linear-to-t from-gray-900 to-transparent"
                     ></div>
                 </div>
 
@@ -129,7 +129,7 @@ const voiceActingList = computed(() =>
                 </div>
             </section>
 
-            <Block as="section" class="rounded-xl shadow-sm overflow-hidden">
+            <Block as="section" class="rounded-xl shadow-xs overflow-hidden">
                 <div class="p-6">
                     <h2 class="text-xl font-semibold mb-4">Information</h2>
 
@@ -170,7 +170,7 @@ const voiceActingList = computed(() =>
                 </div>
             </Block>
 
-            <Block as="section" class="rounded-xl shadow-sm overflow-hidden">
+            <Block as="section" class="rounded-xl shadow-xs overflow-hidden">
                 <div class="p-6">
                     <h2 class="text-xl font-semibold mb-4">Description</h2>
 

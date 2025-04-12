@@ -142,7 +142,7 @@ const preview = (file: File) => {
                 :key="index"
                 class="flex items-center bg-gray-100 p-2 rounded"
             >
-                <div class="w-16 h-16 mr-4 flex-shrink-0">
+                <div class="w-16 h-16 mr-4 shrink-0">
                     <img
                         v-if="isImage(file)"
                         :src="preview(file)"
@@ -158,7 +158,7 @@ const preview = (file: File) => {
                     </div>
                 </div>
 
-                <div class="flex-grow">
+                <div class="grow">
                     <p class="font-semibold truncate">{{ file.name }}</p>
                     <p class="text-sm text-gray-500">{{ formatFileSize(file.size) }}</p>
                 </div>

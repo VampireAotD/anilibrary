@@ -12,7 +12,7 @@ const year = computed(() => {
 <template>
     <footer class="hidden sm:block bg-muted mt-auto border-t-2 border-border">
         <div
-            class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between"
+            class="w-full mx-auto max-w-(--breakpoint-xl) p-4 md:flex md:items-center md:justify-between"
         >
             <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
                 {{ year }}

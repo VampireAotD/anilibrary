@@ -9,7 +9,7 @@ import { AuthenticatedLayout } from '@/widgets/layouts';
     <AuthenticatedLayout>
         <Head title="Create invitation to Anilibrary" />
 
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xs sm:rounded-lg">
             <CreateInvitationForm />
         </div>
     </AuthenticatedLayout>

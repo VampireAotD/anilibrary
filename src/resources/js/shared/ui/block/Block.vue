@@ -9,7 +9,7 @@ const { as = 'div' } = defineProps<Props>();
 </script>
 
 <template>
-    <component :is="as" :class="cn(`bg-muted p-4 rounded-lg shadow`)">
+    <component :is="as" :class="cn(`bg-muted p-4 rounded-lg shadow-sm`)">
         <slot />
     </component>
 </template>

@@ -1,3 +1,6 @@
+import type { PageProps } from '@inertiajs/core';
+import type { Config } from 'ziggy-js';
+
 declare namespace Models {
     export interface CursorPagination<T> {
         data: T[];
@@ -49,12 +52,19 @@ declare namespace Models {
     }
 }
 
-export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
-    auth: {
-        user: Models.User;
-    };
-    flash: {
-        message?: string;
-    };
-    breadcrumbs?: Models.Breadcrumb[];
-};
+export type Breadcrumbs = Models.Breadcrumb[];
+
+export interface Auth {
+    user: User;
+}
+
+export interface FlashMessage {
+    message?: string;
+}
+
+export interface SharedData extends PageProps {
+    auth: Auth;
+    flash: FlashMessage;
+    ziggy: Config & { location: string };
+    breadcrumbs?: Breadcrumbs;
+}

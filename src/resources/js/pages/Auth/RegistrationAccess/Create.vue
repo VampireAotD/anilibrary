@@ -76,7 +76,7 @@ const submit = () => {
 
                 <Link
                     :href="route('login')"
-                    class="rounded-md text-sm underline focus:outline-none"
+                    class="rounded-md text-sm underline focus:outline-hidden"
                 >
                     Already have an account?
                 </Link>

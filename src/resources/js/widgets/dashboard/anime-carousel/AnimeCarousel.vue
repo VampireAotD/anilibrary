@@ -15,7 +15,7 @@ defineProps<Props>();
 <template>
     <Title text="Recently added anime" />
 
-    <Carousel class="bg-muted px-4 pt-2 shadow">
+    <Carousel class="bg-muted px-4 pt-2 shadow-sm">
         <CarouselContent>
             <CarouselItem
                 v-for="anime in data"

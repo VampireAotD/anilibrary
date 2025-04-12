@@ -13,7 +13,7 @@ defineProps<Props>();
     <Chart
         :type="type"
         :data="data"
-        class="bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"
+        class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
     />
 </template>
 

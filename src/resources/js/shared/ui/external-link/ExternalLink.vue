@@ -15,7 +15,7 @@ defineProps<Props>();
         target="_blank"
         :class="
             cn(
-                'border-b-2 border-transparent text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out'
+                'border-b-2 border-transparent text-sm font-medium leading-5 focus:outline-hidden transition duration-150 ease-in-out'
             )
         "
     >

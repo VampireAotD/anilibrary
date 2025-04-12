@@ -14,7 +14,7 @@ import { GuestLayout } from '@/widgets/layouts';
 
             <Link
                 :href="route('login')"
-                class="rounded-md text-sm underline focus:outline-none"
+                class="rounded-md text-sm underline focus:outline-hidden"
             >
                 Return to log in
             </Link>

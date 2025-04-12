@@ -88,12 +88,12 @@ onUnmounted(() => {
             :aria-describedby="$slots.body ? 'modal-body' : ''"
         >
             <div
-                class="modal-wrapper overflow-y-auto overflow-x-hidden outline-none fixed top-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center flex"
+                class="modal-wrapper overflow-y-auto overflow-x-hidden outline-hidden fixed top-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center flex"
                 @click.self="closeOnOutsideClick"
             >
                 <div :class="modalSize" class="modal-content w-full p-4">
                     <!-- Modal content -->
-                    <div class="bg-background rounded-lg shadow">
+                    <div class="bg-background rounded-lg shadow-sm">
                         <header
                             id="modal-header"
                             :class="
