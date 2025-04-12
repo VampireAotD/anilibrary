@@ -27,7 +27,6 @@
         "laravel/serializable-closure": "^2.0.3",
         "laravel/tinker": "^2.10.1",
         "nutgram/laravel": "^1.5.0",
-        "opcodesio/log-viewer": "^3.15.5",
         "pusher/pusher-php-server": "^7.2.7",
         "sentry/sentry-laravel": "^4.13.0",
         "spatie/laravel-permission": "^6.17.0",
@@ -74,12 +73,10 @@
         ],
         "post-install-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi",
-            "@php artisan vendor:publish --tag=log-viewer-assets --ansi",
             "@ide-helper"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi",
-            "@php artisan vendor:publish --tag=log-viewer-assets --ansi",
             "@ide-helper"
         ],
         "post-root-package-install": [
