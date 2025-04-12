@@ -14,6 +14,7 @@ use App\Models\Pivots\UserAnimeList;
 use App\Observers\AnimeObserver;
 use Database\Factories\AnimeFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -101,7 +102,8 @@ class Anime extends Model
      * @param Builder<$this> $query
      * @return Builder<$this>
      */
-    public function scopeReleased(Builder $query): Builder
+    #[Scope]
+    protected function released(Builder $query): Builder
     {
         return $query->where('status', StatusEnum::RELEASED);
     }
@@ -110,7 +112,8 @@ class Anime extends Model
      * @param Builder<$this> $query
      * @return Builder<$this>
      */
-    public function scopeUnreleased(Builder $query): Builder
+    #[Scope]
+    protected function unreleased(Builder $query): Builder
     {
         return $query->whereNot('status', StatusEnum::RELEASED);
     }
@@ -119,7 +122,8 @@ class Anime extends Model
      * @param Builder<$this> $query
      * @return Builder<$this>
      */
-    public function scopeCountScrapedPerMonth(Builder $query): Builder
+    #[Scope]
+    protected function countScrapedPerMonth(Builder $query): Builder
     {
         return $query->selectRaw('COUNT(id) as per_month, MONTH(created_at) as month_number')
                      ->groupBy('month_number');

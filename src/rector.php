@@ -29,7 +29,7 @@ return RectorConfig::configure()
                    ])
                    ->withSets([
                        LevelSetList::UP_TO_PHP_83,
-                       LaravelLevelSetList::UP_TO_LARAVEL_110,
+                       LaravelLevelSetList::UP_TO_LARAVEL_120,
                        SetList::CODE_QUALITY,
                        SetList::CODING_STYLE,
                        SetList::EARLY_RETURN,

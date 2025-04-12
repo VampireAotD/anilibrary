@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\AnimeUrlFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -35,7 +36,8 @@ class AnimeUrl extends Model
      * @param Builder<$this> $query
      * @return Builder<$this>
      */
-    public function scopeCountByDomain(Builder $query): Builder
+    #[Scope]
+    protected function countByDomain(Builder $query): Builder
     {
         return $query->selectRaw("SUBSTRING_INDEX(url, '/', 3) as domain, COUNT(url) as anime")
                      ->groupBy('domain');

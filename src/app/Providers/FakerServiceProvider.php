@@ -19,7 +19,7 @@ class FakerServiceProvider extends ServiceProvider
     public function register(): void
     {
         if ($this->app->environment('testing')) {
-            $this->app->singleton(Generator::class, function () {
+            $this->app->singleton(static function (): Generator {
                 $faker = Factory::create();
 
                 $faker->addProvider(new AnimeInformationProvider($faker));

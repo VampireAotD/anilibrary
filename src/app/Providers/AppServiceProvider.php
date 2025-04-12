@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
     private function setUpElasticsearchClient(): void
     {
-        $this->app->singleton(Client::class, function () {
+        $this->app->singleton(static function (): Client {
             $rawHosts = config('elasticsearch.hosts');
             $hosts    = [];
 
