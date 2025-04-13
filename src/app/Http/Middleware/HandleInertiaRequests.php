@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Facades\Breadcrumbs\BreadcrumbsFacade;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -46,7 +47,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn() => $request->session()->get('message'),
             ],
-            'breadcrumbs' => $request->route()->breadcrumbs()->jsonSerialize(),
+            'breadcrumbs' => BreadcrumbsFacade::generate($request),
         ];
     }
 }

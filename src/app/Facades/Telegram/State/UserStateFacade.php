@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @mixin UserState
  */
-class UserStateFacade extends Facade
+final class UserStateFacade extends Facade
 {
     public static function getFacadeAccessor(): string
     {
-        return 'user-state';
+        return UserState::class;
     }
 }
