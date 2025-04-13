@@ -1,7 +1,10 @@
+include:
+  - ./testing.yml
+
 services:
   database:
-    build: &database
-      context: docker/mysql
+    build:
+      context: build/mysql
     container_name: anilibrary-database
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -21,23 +24,10 @@ services:
     networks:
       - local
 
-  testing-database:
-    build: *database
-    container_name: anilibrary-testing-database
-    environment:
-      MYSQL_DATABASE: anilibrary-testing
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
-    tmpfs:
-      - /var/lib/mysql
-    ports:
-      - "3307:3306"
-    networks:
-      - local
-
   redis:
     image: redis:${REDIS_VERSION}
     container_name: anilibrary-redis
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass "${REDIS_PASSWORD}"
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli -a $REDIS_PASSWORD ping | grep PONG" ]
       interval: 10s
@@ -55,7 +45,7 @@ services:
       app:
         condition: service_healthy
     build:
-      context: docker/nginx
+      context: build/nginx
     container_name: anilibrary-nginx
     environment:
       NGINX_LOGS_TO_LOGSTASH: ${NGINX_LOGS_TO_LOGSTASH}
@@ -67,17 +57,18 @@ services:
       - local
       - anilibrary
 
-  app:
+  app: &app
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_healthy
-    build: &app
-      context: docker/php
+    build:
+      context: build/php
     container_name: anilibrary
     environment:
       XDEBUG_MODE: ${XDEBUG_MODE}
+      CONTAINER_MODE: octane
       PHP_IDE_CONFIG: ${PHP_IDE_CONFIG}
     extra_hosts:
       - "host.docker.internal:host-gateway" # for xdebug
@@ -88,7 +79,6 @@ services:
       retries: 5
     volumes:
       - ./src:/anilibrary
-      - ./docker/php/supervisor/conf.d/octane.conf:/etc/supervisor/conf.d/octane.conf
     ports:
       - ${NODE_PORT}:5173
     networks:
@@ -96,66 +86,70 @@ services:
       - anilibrary
 
   horizon:
+    <<: *app
     depends_on:
       app:
         condition: service_healthy
-    build: *app
     container_name: anilibrary-horizon
+    environment:
+      CONTAINER_MODE: horizon
     healthcheck:
       test: php artisan horizon:status || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
-    volumes:
-      - ./src:/anilibrary
-      - ./docker/php/supervisor/conf.d/horizon.conf:/etc/supervisor/conf.d/horizon.conf
+    ports: [ ]
     networks:
       - local
 
   scheduler:
+    <<: *app
     depends_on:
       app:
         condition: service_healthy
-    build: *app
     container_name: anilibrary-scheduler
+    environment:
+      CONTAINER_MODE: scheduler
     healthcheck:
-      test: php artisan schedule:list || exit 1
+      test: ps aux | grep 'php artisan schedule:work' || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
-    volumes:
-      - ./src:/anilibrary
-      - ./docker/php/supervisor/conf.d/scheduler.conf:/etc/supervisor/conf.d/scheduler.conf
+    ports: [ ]
     networks:
       - local
 
   telegram:
+    <<: *app
     depends_on:
       app:
         condition: service_healthy
-    build: *app
     container_name: anilibrary-telegram
+    environment:
+      CONTAINER_MODE: telegram
     healthcheck:
-      test: php artisan nutgram:list || exit 1
+      test: ps aux | grep 'php artisan nutgram:run' || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
-    volumes:
-      - ./src:/anilibrary
-      - ./docker/php/supervisor/conf.d/telegram.conf:/etc/supervisor/conf.d/telegram.conf
+    ports: [ ]
     networks:
       - local
-      - anilibrary
 
   reverb:
+    <<: *app
     depends_on:
       app:
         condition: service_healthy
-    build: *app
     container_name: anilibrary-reverb
-    volumes:
-      - ./src:/anilibrary
-      - ./docker/php/supervisor/conf.d/reverb.conf:/etc/supervisor/conf.d/reverb.conf
+    healthcheck:
+      test: ps aux | grep 'php artisan reverb:start' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      CONTAINER_MODE: reverb
+    ports: [ ]
     networks:
       - local
 

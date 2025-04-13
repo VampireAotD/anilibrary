@@ -21,7 +21,7 @@ ARG XDEBUG_VERSION=3.4.0
 ARG SWOOLE_VERSION=6.0.0
 ARG PHPREDIS_VERSION=6.1.0
 
-RUN apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git zip unzip supervisor \
+RUN apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git zip unzip \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS linux-headers brotli-dev pcre-dev pcre2-dev zlib-dev \
     && pecl install xdebug-${XDEBUG_VERSION} swoole-${SWOOLE_VERSION} redis-${PHPREDIS_VERSION} uv \
     && docker-php-ext-install -j$(nproc) \
@@ -42,14 +42,10 @@ RUN apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git
 RUN addgroup -g ${GROUP_ID} ${USER} \
     && adduser -u ${USER_ID} -D -S -G ${USER} ${USER}
 
-RUN mkdir -p /var/run/supervisor /var/log/supervisor \
-    && chown -R ${USER}:${USER} /var/run /var/log \
-    && chmod -R a+rw /var/run /var/log
-
 USER ${USER}
 
 COPY --link ./php.ini /usr/local/etc/php/php.ini
-COPY --link ./supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY --link --chown=${USER}:${USER} ./entrypoint.sh /usr/local/bin/entrypoint.sh
 
 COPY --link --from=composer /usr/bin/composer /usr/local/bin/composer
 
@@ -57,10 +53,12 @@ COPY --link --from=node /usr/local/lib /usr/local/lib
 COPY --link --from=node /usr/local/include /usr/local/include
 COPY --link --from=node /usr/local/bin /usr/local/bin
 
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 WORKDIR /anilibrary
 
 EXPOSE 5173
 EXPOSE 8000
 EXPOSE 8080
 
-ENTRYPOINT ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+ENTRYPOINT ["entrypoint.sh"]

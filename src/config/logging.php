@@ -138,7 +138,7 @@ return [
             ],
             'formatter'      => LogstashFormatter::class,
             'formatter_with' => [
-                'applicationName' => env('APP_NAME', 'Anilibrary'),
+                'applicationName' => env('LOGSTASH_TYPE', 'anilibrary'),
             ],
         ],
 

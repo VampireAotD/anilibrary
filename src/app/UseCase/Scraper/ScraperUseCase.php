@@ -81,38 +81,37 @@ final readonly class ScraperUseCase
             return DB::transaction(function () use ($anime, $dto): Anime {
                 [$genres, $voiceActing] = $this->syncVoiceActingAndGenres($dto);
 
-                return $this->animeService->update(
-                    $anime,
-                    new UpdateAnimeDTO(
-                        status     : $dto->status,
-                        episodes   : $dto->episodes,
-                        urls       : [['url' => $dto->url]],
-                        synonyms   : $dto->synonyms,
-                        voiceActing: $voiceActing,
-                        genres     : $genres
-                    )
+                $updateDto = new UpdateAnimeDTO(
+                    status     : $dto->status,
+                    episodes   : $dto->episodes,
+                    urls       : [['url' => $dto->url]],
+                    synonyms   : $dto->synonyms,
+                    voiceActing: $voiceActing,
+                    genres     : $genres
                 );
+
+                return $this->animeService->update($anime, $updateDto);
             });
         }
 
         return DB::transaction(function () use ($dto): Anime {
             [$genres, $voiceActing] = $this->syncVoiceActingAndGenres($dto);
 
-            return $this->animeService->create(
-                new CreateAnimeDTO(
-                    title      : $dto->title,
-                    year       : $dto->year,
-                    urls       : [['url' => $dto->url]],
-                    type       : $dto->type,
-                    status     : $dto->status,
-                    rating     : $dto->rating,
-                    episodes   : $dto->episodes,
-                    image      : $dto->image,
-                    synonyms   : $dto->synonyms,
-                    voiceActing: $voiceActing,
-                    genres     : $genres
-                )
+            $createDto = new CreateAnimeDTO(
+                title      : $dto->title,
+                year       : $dto->year,
+                urls       : [['url' => $dto->url]],
+                type       : $dto->type,
+                status     : $dto->status,
+                rating     : $dto->rating,
+                episodes   : $dto->episodes,
+                image      : $dto->image,
+                synonyms   : $dto->synonyms,
+                voiceActing: $voiceActing,
+                genres     : $genres
             );
+
+            return $this->animeService->create($createDto);
         });
     }
 
