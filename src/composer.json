@@ -11,15 +11,15 @@
     ],
     "license": "BSL-1.0",
     "require": {
-        "php": "^8.3",
-        "aws/aws-sdk-php": "^3.342.26",
+        "php": "^8.4",
+        "aws/aws-sdk-php": "^3.342.28",
         "cloudinary-labs/cloudinary-laravel": "^3.0.0",
         "diglactic/laravel-breadcrumbs": "^10.0",
         "elasticsearch/elasticsearch": "^8.17.1",
         "firebase/php-jwt": "^6.11.1",
         "guzzlehttp/guzzle": "^7.9.3",
         "inertiajs/inertia-laravel": "^2.0.2",
-        "laravel/framework": "v12.8.1",
+        "laravel/framework": "v12.9.2",
         "laravel/horizon": "^5.31.1",
         "laravel/octane": "^2.9.0",
         "laravel/reverb": "^1.5.0",
@@ -34,7 +34,7 @@
         "tuupola/base62": "^2.1.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.15.3",
+        "barryvdh/laravel-debugbar": "^3.15.4",
         "barryvdh/laravel-ide-helper": "^3.5.5",
         "brianium/paratest": "^v7.9.1",
         "driftingly/rector-laravel": "^2.0.4",
