@@ -28,7 +28,7 @@ return RectorConfig::configure()
                        RemoveUnusedPrivatePropertyRector::class,
                    ])
                    ->withSets([
-                       LevelSetList::UP_TO_PHP_83,
+                       LevelSetList::UP_TO_PHP_84,
                        LaravelLevelSetList::UP_TO_LARAVEL_120,
                        SetList::CODE_QUALITY,
                        SetList::CODING_STYLE,

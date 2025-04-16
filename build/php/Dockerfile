@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG PHP_VERSION=8.3.15
+ARG PHP_VERSION=8.4.6
 ARG COMPOSER_VERSION=2.8.8
 ARG NODE_VERSION=22.14
 ARG PNPM_VERSION=10.8.0
@@ -17,8 +17,8 @@ FROM php:${PHP_VERSION}-cli-alpine
 ARG GROUP_ID=1000
 ARG USER_ID=1000
 ARG USER=anilibrary
-ARG XDEBUG_VERSION=3.4.0
-ARG SWOOLE_VERSION=6.0.0
+ARG XDEBUG_VERSION=3.4.2
+ARG SWOOLE_VERSION=6.0.2
 ARG PHPREDIS_VERSION=6.1.0
 
 RUN apk add --no-cache libstdc++ libpq libzip-dev gmp-dev oniguruma-dev curl git zip unzip \
